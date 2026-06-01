@@ -67,7 +67,7 @@ The project is positioned as a responsible enterprise AI engineering lab. Its va
 
 ## Current Results
 
-The improved lexical retrieval path raises citation coverage from 20.50% to 98.50% and retrieval hit rate@3 from 45.50% to 99.00% on synthetic golden cases. The sparse hybrid retriever reaches 100.00% retrieval hit@3 and 100.00% citation coverage after current-evidence reranking, while the local TF-IDF vector retriever reaches 100.00% retrieval hit@3 and 99.50% citation coverage. The local feature-hashed embedding store also reaches 100.00% retrieval hit@3, but its 96.50% citation coverage shows that embedding-style retrieval still needs final-selection evaluation.
+The improved lexical retrieval path raises citation coverage from 20.50% to 98.50% and retrieval hit rate@3 from 45.50% to 99.00% on synthetic golden cases. The sparse hybrid retriever, local TF-IDF vector retriever, and local feature-hashed embedding store now reach 100.00% retrieval hit@3 and 100.00% citation coverage on the 256-case synthetic golden suite after current-evidence, exact-phrase, and alias reranking improvements.
 
 The retriever snapshot report records deterministic deltas between retriever versions, so regressions are visible even when every system is generated from the same local synthetic dataset.
 
@@ -80,7 +80,7 @@ The security red-team suite reports 100.00% improved explicit policy block rate 
 | Risk | Mitigation |
 | --- | --- |
 | Project appears to mimic a real employer system | README, model card, and docs clearly state synthetic-only scope |
-| Metrics look too perfect | Retriever snapshots still show vector and embedding regressions, and docs explain remaining synthetic limitations |
+| Metrics look too perfect | Docs state that the current synthetic suite is solved and that future value depends on harder, less-templated eval data |
 | Agent appears to take real actions | Tool names include `mock`, and side effects require approval |
 | Demo depends on paid APIs | Tests and evals are deterministic and local |
 | System seems like only a dashboard | FastAPI endpoints, eval reports, CI, and docs show engineering depth |

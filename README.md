@@ -102,14 +102,14 @@ Current deterministic evaluation:
 | Metric | Baseline | Improved lexical | Hybrid sparse semantic | Local TF-IDF vector | Local embedding store |
 | --- | ---: | ---: | ---: | ---: | ---: |
 | Retrieval hit rate@3 | 45.50% | 99.00% | 100.00% | 100.00% | 100.00% |
-| Citation coverage | 20.50% | 98.50% | 100.00% | 99.50% | 96.50% |
-| Issue category accuracy | 20.50% | 98.50% | 100.00% | 99.50% | 96.50% |
-| Next action accuracy | 20.50% | 98.50% | 100.00% | 99.50% | 96.50% |
+| Citation coverage | 20.50% | 98.50% | 100.00% | 100.00% | 100.00% |
+| Issue category accuracy | 20.50% | 98.50% | 100.00% | 100.00% | 100.00% |
+| Next action accuracy | 20.50% | 98.50% | 100.00% | 100.00% | 100.00% |
 | Abstention accuracy | 78.52% | 100.00% | 100.00% | 100.00% | 100.00% |
 
 These are first-pass synthetic metrics across exact, paraphrased, noisy, human-like, human email-thread, distractor, typo, weak-evidence, conflicting-evidence, long-conflicting-context, retrieved-document injection, and adversarial-instruction cases. Later phases should add provider-backed embedding comparison, more adversarial retrieval cases, and red-team scoring.
 
-The hybrid retriever is intentionally local and deterministic: it combines lexical scoring with sparse semantic alias features, negated false-lead handling, phrase matching, and current-evidence reranking for forwarded-thread cases. The local TF-IDF vector retriever adds an IDF-weighted cosine index with character n-grams and alias features. The local embedding-store retriever builds stable feature-hashed dense vectors and searches them with cosine similarity. It reaches 100.00% retrieval hit@3 but has seven final-selection failures, which shows why embedding-style retrieval still needs ranking and answer-selection evaluation.
+The hybrid retriever is intentionally local and deterministic: it combines lexical scoring with sparse semantic alias features, negated false-lead handling, phrase matching, and current-evidence reranking for forwarded-thread cases. The local TF-IDF vector retriever adds an IDF-weighted cosine index with character n-grams and alias features. The local embedding-store retriever builds stable feature-hashed dense vectors and searches them with cosine similarity. The current local retrievers solve the 256-case synthetic golden suite, which is useful as a reproducible benchmark but not a claim that messy real tickets are solved.
 
 Current structured extraction evaluation:
 

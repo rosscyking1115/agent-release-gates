@@ -34,9 +34,10 @@ def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
     assert "| Local TF-IDF vector |" in report
     assert "| Local embedding store |" in report
     assert "## Retriever Metric Snapshots" in report
-    assert "citation_coverage_decreased" in report
+    assert "citation_coverage_decreased" not in report
     assert "## Retriever Failure Analysis" in report
     assert "NOISY-MISSING-007" in report
+    assert "| Local embedding store | 100.00% | 100.00% | 100.00% | 100.00% | 0 |" in report
     assert "HUMAN-EMAIL-THREAD-004" not in report
     assert "| Citation coverage | 20.50% | 98.50% | +78.00% |" in report
     assert "| Safe response rate | 0.00% | 100.00% |" in report

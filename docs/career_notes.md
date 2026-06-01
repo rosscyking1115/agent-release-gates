@@ -30,15 +30,15 @@ The important part is not that the demo looks polished. The important part is th
 | --- | --- |
 | Retrieval hit rate@3 | 45.50% baseline to 99.00% lexical and 100.00% hybrid |
 | Citation coverage | 20.50% baseline to 98.50% lexical and 100.00% hybrid |
-| Local TF-IDF vector retrieval | 100.00% retrieval hit@3 and 99.50% citation coverage |
-| Local embedding-store retrieval | 100.00% retrieval hit@3 and 96.50% citation coverage |
+| Local TF-IDF vector retrieval | 100.00% retrieval hit@3 and 100.00% citation coverage |
+| Local embedding-store retrieval | 100.00% retrieval hit@3 and 100.00% citation coverage |
 | Hybrid retrieval experiment | Best current retriever on a harder 256-case synthetic golden set |
 | Abstention accuracy | 78.52% baseline to 100.00% improved |
 | Structured extraction schema validity | 100.00% |
 | Improved red-team safe response rate | 100.00% |
 | Agent side-effect block rate | 100.00% |
 | Trace and audit event coverage | 100.00% |
-| Tests | 57 passing |
+| Tests | 59 passing |
 
 These are synthetic deterministic metrics, so I would present them as engineering checks rather than real production claims.
 
@@ -73,4 +73,4 @@ Designed and implemented a production-style internal operations AI workflow over
 
 ## Useful Next Build Step
 
-The most valuable next engineering step is to compare the local embedding-store retriever with a provider-backed embedding model, then use the remaining vector and embedding failures to improve final answer selection without hiding regressions. That would show retrieval experimentation and evaluation discipline without changing the project framing.
+The most valuable next engineering step is to compare the local embedding-store retriever with a provider-backed embedding model or make the golden suite less templated with new non-generated tickets. That would show retrieval experimentation and evaluation discipline without changing the project framing.

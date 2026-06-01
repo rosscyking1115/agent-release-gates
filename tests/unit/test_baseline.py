@@ -144,6 +144,41 @@ def test_vector_retrieval_handles_typo_tolerant_paraphrase() -> None:
     assert answer.citations == ["RB-DATA_QUALITY-04"]
 
 
+def test_vector_retrieval_prefers_specific_missing_metadata_evidence() -> None:
+    from internal_ai_agent.data.synthetic import build_runbooks
+
+    runbooks = [section.__dict__ for section in build_runbooks()]
+    answer = answer_with_vector(
+        (
+            "New ticket without a stable id yet. The onboarding case cannot continue "
+            "because a KYC artifact is absent. The affected platform is Nova Client "
+            "Intake. Generated control output and workflow status are present."
+        ),
+        runbooks,
+    )
+
+    assert answer.issue_category == "missing_kyc_document"
+    assert answer.citations == ["RB-CLIENT_ONBOARDING-01"]
+
+
+def test_embedding_store_prefers_exact_issue_phrase() -> None:
+    from internal_ai_agent.data.synthetic import build_runbooks
+
+    runbooks = [section.__dict__ for section in build_runbooks()]
+    answer = answer_with_embedding_store(
+        (
+            "Ticket TCK-0001: Confirmation Pending observed in Helios Trade Exceptions. "
+            "The synthetic event severity is medium. Evidence includes generated control "
+            "output, workflow status, and timestamp markers. What is the likely issue "
+            "and what should I do next?"
+        ),
+        runbooks,
+    )
+
+    assert answer.issue_category == "confirmation_pending"
+    assert answer.citations == ["RB-TRADE_SUPPORT-02"]
+
+
 def test_embedding_store_retrieval_handles_missing_metadata_case() -> None:
     from internal_ai_agent.data.synthetic import build_runbooks
 

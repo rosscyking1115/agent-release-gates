@@ -374,8 +374,8 @@ def retrieve_vector(
         section_vector = _tfidf_vector(features, idf)
 
         vector_score = _cosine_similarity(query_vector, section_vector) * 100
-        keyword_score = _alias_overlap(_tokenize(question), category) * 3
-        keyword_score += _title_phrase_score(question, category) * 0.5
+        keyword_score = _alias_overlap(_tokenize(question), category) * 5
+        keyword_score += _title_phrase_score(question, category) * 0.75
         keyword_score += _team_hint_score(question, str(section["team"])) * 0.25
         keyword_score += _current_evidence_score(question, category, str(section["team"])) * 0.75
         score = vector_score + keyword_score - _negated_category_penalty(question, category)
@@ -473,8 +473,8 @@ def retrieve_embedding_store(
         category = title.lower().replace(" ", "_")
 
         embedding_score = _dense_cosine_similarity(query_embedding, record.embedding) * 100
-        ranking_score = _alias_overlap(query_tokens, category) * 5
-        ranking_score += _title_phrase_score(question, category) * 0.75
+        ranking_score = _alias_overlap(query_tokens, category) * 6
+        ranking_score += _title_phrase_score(question, category) * 2
         ranking_score += _team_hint_score(question, str(section["team"])) * 0.25
         ranking_score += _current_evidence_score(question, category, str(section["team"])) * 0.75
         score = embedding_score + ranking_score - _negated_category_penalty(question, category)

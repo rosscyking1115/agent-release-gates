@@ -17,9 +17,9 @@
     "clean_exact": {
       "abstention_accuracy": 1.0,
       "case_count": 96,
-      "citation_coverage": 0.9375,
-      "failure_count": 6,
-      "next_action_accuracy": 0.9375
+      "citation_coverage": 1.0,
+      "failure_count": 0,
+      "next_action_accuracy": 1.0
     },
     "conflicting_evidence": {
       "abstention_accuracy": 1.0,
@@ -59,9 +59,9 @@
     "missing_metadata": {
       "abstention_accuracy": 1.0,
       "case_count": 8,
-      "citation_coverage": 0.875,
-      "failure_count": 1,
-      "next_action_accuracy": 0.875
+      "citation_coverage": 1.0,
+      "failure_count": 0,
+      "next_action_accuracy": 1.0
     },
     "paraphrase": {
       "abstention_accuracy": 1.0,
@@ -124,9 +124,9 @@
     "ticket_next_action": {
       "abstention_accuracy": 1.0,
       "case_count": 96,
-      "citation_coverage": 0.9375,
-      "failure_count": 6,
-      "next_action_accuracy": 0.9375
+      "citation_coverage": 1.0,
+      "failure_count": 0,
+      "next_action_accuracy": 1.0
     },
     "ticket_next_action_hard": {
       "abstention_accuracy": 1.0,
@@ -145,9 +145,9 @@
     "ticket_next_action_noisy": {
       "abstention_accuracy": 1.0,
       "case_count": 16,
-      "citation_coverage": 0.9375,
-      "failure_count": 1,
-      "next_action_accuracy": 0.9375
+      "citation_coverage": 1.0,
+      "failure_count": 0,
+      "next_action_accuracy": 1.0
     },
     "ticket_next_action_paraphrased": {
       "abstention_accuracy": 1.0,
@@ -166,194 +166,14 @@
   },
   "case_count": 256,
   "dataset": "golden_cases",
-  "failure_examples": [
-    {
-      "case_id": "GOLD-TCK-0001",
-      "diagnostic": "The expected section was retrieved but not selected as the final cited answer, which suggests ranking or final-selection weakness.",
-      "expected_citation_ids": [
-        "RB-TRADE_SUPPORT-02"
-      ],
-      "expected_issue_category": "confirmation_pending",
-      "failure_reasons": [
-        "missing_or_wrong_citation",
-        "wrong_issue_category",
-        "wrong_next_action"
-      ],
-      "noise_type": "clean_exact",
-      "predicted_citation_ids": [
-        "RB-TRADE_SUPPORT-06"
-      ],
-      "predicted_issue_category": "booking_status_stuck",
-      "recommended_fix": "Add within-team reranking using issue-category evidence and expected action terms.",
-      "retrieved_citation_ids": [
-        "RB-TRADE_SUPPORT-06",
-        "RB-TRADE_SUPPORT-02",
-        "RB-TRADE_SUPPORT-04"
-      ],
-      "task_type": "ticket_next_action"
-    },
-    {
-      "case_id": "GOLD-TCK-0041",
-      "diagnostic": "The expected section was retrieved but not selected as the final cited answer, which suggests ranking or final-selection weakness.",
-      "expected_citation_ids": [
-        "RB-TRADE_SUPPORT-02"
-      ],
-      "expected_issue_category": "confirmation_pending",
-      "failure_reasons": [
-        "missing_or_wrong_citation",
-        "wrong_issue_category",
-        "wrong_next_action"
-      ],
-      "noise_type": "clean_exact",
-      "predicted_citation_ids": [
-        "RB-TRADE_SUPPORT-06"
-      ],
-      "predicted_issue_category": "booking_status_stuck",
-      "recommended_fix": "Add within-team reranking using issue-category evidence and expected action terms.",
-      "retrieved_citation_ids": [
-        "RB-TRADE_SUPPORT-06",
-        "RB-TRADE_SUPPORT-04",
-        "RB-TRADE_SUPPORT-02"
-      ],
-      "task_type": "ticket_next_action"
-    },
-    {
-      "case_id": "GOLD-TCK-0045",
-      "diagnostic": "The expected section was retrieved but not selected as the final cited answer, which suggests ranking or final-selection weakness.",
-      "expected_citation_ids": [
-        "RB-TRADE_SUPPORT-02"
-      ],
-      "expected_issue_category": "confirmation_pending",
-      "failure_reasons": [
-        "missing_or_wrong_citation",
-        "wrong_issue_category",
-        "wrong_next_action"
-      ],
-      "noise_type": "clean_exact",
-      "predicted_citation_ids": [
-        "RB-TRADE_SUPPORT-06"
-      ],
-      "predicted_issue_category": "booking_status_stuck",
-      "recommended_fix": "Add within-team reranking using issue-category evidence and expected action terms.",
-      "retrieved_citation_ids": [
-        "RB-TRADE_SUPPORT-06",
-        "RB-TRADE_SUPPORT-04",
-        "RB-TRADE_SUPPORT-02"
-      ],
-      "task_type": "ticket_next_action"
-    },
-    {
-      "case_id": "GOLD-TCK-0054",
-      "diagnostic": "The expected section was retrieved but not selected as the final cited answer, which suggests ranking or final-selection weakness.",
-      "expected_citation_ids": [
-        "RB-TRADE_SUPPORT-02"
-      ],
-      "expected_issue_category": "confirmation_pending",
-      "failure_reasons": [
-        "missing_or_wrong_citation",
-        "wrong_issue_category",
-        "wrong_next_action"
-      ],
-      "noise_type": "clean_exact",
-      "predicted_citation_ids": [
-        "RB-TRADE_SUPPORT-04"
-      ],
-      "predicted_issue_category": "trade_date_dispute",
-      "recommended_fix": "Add within-team reranking using issue-category evidence and expected action terms.",
-      "retrieved_citation_ids": [
-        "RB-TRADE_SUPPORT-04",
-        "RB-TRADE_SUPPORT-06",
-        "RB-TRADE_SUPPORT-02"
-      ],
-      "task_type": "ticket_next_action"
-    },
-    {
-      "case_id": "GOLD-TCK-0074",
-      "diagnostic": "The expected section was retrieved but not selected as the final cited answer, which suggests ranking or final-selection weakness.",
-      "expected_citation_ids": [
-        "RB-TRADE_SUPPORT-02"
-      ],
-      "expected_issue_category": "confirmation_pending",
-      "failure_reasons": [
-        "missing_or_wrong_citation",
-        "wrong_issue_category",
-        "wrong_next_action"
-      ],
-      "noise_type": "clean_exact",
-      "predicted_citation_ids": [
-        "RB-TRADE_SUPPORT-04"
-      ],
-      "predicted_issue_category": "trade_date_dispute",
-      "recommended_fix": "Add within-team reranking using issue-category evidence and expected action terms.",
-      "retrieved_citation_ids": [
-        "RB-TRADE_SUPPORT-04",
-        "RB-TRADE_SUPPORT-02",
-        "RB-TRADE_SUPPORT-06"
-      ],
-      "task_type": "ticket_next_action"
-    },
-    {
-      "case_id": "GOLD-TCK-0077",
-      "diagnostic": "The expected section was retrieved but not selected as the final cited answer, which suggests ranking or final-selection weakness.",
-      "expected_citation_ids": [
-        "RB-TRADE_SUPPORT-02"
-      ],
-      "expected_issue_category": "confirmation_pending",
-      "failure_reasons": [
-        "missing_or_wrong_citation",
-        "wrong_issue_category",
-        "wrong_next_action"
-      ],
-      "noise_type": "clean_exact",
-      "predicted_citation_ids": [
-        "RB-TRADE_SUPPORT-06"
-      ],
-      "predicted_issue_category": "booking_status_stuck",
-      "recommended_fix": "Add within-team reranking using issue-category evidence and expected action terms.",
-      "retrieved_citation_ids": [
-        "RB-TRADE_SUPPORT-06",
-        "RB-TRADE_SUPPORT-04",
-        "RB-TRADE_SUPPORT-02"
-      ],
-      "task_type": "ticket_next_action"
-    },
-    {
-      "case_id": "NOISY-MISSING-005",
-      "diagnostic": "The expected section was retrieved but not selected as the final cited answer, which suggests ranking or final-selection weakness.",
-      "expected_citation_ids": [
-        "RB-TRADE_SUPPORT-04"
-      ],
-      "expected_issue_category": "trade_date_dispute",
-      "failure_reasons": [
-        "missing_or_wrong_citation",
-        "wrong_issue_category",
-        "wrong_next_action"
-      ],
-      "noise_type": "missing_metadata",
-      "predicted_citation_ids": [
-        "RB-TRADE_SUPPORT-06"
-      ],
-      "predicted_issue_category": "booking_status_stuck",
-      "recommended_fix": "Improve ranking so explicit procedure evidence beats generic workflow terms.",
-      "retrieved_citation_ids": [
-        "RB-TRADE_SUPPORT-06",
-        "RB-TRADE_SUPPORT-04",
-        "RB-TRADE_SUPPORT-03"
-      ],
-      "task_type": "ticket_next_action_noisy"
-    }
-  ],
-  "failure_reasons": {
-    "missing_or_wrong_citation": 7,
-    "wrong_issue_category": 7,
-    "wrong_next_action": 7
-  },
+  "failure_examples": [],
+  "failure_reasons": {},
   "metrics": {
     "abstention_accuracy": 1.0,
     "abstention_rate": 0.2188,
-    "citation_coverage": 0.965,
-    "issue_category_accuracy": 0.965,
-    "next_action_accuracy": 0.965,
+    "citation_coverage": 1.0,
+    "issue_category_accuracy": 1.0,
+    "next_action_accuracy": 1.0,
     "retrieval_hit_rate_at_3": 1.0,
     "team_accuracy": 1.0
   },

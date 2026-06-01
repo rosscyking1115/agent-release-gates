@@ -48,9 +48,9 @@ The project does not use real company documents, customer data, employee data, p
 | Metric | Baseline | Improved lexical | Hybrid sparse semantic | Local TF-IDF vector | Local embedding store |
 | --- | ---: | ---: | ---: | ---: | ---: |
 | Retrieval hit rate@3 | 45.50% | 99.00% | 100.00% | 100.00% | 100.00% |
-| Citation coverage | 20.50% | 98.50% | 100.00% | 99.50% | 96.50% |
-| Issue category accuracy | 20.50% | 98.50% | 100.00% | 99.50% | 96.50% |
-| Next action accuracy | 20.50% | 98.50% | 100.00% | 99.50% | 96.50% |
+| Citation coverage | 20.50% | 98.50% | 100.00% | 100.00% | 100.00% |
+| Issue category accuracy | 20.50% | 98.50% | 100.00% | 100.00% | 100.00% |
+| Next action accuracy | 20.50% | 98.50% | 100.00% | 100.00% | 100.00% |
 | Abstention accuracy | 78.52% | 100.00% | 100.00% | 100.00% | 100.00% |
 
 Structured extraction over templated synthetic tickets currently reports 100.00% schema validity, issue-category accuracy, severity accuracy, impacted-system accuracy, and routing-team accuracy.
@@ -65,6 +65,7 @@ The retriever snapshot report records deterministic version-to-version deltas an
 
 - The current embedding-store implementation uses deterministic feature hashing, not a provider-backed embedding model or vector database.
 - Ticket text and runbook text are synthetic and still partly templated, although the golden set now includes noisy abbreviations, missing metadata, false leads, typos, human-like phrasing, human email threads, retrieved-document injection, adversarial instructions, conflicting evidence, and long conflicting context.
+- The current local retrievers solve the synthetic golden suite; future work should make the suite less templated before treating metric gains as meaningful.
 - Structured extraction is deterministic pattern matching, not LLM extraction.
 - Security checks are deterministic string-based controls, not a full adversarial red-team harness.
 - The controlled agent is a local workflow, not a LangGraph state machine yet.
