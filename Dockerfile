@@ -19,7 +19,7 @@ COPY reports ./reports
 COPY scripts ./scripts
 COPY .streamlit ./.streamlit
 
-RUN uv run python scripts/run_all_evals.py
+RUN uv run --no-dev python scripts/run_all_evals.py
 
 RUN useradd --create-home --shell /usr/sbin/nologin appuser \
     && chown -R appuser:appuser /app
@@ -28,4 +28,4 @@ USER appuser
 
 EXPOSE 8000
 
-CMD ["uv", "run", "uvicorn", "internal_ai_agent.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uv", "run", "--no-dev", "uvicorn", "internal_ai_agent.api.main:app", "--host", "0.0.0.0", "--port", "8000"]

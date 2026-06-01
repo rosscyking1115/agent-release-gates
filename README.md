@@ -85,8 +85,11 @@ The baseline evaluation writes:
 - `reports/security_eval_cases.jsonl`
 - `reports/agent_eval_summary.json`
 - `reports/agent_eval_cases.jsonl`
+- `reports/evaluation_report.md`
 
 The current baseline is intentionally simple: it uses broad system/team keyword hints rather than procedure-level retrieval. This gives the project a measurable starting point before improved retrieval is added.
+
+The generated Markdown report at `reports/evaluation_report.md` is the easiest static artifact to share or review without running the dashboard.
 
 Current deterministic evaluation:
 
@@ -208,7 +211,7 @@ uv run pytest
 uv run python scripts/run_all_evals.py
 ```
 
-GitHub Actions is configured in `.github/workflows/ci.yml` to run linting, tests, and deterministic eval report regeneration.
+GitHub Actions is configured in `.github/workflows/ci.yml` to run linting, tests, deterministic eval report regeneration, and Docker image build verification.
 
 For operational commands and smoke checks, see `docs/operations_runbook.md`.
 

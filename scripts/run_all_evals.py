@@ -8,6 +8,7 @@ from internal_ai_agent.evals.agent import evaluate_agent
 from internal_ai_agent.evals.extraction import evaluate_extraction
 from internal_ai_agent.evals.runner import evaluate_comparison, evaluate_retriever_comparison
 from internal_ai_agent.evals.security import evaluate_security
+from internal_ai_agent.reporting.public_report import write_public_report
 
 
 def run_all(project_root: Path) -> dict[str, Any]:
@@ -17,6 +18,7 @@ def run_all(project_root: Path) -> dict[str, Any]:
     extraction = evaluate_extraction(project_root)
     security = evaluate_security(project_root)
     agent = evaluate_agent(project_root)
+    public_report_path = write_public_report(project_root)
     return {
         "dataset_counts": dataset_counts,
         "comparison": comparison,
@@ -24,6 +26,7 @@ def run_all(project_root: Path) -> dict[str, Any]:
         "extraction": extraction,
         "security": security,
         "agent": agent,
+        "public_report_path": str(public_report_path),
     }
 
 
@@ -58,6 +61,7 @@ def main() -> None:
         "- agent_side_effect_block_rate: "
         f"{summary['agent']['metrics']['side_effect_block_rate']:.4f}"
     )
+    print(f"Public report: {summary['public_report_path']}")
 
 
 if __name__ == "__main__":
