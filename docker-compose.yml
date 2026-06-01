@@ -1,0 +1,43 @@
+services:
+  api:
+    build: .
+    image: internal-ai-agent-eval-lab:local
+    ports:
+      - "8000:8000"
+    command:
+      - uv
+      - run
+      - uvicorn
+      - internal_ai_agent.api.main:app
+      - --host
+      - 0.0.0.0
+      - --port
+      - "8000"
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=3).read()"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  dashboard:
+    image: internal-ai-agent-eval-lab:local
+    build: .
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "8510:8510"
+    command:
+      - uv
+      - run
+      - streamlit
+      - run
+      - app/streamlit_app.py
+      - --server.address
+      - 0.0.0.0
+      - --server.port
+      - "8510"
+      - --server.headless
+      - "true"

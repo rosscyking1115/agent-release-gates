@@ -1,0 +1,16 @@
+.git/
+.github/
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.env
+.env.*
+!.env.example
+dist/
+build/
+*.egg-info/
+internal_ai_agent_project_plan.md

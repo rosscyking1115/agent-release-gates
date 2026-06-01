@@ -1,0 +1,31 @@
+FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim
+
+WORKDIR /app
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+ENV UV_LINK_MODE=copy
+ENV STREAMLIT_BROWSER_GATHER_USAGE_STATS=false
+
+COPY pyproject.toml uv.lock README.md ./
+COPY src ./src
+
+RUN uv sync --locked --no-dev
+
+COPY app ./app
+COPY data ./data
+COPY docs ./docs
+COPY reports ./reports
+COPY scripts ./scripts
+COPY .streamlit ./.streamlit
+
+RUN uv run python scripts/run_all_evals.py
+
+RUN useradd --create-home --shell /usr/sbin/nologin appuser \
+    && chown -R appuser:appuser /app
+
+USER appuser
+
+EXPOSE 8000
+
+CMD ["uv", "run", "uvicorn", "internal_ai_agent.api.main:app", "--host", "0.0.0.0", "--port", "8000"]

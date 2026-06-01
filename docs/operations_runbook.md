@@ -60,6 +60,38 @@ Expected response:
 {"status":"ok"}
 ```
 
+## Container Verification
+
+Build the local container image:
+
+```powershell
+docker build -t internal-ai-agent-eval-lab:local .
+```
+
+Run the API from the image:
+
+```powershell
+docker run --rm -p 8000:8000 internal-ai-agent-eval-lab:local
+```
+
+Check:
+
+```text
+http://127.0.0.1:8000/health
+```
+
+Run the API and dashboard together:
+
+```powershell
+docker compose up --build
+```
+
+Open:
+
+```text
+http://localhost:8510
+```
+
 ## Safety Checks
 
 Before sharing the project publicly, confirm:

@@ -33,3 +33,5 @@ jobs:
       - name: Regenerate deterministic eval reports
         run: uv run python scripts/run_all_evals.py
 
+      - name: Build Docker image
+        run: docker build -t internal-ai-agent-eval-lab:ci .

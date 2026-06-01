@@ -30,7 +30,7 @@ The current version creates a local, reproducible lab:
 - deterministic red-team policy checks
 - controlled agent workflow with approval-gated mock tools
 - trace IDs, audit events, and monitoring snapshots
-- FastAPI service, Streamlit dashboard, CI workflow, and operations runbook
+- FastAPI service, Streamlit dashboard, Docker/Compose runtime, CI workflow, and operations runbook
 
 ## Tech Stack
 
@@ -40,8 +40,9 @@ The current version creates a local, reproducible lab:
 - Pydantic
 - pytest
 - ruff
+- Docker
 
-Later phases should add a true vector store, noisier evaluation data, richer red-team cases, OpenTelemetry export, Docker Compose, and optional LangGraph orchestration.
+Later phases should add a true vector store, noisier evaluation data, richer red-team cases, OpenTelemetry export, and optional LangGraph orchestration.
 
 ## Quick Start
 
@@ -159,6 +160,33 @@ uv run streamlit run C:\Files\Jobs\project-5-jpm_internal_ai_agent\app\streamlit
 ```
 
 The `/ask` API supports `baseline`, `improved`, and `hybrid` modes. The `hybrid` mode uses the local sparse semantic retriever; `improved` is kept as the lexical retriever for comparison.
+
+## Docker
+
+Build the local image:
+
+```powershell
+docker build -t internal-ai-agent-eval-lab:local .
+```
+
+Run the API only:
+
+```powershell
+docker run --rm -p 8000:8000 internal-ai-agent-eval-lab:local
+```
+
+Run the API and dashboard together:
+
+```powershell
+docker compose up --build
+```
+
+Open:
+
+```text
+http://localhost:8000/health
+http://localhost:8510
+```
 
 ## Safety Boundaries
 
