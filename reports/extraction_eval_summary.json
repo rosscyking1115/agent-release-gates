@@ -1,0 +1,16 @@
+{
+  "case_count": 180,
+  "dataset": "synthetic_tickets",
+  "metrics": {
+    "impacted_system_accuracy": 1.0,
+    "issue_category_accuracy": 1.0,
+    "routing_team_accuracy": 1.0,
+    "schema_validity": 1.0,
+    "severity_accuracy": 1.0
+  },
+  "notes": [
+    "Extraction uses deterministic pattern matching over synthetic ticket text.",
+    "This report proves the schema and routing evaluation path before LLM extraction."
+  ],
+  "system_version": "deterministic_structured_extraction"
+}

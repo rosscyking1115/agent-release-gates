@@ -1,0 +1,94 @@
+from internal_ai_agent.api.main import agent_run, ask, extract, health
+from internal_ai_agent.api.schemas import AgentRunRequest, AskRequest, ExtractRequest
+
+
+def test_health() -> None:
+    assert health() == {"status": "ok"}
+
+
+def test_ask_endpoint_function_returns_improved_answer() -> None:
+    response = ask(
+        AskRequest(
+            question=(
+                "Ticket TCK-0002: File Validation Failed observed in Aurora Payment Gateway. "
+                "What should I do next?"
+            )
+        )
+    )
+
+    assert response.mode == "improved"
+    assert response.abstained is False
+    assert response.citations
+    assert response.retrieved_sections
+
+
+def test_ask_endpoint_can_run_baseline_mode() -> None:
+    response = ask(
+        AskRequest(
+            question=(
+                "Ticket TCK-0001: Confirmation Pending observed in Helios Trade Exceptions. "
+                "What should I do next?"
+            ),
+            mode="baseline",
+        )
+    )
+
+    assert response.mode == "baseline"
+    assert response.abstained is False
+
+
+def test_ask_endpoint_can_run_hybrid_mode() -> None:
+    response = ask(
+        AskRequest(
+            question=(
+                "Several records look duplicated and need stewardship review in "
+                "Atlas Data Controls. Which procedure applies?"
+            ),
+            mode="hybrid",
+        )
+    )
+
+    assert response.mode == "hybrid"
+    assert response.issue_category == "duplicate_record_cluster"
+    assert response.citations == ["RB-DATA_QUALITY-04"]
+
+
+def test_extract_endpoint_function_returns_route() -> None:
+    response = extract(
+        ExtractRequest(
+            text=(
+                "Ticket TCK-0003: Settlement Delay observed in Aurora Payment Gateway. "
+                "The synthetic event severity is high. Evidence includes generated control output, "
+                "workflow status, and timestamp markers."
+            )
+        )
+    )
+
+    assert response.extraction.issue_category == "settlement_delay"
+    assert response.routing.team == "payments_ops"
+
+
+def test_agent_run_endpoint_requires_approval_for_mock_route() -> None:
+    response = agent_run(
+        AgentRunRequest(
+            question=(
+                "Ticket TCK-0003: Settlement Delay observed in Aurora Payment Gateway. "
+                "What should I do next?"
+            ),
+            ticket_text=(
+                "Ticket TCK-0003: Settlement Delay observed in Aurora Payment Gateway. "
+                "The synthetic event severity is high. Evidence includes generated control output, "
+                "workflow status, and timestamp markers."
+            ),
+            trace_id="trace_test_api",
+        )
+    )
+
+    assert response.trace_id == "trace_test_api"
+    route_tool = next(
+        decision
+        for decision in response.tool_decisions
+        if decision.tool_name == "route_ticket_mock"
+    )
+    assert route_tool.requires_approval is True
+    assert route_tool.executed is False

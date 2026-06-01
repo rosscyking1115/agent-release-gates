@@ -1,0 +1,402 @@
+from __future__ import annotations
+
+from dataclasses import asdict, dataclass
+from pathlib import Path
+from typing import Any
+
+from internal_ai_agent.io import read_jsonl, write_json, write_jsonl
+from internal_ai_agent.rag.baseline import (
+    BaselineAnswer,
+    answer_with_baseline,
+    answer_with_hybrid,
+    answer_with_lexical,
+    load_runbooks,
+)
+
+
+@dataclass(frozen=True)
+class CaseResult:
+    case_id: str
+    task_type: str
+    noise_type: str
+    expected_citation_ids: list[str]
+    predicted_citation_ids: list[str]
+    retrieved_citation_ids: list[str]
+    expected_issue_category: str
+    predicted_issue_category: str | None
+    expected_team: str
+    predicted_team: str | None
+    expected_next_action: str
+    predicted_next_action: str | None
+    retrieval_hit_at_3: bool
+    citation_match: bool
+    issue_category_match: bool
+    team_match: bool
+    next_action_match: bool
+    abstained: bool
+    expected_abstain: bool
+    abstention_correct: bool
+    failure_reasons: list[str]
+    diagnostic: str
+    recommended_fix: str
+
+
+def evaluate_baseline(project_root: Path) -> dict[str, Any]:
+    runbooks = load_runbooks(project_root)
+    cases = read_jsonl(project_root / "data/eval/golden_cases.jsonl")
+    results = [
+        _evaluate_case(case, answer_with_baseline(str(case["input"]), runbooks)) for case in cases
+    ]
+    metrics = _summarize(results)
+
+    report = {
+        "system_version": "baseline_team_hint_retrieval",
+        "dataset": "golden_cases",
+        "case_count": len(results),
+        "metrics": metrics,
+        "by_task_type": _summarize_by_dimension(results, "task_type"),
+        "by_noise_type": _summarize_by_dimension(results, "noise_type"),
+        "failure_reasons": _failure_reason_counts(results),
+        "failure_examples": _failure_examples(results),
+        "notes": [
+            "Baseline uses broad system/team keyword hints, not procedure-level retrieval.",
+            "Metrics are deterministic and do not require paid API keys.",
+        ],
+    }
+
+    write_json(project_root / "reports/baseline_eval_summary.json", report)
+    write_jsonl(
+        project_root / "reports/baseline_eval_cases.jsonl", (asdict(row) for row in results)
+    )
+    return report
+
+
+def evaluate_lexical(project_root: Path) -> dict[str, Any]:
+    runbooks = load_runbooks(project_root)
+    cases = read_jsonl(project_root / "data/eval/golden_cases.jsonl")
+    results = [
+        _evaluate_case(
+            case,
+            answer_with_lexical(
+                str(case["input"]),
+                runbooks,
+                user_role=str(case["user_role"]),
+            ),
+        )
+        for case in cases
+    ]
+    metrics = _summarize(results)
+
+    report = {
+        "system_version": "improved_lexical_retrieval",
+        "dataset": "golden_cases",
+        "case_count": len(results),
+        "metrics": metrics,
+        "by_task_type": _summarize_by_dimension(results, "task_type"),
+        "by_noise_type": _summarize_by_dimension(results, "noise_type"),
+        "failure_reasons": _failure_reason_counts(results),
+        "failure_examples": _failure_examples(results),
+        "notes": [
+            "Improved retrieval scores procedure title and content token overlap.",
+            "Role filtering excludes runbook sections the requester is not allowed to retrieve.",
+        ],
+    }
+
+    write_json(project_root / "reports/improved_eval_summary.json", report)
+    write_jsonl(
+        project_root / "reports/improved_eval_cases.jsonl", (asdict(row) for row in results)
+    )
+    return report
+
+
+def evaluate_hybrid(project_root: Path) -> dict[str, Any]:
+    runbooks = load_runbooks(project_root)
+    cases = read_jsonl(project_root / "data/eval/golden_cases.jsonl")
+    results = [
+        _evaluate_case(
+            case,
+            answer_with_hybrid(
+                str(case["input"]),
+                runbooks,
+                user_role=str(case["user_role"]),
+            ),
+        )
+        for case in cases
+    ]
+    metrics = _summarize(results)
+
+    report = {
+        "system_version": "hybrid_sparse_semantic_retrieval",
+        "dataset": "golden_cases",
+        "case_count": len(results),
+        "metrics": metrics,
+        "by_task_type": _summarize_by_dimension(results, "task_type"),
+        "by_noise_type": _summarize_by_dimension(results, "noise_type"),
+        "failure_reasons": _failure_reason_counts(results),
+        "failure_examples": _failure_examples(results),
+        "notes": [
+            (
+                "Hybrid retrieval combines lexical overlap with deterministic sparse semantic "
+                "features."
+            ),
+            "The semantic features are local alias vectors, not a paid embedding model.",
+            "Role filtering excludes runbook sections the requester is not allowed to retrieve.",
+        ],
+    }
+
+    write_json(project_root / "reports/hybrid_eval_summary.json", report)
+    write_jsonl(project_root / "reports/hybrid_eval_cases.jsonl", (asdict(row) for row in results))
+    return report
+
+
+def evaluate_comparison(project_root: Path) -> dict[str, Any]:
+    baseline = evaluate_baseline(project_root)
+    improved = evaluate_lexical(project_root)
+    metrics = {
+        metric: {
+            "baseline": baseline["metrics"][metric],
+            "improved": improved["metrics"][metric],
+            "delta": round(improved["metrics"][metric] - baseline["metrics"][metric], 4),
+        }
+        for metric in baseline["metrics"]
+    }
+    report = {
+        "baseline_system_version": baseline["system_version"],
+        "improved_system_version": improved["system_version"],
+        "case_count": baseline["case_count"],
+        "metrics": metrics,
+    }
+    write_json(project_root / "reports/eval_comparison.json", report)
+    return report
+
+
+def evaluate_retriever_comparison(project_root: Path) -> dict[str, Any]:
+    baseline = evaluate_baseline(project_root)
+    lexical = evaluate_lexical(project_root)
+    hybrid = evaluate_hybrid(project_root)
+    report = {
+        "case_count": baseline["case_count"],
+        "systems": [
+            _system_row("Baseline team hints", baseline),
+            _system_row("Improved lexical", lexical),
+            _system_row("Hybrid sparse semantic", hybrid),
+        ],
+        "notes": [
+            (
+                "Hybrid is compared as an experiment; the older two-system report is kept "
+                "for continuity."
+            ),
+            "All systems run over the same synthetic golden cases.",
+        ],
+    }
+    write_json(project_root / "reports/retriever_comparison.json", report)
+    return report
+
+
+def _evaluate_case(case: dict[str, Any], answer: BaselineAnswer) -> CaseResult:
+    expected_citations = [str(item) for item in case["expected_citation_ids"]]
+    retrieved_citations = [section.section_id for section in answer.retrieved_sections]
+    predicted_citations = answer.citations
+    expected_abstain = bool(case.get("should_abstain", False))
+    failure_reasons = _failure_reasons(case, answer, expected_citations, predicted_citations)
+
+    return CaseResult(
+        case_id=str(case["case_id"]),
+        task_type=str(case.get("task_type", "unknown")),
+        noise_type=str(case.get("noise_type", "unspecified")),
+        expected_citation_ids=expected_citations,
+        predicted_citation_ids=predicted_citations,
+        retrieved_citation_ids=retrieved_citations,
+        expected_issue_category=str(case.get("expected_issue_category", "")),
+        predicted_issue_category=answer.issue_category,
+        expected_team=str(case.get("expected_team", "")),
+        predicted_team=answer.team,
+        expected_next_action=str(case.get("expected_next_action", "")),
+        predicted_next_action=answer.next_action,
+        retrieval_hit_at_3=(
+            not expected_abstain
+            and any(citation in retrieved_citations for citation in expected_citations)
+        ),
+        citation_match=(
+            not expected_abstain
+            and any(citation in predicted_citations for citation in expected_citations)
+        ),
+        issue_category_match=(
+            not expected_abstain and answer.issue_category == case["expected_issue_category"]
+        ),
+        team_match=not expected_abstain and answer.team == case["expected_team"],
+        next_action_match=not expected_abstain
+        and answer.next_action == case["expected_next_action"],
+        abstained=answer.abstained,
+        expected_abstain=expected_abstain,
+        abstention_correct=answer.abstained == expected_abstain,
+        failure_reasons=failure_reasons,
+        diagnostic=_diagnostic(case, answer, expected_citations, failure_reasons),
+        recommended_fix=_recommended_fix(case, answer, failure_reasons),
+    )
+
+
+def _summarize(results: list[CaseResult]) -> dict[str, float]:
+    if not results:
+        return {
+            "retrieval_hit_rate_at_3": 0.0,
+            "citation_coverage": 0.0,
+            "issue_category_accuracy": 0.0,
+            "team_accuracy": 0.0,
+            "next_action_accuracy": 0.0,
+            "abstention_rate": 0.0,
+            "abstention_accuracy": 0.0,
+        }
+
+    answerable = [row for row in results if not row.expected_abstain]
+    return {
+        "retrieval_hit_rate_at_3": _rate(row.retrieval_hit_at_3 for row in answerable),
+        "citation_coverage": _rate(row.citation_match for row in answerable),
+        "issue_category_accuracy": _rate(row.issue_category_match for row in answerable),
+        "team_accuracy": _rate(row.team_match for row in answerable),
+        "next_action_accuracy": _rate(row.next_action_match for row in answerable),
+        "abstention_rate": _rate(row.abstained for row in results),
+        "abstention_accuracy": _rate(row.abstention_correct for row in results),
+    }
+
+
+def _rate(values: Any) -> float:
+    items = list(values)
+    if not items:
+        return 0.0
+    return round(sum(1 for item in items if item) / len(items), 4)
+
+
+def _failure_reasons(
+    case: dict[str, Any],
+    answer: BaselineAnswer,
+    expected_citations: list[str],
+    predicted_citations: list[str],
+) -> list[str]:
+    expected_abstain = bool(case.get("should_abstain", False))
+    reasons: list[str] = []
+    if answer.abstained != expected_abstain:
+        reasons.append("abstention_mismatch")
+    if expected_abstain:
+        return reasons
+    if not any(citation in predicted_citations for citation in expected_citations):
+        reasons.append("missing_or_wrong_citation")
+    if answer.issue_category != case["expected_issue_category"]:
+        reasons.append("wrong_issue_category")
+    if answer.team != case["expected_team"]:
+        reasons.append("wrong_team")
+    if answer.next_action != case["expected_next_action"]:
+        reasons.append("wrong_next_action")
+    return reasons
+
+
+def _summarize_by_dimension(
+    results: list[CaseResult], field_name: str
+) -> dict[str, dict[str, Any]]:
+    values = sorted({str(getattr(row, field_name)) for row in results})
+    summary: dict[str, dict[str, Any]] = {}
+    for value in values:
+        rows = [row for row in results if str(getattr(row, field_name)) == value]
+        answerable = [row for row in rows if not row.expected_abstain]
+        summary[value] = {
+            "case_count": len(rows),
+            "failure_count": sum(1 for row in rows if row.failure_reasons),
+            "citation_coverage": _rate(row.citation_match for row in answerable),
+            "abstention_accuracy": _rate(row.abstention_correct for row in rows),
+            "next_action_accuracy": _rate(row.next_action_match for row in answerable),
+        }
+    return summary
+
+
+def _failure_reason_counts(results: list[CaseResult]) -> dict[str, int]:
+    counts: dict[str, int] = {}
+    for row in results:
+        for reason in row.failure_reasons:
+            counts[reason] = counts.get(reason, 0) + 1
+    return dict(sorted(counts.items()))
+
+
+def _failure_examples(results: list[CaseResult], limit: int = 10) -> list[dict[str, Any]]:
+    examples: list[dict[str, Any]] = []
+    for row in results:
+        if not row.failure_reasons:
+            continue
+        examples.append(
+            {
+                "case_id": row.case_id,
+                "task_type": row.task_type,
+                "noise_type": row.noise_type,
+                "failure_reasons": row.failure_reasons,
+                "expected_citation_ids": row.expected_citation_ids,
+                "predicted_citation_ids": row.predicted_citation_ids,
+                "retrieved_citation_ids": row.retrieved_citation_ids,
+                "expected_issue_category": row.expected_issue_category,
+                "predicted_issue_category": row.predicted_issue_category,
+                "diagnostic": row.diagnostic,
+                "recommended_fix": row.recommended_fix,
+            }
+        )
+    return examples[:limit]
+
+
+def _system_row(label: str, report: dict[str, Any]) -> dict[str, Any]:
+    metrics = report["metrics"]
+    return {
+        "label": label,
+        "system_version": report["system_version"],
+        "retrieval_hit_rate_at_3": metrics["retrieval_hit_rate_at_3"],
+        "citation_coverage": metrics["citation_coverage"],
+        "issue_category_accuracy": metrics["issue_category_accuracy"],
+        "next_action_accuracy": metrics["next_action_accuracy"],
+        "abstention_accuracy": metrics["abstention_accuracy"],
+        "failure_count": sum(report.get("failure_reasons", {}).values()),
+    }
+
+
+def _diagnostic(
+    case: dict[str, Any],
+    answer: BaselineAnswer,
+    expected_citations: list[str],
+    failure_reasons: list[str],
+) -> str:
+    if not failure_reasons:
+        return ""
+    expected_abstain = bool(case.get("should_abstain", False))
+    if "abstention_mismatch" in failure_reasons and expected_abstain:
+        return (
+            "The system answered a case that was labeled as insufficient or conflicting evidence."
+        )
+    if "abstention_mismatch" in failure_reasons:
+        return "The system abstained even though the case had enough synthetic evidence."
+    if expected_citations and expected_citations[0] in [
+        section.section_id for section in answer.retrieved_sections
+    ]:
+        return (
+            "The expected section was retrieved but not selected as the final cited answer, "
+            "which suggests ranking or final-selection weakness."
+        )
+    if answer.team == case.get("expected_team"):
+        return (
+            "The system found the right team but selected the wrong procedure inside that team, "
+            "which suggests the query terms are too ambiguous for the current lexical scorer."
+        )
+    return "The retrieval path missed both the expected procedure and the expected team."
+
+
+def _recommended_fix(
+    case: dict[str, Any],
+    answer: BaselineAnswer,
+    failure_reasons: list[str],
+) -> str:
+    if not failure_reasons:
+        return ""
+    noise_type = str(case.get("noise_type", "unspecified"))
+    if "abstention_mismatch" in failure_reasons:
+        return "Strengthen evidence-consistency checks before answer generation."
+    if noise_type == "paraphrase":
+        return "Add semantic retrieval or synonym expansion for paraphrased procedure descriptions."
+    if noise_type == "missing_metadata":
+        return "Improve ranking so explicit procedure evidence beats generic workflow terms."
+    if answer.team == case.get("expected_team"):
+        return "Add within-team reranking using issue-category evidence and expected action terms."
+    return "Add hybrid retrieval and stronger metadata filters before final answer selection."

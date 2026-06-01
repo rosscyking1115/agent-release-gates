@@ -1,0 +1,358 @@
+{
+  "by_noise_type": {
+    "abbreviated_ticket": {
+      "abstention_accuracy": 1.0,
+      "case_count": 8,
+      "citation_coverage": 0.375,
+      "failure_count": 5,
+      "next_action_accuracy": 0.375
+    },
+    "clean_exact": {
+      "abstention_accuracy": 1.0,
+      "case_count": 96,
+      "citation_coverage": 0.1771,
+      "failure_count": 79,
+      "next_action_accuracy": 0.1771
+    },
+    "conflicting_evidence": {
+      "abstention_accuracy": 0.0,
+      "case_count": 8,
+      "citation_coverage": 0.0,
+      "failure_count": 8,
+      "next_action_accuracy": 0.0
+    },
+    "missing_metadata": {
+      "abstention_accuracy": 1.0,
+      "case_count": 8,
+      "citation_coverage": 0.25,
+      "failure_count": 6,
+      "next_action_accuracy": 0.25
+    },
+    "paraphrase": {
+      "abstention_accuracy": 1.0,
+      "case_count": 48,
+      "citation_coverage": 0.2083,
+      "failure_count": 38,
+      "next_action_accuracy": 0.2083
+    },
+    "weak_evidence": {
+      "abstention_accuracy": 0.0,
+      "case_count": 24,
+      "citation_coverage": 0.0,
+      "failure_count": 24,
+      "next_action_accuracy": 0.0
+    }
+  },
+  "by_task_type": {
+    "conflicting_evidence_abstention": {
+      "abstention_accuracy": 0.0,
+      "case_count": 8,
+      "citation_coverage": 0.0,
+      "failure_count": 8,
+      "next_action_accuracy": 0.0
+    },
+    "ticket_next_action": {
+      "abstention_accuracy": 1.0,
+      "case_count": 96,
+      "citation_coverage": 0.1771,
+      "failure_count": 79,
+      "next_action_accuracy": 0.1771
+    },
+    "ticket_next_action_noisy": {
+      "abstention_accuracy": 1.0,
+      "case_count": 16,
+      "citation_coverage": 0.3125,
+      "failure_count": 11,
+      "next_action_accuracy": 0.3125
+    },
+    "ticket_next_action_paraphrased": {
+      "abstention_accuracy": 1.0,
+      "case_count": 48,
+      "citation_coverage": 0.2083,
+      "failure_count": 38,
+      "next_action_accuracy": 0.2083
+    },
+    "weak_evidence_abstention": {
+      "abstention_accuracy": 0.0,
+      "case_count": 24,
+      "citation_coverage": 0.0,
+      "failure_count": 24,
+      "next_action_accuracy": 0.0
+    }
+  },
+  "case_count": 192,
+  "dataset": "golden_cases",
+  "failure_examples": [
+    {
+      "case_id": "GOLD-TCK-0001",
+      "diagnostic": "The expected section was retrieved but not selected as the final cited answer, which suggests ranking or final-selection weakness.",
+      "expected_citation_ids": [
+        "RB-TRADE_SUPPORT-02"
+      ],
+      "expected_issue_category": "confirmation_pending",
+      "failure_reasons": [
+        "missing_or_wrong_citation",
+        "wrong_issue_category",
+        "wrong_next_action"
+      ],
+      "noise_type": "clean_exact",
+      "predicted_citation_ids": [
+        "RB-TRADE_SUPPORT-01"
+      ],
+      "predicted_issue_category": "allocation_mismatch",
+      "recommended_fix": "Add within-team reranking using issue-category evidence and expected action terms.",
+      "retrieved_citation_ids": [
+        "RB-TRADE_SUPPORT-01",
+        "RB-TRADE_SUPPORT-02",
+        "RB-TRADE_SUPPORT-03"
+      ],
+      "task_type": "ticket_next_action"
+    },
+    {
+      "case_id": "GOLD-TCK-0003",
+      "diagnostic": "The expected section was retrieved but not selected as the final cited answer, which suggests ranking or final-selection weakness.",
+      "expected_citation_ids": [
+        "RB-PAYMENTS_OPS-03"
+      ],
+      "expected_issue_category": "settlement_delay",
+      "failure_reasons": [
+        "missing_or_wrong_citation",
+        "wrong_issue_category",
+        "wrong_next_action"
+      ],
+      "noise_type": "clean_exact",
+      "predicted_citation_ids": [
+        "RB-PAYMENTS_OPS-01"
+      ],
+      "predicted_issue_category": "file_validation_failed",
+      "recommended_fix": "Add within-team reranking using issue-category evidence and expected action terms.",
+      "retrieved_citation_ids": [
+        "RB-PAYMENTS_OPS-01",
+        "RB-PAYMENTS_OPS-02",
+        "RB-PAYMENTS_OPS-03"
+      ],
+      "task_type": "ticket_next_action"
+    },
+    {
+      "case_id": "GOLD-TCK-0004",
+      "diagnostic": "The system found the right team but selected the wrong procedure inside that team, which suggests the query terms are too ambiguous for the current lexical scorer.",
+      "expected_citation_ids": [
+        "RB-PAYMENTS_OPS-05"
+      ],
+      "expected_issue_category": "cutoff_window_missed",
+      "failure_reasons": [
+        "missing_or_wrong_citation",
+        "wrong_issue_category",
+        "wrong_next_action"
+      ],
+      "noise_type": "clean_exact",
+      "predicted_citation_ids": [
+        "RB-PAYMENTS_OPS-01"
+      ],
+      "predicted_issue_category": "file_validation_failed",
+      "recommended_fix": "Add within-team reranking using issue-category evidence and expected action terms.",
+      "retrieved_citation_ids": [
+        "RB-PAYMENTS_OPS-01",
+        "RB-PAYMENTS_OPS-02",
+        "RB-PAYMENTS_OPS-03"
+      ],
+      "task_type": "ticket_next_action"
+    },
+    {
+      "case_id": "GOLD-TCK-0007",
+      "diagnostic": "The system found the right team but selected the wrong procedure inside that team, which suggests the query terms are too ambiguous for the current lexical scorer.",
+      "expected_citation_ids": [
+        "RB-PAYMENTS_OPS-05"
+      ],
+      "expected_issue_category": "cutoff_window_missed",
+      "failure_reasons": [
+        "missing_or_wrong_citation",
+        "wrong_issue_category",
+        "wrong_next_action"
+      ],
+      "noise_type": "clean_exact",
+      "predicted_citation_ids": [
+        "RB-PAYMENTS_OPS-01"
+      ],
+      "predicted_issue_category": "file_validation_failed",
+      "recommended_fix": "Add within-team reranking using issue-category evidence and expected action terms.",
+      "retrieved_citation_ids": [
+        "RB-PAYMENTS_OPS-01",
+        "RB-PAYMENTS_OPS-02",
+        "RB-PAYMENTS_OPS-03"
+      ],
+      "task_type": "ticket_next_action"
+    },
+    {
+      "case_id": "GOLD-TCK-0008",
+      "diagnostic": "The system found the right team but selected the wrong procedure inside that team, which suggests the query terms are too ambiguous for the current lexical scorer.",
+      "expected_citation_ids": [
+        "RB-PAYMENTS_OPS-05"
+      ],
+      "expected_issue_category": "cutoff_window_missed",
+      "failure_reasons": [
+        "missing_or_wrong_citation",
+        "wrong_issue_category",
+        "wrong_next_action"
+      ],
+      "noise_type": "clean_exact",
+      "predicted_citation_ids": [
+        "RB-PAYMENTS_OPS-01"
+      ],
+      "predicted_issue_category": "file_validation_failed",
+      "recommended_fix": "Add within-team reranking using issue-category evidence and expected action terms.",
+      "retrieved_citation_ids": [
+        "RB-PAYMENTS_OPS-01",
+        "RB-PAYMENTS_OPS-02",
+        "RB-PAYMENTS_OPS-03"
+      ],
+      "task_type": "ticket_next_action"
+    },
+    {
+      "case_id": "GOLD-TCK-0009",
+      "diagnostic": "The system found the right team but selected the wrong procedure inside that team, which suggests the query terms are too ambiguous for the current lexical scorer.",
+      "expected_citation_ids": [
+        "RB-CLIENT_ONBOARDING-06"
+      ],
+      "expected_issue_category": "tax_form_expired",
+      "failure_reasons": [
+        "missing_or_wrong_citation",
+        "wrong_issue_category",
+        "wrong_next_action"
+      ],
+      "noise_type": "clean_exact",
+      "predicted_citation_ids": [
+        "RB-CLIENT_ONBOARDING-01"
+      ],
+      "predicted_issue_category": "missing_kyc_document",
+      "recommended_fix": "Add within-team reranking using issue-category evidence and expected action terms.",
+      "retrieved_citation_ids": [
+        "RB-CLIENT_ONBOARDING-01",
+        "RB-CLIENT_ONBOARDING-02",
+        "RB-CLIENT_ONBOARDING-03"
+      ],
+      "task_type": "ticket_next_action"
+    },
+    {
+      "case_id": "GOLD-TCK-0010",
+      "diagnostic": "The system found the right team but selected the wrong procedure inside that team, which suggests the query terms are too ambiguous for the current lexical scorer.",
+      "expected_citation_ids": [
+        "RB-PAYMENTS_OPS-05"
+      ],
+      "expected_issue_category": "cutoff_window_missed",
+      "failure_reasons": [
+        "missing_or_wrong_citation",
+        "wrong_issue_category",
+        "wrong_next_action"
+      ],
+      "noise_type": "clean_exact",
+      "predicted_citation_ids": [
+        "RB-PAYMENTS_OPS-01"
+      ],
+      "predicted_issue_category": "file_validation_failed",
+      "recommended_fix": "Add within-team reranking using issue-category evidence and expected action terms.",
+      "retrieved_citation_ids": [
+        "RB-PAYMENTS_OPS-01",
+        "RB-PAYMENTS_OPS-02",
+        "RB-PAYMENTS_OPS-03"
+      ],
+      "task_type": "ticket_next_action"
+    },
+    {
+      "case_id": "GOLD-TCK-0012",
+      "diagnostic": "The system found the right team but selected the wrong procedure inside that team, which suggests the query terms are too ambiguous for the current lexical scorer.",
+      "expected_citation_ids": [
+        "RB-PAYMENTS_OPS-05"
+      ],
+      "expected_issue_category": "cutoff_window_missed",
+      "failure_reasons": [
+        "missing_or_wrong_citation",
+        "wrong_issue_category",
+        "wrong_next_action"
+      ],
+      "noise_type": "clean_exact",
+      "predicted_citation_ids": [
+        "RB-PAYMENTS_OPS-01"
+      ],
+      "predicted_issue_category": "file_validation_failed",
+      "recommended_fix": "Add within-team reranking using issue-category evidence and expected action terms.",
+      "retrieved_citation_ids": [
+        "RB-PAYMENTS_OPS-01",
+        "RB-PAYMENTS_OPS-02",
+        "RB-PAYMENTS_OPS-03"
+      ],
+      "task_type": "ticket_next_action"
+    },
+    {
+      "case_id": "GOLD-TCK-0013",
+      "diagnostic": "The system found the right team but selected the wrong procedure inside that team, which suggests the query terms are too ambiguous for the current lexical scorer.",
+      "expected_citation_ids": [
+        "RB-TRADE_SUPPORT-04"
+      ],
+      "expected_issue_category": "trade_date_dispute",
+      "failure_reasons": [
+        "missing_or_wrong_citation",
+        "wrong_issue_category",
+        "wrong_next_action"
+      ],
+      "noise_type": "clean_exact",
+      "predicted_citation_ids": [
+        "RB-TRADE_SUPPORT-01"
+      ],
+      "predicted_issue_category": "allocation_mismatch",
+      "recommended_fix": "Add within-team reranking using issue-category evidence and expected action terms.",
+      "retrieved_citation_ids": [
+        "RB-TRADE_SUPPORT-01",
+        "RB-TRADE_SUPPORT-02",
+        "RB-TRADE_SUPPORT-03"
+      ],
+      "task_type": "ticket_next_action"
+    },
+    {
+      "case_id": "GOLD-TCK-0014",
+      "diagnostic": "The system found the right team but selected the wrong procedure inside that team, which suggests the query terms are too ambiguous for the current lexical scorer.",
+      "expected_citation_ids": [
+        "RB-PAYMENTS_OPS-05"
+      ],
+      "expected_issue_category": "cutoff_window_missed",
+      "failure_reasons": [
+        "missing_or_wrong_citation",
+        "wrong_issue_category",
+        "wrong_next_action"
+      ],
+      "noise_type": "clean_exact",
+      "predicted_citation_ids": [
+        "RB-PAYMENTS_OPS-01"
+      ],
+      "predicted_issue_category": "file_validation_failed",
+      "recommended_fix": "Add within-team reranking using issue-category evidence and expected action terms.",
+      "retrieved_citation_ids": [
+        "RB-PAYMENTS_OPS-01",
+        "RB-PAYMENTS_OPS-02",
+        "RB-PAYMENTS_OPS-03"
+      ],
+      "task_type": "ticket_next_action"
+    }
+  ],
+  "failure_reasons": {
+    "abstention_mismatch": 32,
+    "missing_or_wrong_citation": 128,
+    "wrong_issue_category": 128,
+    "wrong_next_action": 128,
+    "wrong_team": 3
+  },
+  "metrics": {
+    "abstention_accuracy": 0.8333,
+    "abstention_rate": 0.0,
+    "citation_coverage": 0.2,
+    "issue_category_accuracy": 0.2,
+    "next_action_accuracy": 0.2,
+    "retrieval_hit_rate_at_3": 0.4625,
+    "team_accuracy": 0.9812
+  },
+  "notes": [
+    "Baseline uses broad system/team keyword hints, not procedure-level retrieval.",
+    "Metrics are deterministic and do not require paid API keys."
+  ],
+  "system_version": "baseline_team_hint_retrieval"
+}

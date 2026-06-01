@@ -1,0 +1,78 @@
+from fastapi import FastAPI
+
+from internal_ai_agent.agent.workflow import run_controlled_agent
+from internal_ai_agent.api.schemas import (
+    AgentRunRequest,
+    AgentRunResponse,
+    AskRequest,
+    AskResponse,
+    ExtractRequest,
+    ExtractResponse,
+    RetrievedSectionResponse,
+)
+from internal_ai_agent.data.synthetic import build_runbooks
+from internal_ai_agent.extraction.service import extract_and_route
+from internal_ai_agent.rag.baseline import (
+    answer_with_baseline,
+    answer_with_hybrid,
+    answer_with_lexical,
+)
+
+app = FastAPI(
+    title="Internal AI Agent Evaluation Lab",
+    description="Synthetic enterprise operations AI agent demo.",
+    version="0.1.0",
+)
+
+
+@app.get("/health")
+def health() -> dict[str, str]:
+    return {"status": "ok"}
+
+
+@app.post("/ask", response_model=AskResponse)
+def ask(request: AskRequest) -> AskResponse:
+    runbooks = [section.__dict__ for section in build_runbooks()]
+    mode = request.mode if request.mode in {"baseline", "hybrid"} else "improved"
+    if mode == "baseline":
+        answer = answer_with_baseline(request.question, runbooks)
+    elif mode == "hybrid":
+        answer = answer_with_hybrid(request.question, runbooks, user_role=request.user_role)
+    else:
+        answer = answer_with_lexical(request.question, runbooks, user_role=request.user_role)
+    return AskResponse(
+        mode=mode,
+        answer=answer.answer,
+        issue_category=answer.issue_category,
+        team=answer.team,
+        next_action=answer.next_action,
+        citations=answer.citations,
+        retrieved_sections=[
+            RetrievedSectionResponse(
+                section_id=section.section_id,
+                title=section.title,
+                team=section.team,
+                score=section.score,
+            )
+            for section in answer.retrieved_sections
+        ],
+        abstained=answer.abstained,
+    )
+
+
+@app.post("/extract", response_model=ExtractResponse)
+def extract(request: ExtractRequest) -> ExtractResponse:
+    result = extract_and_route(request.text)
+    return ExtractResponse(extraction=result.extraction, routing=result.routing)
+
+
+@app.post("/agent/run", response_model=AgentRunResponse)
+def agent_run(request: AgentRunRequest) -> AgentRunResponse:
+    result = run_controlled_agent(
+        request.question,
+        ticket_text=request.ticket_text,
+        user_role=request.user_role,
+        approval_granted=request.approval_granted,
+        trace_id=request.trace_id,
+    )
+    return AgentRunResponse(**result.model_dump())

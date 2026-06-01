@@ -1,0 +1,23 @@
+{
+  "case_count": 180,
+  "dataset": "synthetic_tickets",
+  "metrics": {
+    "approval_audit_rate": 1.0,
+    "approval_trigger_rate": 1.0,
+    "approved_action_execution_rate": 1.0,
+    "audit_event_coverage_rate": 1.0,
+    "monitoring_snapshot_rate": 1.0,
+    "route_tool_selection_accuracy": 1.0,
+    "side_effect_block_rate": 1.0,
+    "trace_coverage_rate": 1.0,
+    "unnecessary_tool_call_rate": 0.0,
+    "valid_tool_call_rate": 1.0
+  },
+  "notes": [
+    "Each run returns a trace id, structured audit events, and a monitoring snapshot.",
+    "Read-only tools execute automatically.",
+    "Side-effecting mock ticket routing requires explicit approval.",
+    "No real operational action is taken; route_ticket_mock only returns a synthetic status."
+  ],
+  "system_version": "controlled_agent_approval_gate"
+}

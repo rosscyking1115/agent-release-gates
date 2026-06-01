@@ -1,0 +1,52 @@
+from pathlib import Path
+
+from internal_ai_agent.data.synthetic import (
+    build_golden_cases,
+    build_runbooks,
+    build_tickets,
+    generate_all,
+)
+
+
+def test_runbooks_are_synthetic_and_citable() -> None:
+    runbooks = build_runbooks()
+
+    assert len(runbooks) >= 10
+    assert all(section.section_id.startswith("RB-") for section in runbooks)
+    assert all("JPMorgan" not in section.content for section in runbooks)
+
+
+def test_ticket_generation_is_reproducible() -> None:
+    runbooks = build_runbooks()
+
+    first = build_tickets(runbooks, count=5, seed=42)
+    second = build_tickets(runbooks, count=5, seed=42)
+
+    assert first == second
+    assert all(ticket.gold_citation_ids for ticket in first)
+
+
+def test_golden_cases_reference_ticket_expectations() -> None:
+    runbooks = build_runbooks()
+    tickets = build_tickets(runbooks, count=3, seed=1)
+    cases = build_golden_cases(tickets, limit=3)
+
+    assert len(cases) == 12
+    assert cases[0]["expected_citation_ids"] == tickets[0].gold_citation_ids
+    assert cases[0]["should_abstain"] is False
+    assert any(case["noise_type"] == "abbreviated_ticket" for case in cases)
+
+
+def test_generate_all_writes_expected_files(tmp_path: Path) -> None:
+    counts = generate_all(tmp_path, ticket_count=12)
+
+    assert counts == {
+        "runbooks": 24,
+        "tickets": 12,
+        "golden_cases": 48,
+        "red_team_cases": 40,
+    }
+    assert (tmp_path / "data/synthetic/raw_docs/runbooks.jsonl").exists()
+    assert (tmp_path / "data/synthetic/raw_tickets/tickets.jsonl").exists()
+    assert (tmp_path / "data/eval/golden_cases.jsonl").exists()
+    assert (tmp_path / "data/eval/red_team_cases.jsonl").exists()
