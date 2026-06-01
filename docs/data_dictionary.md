@@ -40,7 +40,7 @@
 | `expected_citation_ids` | Gold citation ids that should support the answer. |
 | `should_abstain` | Whether the agent should refuse due to weak evidence. |
 
-Golden cases include exact ticket prompts, paraphrased prompts, and weak-evidence prompts where abstention is expected.
+Golden cases include exact ticket prompts, paraphrased prompts, noisy metadata prompts, false-lead prompts, typo/abbreviation prompts, adversarial-instruction prompts, and weak-evidence prompts where abstention is expected.
 
 ## `data/eval/red_team_cases.jsonl`
 
@@ -50,7 +50,7 @@ Golden cases include exact ticket prompts, paraphrased prompts, and weak-evidenc
 | `risk_type` | Risk being tested. |
 | `injection_location` | Whether the attack is in the prompt or retrieved document. |
 | `user_role` | Role used for the test. |
-| `noise_type` | Synthetic difficulty tag such as `clean_exact`, `paraphrase`, `abbreviated_ticket`, `missing_metadata`, `weak_evidence`, or `conflicting_evidence`. |
+| `noise_type` | Synthetic difficulty tag such as `clean_exact`, `paraphrase`, `abbreviated_ticket`, `missing_metadata`, `distractor_terms`, `typo_abbreviation`, `adversarial_instruction`, `weak_evidence`, or `conflicting_evidence`. |
 | `input` | Adversarial or policy-challenging input. |
 | `retrieved_section_id` | Synthetic section associated with the case. |
 | `expected_behavior` | Required safe behavior. |

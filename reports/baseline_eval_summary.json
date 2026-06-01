@@ -7,6 +7,13 @@
       "failure_count": 5,
       "next_action_accuracy": 0.375
     },
+    "adversarial_instruction": {
+      "abstention_accuracy": 0.125,
+      "case_count": 8,
+      "citation_coverage": 0.0,
+      "failure_count": 7,
+      "next_action_accuracy": 0.0
+    },
     "clean_exact": {
       "abstention_accuracy": 1.0,
       "case_count": 96,
@@ -20,6 +27,13 @@
       "citation_coverage": 0.0,
       "failure_count": 8,
       "next_action_accuracy": 0.0
+    },
+    "distractor_terms": {
+      "abstention_accuracy": 1.0,
+      "case_count": 8,
+      "citation_coverage": 0.125,
+      "failure_count": 7,
+      "next_action_accuracy": 0.125
     },
     "missing_metadata": {
       "abstention_accuracy": 1.0,
@@ -35,6 +49,13 @@
       "failure_count": 38,
       "next_action_accuracy": 0.2083
     },
+    "typo_abbreviation": {
+      "abstention_accuracy": 1.0,
+      "case_count": 8,
+      "citation_coverage": 0.25,
+      "failure_count": 6,
+      "next_action_accuracy": 0.25
+    },
     "weak_evidence": {
       "abstention_accuracy": 0.0,
       "case_count": 24,
@@ -44,6 +65,13 @@
     }
   },
   "by_task_type": {
+    "adversarial_instruction_abstention": {
+      "abstention_accuracy": 0.125,
+      "case_count": 8,
+      "citation_coverage": 0.0,
+      "failure_count": 7,
+      "next_action_accuracy": 0.0
+    },
     "conflicting_evidence_abstention": {
       "abstention_accuracy": 0.0,
       "case_count": 8,
@@ -57,6 +85,13 @@
       "citation_coverage": 0.1771,
       "failure_count": 79,
       "next_action_accuracy": 0.1771
+    },
+    "ticket_next_action_hard": {
+      "abstention_accuracy": 1.0,
+      "case_count": 16,
+      "citation_coverage": 0.1875,
+      "failure_count": 13,
+      "next_action_accuracy": 0.1875
     },
     "ticket_next_action_noisy": {
       "abstention_accuracy": 1.0,
@@ -80,7 +115,7 @@
       "next_action_accuracy": 0.0
     }
   },
-  "case_count": 192,
+  "case_count": 216,
   "dataset": "golden_cases",
   "failure_examples": [
     {
@@ -335,20 +370,20 @@
     }
   ],
   "failure_reasons": {
-    "abstention_mismatch": 32,
-    "missing_or_wrong_citation": 128,
-    "wrong_issue_category": 128,
-    "wrong_next_action": 128,
+    "abstention_mismatch": 39,
+    "missing_or_wrong_citation": 141,
+    "wrong_issue_category": 141,
+    "wrong_next_action": 141,
     "wrong_team": 3
   },
   "metrics": {
-    "abstention_accuracy": 0.8333,
-    "abstention_rate": 0.0,
-    "citation_coverage": 0.2,
-    "issue_category_accuracy": 0.2,
-    "next_action_accuracy": 0.2,
-    "retrieval_hit_rate_at_3": 0.4625,
-    "team_accuracy": 0.9812
+    "abstention_accuracy": 0.8194,
+    "abstention_rate": 0.0046,
+    "citation_coverage": 0.1989,
+    "issue_category_accuracy": 0.1989,
+    "next_action_accuracy": 0.1989,
+    "retrieval_hit_rate_at_3": 0.4545,
+    "team_accuracy": 0.983
   },
   "notes": [
     "Baseline uses broad system/team keyword hints, not procedure-level retrieval.",

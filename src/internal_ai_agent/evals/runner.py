@@ -393,6 +393,8 @@ def _recommended_fix(
     noise_type = str(case.get("noise_type", "unspecified"))
     if "abstention_mismatch" in failure_reasons:
         return "Strengthen evidence-consistency checks before answer generation."
+    if noise_type == "distractor_terms":
+        return "Add false-lead and negation handling before final citation selection."
     if noise_type == "paraphrase":
         return "Add semantic retrieval or synonym expansion for paraphrased procedure descriptions."
     if noise_type == "missing_metadata":

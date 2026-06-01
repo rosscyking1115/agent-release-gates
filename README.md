@@ -65,7 +65,7 @@ Current generated seed dataset:
 | --- | ---: |
 | Runbook sections | 24 |
 | Operations tickets | 180 |
-| Golden eval cases | 192 |
+| Golden eval cases | 216 |
 | Red-team cases | 40 |
 
 The baseline evaluation writes:
@@ -91,13 +91,13 @@ Current deterministic evaluation:
 
 | Metric | Baseline | Improved lexical | Hybrid sparse semantic |
 | --- | ---: | ---: | ---: |
-| Retrieval hit rate@3 | 46.25% | 98.75% | 100.00% |
-| Citation coverage | 20.00% | 98.12% | 100.00% |
-| Issue category accuracy | 20.00% | 98.12% | 100.00% |
-| Next action accuracy | 20.00% | 98.12% | 100.00% |
-| Abstention accuracy | 83.33% | 100.00% | 100.00% |
+| Retrieval hit rate@3 | 45.45% | 98.30% | 100.00% |
+| Citation coverage | 19.89% | 97.73% | 99.43% |
+| Issue category accuracy | 19.89% | 97.73% | 99.43% |
+| Next action accuracy | 19.89% | 97.73% | 99.43% |
+| Abstention accuracy | 81.94% | 100.00% | 100.00% |
 
-These are first-pass synthetic metrics across exact, paraphrased, noisy, weak-evidence, and conflicting-evidence cases. Later phases should add a true vector index, more adversarial retrieval cases, and red-team scoring.
+These are first-pass synthetic metrics across exact, paraphrased, noisy, distractor, typo, weak-evidence, conflicting-evidence, and adversarial-instruction cases. Later phases should add a true vector index, more adversarial retrieval cases, and red-team scoring.
 
 The hybrid retriever is intentionally local and deterministic: it combines lexical scoring with sparse semantic alias features. It is useful for measuring the value of synonym-aware retrieval before introducing a vector database or paid embedding model.
 

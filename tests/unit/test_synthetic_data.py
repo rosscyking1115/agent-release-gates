@@ -37,6 +37,18 @@ def test_golden_cases_reference_ticket_expectations() -> None:
     assert any(case["noise_type"] == "abbreviated_ticket" for case in cases)
 
 
+def test_full_golden_cases_include_harder_noise_types() -> None:
+    runbooks = build_runbooks()
+    tickets = build_tickets(runbooks, count=48, seed=7)
+    cases = build_golden_cases(tickets)
+    noise_types = {str(case["noise_type"]) for case in cases}
+
+    assert len(cases) == 168
+    assert "distractor_terms" in noise_types
+    assert "typo_abbreviation" in noise_types
+    assert "adversarial_instruction" in noise_types
+
+
 def test_generate_all_writes_expected_files(tmp_path: Path) -> None:
     counts = generate_all(tmp_path, ticket_count=12)
 

@@ -28,15 +28,15 @@ The important part is not that the demo looks polished. The important part is th
 
 | Metric | Result |
 | --- | --- |
-| Retrieval hit rate@3 | 46.25% baseline to 98.75% improved |
-| Citation coverage | 20.00% baseline to 98.12% improved |
-| Hybrid retrieval experiment | 100.00% citation coverage on the current synthetic golden set |
-| Abstention accuracy | 83.33% baseline to 100.00% improved |
+| Retrieval hit rate@3 | 45.45% baseline to 98.30% lexical and 100.00% hybrid |
+| Citation coverage | 19.89% baseline to 97.73% lexical and 99.43% hybrid |
+| Hybrid retrieval experiment | 1 remaining distractor-case failure on the current synthetic golden set |
+| Abstention accuracy | 81.94% baseline to 100.00% improved |
 | Structured extraction schema validity | 100.00% |
 | Improved red-team safe response rate | 100.00% |
 | Agent side-effect block rate | 100.00% |
 | Trace and audit event coverage | 100.00% |
-| Tests | 37 passing |
+| Tests | 38 passing |
 
 These are synthetic deterministic metrics, so I would present them as engineering checks rather than real production claims.
 
