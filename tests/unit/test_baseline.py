@@ -107,6 +107,27 @@ def test_hybrid_retrieval_prefers_specific_phrase_over_generic_status_terms() ->
     assert answer.citations == ["RB-TRADE_SUPPORT-04"]
 
 
+def test_hybrid_retrieval_prefers_current_evidence_over_stale_thread() -> None:
+    from internal_ai_agent.data.synthetic import build_runbooks
+
+    runbooks = [section.__dict__ for section in build_runbooks()]
+    answer = answer_with_hybrid(
+        (
+            "Forwarded analyst thread: first message says someone wondered whether this "
+            "was confirmation pending, but the latest control note says that was only a "
+            "stale comment from yesterday. Current evidence bundle has workflow status, "
+            "timestamp markers, and this summary: Several records look duplicated and "
+            "need stewardship review. The platform named in the current ticket is Atlas "
+            "Data Controls; severity is low. Please give the cited runbook section and "
+            "next action using the current evidence, not the stale thread."
+        ),
+        runbooks,
+    )
+
+    assert answer.issue_category == "duplicate_record_cluster"
+    assert answer.citations == ["RB-DATA_QUALITY-04"]
+
+
 def test_vector_retrieval_handles_typo_tolerant_paraphrase() -> None:
     from internal_ai_agent.data.synthetic import build_runbooks
 

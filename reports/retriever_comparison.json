@@ -17,31 +17,31 @@
     },
     {
       "abstention_accuracy": 1.0,
-      "citation_coverage": 0.965,
-      "failure_count": 7,
-      "issue_category_accuracy": 0.965,
+      "citation_coverage": 0.985,
+      "failure_count": 3,
+      "issue_category_accuracy": 0.985,
       "label": "Improved lexical",
-      "next_action_accuracy": 0.965,
-      "retrieval_hit_rate_at_3": 0.98,
+      "next_action_accuracy": 0.985,
+      "retrieval_hit_rate_at_3": 0.99,
       "system_version": "improved_lexical_retrieval"
+    },
+    {
+      "abstention_accuracy": 1.0,
+      "citation_coverage": 1.0,
+      "failure_count": 0,
+      "issue_category_accuracy": 1.0,
+      "label": "Hybrid sparse semantic",
+      "next_action_accuracy": 1.0,
+      "retrieval_hit_rate_at_3": 1.0,
+      "system_version": "hybrid_sparse_semantic_retrieval"
     },
     {
       "abstention_accuracy": 1.0,
       "citation_coverage": 0.995,
       "failure_count": 1,
       "issue_category_accuracy": 0.995,
-      "label": "Hybrid sparse semantic",
-      "next_action_accuracy": 0.995,
-      "retrieval_hit_rate_at_3": 1.0,
-      "system_version": "hybrid_sparse_semantic_retrieval"
-    },
-    {
-      "abstention_accuracy": 1.0,
-      "citation_coverage": 0.98,
-      "failure_count": 4,
-      "issue_category_accuracy": 0.98,
       "label": "Local TF-IDF vector",
-      "next_action_accuracy": 0.98,
+      "next_action_accuracy": 0.995,
       "retrieval_hit_rate_at_3": 1.0,
       "system_version": "local_tfidf_vector_retrieval"
     },

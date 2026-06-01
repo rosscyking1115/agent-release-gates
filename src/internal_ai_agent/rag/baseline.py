@@ -159,9 +159,12 @@ def retrieve_lexical(
         if user_role not in allowed_roles:
             continue
 
-        title_tokens = _tokenize(str(section["title"]))
+        title = str(section["title"])
+        category = title.lower().replace(" ", "_")
+        title_tokens = _tokenize(title)
         content_tokens = _tokenize(str(section["content"]))
         score = (len(query_tokens & title_tokens) * 5) + len(query_tokens & content_tokens)
+        score += _current_evidence_score(question, category, str(section["team"]))
         if score == 0:
             continue
 
@@ -260,8 +263,16 @@ def retrieve_hybrid(
         alias_score = _alias_overlap(query_tokens, category) * 4
         phrase_score = _title_phrase_score(question, category)
         team_score = _team_hint_score(question, str(section["team"])) * 0.5
+        current_evidence_score = _current_evidence_score(question, category, str(section["team"]))
         negation_penalty = _negated_category_penalty(question, category)
-        score = lexical_score + semantic_score + alias_score + phrase_score + team_score
+        score = (
+            lexical_score
+            + semantic_score
+            + alias_score
+            + phrase_score
+            + team_score
+            + current_evidence_score
+        )
         score -= negation_penalty
 
         if score <= 0:
@@ -366,6 +377,7 @@ def retrieve_vector(
         keyword_score = _alias_overlap(_tokenize(question), category) * 3
         keyword_score += _title_phrase_score(question, category) * 0.5
         keyword_score += _team_hint_score(question, str(section["team"])) * 0.25
+        keyword_score += _current_evidence_score(question, category, str(section["team"])) * 0.75
         score = vector_score + keyword_score - _negated_category_penalty(question, category)
 
         if score <= 0:
@@ -464,6 +476,7 @@ def retrieve_embedding_store(
         ranking_score = _alias_overlap(query_tokens, category) * 5
         ranking_score += _title_phrase_score(question, category) * 0.75
         ranking_score += _team_hint_score(question, str(section["team"])) * 0.25
+        ranking_score += _current_evidence_score(question, category, str(section["team"])) * 0.75
         score = embedding_score + ranking_score - _negated_category_penalty(question, category)
 
         if score <= 0:
@@ -758,6 +771,83 @@ def _title_phrase_score(question: str, category: str) -> float:
 def _team_hint_score(question: str, team: str) -> int:
     normalized = question.lower()
     return sum(1 for hint in SYSTEM_HINTS.get(team, []) if hint in normalized)
+
+
+CURRENT_EVIDENCE_MARKERS = (
+    "current evidence bundle",
+    "current evidence",
+    "current ticket",
+    "actual evidence",
+    "latest control note",
+)
+
+
+def _current_evidence_score(question: str, category: str, team: str) -> float:
+    focused_text = _current_evidence_text(question)
+    if not focused_text:
+        return 0.0
+
+    focused_tokens = _tokenize(focused_text)
+    category_tokens = set(_token_sequence(category.replace("_", " ")))
+    alias_score = _alias_overlap(focused_tokens, category) * 7.0
+    title_score = len(focused_tokens & category_tokens) * 3.0
+    phrase_score = _title_phrase_score(focused_text, category) * 0.75
+    team_score = _team_hint_score(focused_text, team) * 1.5
+    return (
+        alias_score
+        + title_score
+        + phrase_score
+        + team_score
+        + _evidence_summary_score(focused_text, category)
+    )
+
+
+def _current_evidence_text(question: str) -> str:
+    normalized = question.lower()
+    start = -1
+    for marker in CURRENT_EVIDENCE_MARKERS:
+        start = normalized.find(marker)
+        if start >= 0:
+            break
+    if start < 0:
+        return ""
+
+    focused = question[start:]
+    lower_focused = focused.lower()
+    for end_marker in ("please give", "please cite", "what should", "which procedure"):
+        end = lower_focused.find(end_marker)
+        if end > 0:
+            return focused[:end]
+    return focused
+
+
+def _evidence_summary_score(focused_text: str, category: str) -> float:
+    summary = _evidence_summary_text(focused_text)
+    if not summary:
+        return 0.0
+
+    summary_tokens = _tokenize(summary)
+    category_tokens = set(_token_sequence(category.replace("_", " ")))
+    alias_score = _alias_overlap(summary_tokens, category) * 12.0
+    title_score = len(summary_tokens & category_tokens) * 5.0
+    phrase_score = _title_phrase_score(summary, category) * 1.5
+    return alias_score + title_score + phrase_score
+
+
+def _evidence_summary_text(focused_text: str) -> str:
+    lower_focused = focused_text.lower()
+    marker = "this summary:"
+    start = lower_focused.find(marker)
+    if start < 0:
+        return ""
+
+    summary = focused_text[start + len(marker) :]
+    lower_summary = summary.lower()
+    for end_marker in ("the platform named", "severity is", "please give"):
+        end = lower_summary.find(end_marker)
+        if end > 0:
+            return summary[:end]
+    return summary
 
 
 def _negated_category_penalty(question: str, category: str) -> float:

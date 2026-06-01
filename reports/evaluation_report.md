@@ -15,9 +15,9 @@ This report summarizes a fully synthetic evaluation lab for internal AI agent wo
 | System | Hit rate@3 | Citation coverage | Next action accuracy | Abstention accuracy | Failures |
 | --- | ---: | ---: | ---: | ---: | ---: |
 | Baseline team hints | 45.50% | 20.50% | 20.50% | 78.52% | 214 |
-| Improved lexical | 98.00% | 96.50% | 96.50% | 100.00% | 7 |
-| Hybrid sparse semantic | 100.00% | 99.50% | 99.50% | 100.00% | 1 |
-| Local TF-IDF vector | 100.00% | 98.00% | 98.00% | 100.00% | 4 |
+| Improved lexical | 99.00% | 98.50% | 98.50% | 100.00% | 3 |
+| Hybrid sparse semantic | 100.00% | 100.00% | 100.00% | 100.00% | 0 |
+| Local TF-IDF vector | 100.00% | 99.50% | 99.50% | 100.00% | 1 |
 | Local embedding store | 100.00% | 96.50% | 96.50% | 100.00% | 7 |
 
 The retrieval experiment compares a deliberately weak baseline, a lexical retriever, a local hybrid sparse semantic retriever, a TF-IDF vector retriever, and a local embedding-store retriever. The embedding row uses stable feature-hashed vectors; it is not a paid provider model.
@@ -27,19 +27,19 @@ The retrieval experiment compares a deliberately weak baseline, a lexical retrie
 | Snapshot | System | Citation coverage | Failed cases | Citation delta | Failure delta | Regression | Reason |
 | --- | --- | ---: | ---: | ---: | ---: | --- | --- |
 | 001_baseline_team_hints | Baseline team hints | 20.50% | 214 |  |  | False |  |
-| 002_improved_lexical | Improved lexical | 96.50% | 7 | +76.00% | -207 | False |  |
-| 003_hybrid_sparse_semantic | Hybrid sparse semantic | 99.50% | 1 | +3.00% | -6 | False |  |
-| 004_local_tf_idf_vector | Local TF-IDF vector | 98.00% | 4 | -1.50% | +3 | True | citation_coverage_decreased, failed_case_count_increased |
-| 005_local_embedding_store | Local embedding store | 96.50% | 7 | -1.50% | +3 | True | citation_coverage_decreased, failed_case_count_increased |
+| 002_improved_lexical | Improved lexical | 98.50% | 3 | +78.00% | -211 | False |  |
+| 003_hybrid_sparse_semantic | Hybrid sparse semantic | 100.00% | 0 | +1.50% | -3 | False |  |
+| 004_local_tf_idf_vector | Local TF-IDF vector | 99.50% | 1 | -0.50% | +1 | True | citation_coverage_decreased, failed_case_count_increased |
+| 005_local_embedding_store | Local embedding store | 96.50% | 7 | -3.00% | +6 | True | citation_coverage_decreased, failed_case_count_increased |
 
 ## Retriever Failure Analysis
 
 | System | Failed cases | Retrieved but not cited | Abstention mismatches | Top failure reason |
 | --- | ---: | ---: | ---: | --- |
 | Baseline team hints | 214 | 50 | 55 | missing_or_wrong_citation (159) |
-| Improved lexical | 7 | 3 | 0 | missing_or_wrong_citation (7) |
-| Hybrid sparse semantic | 1 | 1 | 0 | missing_or_wrong_citation (1) |
-| Local TF-IDF vector | 4 | 4 | 0 | missing_or_wrong_citation (4) |
+| Improved lexical | 3 | 1 | 0 | missing_or_wrong_citation (3) |
+| Hybrid sparse semantic | 0 | 0 | 0 |  |
+| Local TF-IDF vector | 1 | 1 | 0 | missing_or_wrong_citation (1) |
 | Local embedding store | 7 | 7 | 0 | missing_or_wrong_citation (7) |
 
 | System | Case | Noise | Failure | Expected citation | Predicted citation | Retrieved but not cited | Recommended fix |
@@ -50,10 +50,7 @@ The retrieval experiment compares a deliberately weak baseline, a lexical retrie
 | Improved lexical | PARA-TCK-0028 | paraphrase | missing_or_wrong_citation, wrong_issue_category, wrong_next_action | RB-DATA_QUALITY-04 | RB-DATA_QUALITY-01 | False | Add semantic retrieval or synonym expansion for paraphrased procedure descriptions. |
 | Improved lexical | PARA-TCK-0044 | paraphrase | missing_or_wrong_citation, wrong_issue_category, wrong_next_action | RB-DATA_QUALITY-04 | RB-DATA_QUALITY-01 | False | Add semantic retrieval or synonym expansion for paraphrased procedure descriptions. |
 | Improved lexical | NOISY-MISSING-007 | missing_metadata | missing_or_wrong_citation, wrong_issue_category, wrong_next_action | RB-CLIENT_ONBOARDING-01 | RB-CLIENT_ONBOARDING-03 | True | Improve ranking so explicit procedure evidence beats generic workflow terms. |
-| Hybrid sparse semantic | HUMAN-EMAIL-THREAD-004 | human_email_thread | missing_or_wrong_citation, wrong_issue_category, wrong_team, wrong_next_action | RB-DATA_QUALITY-04 | RB-TRADE_SUPPORT-02 | True | Add hybrid retrieval and stronger metadata filters before final answer selection. |
 | Local TF-IDF vector | NOISY-MISSING-007 | missing_metadata | missing_or_wrong_citation, wrong_issue_category, wrong_next_action | RB-CLIENT_ONBOARDING-01 | RB-CLIENT_ONBOARDING-03 | True | Improve ranking so explicit procedure evidence beats generic workflow terms. |
-| Local TF-IDF vector | HUMAN-EMAIL-THREAD-002 | human_email_thread | missing_or_wrong_citation, wrong_issue_category, wrong_team, wrong_next_action | RB-PAYMENTS_OPS-05 | RB-TRADE_SUPPORT-02 | True | Add hybrid retrieval and stronger metadata filters before final answer selection. |
-| Local TF-IDF vector | HUMAN-EMAIL-THREAD-004 | human_email_thread | missing_or_wrong_citation, wrong_issue_category, wrong_team, wrong_next_action | RB-DATA_QUALITY-04 | RB-TRADE_SUPPORT-02 | True | Add hybrid retrieval and stronger metadata filters before final answer selection. |
 | Local embedding store | GOLD-TCK-0001 | clean_exact | missing_or_wrong_citation, wrong_issue_category, wrong_next_action | RB-TRADE_SUPPORT-02 | RB-TRADE_SUPPORT-06 | True | Add within-team reranking using issue-category evidence and expected action terms. |
 | Local embedding store | GOLD-TCK-0041 | clean_exact | missing_or_wrong_citation, wrong_issue_category, wrong_next_action | RB-TRADE_SUPPORT-02 | RB-TRADE_SUPPORT-06 | True | Add within-team reranking using issue-category evidence and expected action terms. |
 | Local embedding store | GOLD-TCK-0045 | clean_exact | missing_or_wrong_citation, wrong_issue_category, wrong_next_action | RB-TRADE_SUPPORT-02 | RB-TRADE_SUPPORT-06 | True | Add within-team reranking using issue-category evidence and expected action terms. |
@@ -62,10 +59,10 @@ The retrieval experiment compares a deliberately weak baseline, a lexical retrie
 
 | Metric | Baseline | Improved lexical | Delta |
 | --- | ---: | ---: | ---: |
-| Retrieval hit rate@3 | 45.50% | 98.00% | +52.50% |
-| Citation coverage | 20.50% | 96.50% | +76.00% |
-| Issue category accuracy | 20.50% | 96.50% | +76.00% |
-| Next action accuracy | 20.50% | 96.50% | +76.00% |
+| Retrieval hit rate@3 | 45.50% | 99.00% | +53.50% |
+| Citation coverage | 20.50% | 98.50% | +78.00% |
+| Issue category accuracy | 20.50% | 98.50% | +78.00% |
+| Next action accuracy | 20.50% | 98.50% | +78.00% |
 | Abstention accuracy | 78.52% | 100.00% | +21.48% |
 
 ## Structured Extraction

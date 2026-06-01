@@ -47,10 +47,10 @@ The project does not use real company documents, customer data, employee data, p
 
 | Metric | Baseline | Improved lexical | Hybrid sparse semantic | Local TF-IDF vector | Local embedding store |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| Retrieval hit rate@3 | 45.50% | 98.00% | 100.00% | 100.00% | 100.00% |
-| Citation coverage | 20.50% | 96.50% | 99.50% | 98.00% | 96.50% |
-| Issue category accuracy | 20.50% | 96.50% | 99.50% | 98.00% | 96.50% |
-| Next action accuracy | 20.50% | 96.50% | 99.50% | 98.00% | 96.50% |
+| Retrieval hit rate@3 | 45.50% | 99.00% | 100.00% | 100.00% | 100.00% |
+| Citation coverage | 20.50% | 98.50% | 100.00% | 99.50% | 96.50% |
+| Issue category accuracy | 20.50% | 98.50% | 100.00% | 99.50% | 96.50% |
+| Next action accuracy | 20.50% | 98.50% | 100.00% | 99.50% | 96.50% |
 | Abstention accuracy | 78.52% | 100.00% | 100.00% | 100.00% | 100.00% |
 
 Structured extraction over templated synthetic tickets currently reports 100.00% schema validity, issue-category accuracy, severity accuracy, impacted-system accuracy, and routing-team accuracy.
@@ -88,7 +88,7 @@ Side-effecting operations are mock-only and require explicit approval.
 
 - Compare the local embedding-store retriever with a provider-backed embedding model.
 - Add timestamped historical evaluation snapshots after the deterministic snapshot contract remains stable.
-- Add more non-templated tickets and retrieved-context attacks based on the new human-thread and long-conflict failure modes.
+- Add more non-templated tickets and retrieved-context attacks after the current-evidence reranker fixed the first human-thread failure mode.
 - Add OpenTelemetry spans for retrieval, extraction, tool calls, approval decisions, and errors.
 - Replace deterministic extraction with an optional LLM extraction provider plus schema repair.
 - Add a LangGraph state machine once the local workflow contract is stable.
