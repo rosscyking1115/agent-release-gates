@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from fastapi import FastAPI
-from fastapi.responses import PlainTextResponse
+from fastapi.responses import HTMLResponse, PlainTextResponse
 
 from internal_ai_agent.agent.workflow import run_controlled_agent
 from internal_ai_agent.api.schemas import (
@@ -38,6 +38,11 @@ def health() -> dict[str, str]:
 @app.get("/reports/evaluation", response_class=PlainTextResponse)
 def evaluation_report() -> str:
     return (PROJECT_ROOT / "reports/evaluation_report.md").read_text(encoding="utf-8")
+
+
+@app.get("/reports/evaluation.html", response_class=HTMLResponse)
+def evaluation_report_html() -> str:
+    return (PROJECT_ROOT / "reports/evaluation_report.html").read_text(encoding="utf-8")
 
 
 @app.post("/ask", response_model=AskResponse)

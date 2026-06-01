@@ -19,6 +19,7 @@ from internal_ai_agent.dashboard.data import (
     load_comparison,
     load_extraction_summary,
     load_public_report,
+    load_public_report_html,
     load_retriever_comparison,
     load_security_summary,
     metric_rows,
@@ -43,6 +44,7 @@ def main() -> None:
     security_summary = load_security_summary(PROJECT_ROOT)
     agent_summary = load_agent_summary(PROJECT_ROOT)
     public_report = load_public_report(PROJECT_ROOT)
+    public_report_html = load_public_report_html(PROJECT_ROOT)
     rows = metric_rows(comparison)
     extraction_rows = extraction_metric_rows(extraction_summary)
     security_rows = security_metric_rows(security_summary)
@@ -57,7 +59,7 @@ def main() -> None:
     _render_extraction_metrics(extraction_summary, extraction_rows)
     _render_security_metrics(security_summary, security_rows)
     _render_agent_metrics(agent_summary, agent_rows)
-    _render_public_report(public_report)
+    _render_public_report(public_report, public_report_html)
     _render_case_analysis(baseline_cases, improved_cases)
 
 
@@ -245,13 +247,20 @@ def _render_agent_metrics(
     st.dataframe(table_df, hide_index=True, use_container_width=True)
 
 
-def _render_public_report(report_markdown: str) -> None:
+def _render_public_report(report_markdown: str, report_html: str) -> None:
     st.subheader("Evaluation Report")
-    st.download_button(
-        "Download Markdown report",
+    col_markdown, col_html = st.columns(2)
+    col_markdown.download_button(
+        "Download Markdown",
         data=report_markdown,
         file_name="internal_ai_agent_evaluation_report.md",
         mime="text/markdown",
+    )
+    col_html.download_button(
+        "Download HTML",
+        data=report_html,
+        file_name="internal_ai_agent_evaluation_report.html",
+        mime="text/html",
     )
     st.markdown(report_markdown)
 

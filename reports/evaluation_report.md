@@ -82,6 +82,6 @@ The controlled workflow separates read-only tools from side-effecting actions. T
 
 - Add noisier, human-written ticket variants.
 - Introduce a real embedding/vector retrieval experiment.
-- Add downloadable PDF or HTML report export.
+- Add downloadable PDF report export.
 - Add OpenTelemetry-compatible trace export.
 - Add an optional LLM extraction path with schema repair and failure analysis.

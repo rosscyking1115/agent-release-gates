@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from html import escape
 from pathlib import Path
 from typing import Any
 
@@ -93,10 +94,14 @@ def generate_public_report(project_root: Path) -> str:
             "## What This Proves",
             "",
             "- The project can generate synthetic enterprise operations data safely.",
-            "- Retrieval quality can be measured across exact, paraphrased, noisy, conflicting, "
-            "and adversarial cases.",
-            "- Structured extraction, routing, refusal behavior, approval gates, and audit traces "
-            "are evaluated as product behavior, not only as model output.",
+            (
+                "- Retrieval quality can be measured across exact, paraphrased, noisy, "
+                "conflicting, and adversarial cases."
+            ),
+            (
+                "- Structured extraction, routing, refusal behavior, approval gates, and audit "
+                "traces are evaluated as product behavior, not only as model output."
+            ),
             "- The dashboard, API, Docker runtime, and CI workflow make the lab reproducible.",
             "",
             "## Current Limitations",
@@ -104,14 +109,16 @@ def generate_public_report(project_root: Path) -> str:
             "- The dataset is synthetic and templated.",
             "- Extraction is deterministic rather than LLM-backed.",
             "- The hybrid retriever is local and sparse; it is not yet a vector database.",
-            "- Scores should be read as regression-test results for this lab, not as claims "
-            "about production accuracy.",
+            (
+                "- Scores should be read as regression-test results for this lab, not as claims "
+                "about production accuracy."
+            ),
             "",
             "## Recommended Next Work",
             "",
             "- Add noisier, human-written ticket variants.",
             "- Introduce a real embedding/vector retrieval experiment.",
-            "- Add downloadable PDF or HTML report export.",
+            "- Add downloadable PDF report export.",
             "- Add OpenTelemetry-compatible trace export.",
             "- Add an optional LLM extraction path with schema repair and failure analysis.",
             "",
@@ -120,9 +127,16 @@ def generate_public_report(project_root: Path) -> str:
     return markdown
 
 
+def generate_public_report_html(project_root: Path) -> str:
+    return _markdown_to_html_document(generate_public_report(project_root))
+
+
 def write_public_report(project_root: Path) -> Path:
     output_path = project_root / "reports/evaluation_report.md"
-    output_path.write_text(generate_public_report(project_root), encoding="utf-8")
+    html_path = project_root / "reports/evaluation_report.html"
+    markdown = generate_public_report(project_root)
+    output_path.write_text(markdown, encoding="utf-8")
+    html_path.write_text(_markdown_to_html_document(markdown), encoding="utf-8")
     return output_path
 
 
@@ -187,6 +201,95 @@ def _security_table(report: dict[str, Any]) -> str:
             f"{_pct(metrics['improved_safe_rate'])} |",
         ]
     )
+
+
+def _markdown_to_html_document(markdown: str) -> str:
+    body = _markdown_to_body_html(markdown)
+    return "\n".join(
+        [
+            "<!doctype html>",
+            '<html lang="en">',
+            "<head>",
+            '<meta charset="utf-8">',
+            '<meta name="viewport" content="width=device-width, initial-scale=1">',
+            "<title>Internal AI Agent Evaluation Report</title>",
+            "<style>",
+            "body { font-family: Arial, sans-serif; margin: 40px auto; max-width: 1040px; "
+            "line-height: 1.55; color: #1f2937; }",
+            "h1, h2 { color: #111827; }",
+            "table { border-collapse: collapse; width: 100%; margin: 16px 0 24px; }",
+            "th, td { border: 1px solid #d1d5db; padding: 8px 10px; text-align: left; }",
+            "th { background: #f3f4f6; }",
+            "td:not(:first-child), th:not(:first-child) { text-align: right; }",
+            "code { background: #f3f4f6; padding: 2px 4px; border-radius: 4px; }",
+            "</style>",
+            "</head>",
+            "<body>",
+            body,
+            "</body>",
+            "</html>",
+            "",
+        ]
+    )
+
+
+def _markdown_to_body_html(markdown: str) -> str:
+    lines = markdown.splitlines()
+    blocks: list[str] = []
+    index = 0
+    while index < len(lines):
+        line = lines[index].strip()
+        if not line:
+            index += 1
+            continue
+        if line.startswith("# "):
+            blocks.append(f"<h1>{escape(line[2:])}</h1>")
+            index += 1
+            continue
+        if line.startswith("## "):
+            blocks.append(f"<h2>{escape(line[3:])}</h2>")
+            index += 1
+            continue
+        if line.startswith("- "):
+            items: list[str] = []
+            while index < len(lines) and lines[index].strip().startswith("- "):
+                items.append(f"<li>{escape(lines[index].strip()[2:])}</li>")
+                index += 1
+            blocks.append("<ul>" + "".join(items) + "</ul>")
+            continue
+        if line.startswith("|"):
+            table_lines: list[str] = []
+            while index < len(lines) and lines[index].strip().startswith("|"):
+                table_lines.append(lines[index].strip())
+                index += 1
+            blocks.append(_markdown_table_to_html(table_lines))
+            continue
+        blocks.append(f"<p>{escape(line)}</p>")
+        index += 1
+    return "\n".join(blocks)
+
+
+def _markdown_table_to_html(lines: list[str]) -> str:
+    header = _table_cells(lines[0])
+    rows = [_table_cells(line) for line in lines[2:]]
+    html_rows = [
+        "<thead><tr>"
+        + "".join(f"<th>{escape(cell)}</th>" for cell in header)
+        + "</tr></thead>"
+    ]
+    html_rows.append(
+        "<tbody>"
+        + "".join(
+            "<tr>" + "".join(f"<td>{escape(cell)}</td>" for cell in row) + "</tr>"
+            for row in rows
+        )
+        + "</tbody>"
+    )
+    return "<table>" + "".join(html_rows) + "</table>"
+
+
+def _table_cells(line: str) -> list[str]:
+    return [cell.strip() for cell in line.strip("|").split("|")]
 
 
 def _pct(value: float) -> str:

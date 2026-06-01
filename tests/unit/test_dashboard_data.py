@@ -7,6 +7,7 @@ from internal_ai_agent.dashboard.data import (
     failure_example_rows,
     failure_reason_rows,
     load_public_report,
+    load_public_report_html,
     metric_rows,
     retriever_experiment_rows,
     security_metric_rows,
@@ -208,3 +209,11 @@ def test_load_public_report_reads_markdown(tmp_path) -> None:
     (reports_dir / "evaluation_report.md").write_text("# Report\n", encoding="utf-8")
 
     assert load_public_report(tmp_path) == "# Report\n"
+
+
+def test_load_public_report_html_reads_html(tmp_path) -> None:
+    reports_dir = tmp_path / "reports"
+    reports_dir.mkdir()
+    (reports_dir / "evaluation_report.html").write_text("<h1>Report</h1>\n", encoding="utf-8")
+
+    assert load_public_report_html(tmp_path) == "<h1>Report</h1>\n"

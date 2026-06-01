@@ -1,4 +1,11 @@
-from internal_ai_agent.api.main import agent_run, ask, evaluation_report, extract, health
+from internal_ai_agent.api.main import (
+    agent_run,
+    ask,
+    evaluation_report,
+    evaluation_report_html,
+    extract,
+    health,
+)
 from internal_ai_agent.api.schemas import AgentRunRequest, AskRequest, ExtractRequest
 
 
@@ -11,6 +18,13 @@ def test_evaluation_report_endpoint_returns_markdown() -> None:
 
     assert "# Internal AI Agent Evaluation Report" in report
     assert "## Retrieval Evaluation" in report
+
+
+def test_evaluation_report_html_endpoint_returns_html() -> None:
+    report = evaluation_report_html()
+
+    assert "<!doctype html>" in report
+    assert "<h1>Internal AI Agent Evaluation Report</h1>" in report
 
 
 def test_ask_endpoint_function_returns_improved_answer() -> None:
