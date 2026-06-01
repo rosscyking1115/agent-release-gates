@@ -22,11 +22,13 @@ from internal_ai_agent.dashboard.data import (
     load_public_report_html,
     load_retriever_case_rows,
     load_retriever_comparison,
+    load_retriever_snapshots,
     load_security_summary,
     metric_rows,
     retriever_experiment_rows,
     retriever_failure_example_rows,
     retriever_failure_overview,
+    retriever_snapshot_rows,
     security_metric_rows,
 )
 
@@ -43,6 +45,7 @@ def main() -> None:
 
     comparison = load_comparison(PROJECT_ROOT)
     retriever_comparison = load_retriever_comparison(PROJECT_ROOT)
+    retriever_snapshots = load_retriever_snapshots(PROJECT_ROOT)
     extraction_summary = load_extraction_summary(PROJECT_ROOT)
     security_summary = load_security_summary(PROJECT_ROOT)
     agent_summary = load_agent_summary(PROJECT_ROOT)
@@ -59,6 +62,7 @@ def main() -> None:
     _render_summary(comparison, rows, improved_cases)
     _render_metric_comparison(rows)
     _render_retriever_experiment(retriever_comparison)
+    _render_retriever_snapshots(retriever_snapshots)
     _render_retriever_error_analysis(retriever_cases)
     _render_error_analysis()
     _render_extraction_metrics(extraction_summary, extraction_rows)
@@ -135,6 +139,42 @@ def _render_retriever_experiment(comparison: dict[str, object]) -> None:
         "Failures",
     ]
     st.dataframe(table_df, hide_index=True, use_container_width=True)
+
+
+def _render_retriever_snapshots(snapshot_report: dict[str, object]) -> None:
+    st.subheader("Retriever Metric Snapshots")
+    rows = retriever_snapshot_rows(snapshot_report)
+    table_df = pd.DataFrame(rows)
+    if table_df.empty:
+        st.info("No retriever metric snapshots recorded.")
+        return
+
+    chart_df = table_df.set_index("system")[["citation_coverage"]]
+    st.line_chart(chart_df, height=240)
+
+    display_df = table_df[
+        [
+            "snapshot_id",
+            "system",
+            "citation_coverage_pct",
+            "failure_count",
+            "citation_delta_pct",
+            "failure_delta",
+            "regression",
+            "regression_reasons",
+        ]
+    ]
+    display_df.columns = [
+        "Snapshot",
+        "System",
+        "Citation",
+        "Failures",
+        "Citation delta",
+        "Failure delta",
+        "Regression",
+        "Reason",
+    ]
+    st.dataframe(display_df, hide_index=True, use_container_width=True)
 
 
 def _render_retriever_error_analysis(

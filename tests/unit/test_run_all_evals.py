@@ -27,6 +27,7 @@ def test_run_all_evals_generates_reports(tmp_path) -> None:
     assert summary["agent"]["metrics"]["side_effect_block_rate"] == 1.0
     assert (tmp_path / "reports/eval_comparison.json").exists()
     assert (tmp_path / "reports/retriever_comparison.json").exists()
+    assert (tmp_path / "reports/retriever_metric_snapshots.json").exists()
     assert (tmp_path / "reports/hybrid_eval_summary.json").exists()
     assert (tmp_path / "reports/vector_eval_summary.json").exists()
     assert (tmp_path / "reports/embedding_eval_summary.json").exists()

@@ -266,15 +266,16 @@ def evaluate_retriever_comparison(project_root: Path) -> dict[str, Any]:
     hybrid = evaluate_hybrid(project_root)
     vector = evaluate_vector(project_root)
     embedding = evaluate_embedding_store(project_root)
+    systems = [
+        _system_row("Baseline team hints", baseline),
+        _system_row("Improved lexical", lexical),
+        _system_row("Hybrid sparse semantic", hybrid),
+        _system_row("Local TF-IDF vector", vector),
+        _system_row("Local embedding store", embedding),
+    ]
     report = {
         "case_count": baseline["case_count"],
-        "systems": [
-            _system_row("Baseline team hints", baseline),
-            _system_row("Improved lexical", lexical),
-            _system_row("Hybrid sparse semantic", hybrid),
-            _system_row("Local TF-IDF vector", vector),
-            _system_row("Local embedding store", embedding),
-        ],
+        "systems": systems,
         "notes": [
             (
                 "Hybrid, vector, and embedding-store retrieval are compared as experiments; "
@@ -284,6 +285,45 @@ def evaluate_retriever_comparison(project_root: Path) -> dict[str, Any]:
         ],
     }
     write_json(project_root / "reports/retriever_comparison.json", report)
+    write_retriever_metric_snapshots(project_root, report)
+    return report
+
+
+def write_retriever_metric_snapshots(
+    project_root: Path,
+    retriever_report: dict[str, Any],
+) -> dict[str, Any]:
+    snapshots: list[dict[str, Any]] = []
+    previous: dict[str, Any] | None = None
+
+    for sequence, system in enumerate(retriever_report["systems"], start=1):
+        snapshot = _snapshot_row(sequence, system, previous)
+        snapshots.append(snapshot)
+        previous = snapshot
+
+    report = {
+        "dataset": "golden_cases",
+        "case_count": retriever_report["case_count"],
+        "metric_order": [
+            "retrieval_hit_rate_at_3",
+            "citation_coverage",
+            "next_action_accuracy",
+            "abstention_accuracy",
+            "failure_count",
+        ],
+        "snapshots": snapshots,
+        "notes": [
+            (
+                "Snapshots are deterministic ordered retriever versions, not wall-clock run "
+                "history. This keeps CI reproducible while exposing metric regressions."
+            ),
+            (
+                "A regression is flagged when citation coverage decreases or failed-case count "
+                "increases compared with the previous retriever snapshot."
+            ),
+        ],
+    }
+    write_json(project_root / "reports/retriever_metric_snapshots.json", report)
     return report
 
 
@@ -447,6 +487,45 @@ def _system_row(label: str, report: dict[str, Any]) -> dict[str, Any]:
             group["failure_count"] for group in report.get("by_noise_type", {}).values()
         ),
     }
+
+
+def _snapshot_row(
+    sequence: int,
+    system: dict[str, Any],
+    previous: dict[str, Any] | None,
+) -> dict[str, Any]:
+    citation_delta = None
+    failure_delta = None
+    regression_reasons: list[str] = []
+
+    if previous is not None:
+        citation_delta = round(
+            system["citation_coverage"] - previous["citation_coverage"], 4
+        )
+        failure_delta = system["failure_count"] - previous["failure_count"]
+        if citation_delta < 0:
+            regression_reasons.append("citation_coverage_decreased")
+        if failure_delta > 0:
+            regression_reasons.append("failed_case_count_increased")
+
+    return {
+        "snapshot_id": f"{sequence:03d}_{_slug(system['label'])}",
+        "label": system["label"],
+        "system_version": system["system_version"],
+        "retrieval_hit_rate_at_3": system["retrieval_hit_rate_at_3"],
+        "citation_coverage": system["citation_coverage"],
+        "next_action_accuracy": system["next_action_accuracy"],
+        "abstention_accuracy": system["abstention_accuracy"],
+        "failure_count": system["failure_count"],
+        "citation_delta_from_previous": citation_delta,
+        "failure_delta_from_previous": failure_delta,
+        "regression": bool(regression_reasons),
+        "regression_reasons": regression_reasons,
+    }
+
+
+def _slug(value: str) -> str:
+    return "_".join(value.lower().replace("-", " ").split())
 
 
 def _diagnostic(

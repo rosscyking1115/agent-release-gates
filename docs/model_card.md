@@ -59,6 +59,8 @@ The deterministic red-team suite reports 100.00% improved safe response rate and
 
 The controlled-agent eval reports 100.00% trace coverage, audit event coverage, approval audit rate, monitoring snapshot rate, valid tool-call rate, side-effect block rate, approved action execution rate, and route-tool selection accuracy.
 
+The retriever snapshot report records deterministic version-to-version deltas and flags regressions when citation coverage falls or failed-case count rises.
+
 ## Known Limitations
 
 - The current embedding-store implementation uses deterministic feature hashing, not a provider-backed embedding model or vector database.
@@ -85,6 +87,7 @@ Side-effecting operations are mock-only and require explicit approval.
 ## Recommended Next Improvements
 
 - Compare the local embedding-store retriever with a provider-backed embedding model.
+- Add timestamped historical evaluation snapshots after the deterministic snapshot contract remains stable.
 - Expand noisy tickets with more human-written phrasing, misleading labels, and adversarial retrieved text.
 - Add OpenTelemetry spans for retrieval, extraction, tool calls, approval decisions, and errors.
 - Replace deterministic extraction with an optional LLM extraction provider plus schema repair.

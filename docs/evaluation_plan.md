@@ -50,6 +50,7 @@ The dashboard reads the saved report artifacts rather than recomputing metrics o
 - `reports/vector_eval_summary.json`
 - `reports/embedding_eval_summary.json`
 - `reports/retriever_comparison.json`
+- `reports/retriever_metric_snapshots.json`
 - `reports/eval_comparison.json`
 - `reports/baseline_eval_cases.jsonl`
 - `reports/improved_eval_cases.jsonl`
@@ -96,6 +97,12 @@ The retriever comparison report saves a five-system table:
 - local embedding-store retrieval
 
 The public report and dashboard also surface retriever failure analysis. The overview counts failed cases, cases where the expected section was retrieved but not finally cited, abstention mismatches, and the top failure reason for each retriever. The example table keeps the diagnostic and recommended fix attached to concrete case ids.
+
+## Retriever Metric Snapshots
+
+The snapshot report is `retriever_metric_snapshots.json`. It records the ordered retriever versions as deterministic snapshots rather than timestamped run history. This keeps CI reproducible while making metric regressions visible.
+
+Each snapshot stores citation coverage, retrieval hit rate@3, next-action accuracy, abstention accuracy, failed-case count, deltas from the previous retriever, and regression flags. A regression is flagged when citation coverage decreases or failed-case count increases compared with the previous snapshot.
 
 ## Structured Extraction Version
 

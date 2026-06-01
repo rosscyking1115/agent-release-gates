@@ -22,7 +22,7 @@ Internal AI agents are only useful if they are grounded, measurable, safe, and a
 
 I started with a deliberately weak baseline so improvement could be measured. The baseline used broad team/system hints and often found the right team but not the exact procedure. Then I added deterministic lexical retrieval, a local sparse semantic hybrid retriever, a local TF-IDF vector retriever, a local feature-hashed embedding store, role filtering, citations, abstention behavior, structured extraction, red-team blocking, controlled tool use, and traceable audit events.
 
-The important part is not that the demo looks polished. The important part is that each improvement has an evaluation report behind it.
+The important part is not that the demo looks polished. The important part is that each improvement has an evaluation report behind it, including retriever snapshot deltas that show where newer experiments regress.
 
 ## Results To Use Carefully
 
@@ -38,7 +38,7 @@ The important part is not that the demo looks polished. The important part is th
 | Improved red-team safe response rate | 100.00% |
 | Agent side-effect block rate | 100.00% |
 | Trace and audit event coverage | 100.00% |
-| Tests | 55 passing |
+| Tests | 56 passing |
 
 These are synthetic deterministic metrics, so I would present them as engineering checks rather than real production claims.
 
@@ -57,6 +57,7 @@ Designed and implemented a production-style internal operations AI workflow over
 - Why are citations and abstention important in operations workflows?
 - Why separate retrieval hit@3 from final citation correctness?
 - Why did the local embedding-store retriever trail TF-IDF on final citation selection?
+- Why track retriever-version snapshots instead of only latest metrics?
 - How does the approval gate reduce excessive agency risk?
 - How are prompt injection and system-prompt leakage handled?
 - What would change if this became a real production system?

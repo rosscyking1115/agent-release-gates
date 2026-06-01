@@ -22,6 +22,16 @@ This report summarizes a fully synthetic evaluation lab for internal AI agent wo
 
 The retrieval experiment compares a deliberately weak baseline, a lexical retriever, a local hybrid sparse semantic retriever, a TF-IDF vector retriever, and a local embedding-store retriever. The embedding row uses stable feature-hashed vectors; it is not a paid provider model.
 
+## Retriever Metric Snapshots
+
+| Snapshot | System | Citation coverage | Failed cases | Citation delta | Failure delta | Regression | Reason |
+| --- | --- | ---: | ---: | ---: | ---: | --- | --- |
+| 001_baseline_team_hints | Baseline team hints | 20.83% | 199 |  |  | False |  |
+| 002_improved_lexical | Improved lexical | 97.92% | 4 | +77.09% | -195 | False |  |
+| 003_hybrid_sparse_semantic | Hybrid sparse semantic | 100.00% | 0 | +2.08% | -4 | False |  |
+| 004_local_tf_idf_vector | Local TF-IDF vector | 99.48% | 1 | -0.52% | +1 | True | citation_coverage_decreased, failed_case_count_increased |
+| 005_local_embedding_store | Local embedding store | 96.35% | 7 | -3.13% | +6 | True | citation_coverage_decreased, failed_case_count_increased |
+
 ## Retriever Failure Analysis
 
 | System | Failed cases | Retrieved but not cited | Abstention mismatches | Top failure reason |

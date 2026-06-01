@@ -72,6 +72,18 @@ Retrieval case result files include `baseline_eval_cases.jsonl`, `improved_eval_
 
 The dashboard and public report derive retriever error-analysis tables from these fields, including a `retrieved_but_not_cited` flag when the expected citation appears in the retrieved set but not in the final cited answer.
 
+## `reports/retriever_metric_snapshots.json`
+
+| Field | Description |
+| --- | --- |
+| `snapshot_id` | Stable ordered id for the retriever version snapshot. |
+| `label` | Display name for the retriever system. |
+| `system_version` | Internal version string for the retriever implementation. |
+| `citation_delta_from_previous` | Citation coverage change versus the previous snapshot. |
+| `failure_delta_from_previous` | Failed-case count change versus the previous snapshot. |
+| `regression` | Whether citation coverage decreased or failed-case count increased. |
+| `regression_reasons` | Deterministic labels explaining the regression flag. |
+
 ## `reports/extraction_eval_cases.jsonl`
 
 | Field | Description |

@@ -71,6 +71,11 @@ def load_retriever_comparison(project_root: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def load_retriever_snapshots(project_root: Path) -> dict[str, Any]:
+    path = project_root / "reports/retriever_metric_snapshots.json"
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
 def load_extraction_summary(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/extraction_eval_summary.json"
     return json.loads(path.read_text(encoding="utf-8"))
@@ -133,6 +138,29 @@ def retriever_experiment_rows(comparison: dict[str, Any]) -> list[dict[str, Any]
                 "issue_category_accuracy_pct": _as_percent(system["issue_category_accuracy"]),
                 "next_action_accuracy_pct": _as_percent(system["next_action_accuracy"]),
                 "abstention_accuracy_pct": _as_percent(system["abstention_accuracy"]),
+            }
+        )
+    return rows
+
+
+def retriever_snapshot_rows(snapshot_report: dict[str, Any]) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for snapshot in snapshot_report["snapshots"]:
+        rows.append(
+            {
+                "snapshot_id": snapshot["snapshot_id"],
+                "system": snapshot["label"],
+                "citation_coverage": snapshot["citation_coverage"],
+                "failure_count": snapshot["failure_count"],
+                "citation_delta_from_previous": snapshot["citation_delta_from_previous"],
+                "failure_delta_from_previous": snapshot["failure_delta_from_previous"],
+                "regression": snapshot["regression"],
+                "regression_reasons": ", ".join(snapshot["regression_reasons"]),
+                "citation_coverage_pct": _as_percent(snapshot["citation_coverage"]),
+                "citation_delta_pct": _optional_signed_percent(
+                    snapshot["citation_delta_from_previous"]
+                ),
+                "failure_delta": _optional_signed_int(snapshot["failure_delta_from_previous"]),
             }
         )
     return rows
@@ -340,3 +368,16 @@ def _as_percent(value: float) -> str:
 def _as_signed_percent(value: float) -> str:
     sign = "+" if value >= 0 else ""
     return f"{sign}{value * 100:.2f}%"
+
+
+def _optional_signed_percent(value: float | None) -> str:
+    if value is None:
+        return ""
+    return _as_signed_percent(value)
+
+
+def _optional_signed_int(value: int | None) -> str:
+    if value is None:
+        return ""
+    sign = "+" if value >= 0 else ""
+    return f"{sign}{value}"

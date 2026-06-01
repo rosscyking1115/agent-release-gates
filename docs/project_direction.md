@@ -51,7 +51,7 @@ Do not add a feature just because it sounds impressive. A feature should be adde
 The project is useful, but it is still too deterministic in several places:
 
 - Retrieval now includes sparse hybrid, local TF-IDF vector, and local feature-hashed embedding-store experiments, but not a provider-backed embedding model.
-- Error analysis now identifies retrieved-but-not-cited failures, but not yet longitudinal trends.
+- Error analysis now identifies retrieved-but-not-cited failures and deterministic retriever-version trend snapshots, but not timestamped run history across many commits.
 - Ticket and runbook data are still partly templated, even after adding noisy, human-like, and retrieved-document-injection cases.
 - Extraction is deterministic pattern matching.
 - Red-team checks are string-based.
@@ -64,7 +64,7 @@ These are acceptable for the first lab version, but they should guide the next w
 
 1. Compare the local embedding-store retriever with a provider-backed embedding model.
 2. Expand the noisy evaluation dataset with more human-written variants and longer contradictory context.
-3. Add longitudinal error-analysis snapshots so retrieval regressions are easier to track over time.
+3. Add timestamped historical snapshots once the deterministic report contract is stable.
 4. Add OpenTelemetry-style trace export or a local trace viewer.
 5. Add optional LLM/provider adapters only after deterministic evaluation remains stable.
 

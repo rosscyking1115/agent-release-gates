@@ -56,6 +56,7 @@ The project is positioned as a responsible enterprise AI engineering lab. Its va
 | Synthetic data generator | Data design and privacy-aware development |
 | Baseline vs improved retrieval eval | Measurement discipline |
 | Local vector and embedding-store retrieval experiments | Retrieval experimentation and error analysis |
+| Retriever metric snapshots | Regression tracking across retriever versions |
 | Citation and abstention metrics | Grounded AI judgement |
 | Structured extraction schemas | Document intelligence and validation |
 | Red-team policy suite | AI security awareness |
@@ -67,6 +68,8 @@ The project is positioned as a responsible enterprise AI engineering lab. Its va
 ## Current Results
 
 The improved lexical retrieval path raises citation coverage from 20.83% to 97.92% and retrieval hit rate@3 from 45.83% to 98.44% on synthetic golden cases. The sparse hybrid retriever reaches 100.00% citation coverage, while the local TF-IDF vector retriever reaches 100.00% retrieval hit@3 and 99.48% citation coverage with one visible final-ranking failure. The local feature-hashed embedding store also reaches 100.00% retrieval hit@3, but its 96.35% citation coverage shows that embedding-style retrieval still needs final-selection evaluation.
+
+The retriever snapshot report records deterministic deltas between retriever versions, so regressions are visible even when every system is generated from the same local synthetic dataset.
 
 The controlled-agent workflow blocks side-effecting mock routes without approval and executes them only when approval is granted. The eval reports 100.00% side-effect block rate, approval audit rate, and valid tool-call rate.
 

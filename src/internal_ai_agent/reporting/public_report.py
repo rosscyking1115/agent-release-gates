@@ -9,6 +9,7 @@ from internal_ai_agent.dashboard.data import (
     load_retriever_case_rows,
     retriever_failure_example_rows,
     retriever_failure_overview,
+    retriever_snapshot_rows,
 )
 
 METRIC_LABELS = {
@@ -41,6 +42,7 @@ def generate_public_report(project_root: Path) -> str:
     reports_dir = project_root / "reports"
     comparison = _read_json(reports_dir / "eval_comparison.json")
     retrievers = _read_json(reports_dir / "retriever_comparison.json")
+    retriever_snapshots = _read_json(reports_dir / "retriever_metric_snapshots.json")
     extraction = _read_json(reports_dir / "extraction_eval_summary.json")
     security = _read_json(reports_dir / "security_eval_summary.json")
     agent = _read_json(reports_dir / "agent_eval_summary.json")
@@ -72,6 +74,10 @@ def generate_public_report(project_root: Path) -> str:
             "retriever, a local hybrid sparse semantic retriever, a TF-IDF vector "
             "retriever, and a local embedding-store retriever. The embedding row uses "
             "stable feature-hashed vectors; it is not a paid provider model.",
+            "",
+            "## Retriever Metric Snapshots",
+            "",
+            _retriever_snapshot_table(retriever_snapshots),
             "",
             "## Retriever Failure Analysis",
             "",
@@ -176,6 +182,21 @@ def _retriever_table(report: dict[str, Any]) -> str:
                 abstention=_pct(system["abstention_accuracy"]),
                 failures=system["failure_count"],
             )
+        )
+    return "\n".join(rows)
+
+
+def _retriever_snapshot_table(report: dict[str, Any]) -> str:
+    rows = [
+        "| Snapshot | System | Citation coverage | Failed cases | Citation delta | "
+        "Failure delta | Regression | Reason |",
+        "| --- | --- | ---: | ---: | ---: | ---: | --- | --- |",
+    ]
+    for row in retriever_snapshot_rows(report):
+        rows.append(
+            "| {snapshot_id} | {system} | {citation_coverage_pct} | {failure_count} | "
+            "{citation_delta_pct} | {failure_delta} | {regression} | "
+            "{regression_reasons} |".format(**row)
         )
     return "\n".join(rows)
 

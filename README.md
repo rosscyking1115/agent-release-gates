@@ -82,6 +82,7 @@ The baseline evaluation writes:
 - `reports/embedding_eval_summary.json`
 - `reports/embedding_eval_cases.jsonl`
 - `reports/retriever_comparison.json`
+- `reports/retriever_metric_snapshots.json`
 - `reports/eval_comparison.json`
 - `reports/extraction_eval_summary.json`
 - `reports/extraction_eval_cases.jsonl`
@@ -155,6 +156,7 @@ The Streamlit dashboard presents the evaluation outcome as an inspection surface
 - headline case counts
 - baseline vs improved metric chart
 - retriever experiment table comparing baseline, lexical, hybrid, vector, and embedding-store retrieval
+- retriever metric snapshots showing citation deltas, failure deltas, and regression flags
 - retriever failure analysis showing recovered evidence, final-citation misses, and fixes
 - before/after metric table
 - noisy-case and failure-reason analysis

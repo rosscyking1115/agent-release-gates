@@ -12,6 +12,7 @@ from internal_ai_agent.dashboard.data import (
     retriever_experiment_rows,
     retriever_failure_example_rows,
     retriever_failure_overview,
+    retriever_snapshot_rows,
     security_metric_rows,
 )
 
@@ -64,6 +65,45 @@ def test_retriever_experiment_rows_formats_multiple_systems() -> None:
 
     assert rows[1]["system"] == "Hybrid"
     assert rows[1]["citation_coverage_pct"] == "100.00%"
+
+
+def test_retriever_snapshot_rows_formats_regression_deltas() -> None:
+    rows = retriever_snapshot_rows(
+        {
+            "snapshots": [
+                {
+                    "snapshot_id": "001_baseline",
+                    "label": "Baseline",
+                    "citation_coverage": 0.2,
+                    "failure_count": 10,
+                    "citation_delta_from_previous": None,
+                    "failure_delta_from_previous": None,
+                    "regression": False,
+                    "regression_reasons": [],
+                },
+                {
+                    "snapshot_id": "002_vector",
+                    "label": "Vector",
+                    "citation_coverage": 0.19,
+                    "failure_count": 12,
+                    "citation_delta_from_previous": -0.01,
+                    "failure_delta_from_previous": 2,
+                    "regression": True,
+                    "regression_reasons": [
+                        "citation_coverage_decreased",
+                        "failed_case_count_increased",
+                    ],
+                },
+            ]
+        }
+    )
+
+    assert rows[0]["citation_delta_pct"] == ""
+    assert rows[1]["citation_delta_pct"] == "-1.00%"
+    assert rows[1]["failure_delta"] == "+2"
+    assert rows[1]["regression_reasons"] == (
+        "citation_coverage_decreased, failed_case_count_increased"
+    )
 
 
 def test_failed_case_rows_flags_wrong_citation_or_abstention() -> None:
