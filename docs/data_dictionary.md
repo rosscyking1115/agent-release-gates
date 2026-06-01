@@ -40,7 +40,7 @@
 | `expected_citation_ids` | Gold citation ids that should support the answer. |
 | `should_abstain` | Whether the agent should refuse due to weak evidence. |
 
-Golden cases include exact ticket prompts, paraphrased prompts, noisy metadata prompts, false-lead prompts, typo/abbreviation prompts, adversarial-instruction prompts, and weak-evidence prompts where abstention is expected.
+Golden cases include exact ticket prompts, paraphrased prompts, noisy metadata prompts, false-lead prompts, typo/abbreviation prompts, human-like prompts, retrieved-document injection prompts, adversarial-instruction prompts, and weak-evidence prompts where abstention is expected.
 
 ## `data/eval/red_team_cases.jsonl`
 
@@ -55,6 +55,20 @@ Golden cases include exact ticket prompts, paraphrased prompts, noisy metadata p
 | `retrieved_section_id` | Synthetic section associated with the case. |
 | `expected_behavior` | Required safe behavior. |
 | `must_not` | Forbidden behavior labels for deterministic checks. |
+
+## Retrieval eval case files
+
+Retrieval case result files include `baseline_eval_cases.jsonl`, `improved_eval_cases.jsonl`, `hybrid_eval_cases.jsonl`, and `vector_eval_cases.jsonl`.
+
+| Field | Description |
+| --- | --- |
+| `case_id` | Golden case id. |
+| `expected_citation_ids` | Gold supporting runbook sections. |
+| `predicted_citation_ids` | Final cited sections from the retriever answer. |
+| `retrieved_citation_ids` | Top retrieved sections before final answer selection. |
+| `failure_reasons` | Deterministic failure labels used for error analysis. |
+| `diagnostic` | Short explanation of the failure mode. |
+| `recommended_fix` | Suggested retrieval or policy improvement. |
 
 ## `reports/extraction_eval_cases.jsonl`
 

@@ -10,6 +10,7 @@ from internal_ai_agent.rag.baseline import (
     answer_with_baseline,
     answer_with_hybrid,
     answer_with_lexical,
+    answer_with_vector,
     load_runbooks,
 )
 
@@ -149,6 +150,49 @@ def evaluate_hybrid(project_root: Path) -> dict[str, Any]:
     return report
 
 
+def evaluate_vector(project_root: Path) -> dict[str, Any]:
+    runbooks = load_runbooks(project_root)
+    cases = read_jsonl(project_root / "data/eval/golden_cases.jsonl")
+    results = [
+        _evaluate_case(
+            case,
+            answer_with_vector(
+                str(case["input"]),
+                runbooks,
+                user_role=str(case["user_role"]),
+            ),
+        )
+        for case in cases
+    ]
+    metrics = _summarize(results)
+
+    report = {
+        "system_version": "local_tfidf_vector_retrieval",
+        "dataset": "golden_cases",
+        "case_count": len(results),
+        "metrics": metrics,
+        "by_task_type": _summarize_by_dimension(results, "task_type"),
+        "by_noise_type": _summarize_by_dimension(results, "noise_type"),
+        "failure_reasons": _failure_reason_counts(results),
+        "failure_examples": _failure_examples(results),
+        "notes": [
+            (
+                "Vector retrieval builds a local TF-IDF index over runbook titles, content, "
+                "team hints, aliases, and character n-grams."
+            ),
+            (
+                "It uses cosine similarity plus a small keyword rerank; no external embedding "
+                "API is used."
+            ),
+            "Role filtering excludes runbook sections the requester is not allowed to retrieve.",
+        ],
+    }
+
+    write_json(project_root / "reports/vector_eval_summary.json", report)
+    write_jsonl(project_root / "reports/vector_eval_cases.jsonl", (asdict(row) for row in results))
+    return report
+
+
 def evaluate_comparison(project_root: Path) -> dict[str, Any]:
     baseline = evaluate_baseline(project_root)
     improved = evaluate_lexical(project_root)
@@ -174,17 +218,19 @@ def evaluate_retriever_comparison(project_root: Path) -> dict[str, Any]:
     baseline = evaluate_baseline(project_root)
     lexical = evaluate_lexical(project_root)
     hybrid = evaluate_hybrid(project_root)
+    vector = evaluate_vector(project_root)
     report = {
         "case_count": baseline["case_count"],
         "systems": [
             _system_row("Baseline team hints", baseline),
             _system_row("Improved lexical", lexical),
             _system_row("Hybrid sparse semantic", hybrid),
+            _system_row("Local TF-IDF vector", vector),
         ],
         "notes": [
             (
-                "Hybrid is compared as an experiment; the older two-system report is kept "
-                "for continuity."
+                "Hybrid and vector retrieval are compared as experiments; the older two-system "
+                "report is kept for continuity."
             ),
             "All systems run over the same synthetic golden cases.",
         ],
@@ -349,7 +395,9 @@ def _system_row(label: str, report: dict[str, Any]) -> dict[str, Any]:
         "issue_category_accuracy": metrics["issue_category_accuracy"],
         "next_action_accuracy": metrics["next_action_accuracy"],
         "abstention_accuracy": metrics["abstention_accuracy"],
-        "failure_count": sum(report.get("failure_reasons", {}).values()),
+        "failure_count": sum(
+            group["failure_count"] for group in report.get("by_noise_type", {}).values()
+        ),
     }
 
 

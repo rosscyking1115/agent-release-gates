@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import re
+from collections import Counter
 from dataclasses import dataclass
+from math import log
 from pathlib import Path
 from typing import Any
 
@@ -319,6 +321,110 @@ def answer_with_hybrid(
     )
 
 
+def retrieve_vector(
+    question: str,
+    runbooks: list[dict[str, Any]],
+    *,
+    user_role: str = "operations_analyst",
+    top_k: int = 3,
+) -> list[RetrievedSection]:
+    """Local TF-IDF vector retrieval with lightweight keyword reranking.
+
+    This is still a local lab index, not a production vector database. It gives the project a
+    real vector-space retrieval baseline using IDF-weighted cosine similarity, concept aliases,
+    title boosts, and character n-grams for typo tolerance.
+    """
+
+    eligible_sections = [
+        section
+        for section in runbooks
+        if user_role in section.get("allowed_roles", [])
+    ]
+    if not eligible_sections:
+        return []
+
+    doc_features = [_section_vector_features(section) for section in eligible_sections]
+    idf = _inverse_document_frequency(doc_features)
+    query_features = _query_vector_features(question)
+    query_vector = _tfidf_vector(query_features, idf)
+    scored: list[RetrievedSection] = []
+
+    for section, features in zip(eligible_sections, doc_features, strict=True):
+        title = str(section["title"])
+        content = str(section["content"])
+        category = title.lower().replace(" ", "_")
+        section_vector = _tfidf_vector(features, idf)
+
+        vector_score = _cosine_similarity(query_vector, section_vector) * 100
+        keyword_score = _alias_overlap(_tokenize(question), category) * 3
+        keyword_score += _title_phrase_score(question, category) * 0.5
+        keyword_score += _team_hint_score(question, str(section["team"])) * 0.25
+        score = vector_score + keyword_score - _negated_category_penalty(question, category)
+
+        if score <= 0:
+            continue
+
+        scored.append(
+            RetrievedSection(
+                section_id=str(section["section_id"]),
+                title=title,
+                team=str(section["team"]),
+                content=content,
+                score=round(score, 4),
+            )
+        )
+
+    return sorted(scored, key=lambda item: (-item.score, item.section_id))[:top_k]
+
+
+def answer_with_vector(
+    question: str,
+    runbooks: list[dict[str, Any]],
+    *,
+    user_role: str = "operations_analyst",
+) -> BaselineAnswer:
+    if should_block_request(question) or _should_abstain_for_safety(question):
+        return BaselineAnswer(
+            answer=policy_refusal(),
+            issue_category=None,
+            team=None,
+            next_action=None,
+            citations=[],
+            retrieved_sections=[],
+            abstained=True,
+        )
+
+    retrieved = retrieve_vector(question, runbooks, user_role=user_role, top_k=3)
+    if not retrieved:
+        return BaselineAnswer(
+            answer="I do not have enough synthetic runbook evidence to answer this safely.",
+            issue_category=None,
+            team=None,
+            next_action=None,
+            citations=[],
+            retrieved_sections=[],
+            abstained=True,
+        )
+
+    chosen = retrieved[0]
+    issue_category = chosen.title.lower().replace(" ", "_")
+    next_action = _extract_next_action(chosen.content)
+    answer = (
+        f"Likely issue: {chosen.title}. "
+        f"Recommended next action: {next_action} "
+        f"Citation: {chosen.section_id}."
+    )
+    return BaselineAnswer(
+        answer=answer,
+        issue_category=issue_category,
+        team=chosen.team,
+        next_action=next_action,
+        citations=[chosen.section_id],
+        retrieved_sections=retrieved,
+        abstained=False,
+    )
+
+
 def _extract_next_action(content: str) -> str:
     marker = "Recommended next action:"
     if marker not in content:
@@ -388,6 +494,71 @@ def _cosine_similarity(left: dict[str, float], right: dict[str, float]) -> float
     if left_norm == 0 or right_norm == 0:
         return 0.0
     return numerator / (left_norm * right_norm)
+
+
+def _section_vector_features(section: dict[str, Any]) -> list[str]:
+    title = str(section["title"])
+    content = str(section["content"])
+    team = str(section["team"])
+    category = title.lower().replace(" ", "_")
+    features: list[str] = []
+    features.extend(_vector_features(title, prefix="title") * 3)
+    features.extend(_vector_features(content, prefix="body"))
+    features.extend([f"team:{hint}" for hint in SYSTEM_HINTS.get(team, [])])
+    features.extend([f"concept:{category}"] * 5)
+    features.extend(f"alias:{alias}" for alias in SEMANTIC_ALIASES.get(category, []))
+    return features
+
+
+def _query_vector_features(question: str) -> list[str]:
+    tokens = _tokenize(question)
+    features = _vector_features(question, prefix="query")
+    for category, aliases in SEMANTIC_ALIASES.items():
+        matches = sum(1 for alias in aliases if alias in tokens)
+        if matches:
+            features.extend([f"concept:{category}"] * matches)
+            features.extend(f"alias:{alias}" for alias in aliases if alias in tokens)
+    return features
+
+
+def _vector_features(text: str, *, prefix: str) -> list[str]:
+    tokens = _token_sequence(text)
+    features = [f"token:{token}" for token in tokens]
+    features.extend(f"char4:{gram}" for token in tokens for gram in _char_ngrams(token, 4))
+    features.extend(
+        f"bigram:{left}_{right}"
+        for left, right in zip(tokens, tokens[1:], strict=False)
+    )
+    features.extend(f"{prefix}_token:{token}" for token in tokens)
+    return features
+
+
+def _char_ngrams(token: str, size: int) -> list[str]:
+    if len(token) < size:
+        return []
+    return [token[index : index + size] for index in range(len(token) - size + 1)]
+
+
+def _inverse_document_frequency(doc_features: list[list[str]]) -> dict[str, float]:
+    doc_count = len(doc_features)
+    document_frequency: Counter[str] = Counter()
+    for features in doc_features:
+        document_frequency.update(set(features))
+    return {
+        feature: log((doc_count + 1) / (frequency + 1)) + 1
+        for feature, frequency in document_frequency.items()
+    }
+
+
+def _tfidf_vector(features: list[str], idf: dict[str, float]) -> dict[str, float]:
+    counts = Counter(features)
+    if not counts:
+        return {}
+    max_count = max(counts.values())
+    return {
+        feature: (count / max_count) * idf.get(feature, 1.0)
+        for feature, count in counts.items()
+    }
 
 
 def _alias_overlap(query_tokens: set[str], category: str) -> int:

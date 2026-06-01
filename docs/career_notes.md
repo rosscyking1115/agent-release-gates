@@ -20,7 +20,7 @@ Internal AI agents are only useful if they are grounded, measurable, safe, and a
 
 ## Strongest Technical Explanation
 
-I started with a deliberately weak baseline so improvement could be measured. The baseline used broad team/system hints and often found the right team but not the exact procedure. Then I added deterministic lexical retrieval, a local sparse semantic hybrid retriever, role filtering, citations, abstention behavior, structured extraction, red-team blocking, controlled tool use, and traceable audit events.
+I started with a deliberately weak baseline so improvement could be measured. The baseline used broad team/system hints and often found the right team but not the exact procedure. Then I added deterministic lexical retrieval, a local sparse semantic hybrid retriever, a local TF-IDF vector retriever, role filtering, citations, abstention behavior, structured extraction, red-team blocking, controlled tool use, and traceable audit events.
 
 The important part is not that the demo looks polished. The important part is that each improvement has an evaluation report behind it.
 
@@ -30,6 +30,7 @@ The important part is not that the demo looks polished. The important part is th
 | --- | --- |
 | Retrieval hit rate@3 | 45.83% baseline to 98.44% lexical and 100.00% hybrid |
 | Citation coverage | 20.83% baseline to 97.92% lexical and 100.00% hybrid |
+| Local TF-IDF vector retrieval | 100.00% retrieval hit@3 and 99.48% citation coverage |
 | Hybrid retrieval experiment | Solves the current 240-case synthetic golden set |
 | Abstention accuracy | 80.42% baseline to 100.00% improved |
 | Structured extraction schema validity | 100.00% |
@@ -42,7 +43,7 @@ These are synthetic deterministic metrics, so I would present them as engineerin
 
 ## Possible CV Bullet
 
-Built a synthetic internal AI agent evaluation lab with Python, FastAPI, Pydantic, Streamlit, deterministic RAG, structured ticket extraction, red-team policy checks, approval-gated mock tools, traceable audit events, and CI-backed evaluation reports over synthetic operations tickets and runbooks.
+Built a synthetic internal AI agent evaluation lab with Python, FastAPI, Pydantic, Streamlit, deterministic RAG, local TF-IDF vector retrieval, structured ticket extraction, red-team policy checks, approval-gated mock tools, traceable audit events, and CI-backed evaluation reports over synthetic operations tickets and runbooks.
 
 ## Possible Deeper CV Bullet
 
@@ -60,7 +61,7 @@ Designed and implemented a production-style internal operations AI workflow over
 
 ## Honest Limitations
 
-- Current best retrieval is a deterministic sparse semantic hybrid rather than a true vector index.
+- Current vector retrieval is local TF-IDF rather than an embedding-backed vector database.
 - The extraction layer is deterministic and should be tested on noisier text.
 - Red-team checks are string-based and should be expanded with more varied phrasing.
 - The controlled agent is a local workflow rather than a LangGraph graph.
@@ -68,4 +69,4 @@ Designed and implemented a production-style internal operations AI workflow over
 
 ## Useful Next Build Step
 
-The most valuable next engineering step is to add a true vector retrieval layer and compare lexical, sparse hybrid, and vector retrieval using the same golden cases. That would show retrieval experimentation and evaluation discipline without changing the project framing.
+The most valuable next engineering step is to deepen retriever error analysis and compare the local TF-IDF vector layer with an embedding-backed vector store using the same golden cases. That would show retrieval experimentation and evaluation discipline without changing the project framing.

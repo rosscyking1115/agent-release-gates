@@ -8,17 +8,18 @@ This report summarizes a fully synthetic evaluation lab for internal AI agent wo
 - Synthetic ticket extraction and agent cases: 180
 - Red-team safety cases: 40
 - Best current retriever: Hybrid sparse semantic retrieval
-- Current strongest result: perfect hybrid citation coverage on the synthetic suite
+- Current vector experiment: local TF-IDF vector retrieval with one ranking failure
 
 ## Retrieval Evaluation
 
 | System | Hit rate@3 | Citation coverage | Next action accuracy | Abstention accuracy | Failures |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| Baseline team hints | 45.83% | 20.83% | 20.83% | 80.42% | 506 |
-| Improved lexical | 98.44% | 97.92% | 97.92% | 100.00% | 13 |
+| Baseline team hints | 45.83% | 20.83% | 20.83% | 80.42% | 199 |
+| Improved lexical | 98.44% | 97.92% | 97.92% | 100.00% | 4 |
 | Hybrid sparse semantic | 100.00% | 100.00% | 100.00% | 100.00% | 0 |
+| Local TF-IDF vector | 100.00% | 99.48% | 99.48% | 100.00% | 1 |
 
-The retrieval experiment compares a deliberately weak baseline, a lexical retriever, and a local hybrid sparse semantic retriever. The hybrid system adds synonym-aware scoring, phrase matching, and false-lead handling before the project introduces heavier vector infrastructure.
+The retrieval experiment compares a deliberately weak baseline, a lexical retriever, a local hybrid sparse semantic retriever, and a TF-IDF vector retriever. The vector row uses an IDF-weighted local index with character n-grams and alias features; it is not an external embedding store.
 
 ## Baseline To Improved Delta
 
@@ -75,13 +76,13 @@ The controlled workflow separates read-only tools from side-effecting actions. T
 
 - The dataset is synthetic and templated.
 - Extraction is deterministic rather than LLM-backed.
-- The hybrid retriever is local and sparse; it is not yet a vector database.
+- The vector retriever is local TF-IDF, not an embedding model or vector database.
 - Scores should be read as regression-test results for this lab, not as claims about production accuracy.
 
 ## Recommended Next Work
 
 - Add noisier, human-written ticket variants.
-- Introduce a real embedding/vector retrieval experiment.
+- Compare the local TF-IDF vector index with an embedding-backed vector store.
 - Add downloadable PDF report export.
 - Add OpenTelemetry-compatible trace export.
 - Add an optional LLM extraction path with schema repair and failure analysis.

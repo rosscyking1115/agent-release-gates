@@ -4,11 +4,13 @@ from internal_ai_agent.evals.runner import (
     evaluate_baseline,
     evaluate_comparison,
     evaluate_hybrid,
+    evaluate_vector,
 )
 from internal_ai_agent.rag.baseline import (
     answer_with_baseline,
     answer_with_hybrid,
     answer_with_lexical,
+    answer_with_vector,
 )
 
 
@@ -103,6 +105,22 @@ def test_hybrid_retrieval_prefers_specific_phrase_over_generic_status_terms() ->
     assert answer.citations == ["RB-TRADE_SUPPORT-04"]
 
 
+def test_vector_retrieval_handles_typo_tolerant_paraphrase() -> None:
+    from internal_ai_agent.data.synthetic import build_runbooks
+
+    runbooks = [section.__dict__ for section in build_runbooks()]
+    answer = answer_with_vector(
+        (
+            "The ops note says severl recrods look duplicated and need stewardship "
+            "review in Atlas Data Controls. Which runbook applies?"
+        ),
+        runbooks,
+    )
+
+    assert answer.issue_category == "duplicate_record_cluster"
+    assert answer.citations == ["RB-DATA_QUALITY-04"]
+
+
 def test_baseline_eval_writes_report(tmp_path: Path) -> None:
     from internal_ai_agent.data.synthetic import generate_all
 
@@ -127,6 +145,18 @@ def test_hybrid_eval_writes_report(tmp_path: Path) -> None:
     assert report["system_version"] == "hybrid_sparse_semantic_retrieval"
     assert (tmp_path / "reports/hybrid_eval_summary.json").exists()
     assert (tmp_path / "reports/hybrid_eval_cases.jsonl").exists()
+
+
+def test_vector_eval_writes_report(tmp_path: Path) -> None:
+    from internal_ai_agent.data.synthetic import generate_all
+
+    generate_all(tmp_path, ticket_count=24)
+    report = evaluate_vector(tmp_path)
+
+    assert report["case_count"] == 120
+    assert report["system_version"] == "local_tfidf_vector_retrieval"
+    assert (tmp_path / "reports/vector_eval_summary.json").exists()
+    assert (tmp_path / "reports/vector_eval_cases.jsonl").exists()
 
 
 def test_eval_comparison_writes_before_after_report(tmp_path: Path) -> None:

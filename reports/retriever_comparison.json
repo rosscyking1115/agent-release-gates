@@ -1,14 +1,14 @@
 {
   "case_count": 240,
   "notes": [
-    "Hybrid is compared as an experiment; the older two-system report is kept for continuity.",
+    "Hybrid and vector retrieval are compared as experiments; the older two-system report is kept for continuity.",
     "All systems run over the same synthetic golden cases."
   ],
   "systems": [
     {
       "abstention_accuracy": 0.8042,
       "citation_coverage": 0.2083,
-      "failure_count": 506,
+      "failure_count": 199,
       "issue_category_accuracy": 0.2083,
       "label": "Baseline team hints",
       "next_action_accuracy": 0.2083,
@@ -18,7 +18,7 @@
     {
       "abstention_accuracy": 1.0,
       "citation_coverage": 0.9792,
-      "failure_count": 13,
+      "failure_count": 4,
       "issue_category_accuracy": 0.9792,
       "label": "Improved lexical",
       "next_action_accuracy": 0.9792,
@@ -34,6 +34,16 @@
       "next_action_accuracy": 1.0,
       "retrieval_hit_rate_at_3": 1.0,
       "system_version": "hybrid_sparse_semantic_retrieval"
+    },
+    {
+      "abstention_accuracy": 1.0,
+      "citation_coverage": 0.9948,
+      "failure_count": 1,
+      "issue_category_accuracy": 0.9948,
+      "label": "Local TF-IDF vector",
+      "next_action_accuracy": 0.9948,
+      "retrieval_hit_rate_at_3": 1.0,
+      "system_version": "local_tfidf_vector_retrieval"
     }
   ]
 }

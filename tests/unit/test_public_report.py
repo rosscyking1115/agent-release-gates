@@ -31,6 +31,7 @@ def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
     assert "# Internal AI Agent Evaluation Report" in report
     assert "Golden retrieval cases: 240" in report
     assert "| Hybrid sparse semantic | 100.00% | 100.00% | 100.00% | 100.00% | 0 |" in report
+    assert "| Local TF-IDF vector |" in report
     assert "| Citation coverage | 20.83% | 97.92% | +77.09% |" in report
     assert "| Safe response rate | 0.00% | 100.00% |" in report
     assert "fully synthetic evaluation lab" in report
@@ -56,4 +57,5 @@ def test_generate_public_report_html_renders_tables_and_safety_boundary(tmp_path
     assert "<h1>Internal AI Agent Evaluation Report</h1>" in html
     assert "<table>" in html
     assert "<td>Hybrid sparse semantic</td>" in html
+    assert "<td>Local TF-IDF vector</td>" in html
     assert "It does not use real company documents" in html

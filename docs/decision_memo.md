@@ -55,6 +55,7 @@ The project is positioned as a responsible enterprise AI engineering lab. Its va
 | --- | --- |
 | Synthetic data generator | Data design and privacy-aware development |
 | Baseline vs improved retrieval eval | Measurement discipline |
+| Local vector retrieval experiment | Retrieval experimentation and error analysis |
 | Citation and abstention metrics | Grounded AI judgement |
 | Structured extraction schemas | Document intelligence and validation |
 | Red-team policy suite | AI security awareness |
@@ -65,7 +66,7 @@ The project is positioned as a responsible enterprise AI engineering lab. Its va
 
 ## Current Results
 
-The improved retrieval path raises citation coverage from 18.75% to 98.61% and retrieval hit rate@3 from 45.83% to 98.61% on synthetic golden cases.
+The improved lexical retrieval path raises citation coverage from 20.83% to 97.92% and retrieval hit rate@3 from 45.83% to 98.44% on synthetic golden cases. The sparse hybrid retriever reaches 100.00% citation coverage, while the local TF-IDF vector retriever reaches 100.00% retrieval hit@3 and 99.48% citation coverage with one visible final-ranking failure.
 
 The controlled-agent workflow blocks side-effecting mock routes without approval and executes them only when approval is granted. The eval reports 100.00% side-effect block rate, approval audit rate, and valid tool-call rate.
 
@@ -84,6 +85,6 @@ The security red-team suite reports 100.00% improved explicit policy block rate 
 
 ## Next Decisions
 
-- Whether to add a vector store now or keep lexical retrieval until the rest of the packaging is complete.
+- Whether to add an embedding-backed vector store now or deepen local retriever error analysis first.
 - Whether to add a real LangGraph dependency or keep the local controlled workflow until evaluation cases become more varied.
 - Whether to prioritize noisier data/error analysis or Docker packaging next.

@@ -74,6 +74,22 @@ def test_ask_endpoint_can_run_hybrid_mode() -> None:
     assert response.citations == ["RB-DATA_QUALITY-04"]
 
 
+def test_ask_endpoint_can_run_vector_mode() -> None:
+    response = ask(
+        AskRequest(
+            question=(
+                "Several records look duplicated and need stewardship review in "
+                "Atlas Data Controls. Which procedure applies?"
+            ),
+            mode="vector",
+        )
+    )
+
+    assert response.mode == "vector"
+    assert response.issue_category == "duplicate_record_cluster"
+    assert response.citations == ["RB-DATA_QUALITY-04"]
+
+
 def test_extract_endpoint_function_returns_route() -> None:
     response = extract(
         ExtractRequest(

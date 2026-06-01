@@ -34,7 +34,7 @@ def test_metric_rows_formats_before_after_values() -> None:
     assert rows[0]["delta_pct"] == "+40.00%"
 
 
-def test_retriever_experiment_rows_formats_three_systems() -> None:
+def test_retriever_experiment_rows_formats_multiple_systems() -> None:
     rows = retriever_experiment_rows(
         {
             "systems": [

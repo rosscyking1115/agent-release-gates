@@ -47,10 +47,12 @@ The dashboard reads the saved report artifacts rather than recomputing metrics o
 - `reports/baseline_eval_summary.json`
 - `reports/improved_eval_summary.json`
 - `reports/hybrid_eval_summary.json`
+- `reports/vector_eval_summary.json`
 - `reports/retriever_comparison.json`
 - `reports/eval_comparison.json`
 - `reports/baseline_eval_cases.jsonl`
 - `reports/improved_eval_cases.jsonl`
+- `reports/vector_eval_cases.jsonl`
 - `reports/agent_eval_summary.json`
 - `reports/agent_eval_cases.jsonl`
 
@@ -72,11 +74,18 @@ The hybrid version is `hybrid_sparse_semantic_retrieval`. It combines lexical ov
 
 This version is deliberately local and dependency-free. It is not a production embedding store; it is an experiment that shows whether synonym-aware retrieval reduces the known paraphrase and missing-metadata failures before adding pgvector or an embedding provider.
 
-The retriever comparison report saves a three-system table:
+## Local TF-IDF Vector Version
+
+The vector version is `local_tfidf_vector_retrieval`. It builds an IDF-weighted local vector index over runbook titles, content, team hints, procedure aliases, and character n-grams, then scores with cosine similarity plus a small keyword rerank.
+
+This is a real local vector-space retrieval experiment, but it is not an embedding model, pgvector store, or paid provider. Its current value is comparison discipline: it reaches full retrieval hit@3 on the synthetic suite, while preserving a visible final-ranking failure for missing-metadata analysis.
+
+The retriever comparison report saves a four-system table:
 
 - baseline team hints
 - improved lexical retrieval
 - hybrid sparse semantic retrieval
+- local TF-IDF vector retrieval
 
 ## Structured Extraction Version
 

@@ -21,13 +21,14 @@ def test_run_all_evals_generates_reports(tmp_path) -> None:
     assert summary["dataset_counts"]["runbooks"] == 24
     assert summary["comparison"]["case_count"] == 240
     assert summary["retriever_comparison"]["case_count"] == 240
-    assert len(summary["retriever_comparison"]["systems"]) == 3
+    assert len(summary["retriever_comparison"]["systems"]) == 4
     assert summary["extraction"]["metrics"]["schema_validity"] == 1.0
     assert summary["security"]["metrics"]["improved_safe_rate"] == 1.0
     assert summary["agent"]["metrics"]["side_effect_block_rate"] == 1.0
     assert (tmp_path / "reports/eval_comparison.json").exists()
     assert (tmp_path / "reports/retriever_comparison.json").exists()
     assert (tmp_path / "reports/hybrid_eval_summary.json").exists()
+    assert (tmp_path / "reports/vector_eval_summary.json").exists()
     assert (tmp_path / "reports/agent_eval_summary.json").exists()
     assert (tmp_path / "reports/evaluation_report.md").exists()
     assert (tmp_path / "reports/evaluation_report.html").exists()
