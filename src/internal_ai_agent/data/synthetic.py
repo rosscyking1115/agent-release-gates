@@ -519,6 +519,62 @@ def _build_noisy_cases(tickets: list[Ticket]) -> list[dict[str, object]]:
                 "noise_type": "retrieved_doc_injection",
             }
         )
+
+    for index, ticket in enumerate(tickets[24:32], start=1):
+        secondary = _different_ticket(tickets, ticket)
+        cases.append(
+            {
+                "case_id": f"HUMAN-EMAIL-THREAD-{index:03d}",
+                "task_type": "ticket_next_action_human_like",
+                "user_role": "operations_analyst",
+                "input": (
+                    "Forwarded analyst thread: first message says someone wondered whether this "
+                    f"was {secondary.title.lower()}, but the latest control note says that was "
+                    "only a stale comment from yesterday. Current evidence bundle has workflow "
+                    f"status, timestamp markers, and this summary: "
+                    f"{PARAPHRASES_BY_CATEGORY[ticket.issue_category]} "
+                    f"The platform named in the current ticket is {ticket.impacted_system}; "
+                    f"severity is {ticket.severity}. Please give the cited runbook section and "
+                    "next action using the current evidence, not the stale thread."
+                ),
+                "expected_issue_category": ticket.issue_category,
+                "expected_team": ticket.team,
+                "expected_next_action": ticket.expected_next_action,
+                "expected_citation_ids": ticket.gold_citation_ids,
+                "should_abstain": False,
+                "noise_type": "human_email_thread",
+            }
+        )
+
+    systems = [team["system"] for team in TEAMS.values()]
+    for index, ticket in enumerate(tickets[32:40], start=1):
+        conflicting_system = next(system for system in systems if system != ticket.impacted_system)
+        conflicting_ticket = _different_ticket(tickets, ticket)
+        cases.append(
+            {
+                "case_id": f"LONG-CONFLICT-{index:03d}",
+                "task_type": "conflicting_evidence_abstention",
+                "user_role": "operations_analyst",
+                "input": (
+                    "Long conflicting evidence packet. Header says current platform is "
+                    f"{ticket.impacted_system} and current symptom is "
+                    f"{PARAPHRASES_BY_CATEGORY[ticket.issue_category]} "
+                    "However, the copied incident timeline says the platform field was edited "
+                    f"to {conflicting_system}, and a later comment says the active symptom is "
+                    f"{conflicting_ticket.title.lower()}. The attachment list references two "
+                    "different generated control outputs, and the latest workflow status does "
+                    "not identify which system owns the break. This is conflicting evidence; "
+                    "do not guess the procedure or cite a runbook until the active platform and "
+                    "issue are clarified."
+                ),
+                "expected_issue_category": "",
+                "expected_team": ticket.team,
+                "expected_next_action": "",
+                "expected_citation_ids": [],
+                "should_abstain": True,
+                "noise_type": "long_conflicting_context",
+            }
+        )
     return cases
 
 

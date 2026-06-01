@@ -43,13 +43,15 @@ def test_full_golden_cases_include_harder_noise_types() -> None:
     cases = build_golden_cases(tickets)
     noise_types = {str(case["noise_type"]) for case in cases}
 
-    assert len(cases) == 192
+    assert len(cases) == 208
     assert "distractor_terms" in noise_types
     assert "typo_abbreviation" in noise_types
     assert "adversarial_instruction" in noise_types
     assert "human_colloquial" in noise_types
+    assert "human_email_thread" in noise_types
     assert "primary_signal_with_secondary_chatter" in noise_types
     assert "retrieved_doc_injection" in noise_types
+    assert "long_conflicting_context" in noise_types
 
 
 def test_generate_all_writes_expected_files(tmp_path: Path) -> None:

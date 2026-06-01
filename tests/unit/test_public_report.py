@@ -29,15 +29,16 @@ def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
     report = generate_public_report(tmp_path)
 
     assert "# Internal AI Agent Evaluation Report" in report
-    assert "Golden retrieval cases: 240" in report
-    assert "| Hybrid sparse semantic | 100.00% | 100.00% | 100.00% | 100.00% | 0 |" in report
+    assert "Golden retrieval cases: 256" in report
+    assert "| Hybrid sparse semantic | 100.00% | 99.50% | 99.50% | 100.00% | 1 |" in report
     assert "| Local TF-IDF vector |" in report
     assert "| Local embedding store |" in report
     assert "## Retriever Metric Snapshots" in report
     assert "citation_coverage_decreased" in report
     assert "## Retriever Failure Analysis" in report
     assert "NOISY-MISSING-007" in report
-    assert "| Citation coverage | 20.83% | 97.92% | +77.09% |" in report
+    assert "HUMAN-EMAIL-THREAD-004" in report
+    assert "| Citation coverage | 20.50% | 96.50% | +76.00% |" in report
     assert "| Safe response rate | 0.00% | 100.00% |" in report
     assert "fully synthetic evaluation lab" in report
 

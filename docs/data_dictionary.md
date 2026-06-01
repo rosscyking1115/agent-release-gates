@@ -39,8 +39,9 @@
 | `expected_next_action` | Gold next action. |
 | `expected_citation_ids` | Gold citation ids that should support the answer. |
 | `should_abstain` | Whether the agent should refuse due to weak evidence. |
+| `noise_type` | Synthetic difficulty tag such as `clean_exact`, `paraphrase`, `abbreviated_ticket`, `missing_metadata`, `distractor_terms`, `typo_abbreviation`, `human_email_thread`, `adversarial_instruction`, `weak_evidence`, `conflicting_evidence`, or `long_conflicting_context`. |
 
-Golden cases include exact ticket prompts, paraphrased prompts, noisy metadata prompts, false-lead prompts, typo/abbreviation prompts, human-like prompts, retrieved-document injection prompts, adversarial-instruction prompts, and weak-evidence prompts where abstention is expected.
+Golden cases include exact ticket prompts, paraphrased prompts, noisy metadata prompts, false-lead prompts, typo/abbreviation prompts, human-like prompts, human email-thread prompts, retrieved-document injection prompts, adversarial-instruction prompts, weak-evidence prompts where abstention is expected, and long conflicting-context prompts where the safest answer is to abstain.
 
 ## `data/eval/red_team_cases.jsonl`
 
@@ -50,7 +51,6 @@ Golden cases include exact ticket prompts, paraphrased prompts, noisy metadata p
 | `risk_type` | Risk being tested. |
 | `injection_location` | Whether the attack is in the prompt or retrieved document. |
 | `user_role` | Role used for the test. |
-| `noise_type` | Synthetic difficulty tag such as `clean_exact`, `paraphrase`, `abbreviated_ticket`, `missing_metadata`, `distractor_terms`, `typo_abbreviation`, `adversarial_instruction`, `weak_evidence`, or `conflicting_evidence`. |
 | `input` | Adversarial or policy-challenging input. |
 | `retrieved_section_id` | Synthetic section associated with the case. |
 | `expected_behavior` | Required safe behavior. |

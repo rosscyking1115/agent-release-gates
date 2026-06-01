@@ -28,12 +28,12 @@ The important part is not that the demo looks polished. The important part is th
 
 | Metric | Result |
 | --- | --- |
-| Retrieval hit rate@3 | 45.83% baseline to 98.44% lexical and 100.00% hybrid |
-| Citation coverage | 20.83% baseline to 97.92% lexical and 100.00% hybrid |
-| Local TF-IDF vector retrieval | 100.00% retrieval hit@3 and 99.48% citation coverage |
-| Local embedding-store retrieval | 100.00% retrieval hit@3 and 96.35% citation coverage |
-| Hybrid retrieval experiment | Solves the current 240-case synthetic golden set |
-| Abstention accuracy | 80.42% baseline to 100.00% improved |
+| Retrieval hit rate@3 | 45.50% baseline to 98.00% lexical and 100.00% hybrid |
+| Citation coverage | 20.50% baseline to 96.50% lexical and 99.50% hybrid |
+| Local TF-IDF vector retrieval | 100.00% retrieval hit@3 and 98.00% citation coverage |
+| Local embedding-store retrieval | 100.00% retrieval hit@3 and 96.50% citation coverage |
+| Hybrid retrieval experiment | Best current retriever on a harder 256-case synthetic golden set |
+| Abstention accuracy | 78.52% baseline to 100.00% improved |
 | Structured extraction schema validity | 100.00% |
 | Improved red-team safe response rate | 100.00% |
 | Agent side-effect block rate | 100.00% |
@@ -48,7 +48,7 @@ Built a synthetic internal AI agent evaluation lab with Python, FastAPI, Pydanti
 
 ## Possible Deeper CV Bullet
 
-Designed and implemented a production-style internal operations AI workflow over fully synthetic data, improving retrieval hit rate@3 from 45.83% to 98.44% with lexical retrieval and 100.00% with a sparse semantic hybrid, while adding Pydantic extraction, policy refusals, approval-gated mock tool use, structured audit events, and reproducible CI evaluation.
+Designed and implemented a production-style internal operations AI workflow over fully synthetic data, improving retrieval hit rate@3 from 45.50% to 98.00% with lexical retrieval and 100.00% with a sparse semantic hybrid, while adding Pydantic extraction, policy refusals, approval-gated mock tool use, structured audit events, and reproducible CI evaluation.
 
 ## Technical Questions The Project Supports
 
@@ -66,11 +66,11 @@ Designed and implemented a production-style internal operations AI workflow over
 ## Honest Limitations
 
 - Current embedding retrieval uses local feature hashing rather than provider-backed embeddings.
-- The extraction layer is deterministic and should be tested on noisier text.
+- The extraction layer is deterministic and should be tested on the newer email-thread and conflicting-context styles.
 - Red-team checks are string-based and should be expanded with more varied phrasing.
 - The controlled agent is a local workflow rather than a LangGraph graph.
 - Telemetry is local structured data rather than OpenTelemetry export.
 
 ## Useful Next Build Step
 
-The most valuable next engineering step is to compare the local embedding-store retriever with a provider-backed embedding model, then add noisier human-written tickets using the same golden-case evaluation contract. That would show retrieval experimentation and evaluation discipline without changing the project framing.
+The most valuable next engineering step is to compare the local embedding-store retriever with a provider-backed embedding model, then use the new human-thread failure analysis to improve final answer selection without hiding regressions. That would show retrieval experimentation and evaluation discipline without changing the project framing.

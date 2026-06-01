@@ -25,7 +25,7 @@ The current version creates a local, reproducible lab:
 - synthetic data generator
 - baseline and improved retrieval evaluations
 - hybrid sparse semantic, local TF-IDF vector, and local embedding-store retrieval experiments
-- noisy golden cases for abbreviations, missing metadata, and conflicting evidence
+- noisy golden cases for abbreviations, missing metadata, human email threads, and conflicting evidence
 - structured ticket extraction and routing
 - deterministic red-team policy checks
 - controlled agent workflow with approval-gated mock tools
@@ -66,7 +66,7 @@ Current generated seed dataset:
 | --- | ---: |
 | Runbook sections | 24 |
 | Operations tickets | 180 |
-| Golden eval cases | 240 |
+| Golden eval cases | 256 |
 | Red-team cases | 40 |
 
 The baseline evaluation writes:
@@ -101,13 +101,13 @@ Current deterministic evaluation:
 
 | Metric | Baseline | Improved lexical | Hybrid sparse semantic | Local TF-IDF vector | Local embedding store |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| Retrieval hit rate@3 | 45.83% | 98.44% | 100.00% | 100.00% | 100.00% |
-| Citation coverage | 20.83% | 97.92% | 100.00% | 99.48% | 96.35% |
-| Issue category accuracy | 20.83% | 97.92% | 100.00% | 99.48% | 96.35% |
-| Next action accuracy | 20.83% | 97.92% | 100.00% | 99.48% | 96.35% |
-| Abstention accuracy | 80.42% | 100.00% | 100.00% | 100.00% | 100.00% |
+| Retrieval hit rate@3 | 45.50% | 98.00% | 100.00% | 100.00% | 100.00% |
+| Citation coverage | 20.50% | 96.50% | 99.50% | 98.00% | 96.50% |
+| Issue category accuracy | 20.50% | 96.50% | 99.50% | 98.00% | 96.50% |
+| Next action accuracy | 20.50% | 96.50% | 99.50% | 98.00% | 96.50% |
+| Abstention accuracy | 78.52% | 100.00% | 100.00% | 100.00% | 100.00% |
 
-These are first-pass synthetic metrics across exact, paraphrased, noisy, human-like, distractor, typo, weak-evidence, conflicting-evidence, retrieved-document injection, and adversarial-instruction cases. Later phases should add provider-backed embedding comparison, more adversarial retrieval cases, and red-team scoring.
+These are first-pass synthetic metrics across exact, paraphrased, noisy, human-like, human email-thread, distractor, typo, weak-evidence, conflicting-evidence, long-conflicting-context, retrieved-document injection, and adversarial-instruction cases. Later phases should add provider-backed embedding comparison, more adversarial retrieval cases, and red-team scoring.
 
 The hybrid retriever is intentionally local and deterministic: it combines lexical scoring with sparse semantic alias features, negated false-lead handling, and phrase matching. The local TF-IDF vector retriever adds an IDF-weighted cosine index with character n-grams and alias features. The local embedding-store retriever builds stable feature-hashed dense vectors and searches them with cosine similarity. It reaches 100.00% retrieval hit@3 but has seven final-selection failures, which shows why embedding-style retrieval still needs ranking and answer-selection evaluation.
 
