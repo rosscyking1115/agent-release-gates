@@ -78,6 +78,11 @@ def load_agent_summary(project_root: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def load_public_report(project_root: Path) -> str:
+    path = project_root / "reports/evaluation_report.md"
+    return path.read_text(encoding="utf-8")
+
+
 def metric_rows(comparison: dict[str, Any]) -> list[dict[str, Any]]:
     metrics = comparison["metrics"]
     rows: list[dict[str, Any]] = []

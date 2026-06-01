@@ -6,6 +6,7 @@ from internal_ai_agent.dashboard.data import (
     failed_case_rows,
     failure_example_rows,
     failure_reason_rows,
+    load_public_report,
     metric_rows,
     retriever_experiment_rows,
     security_metric_rows,
@@ -199,3 +200,11 @@ def test_agent_metric_rows_formats_scores() -> None:
 
     assert rows[0]["label"] == "Trace coverage rate"
     assert rows[0]["value_pct"] == "100.00%"
+
+
+def test_load_public_report_reads_markdown(tmp_path) -> None:
+    reports_dir = tmp_path / "reports"
+    reports_dir.mkdir()
+    (reports_dir / "evaluation_report.md").write_text("# Report\n", encoding="utf-8")
+
+    assert load_public_report(tmp_path) == "# Report\n"

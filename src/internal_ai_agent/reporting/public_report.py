@@ -111,7 +111,7 @@ def generate_public_report(project_root: Path) -> str:
             "",
             "- Add noisier, human-written ticket variants.",
             "- Introduce a real embedding/vector retrieval experiment.",
-            "- Add report export from the dashboard UI.",
+            "- Add downloadable PDF or HTML report export.",
             "- Add OpenTelemetry-compatible trace export.",
             "- Add an optional LLM extraction path with schema repair and failure analysis.",
             "",

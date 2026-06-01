@@ -1,4 +1,7 @@
+from pathlib import Path
+
 from fastapi import FastAPI
+from fastapi.responses import PlainTextResponse
 
 from internal_ai_agent.agent.workflow import run_controlled_agent
 from internal_ai_agent.api.schemas import (
@@ -24,10 +27,17 @@ app = FastAPI(
     version="0.1.0",
 )
 
+PROJECT_ROOT = Path.cwd()
+
 
 @app.get("/health")
 def health() -> dict[str, str]:
     return {"status": "ok"}
+
+
+@app.get("/reports/evaluation", response_class=PlainTextResponse)
+def evaluation_report() -> str:
+    return (PROJECT_ROOT / "reports/evaluation_report.md").read_text(encoding="utf-8")
 
 
 @app.post("/ask", response_model=AskResponse)

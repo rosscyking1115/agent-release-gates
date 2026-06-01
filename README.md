@@ -164,6 +164,12 @@ uv run streamlit run C:\Files\Jobs\project-5-jpm_internal_ai_agent\app\streamlit
 
 The `/ask` API supports `baseline`, `improved`, and `hybrid` modes. The `hybrid` mode uses the local sparse semantic retriever; `improved` is kept as the lexical retriever for comparison.
 
+The generated evaluation report is available from the dashboard and from:
+
+```text
+http://localhost:8000/reports/evaluation
+```
+
 ## Docker
 
 Build the local image:

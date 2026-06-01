@@ -18,6 +18,7 @@ from internal_ai_agent.dashboard.data import (
     load_case_rows,
     load_comparison,
     load_extraction_summary,
+    load_public_report,
     load_retriever_comparison,
     load_security_summary,
     metric_rows,
@@ -41,6 +42,7 @@ def main() -> None:
     extraction_summary = load_extraction_summary(PROJECT_ROOT)
     security_summary = load_security_summary(PROJECT_ROOT)
     agent_summary = load_agent_summary(PROJECT_ROOT)
+    public_report = load_public_report(PROJECT_ROOT)
     rows = metric_rows(comparison)
     extraction_rows = extraction_metric_rows(extraction_summary)
     security_rows = security_metric_rows(security_summary)
@@ -55,6 +57,7 @@ def main() -> None:
     _render_extraction_metrics(extraction_summary, extraction_rows)
     _render_security_metrics(security_summary, security_rows)
     _render_agent_metrics(agent_summary, agent_rows)
+    _render_public_report(public_report)
     _render_case_analysis(baseline_cases, improved_cases)
 
 
@@ -240,6 +243,17 @@ def _render_agent_metrics(
     table_df = pd.DataFrame(rows)[["label", "value_pct"]]
     table_df.columns = ["Metric", "Score"]
     st.dataframe(table_df, hide_index=True, use_container_width=True)
+
+
+def _render_public_report(report_markdown: str) -> None:
+    st.subheader("Evaluation Report")
+    st.download_button(
+        "Download Markdown report",
+        data=report_markdown,
+        file_name="internal_ai_agent_evaluation_report.md",
+        mime="text/markdown",
+    )
+    st.markdown(report_markdown)
 
 
 def _render_case_analysis(

@@ -1,9 +1,16 @@
-from internal_ai_agent.api.main import agent_run, ask, extract, health
+from internal_ai_agent.api.main import agent_run, ask, evaluation_report, extract, health
 from internal_ai_agent.api.schemas import AgentRunRequest, AskRequest, ExtractRequest
 
 
 def test_health() -> None:
     assert health() == {"status": "ok"}
+
+
+def test_evaluation_report_endpoint_returns_markdown() -> None:
+    report = evaluation_report()
+
+    assert "# Internal AI Agent Evaluation Report" in report
+    assert "## Retrieval Evaluation" in report
 
 
 def test_ask_endpoint_function_returns_improved_answer() -> None:
