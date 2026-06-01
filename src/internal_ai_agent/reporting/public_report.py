@@ -59,16 +59,19 @@ def generate_public_report(project_root: Path) -> str:
             f"- Synthetic ticket extraction and agent cases: {agent['case_count']}",
             f"- Red-team safety cases: {security['case_count']}",
             "- Best current retriever: Hybrid sparse semantic retrieval",
-            "- Current vector experiment: local TF-IDF vector retrieval with one ranking failure",
+            (
+                "- Current vector experiments: local TF-IDF vector retrieval and local "
+                "embedding-store retrieval"
+            ),
             "",
             "## Retrieval Evaluation",
             "",
             _retriever_table(retrievers),
             "",
             "The retrieval experiment compares a deliberately weak baseline, a lexical "
-            "retriever, a local hybrid sparse semantic retriever, and a TF-IDF vector "
-            "retriever. The vector row uses an IDF-weighted local index with character "
-            "n-grams and alias features; it is not an external embedding store.",
+            "retriever, a local hybrid sparse semantic retriever, a TF-IDF vector "
+            "retriever, and a local embedding-store retriever. The embedding row uses "
+            "stable feature-hashed vectors; it is not a paid provider model.",
             "",
             "## Retriever Failure Analysis",
             "",
@@ -121,6 +124,7 @@ def generate_public_report(project_root: Path) -> str:
             "- The dataset is synthetic and templated.",
             "- Extraction is deterministic rather than LLM-backed.",
             "- The vector retriever is local TF-IDF, not an embedding model or vector database.",
+            "- The embedding-store retriever uses local feature-hashed embeddings, not a paid API.",
             (
                 "- Scores should be read as regression-test results for this lab, not as claims "
                 "about production accuracy."
@@ -129,7 +133,7 @@ def generate_public_report(project_root: Path) -> str:
             "## Recommended Next Work",
             "",
             "- Add noisier, human-written ticket variants.",
-            "- Compare the local TF-IDF vector index with an embedding-backed vector store.",
+            "- Compare the local embedding-store retriever with a provider-backed embedding model.",
             "- Add downloadable PDF report export.",
             "- Add OpenTelemetry-compatible trace export.",
             "- Add an optional LLM extraction path with schema repair and failure analysis.",

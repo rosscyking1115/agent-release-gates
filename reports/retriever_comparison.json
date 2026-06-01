@@ -1,7 +1,7 @@
 {
   "case_count": 240,
   "notes": [
-    "Hybrid and vector retrieval are compared as experiments; the older two-system report is kept for continuity.",
+    "Hybrid, vector, and embedding-store retrieval are compared as experiments; the older two-system report is kept for continuity.",
     "All systems run over the same synthetic golden cases."
   ],
   "systems": [
@@ -44,6 +44,16 @@
       "next_action_accuracy": 0.9948,
       "retrieval_hit_rate_at_3": 1.0,
       "system_version": "local_tfidf_vector_retrieval"
+    },
+    {
+      "abstention_accuracy": 1.0,
+      "citation_coverage": 0.9635,
+      "failure_count": 7,
+      "issue_category_accuracy": 0.9635,
+      "label": "Local embedding store",
+      "next_action_accuracy": 0.9635,
+      "retrieval_hit_rate_at_3": 1.0,
+      "system_version": "local_hashed_embedding_store_retrieval"
     }
   ]
 }

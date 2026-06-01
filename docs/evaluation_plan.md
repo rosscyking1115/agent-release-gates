@@ -48,6 +48,7 @@ The dashboard reads the saved report artifacts rather than recomputing metrics o
 - `reports/improved_eval_summary.json`
 - `reports/hybrid_eval_summary.json`
 - `reports/vector_eval_summary.json`
+- `reports/embedding_eval_summary.json`
 - `reports/retriever_comparison.json`
 - `reports/eval_comparison.json`
 - `reports/baseline_eval_cases.jsonl`
@@ -80,12 +81,19 @@ The vector version is `local_tfidf_vector_retrieval`. It builds an IDF-weighted 
 
 This is a real local vector-space retrieval experiment, but it is not an embedding model, pgvector store, or paid provider. Its current value is comparison discipline: it reaches full retrieval hit@3 on the synthetic suite, while preserving a visible final-ranking failure for missing-metadata analysis.
 
-The retriever comparison report saves a four-system table:
+## Local Embedding Store Version
+
+The embedding-store version is `local_hashed_embedding_store_retrieval`. It builds a local store of dense, stable feature-hashed vectors over runbook titles, content, team hints, and procedure aliases, then searches with cosine similarity plus lightweight reranking.
+
+This is not a paid embedding provider or production vector database. It exercises the same evaluation contract an embedding-backed vector store would need: index build, query embedding, top-k retrieval, final answer selection, citation checking, and failure analysis. In the current synthetic suite it reaches full retrieval hit@3 but has more final-selection failures than the TF-IDF vector retriever, which is useful evidence that embeddings do not remove the need for reranking and answer-grounding checks.
+
+The retriever comparison report saves a five-system table:
 
 - baseline team hints
 - improved lexical retrieval
 - hybrid sparse semantic retrieval
 - local TF-IDF vector retrieval
+- local embedding-store retrieval
 
 The public report and dashboard also surface retriever failure analysis. The overview counts failed cases, cases where the expected section was retrieved but not finally cited, abstention mismatches, and the top failure reason for each retriever. The example table keeps the diagnostic and recommended fix attached to concrete case ids.
 

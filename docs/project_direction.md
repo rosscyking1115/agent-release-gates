@@ -50,7 +50,7 @@ Do not add a feature just because it sounds impressive. A feature should be adde
 
 The project is useful, but it is still too deterministic in several places:
 
-- Retrieval now includes sparse hybrid and local TF-IDF vector experiments, but not an embedding-backed vector store.
+- Retrieval now includes sparse hybrid, local TF-IDF vector, and local feature-hashed embedding-store experiments, but not a provider-backed embedding model.
 - Error analysis now identifies retrieved-but-not-cited failures, but not yet longitudinal trends.
 - Ticket and runbook data are still partly templated, even after adding noisy, human-like, and retrieved-document-injection cases.
 - Extraction is deterministic pattern matching.
@@ -62,7 +62,7 @@ These are acceptable for the first lab version, but they should guide the next w
 
 ## Next Build Priorities
 
-1. Compare the local TF-IDF vector retriever with an embedding-backed vector store.
+1. Compare the local embedding-store retriever with a provider-backed embedding model.
 2. Expand the noisy evaluation dataset with more human-written variants and longer contradictory context.
 3. Add longitudinal error-analysis snapshots so retrieval regressions are easier to track over time.
 4. Add OpenTelemetry-style trace export or a local trace viewer.

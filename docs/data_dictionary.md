@@ -58,7 +58,7 @@ Golden cases include exact ticket prompts, paraphrased prompts, noisy metadata p
 
 ## Retrieval eval case files
 
-Retrieval case result files include `baseline_eval_cases.jsonl`, `improved_eval_cases.jsonl`, `hybrid_eval_cases.jsonl`, and `vector_eval_cases.jsonl`.
+Retrieval case result files include `baseline_eval_cases.jsonl`, `improved_eval_cases.jsonl`, `hybrid_eval_cases.jsonl`, `vector_eval_cases.jsonl`, and `embedding_eval_cases.jsonl`.
 
 | Field | Description |
 | --- | --- |

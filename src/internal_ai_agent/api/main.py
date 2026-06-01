@@ -17,6 +17,7 @@ from internal_ai_agent.data.synthetic import build_runbooks
 from internal_ai_agent.extraction.service import extract_and_route
 from internal_ai_agent.rag.baseline import (
     answer_with_baseline,
+    answer_with_embedding_store,
     answer_with_hybrid,
     answer_with_lexical,
     answer_with_vector,
@@ -49,13 +50,18 @@ def evaluation_report_html() -> str:
 @app.post("/ask", response_model=AskResponse)
 def ask(request: AskRequest) -> AskResponse:
     runbooks = [section.__dict__ for section in build_runbooks()]
-    mode = request.mode if request.mode in {"baseline", "hybrid", "vector"} else "improved"
+    retriever_modes = {"baseline", "hybrid", "vector", "embedding"}
+    mode = request.mode if request.mode in retriever_modes else "improved"
     if mode == "baseline":
         answer = answer_with_baseline(request.question, runbooks)
     elif mode == "hybrid":
         answer = answer_with_hybrid(request.question, runbooks, user_role=request.user_role)
     elif mode == "vector":
         answer = answer_with_vector(request.question, runbooks, user_role=request.user_role)
+    elif mode == "embedding":
+        answer = answer_with_embedding_store(
+            request.question, runbooks, user_role=request.user_role
+        )
     else:
         answer = answer_with_lexical(request.question, runbooks, user_role=request.user_role)
     return AskResponse(

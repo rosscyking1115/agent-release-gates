@@ -32,6 +32,7 @@ def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
     assert "Golden retrieval cases: 240" in report
     assert "| Hybrid sparse semantic | 100.00% | 100.00% | 100.00% | 100.00% | 0 |" in report
     assert "| Local TF-IDF vector |" in report
+    assert "| Local embedding store |" in report
     assert "## Retriever Failure Analysis" in report
     assert "NOISY-MISSING-007" in report
     assert "| Citation coverage | 20.83% | 97.92% | +77.09% |" in report
@@ -60,4 +61,5 @@ def test_generate_public_report_html_renders_tables_and_safety_boundary(tmp_path
     assert "<table>" in html
     assert "<td>Hybrid sparse semantic</td>" in html
     assert "<td>Local TF-IDF vector</td>" in html
+    assert "<td>Local embedding store</td>" in html
     assert "It does not use real company documents" in html

@@ -3,6 +3,7 @@ from __future__ import annotations
 import re
 from collections import Counter
 from dataclasses import dataclass
+from hashlib import blake2b
 from math import log
 from pathlib import Path
 from typing import Any
@@ -29,6 +30,12 @@ class BaselineAnswer:
     citations: list[str]
     retrieved_sections: list[RetrievedSection]
     abstained: bool
+
+
+@dataclass(frozen=True)
+class LocalEmbeddingRecord:
+    section: dict[str, Any]
+    embedding: list[float]
 
 
 SYSTEM_HINTS = {
@@ -425,6 +432,104 @@ def answer_with_vector(
     )
 
 
+def retrieve_embedding_store(
+    question: str,
+    runbooks: list[dict[str, Any]],
+    *,
+    user_role: str = "operations_analyst",
+    top_k: int = 3,
+) -> list[RetrievedSection]:
+    """Local embedding-store retrieval using stable hashed embeddings.
+
+    The store is deliberately dependency-free: it embeds runbook sections into fixed-size dense
+    vectors with feature hashing, then searches by cosine similarity. This keeps the experiment
+    reproducible while making the storage/search contract close to an embedding-backed vector DB.
+    """
+
+    store = _build_local_embedding_store(runbooks, user_role=user_role)
+    if not store:
+        return []
+
+    query_tokens = _tokenize(question)
+    query_embedding = _embed_text(question, is_query=True)
+    scored: list[RetrievedSection] = []
+
+    for record in store:
+        section = record.section
+        title = str(section["title"])
+        content = str(section["content"])
+        category = title.lower().replace(" ", "_")
+
+        embedding_score = _dense_cosine_similarity(query_embedding, record.embedding) * 100
+        ranking_score = _alias_overlap(query_tokens, category) * 5
+        ranking_score += _title_phrase_score(question, category) * 0.75
+        ranking_score += _team_hint_score(question, str(section["team"])) * 0.25
+        score = embedding_score + ranking_score - _negated_category_penalty(question, category)
+
+        if score <= 0:
+            continue
+
+        scored.append(
+            RetrievedSection(
+                section_id=str(section["section_id"]),
+                title=title,
+                team=str(section["team"]),
+                content=content,
+                score=round(score, 4),
+            )
+        )
+
+    return sorted(scored, key=lambda item: (-item.score, item.section_id))[:top_k]
+
+
+def answer_with_embedding_store(
+    question: str,
+    runbooks: list[dict[str, Any]],
+    *,
+    user_role: str = "operations_analyst",
+) -> BaselineAnswer:
+    if should_block_request(question) or _should_abstain_for_safety(question):
+        return BaselineAnswer(
+            answer=policy_refusal(),
+            issue_category=None,
+            team=None,
+            next_action=None,
+            citations=[],
+            retrieved_sections=[],
+            abstained=True,
+        )
+
+    retrieved = retrieve_embedding_store(question, runbooks, user_role=user_role, top_k=3)
+    if not retrieved:
+        return BaselineAnswer(
+            answer="I do not have enough synthetic runbook evidence to answer this safely.",
+            issue_category=None,
+            team=None,
+            next_action=None,
+            citations=[],
+            retrieved_sections=[],
+            abstained=True,
+        )
+
+    chosen = retrieved[0]
+    issue_category = chosen.title.lower().replace(" ", "_")
+    next_action = _extract_next_action(chosen.content)
+    answer = (
+        f"Likely issue: {chosen.title}. "
+        f"Recommended next action: {next_action} "
+        f"Citation: {chosen.section_id}."
+    )
+    return BaselineAnswer(
+        answer=answer,
+        issue_category=issue_category,
+        team=chosen.team,
+        next_action=next_action,
+        citations=[chosen.section_id],
+        retrieved_sections=retrieved,
+        abstained=False,
+    )
+
+
 def _extract_next_action(content: str) -> str:
     marker = "Recommended next action:"
     if marker not in content:
@@ -559,6 +664,78 @@ def _tfidf_vector(features: list[str], idf: dict[str, float]) -> dict[str, float
         feature: (count / max_count) * idf.get(feature, 1.0)
         for feature, count in counts.items()
     }
+
+
+EMBEDDING_DIMENSIONS = 96
+
+
+def _build_local_embedding_store(
+    runbooks: list[dict[str, Any]],
+    *,
+    user_role: str,
+) -> list[LocalEmbeddingRecord]:
+    records: list[LocalEmbeddingRecord] = []
+    for section in runbooks:
+        if user_role not in section.get("allowed_roles", []):
+            continue
+        text = _section_embedding_text(section)
+        records.append(LocalEmbeddingRecord(section=section, embedding=_embed_text(text)))
+    return records
+
+
+def _section_embedding_text(section: dict[str, Any]) -> str:
+    title = str(section["title"])
+    team = str(section["team"])
+    category = title.lower().replace(" ", "_")
+    aliases = " ".join(SEMANTIC_ALIASES.get(category, []))
+    team_hints = " ".join(SYSTEM_HINTS.get(team, []))
+    return " ".join([title, title, str(section["content"]), aliases, aliases, team_hints])
+
+
+def _embed_text(text: str, *, is_query: bool = False) -> list[float]:
+    features = _embedding_features(text, is_query=is_query)
+    vector = [0.0] * EMBEDDING_DIMENSIONS
+    for feature, weight in features.items():
+        digest = blake2b(feature.encode("utf-8"), digest_size=8).digest()
+        bucket = int.from_bytes(digest[:4], "big") % EMBEDDING_DIMENSIONS
+        sign = 1.0 if digest[4] % 2 == 0 else -1.0
+        vector[bucket] += sign * weight
+    return _normalize_dense_vector(vector)
+
+
+def _embedding_features(text: str, *, is_query: bool) -> dict[str, float]:
+    tokens = _token_sequence(text)
+    counts: Counter[str] = Counter()
+    counts.update(f"token:{token}" for token in tokens)
+    counts.update(f"char3:{gram}" for token in tokens for gram in _char_ngrams(token, 3))
+    counts.update(
+        f"bigram:{left}_{right}" for left, right in zip(tokens, tokens[1:], strict=False)
+    )
+
+    token_set = set(tokens)
+    for category, aliases in SEMANTIC_ALIASES.items():
+        matches = [alias for alias in aliases if alias in token_set]
+        if matches:
+            counts[f"concept:{category}"] += 4 if is_query else 6
+            counts.update(f"alias:{alias}" for alias in matches)
+
+    return {feature: 1.0 + log(count) for feature, count in counts.items()}
+
+
+def _normalize_dense_vector(vector: list[float]) -> list[float]:
+    norm = sum(value * value for value in vector) ** 0.5
+    if norm == 0:
+        return vector
+    return [value / norm for value in vector]
+
+
+def _dense_cosine_similarity(left: list[float], right: list[float]) -> float:
+    if not left or not right:
+        return 0.0
+    return sum(
+        left_value * right_value
+        for left_value, right_value in zip(left, right, strict=True)
+    )
 
 
 def _alias_overlap(query_tokens: set[str], category: str) -> int:

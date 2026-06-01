@@ -20,7 +20,7 @@ Internal AI agents are only useful if they are grounded, measurable, safe, and a
 
 ## Strongest Technical Explanation
 
-I started with a deliberately weak baseline so improvement could be measured. The baseline used broad team/system hints and often found the right team but not the exact procedure. Then I added deterministic lexical retrieval, a local sparse semantic hybrid retriever, a local TF-IDF vector retriever, role filtering, citations, abstention behavior, structured extraction, red-team blocking, controlled tool use, and traceable audit events.
+I started with a deliberately weak baseline so improvement could be measured. The baseline used broad team/system hints and often found the right team but not the exact procedure. Then I added deterministic lexical retrieval, a local sparse semantic hybrid retriever, a local TF-IDF vector retriever, a local feature-hashed embedding store, role filtering, citations, abstention behavior, structured extraction, red-team blocking, controlled tool use, and traceable audit events.
 
 The important part is not that the demo looks polished. The important part is that each improvement has an evaluation report behind it.
 
@@ -31,19 +31,20 @@ The important part is not that the demo looks polished. The important part is th
 | Retrieval hit rate@3 | 45.83% baseline to 98.44% lexical and 100.00% hybrid |
 | Citation coverage | 20.83% baseline to 97.92% lexical and 100.00% hybrid |
 | Local TF-IDF vector retrieval | 100.00% retrieval hit@3 and 99.48% citation coverage |
+| Local embedding-store retrieval | 100.00% retrieval hit@3 and 96.35% citation coverage |
 | Hybrid retrieval experiment | Solves the current 240-case synthetic golden set |
 | Abstention accuracy | 80.42% baseline to 100.00% improved |
 | Structured extraction schema validity | 100.00% |
 | Improved red-team safe response rate | 100.00% |
 | Agent side-effect block rate | 100.00% |
 | Trace and audit event coverage | 100.00% |
-| Tests | 47 passing |
+| Tests | 55 passing |
 
 These are synthetic deterministic metrics, so I would present them as engineering checks rather than real production claims.
 
 ## Possible CV Bullet
 
-Built a synthetic internal AI agent evaluation lab with Python, FastAPI, Pydantic, Streamlit, deterministic RAG, local TF-IDF vector retrieval, structured ticket extraction, red-team policy checks, approval-gated mock tools, traceable audit events, and CI-backed evaluation reports over synthetic operations tickets and runbooks.
+Built a synthetic internal AI agent evaluation lab with Python, FastAPI, Pydantic, Streamlit, deterministic RAG, local TF-IDF vector retrieval, local embedding-store retrieval, structured ticket extraction, red-team policy checks, approval-gated mock tools, traceable audit events, and CI-backed evaluation reports over synthetic operations tickets and runbooks.
 
 ## Possible Deeper CV Bullet
 
@@ -55,6 +56,7 @@ Designed and implemented a production-style internal operations AI workflow over
 - Why measure a weak baseline first?
 - Why are citations and abstention important in operations workflows?
 - Why separate retrieval hit@3 from final citation correctness?
+- Why did the local embedding-store retriever trail TF-IDF on final citation selection?
 - How does the approval gate reduce excessive agency risk?
 - How are prompt injection and system-prompt leakage handled?
 - What would change if this became a real production system?
@@ -62,7 +64,7 @@ Designed and implemented a production-style internal operations AI workflow over
 
 ## Honest Limitations
 
-- Current vector retrieval is local TF-IDF rather than an embedding-backed vector database.
+- Current embedding retrieval uses local feature hashing rather than provider-backed embeddings.
 - The extraction layer is deterministic and should be tested on noisier text.
 - Red-team checks are string-based and should be expanded with more varied phrasing.
 - The controlled agent is a local workflow rather than a LangGraph graph.
@@ -70,4 +72,4 @@ Designed and implemented a production-style internal operations AI workflow over
 
 ## Useful Next Build Step
 
-The most valuable next engineering step is to deepen retriever error analysis and compare the local TF-IDF vector layer with an embedding-backed vector store using the same golden cases. That would show retrieval experimentation and evaluation discipline without changing the project framing.
+The most valuable next engineering step is to compare the local embedding-store retriever with a provider-backed embedding model, then add noisier human-written tickets using the same golden-case evaluation contract. That would show retrieval experimentation and evaluation discipline without changing the project framing.

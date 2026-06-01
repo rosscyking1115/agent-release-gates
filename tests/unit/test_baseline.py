@@ -3,11 +3,13 @@ from pathlib import Path
 from internal_ai_agent.evals.runner import (
     evaluate_baseline,
     evaluate_comparison,
+    evaluate_embedding_store,
     evaluate_hybrid,
     evaluate_vector,
 )
 from internal_ai_agent.rag.baseline import (
     answer_with_baseline,
+    answer_with_embedding_store,
     answer_with_hybrid,
     answer_with_lexical,
     answer_with_vector,
@@ -121,6 +123,22 @@ def test_vector_retrieval_handles_typo_tolerant_paraphrase() -> None:
     assert answer.citations == ["RB-DATA_QUALITY-04"]
 
 
+def test_embedding_store_retrieval_handles_missing_metadata_case() -> None:
+    from internal_ai_agent.data.synthetic import build_runbooks
+
+    runbooks = [section.__dict__ for section in build_runbooks()]
+    answer = answer_with_embedding_store(
+        (
+            "New intake case without a ticket id. The client activation is paused because "
+            "a required KYC artifact is absent from Nova Client Intake evidence."
+        ),
+        runbooks,
+    )
+
+    assert answer.issue_category == "missing_kyc_document"
+    assert answer.citations == ["RB-CLIENT_ONBOARDING-01"]
+
+
 def test_baseline_eval_writes_report(tmp_path: Path) -> None:
     from internal_ai_agent.data.synthetic import generate_all
 
@@ -157,6 +175,18 @@ def test_vector_eval_writes_report(tmp_path: Path) -> None:
     assert report["system_version"] == "local_tfidf_vector_retrieval"
     assert (tmp_path / "reports/vector_eval_summary.json").exists()
     assert (tmp_path / "reports/vector_eval_cases.jsonl").exists()
+
+
+def test_embedding_store_eval_writes_report(tmp_path: Path) -> None:
+    from internal_ai_agent.data.synthetic import generate_all
+
+    generate_all(tmp_path, ticket_count=24)
+    report = evaluate_embedding_store(tmp_path)
+
+    assert report["case_count"] == 120
+    assert report["system_version"] == "local_hashed_embedding_store_retrieval"
+    assert (tmp_path / "reports/embedding_eval_summary.json").exists()
+    assert (tmp_path / "reports/embedding_eval_cases.jsonl").exists()
 
 
 def test_eval_comparison_writes_before_after_report(tmp_path: Path) -> None:

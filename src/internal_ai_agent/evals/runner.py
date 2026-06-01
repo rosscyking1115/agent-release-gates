@@ -8,6 +8,7 @@ from internal_ai_agent.io import read_jsonl, write_json, write_jsonl
 from internal_ai_agent.rag.baseline import (
     BaselineAnswer,
     answer_with_baseline,
+    answer_with_embedding_store,
     answer_with_hybrid,
     answer_with_lexical,
     answer_with_vector,
@@ -193,6 +194,51 @@ def evaluate_vector(project_root: Path) -> dict[str, Any]:
     return report
 
 
+def evaluate_embedding_store(project_root: Path) -> dict[str, Any]:
+    runbooks = load_runbooks(project_root)
+    cases = read_jsonl(project_root / "data/eval/golden_cases.jsonl")
+    results = [
+        _evaluate_case(
+            case,
+            answer_with_embedding_store(
+                str(case["input"]),
+                runbooks,
+                user_role=str(case["user_role"]),
+            ),
+        )
+        for case in cases
+    ]
+    metrics = _summarize(results)
+
+    report = {
+        "system_version": "local_hashed_embedding_store_retrieval",
+        "dataset": "golden_cases",
+        "case_count": len(results),
+        "metrics": metrics,
+        "by_task_type": _summarize_by_dimension(results, "task_type"),
+        "by_noise_type": _summarize_by_dimension(results, "noise_type"),
+        "failure_reasons": _failure_reason_counts(results),
+        "failure_examples": _failure_examples(results),
+        "notes": [
+            (
+                "Embedding-store retrieval builds a local dense vector index using stable "
+                "feature-hashed embeddings over runbook titles, content, aliases, and team hints."
+            ),
+            (
+                "This exercises an embedding-store search contract without requiring paid APIs, "
+                "network access, or non-deterministic model downloads."
+            ),
+            "Role filtering excludes runbook sections the requester is not allowed to retrieve.",
+        ],
+    }
+
+    write_json(project_root / "reports/embedding_eval_summary.json", report)
+    write_jsonl(
+        project_root / "reports/embedding_eval_cases.jsonl", (asdict(row) for row in results)
+    )
+    return report
+
+
 def evaluate_comparison(project_root: Path) -> dict[str, Any]:
     baseline = evaluate_baseline(project_root)
     improved = evaluate_lexical(project_root)
@@ -219,6 +265,7 @@ def evaluate_retriever_comparison(project_root: Path) -> dict[str, Any]:
     lexical = evaluate_lexical(project_root)
     hybrid = evaluate_hybrid(project_root)
     vector = evaluate_vector(project_root)
+    embedding = evaluate_embedding_store(project_root)
     report = {
         "case_count": baseline["case_count"],
         "systems": [
@@ -226,11 +273,12 @@ def evaluate_retriever_comparison(project_root: Path) -> dict[str, Any]:
             _system_row("Improved lexical", lexical),
             _system_row("Hybrid sparse semantic", hybrid),
             _system_row("Local TF-IDF vector", vector),
+            _system_row("Local embedding store", embedding),
         ],
         "notes": [
             (
-                "Hybrid and vector retrieval are compared as experiments; the older two-system "
-                "report is kept for continuity."
+                "Hybrid, vector, and embedding-store retrieval are compared as experiments; "
+                "the older two-system report is kept for continuity."
             ),
             "All systems run over the same synthetic golden cases.",
         ],

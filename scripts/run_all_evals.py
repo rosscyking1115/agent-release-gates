@@ -50,8 +50,9 @@ def main() -> None:
         f"{comparison_metrics['retrieval_hit_rate_at_3']['baseline']:.4f} -> "
         f"{comparison_metrics['retrieval_hit_rate_at_3']['improved']:.4f}"
     )
-    print(f"- hybrid_citation_coverage: {retriever_systems[-2]['citation_coverage']:.4f}")
-    print(f"- vector_citation_coverage: {retriever_systems[-1]['citation_coverage']:.4f}")
+    print(f"- hybrid_citation_coverage: {retriever_systems[-3]['citation_coverage']:.4f}")
+    print(f"- vector_citation_coverage: {retriever_systems[-2]['citation_coverage']:.4f}")
+    print(f"- embedding_citation_coverage: {retriever_systems[-1]['citation_coverage']:.4f}")
     print(
         f"- extraction_schema_validity: {summary['extraction']['metrics']['schema_validity']:.4f}"
     )

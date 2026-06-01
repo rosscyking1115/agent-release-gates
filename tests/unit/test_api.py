@@ -90,6 +90,22 @@ def test_ask_endpoint_can_run_vector_mode() -> None:
     assert response.citations == ["RB-DATA_QUALITY-04"]
 
 
+def test_ask_endpoint_can_run_embedding_mode() -> None:
+    response = ask(
+        AskRequest(
+            question=(
+                "New intake case without a ticket id. The client activation is paused because "
+                "a required KYC artifact is absent from Nova Client Intake evidence."
+            ),
+            mode="embedding",
+        )
+    )
+
+    assert response.mode == "embedding"
+    assert response.issue_category == "missing_kyc_document"
+    assert response.citations == ["RB-CLIENT_ONBOARDING-01"]
+
+
 def test_extract_endpoint_function_returns_route() -> None:
     response = extract(
         ExtractRequest(

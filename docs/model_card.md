@@ -38,19 +38,20 @@ The project does not use real company documents, customer data, employee data, p
 | `improved_lexical_retrieval` | Deterministic retrieval with title/content token scoring and role filtering |
 | `hybrid_sparse_semantic_retrieval` | Local lexical plus sparse semantic alias retrieval experiment |
 | `local_tfidf_vector_retrieval` | Local IDF-weighted vector index with character n-grams and alias features |
+| `local_hashed_embedding_store_retrieval` | Local feature-hashed embedding store with cosine search |
 | `deterministic_structured_extraction` | Pydantic-validated ticket extraction and routing |
 | `controlled_agent_approval_gate` | Read-only tools plus approval-gated mock side-effect tool |
 | `improved_policy` | Deterministic refusal policy for red-team cases |
 
 ## Current Evaluation
 
-| Metric | Baseline | Improved lexical | Hybrid sparse semantic | Local TF-IDF vector |
-| --- | ---: | ---: | ---: | ---: |
-| Retrieval hit rate@3 | 45.83% | 98.44% | 100.00% | 100.00% |
-| Citation coverage | 20.83% | 97.92% | 100.00% | 99.48% |
-| Issue category accuracy | 20.83% | 97.92% | 100.00% | 99.48% |
-| Next action accuracy | 20.83% | 97.92% | 100.00% | 99.48% |
-| Abstention accuracy | 80.42% | 100.00% | 100.00% | 100.00% |
+| Metric | Baseline | Improved lexical | Hybrid sparse semantic | Local TF-IDF vector | Local embedding store |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Retrieval hit rate@3 | 45.83% | 98.44% | 100.00% | 100.00% | 100.00% |
+| Citation coverage | 20.83% | 97.92% | 100.00% | 99.48% | 96.35% |
+| Issue category accuracy | 20.83% | 97.92% | 100.00% | 99.48% | 96.35% |
+| Next action accuracy | 20.83% | 97.92% | 100.00% | 99.48% | 96.35% |
+| Abstention accuracy | 80.42% | 100.00% | 100.00% | 100.00% | 100.00% |
 
 Structured extraction over templated synthetic tickets currently reports 100.00% schema validity, issue-category accuracy, severity accuracy, impacted-system accuracy, and routing-team accuracy.
 
@@ -60,7 +61,7 @@ The controlled-agent eval reports 100.00% trace coverage, audit event coverage, 
 
 ## Known Limitations
 
-- The current vector implementation is local TF-IDF, not an embedding model or vector database.
+- The current embedding-store implementation uses deterministic feature hashing, not a provider-backed embedding model or vector database.
 - Ticket text and runbook text are synthetic and still partly templated, although the golden set now includes noisy abbreviations, missing metadata, false leads, typos, human-like phrasing, retrieved-document injection, adversarial instructions, and conflicting evidence.
 - Structured extraction is deterministic pattern matching, not LLM extraction.
 - Security checks are deterministic string-based controls, not a full adversarial red-team harness.
@@ -83,7 +84,7 @@ Side-effecting operations are mock-only and require explicit approval.
 
 ## Recommended Next Improvements
 
-- Compare the local TF-IDF vector index with an embedding-backed vector store.
+- Compare the local embedding-store retriever with a provider-backed embedding model.
 - Expand noisy tickets with more human-written phrasing, misleading labels, and adversarial retrieved text.
 - Add OpenTelemetry spans for retrieval, extraction, tool calls, approval decisions, and errors.
 - Replace deterministic extraction with an optional LLM extraction provider plus schema repair.

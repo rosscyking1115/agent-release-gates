@@ -24,7 +24,7 @@ The current version creates a local, reproducible lab:
 
 - synthetic data generator
 - baseline and improved retrieval evaluations
-- hybrid sparse semantic and local TF-IDF vector retrieval experiments
+- hybrid sparse semantic, local TF-IDF vector, and local embedding-store retrieval experiments
 - noisy golden cases for abbreviations, missing metadata, and conflicting evidence
 - structured ticket extraction and routing
 - deterministic red-team policy checks
@@ -42,7 +42,7 @@ The current version creates a local, reproducible lab:
 - ruff
 - Docker
 
-Later phases should add an embedding-backed vector store, noisier evaluation data, richer red-team cases, OpenTelemetry export, and optional LangGraph orchestration.
+Later phases should add provider-backed embeddings, noisier evaluation data, richer red-team cases, OpenTelemetry export, and optional LangGraph orchestration.
 
 ## Quick Start
 
@@ -79,6 +79,8 @@ The baseline evaluation writes:
 - `reports/hybrid_eval_cases.jsonl`
 - `reports/vector_eval_summary.json`
 - `reports/vector_eval_cases.jsonl`
+- `reports/embedding_eval_summary.json`
+- `reports/embedding_eval_cases.jsonl`
 - `reports/retriever_comparison.json`
 - `reports/eval_comparison.json`
 - `reports/extraction_eval_summary.json`
@@ -96,17 +98,17 @@ The generated Markdown and HTML reports are the easiest static artifacts to shar
 
 Current deterministic evaluation:
 
-| Metric | Baseline | Improved lexical | Hybrid sparse semantic | Local TF-IDF vector |
-| --- | ---: | ---: | ---: | ---: |
-| Retrieval hit rate@3 | 45.83% | 98.44% | 100.00% | 100.00% |
-| Citation coverage | 20.83% | 97.92% | 100.00% | 99.48% |
-| Issue category accuracy | 20.83% | 97.92% | 100.00% | 99.48% |
-| Next action accuracy | 20.83% | 97.92% | 100.00% | 99.48% |
-| Abstention accuracy | 80.42% | 100.00% | 100.00% | 100.00% |
+| Metric | Baseline | Improved lexical | Hybrid sparse semantic | Local TF-IDF vector | Local embedding store |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Retrieval hit rate@3 | 45.83% | 98.44% | 100.00% | 100.00% | 100.00% |
+| Citation coverage | 20.83% | 97.92% | 100.00% | 99.48% | 96.35% |
+| Issue category accuracy | 20.83% | 97.92% | 100.00% | 99.48% | 96.35% |
+| Next action accuracy | 20.83% | 97.92% | 100.00% | 99.48% | 96.35% |
+| Abstention accuracy | 80.42% | 100.00% | 100.00% | 100.00% | 100.00% |
 
-These are first-pass synthetic metrics across exact, paraphrased, noisy, human-like, distractor, typo, weak-evidence, conflicting-evidence, retrieved-document injection, and adversarial-instruction cases. Later phases should add an embedding-backed vector store, more adversarial retrieval cases, and red-team scoring.
+These are first-pass synthetic metrics across exact, paraphrased, noisy, human-like, distractor, typo, weak-evidence, conflicting-evidence, retrieved-document injection, and adversarial-instruction cases. Later phases should add provider-backed embedding comparison, more adversarial retrieval cases, and red-team scoring.
 
-The hybrid retriever is intentionally local and deterministic: it combines lexical scoring with sparse semantic alias features, negated false-lead handling, and phrase matching. The local TF-IDF vector retriever adds an IDF-weighted cosine index with character n-grams and alias features. It reaches 100.00% retrieval hit@3 but still has one final-ranking failure on a missing-metadata case, which gives the next retrieval iteration a concrete target.
+The hybrid retriever is intentionally local and deterministic: it combines lexical scoring with sparse semantic alias features, negated false-lead handling, and phrase matching. The local TF-IDF vector retriever adds an IDF-weighted cosine index with character n-grams and alias features. The local embedding-store retriever builds stable feature-hashed dense vectors and searches them with cosine similarity. It reaches 100.00% retrieval hit@3 but has seven final-selection failures, which shows why embedding-style retrieval still needs ranking and answer-selection evaluation.
 
 Current structured extraction evaluation:
 
@@ -152,7 +154,7 @@ The Streamlit dashboard presents the evaluation outcome as an inspection surface
 
 - headline case counts
 - baseline vs improved metric chart
-- retriever experiment table comparing baseline, lexical, hybrid, and vector retrieval
+- retriever experiment table comparing baseline, lexical, hybrid, vector, and embedding-store retrieval
 - retriever failure analysis showing recovered evidence, final-citation misses, and fixes
 - before/after metric table
 - noisy-case and failure-reason analysis
@@ -166,7 +168,7 @@ Run it with:
 uv run streamlit run C:\Files\Jobs\project-5-jpm_internal_ai_agent\app\streamlit_app.py --server.port 8510
 ```
 
-The `/ask` API supports `baseline`, `improved`, `hybrid`, and `vector` modes. The `hybrid` mode uses the local sparse semantic retriever, `vector` uses the local TF-IDF vector retriever, and `improved` is kept as the lexical retriever for comparison.
+The `/ask` API supports `baseline`, `improved`, `hybrid`, `vector`, and `embedding` modes. The `hybrid` mode uses the local sparse semantic retriever, `vector` uses the local TF-IDF vector retriever, `embedding` uses the local feature-hashed embedding store, and `improved` is kept as the lexical retriever for comparison.
 
 The generated evaluation report is available from the dashboard and from:
 

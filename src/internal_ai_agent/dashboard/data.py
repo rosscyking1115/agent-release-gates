@@ -57,6 +57,7 @@ RETRIEVER_CASE_FILES = {
     "Improved lexical": "improved",
     "Hybrid sparse semantic": "hybrid",
     "Local TF-IDF vector": "vector",
+    "Local embedding store": "embedding",
 }
 
 
