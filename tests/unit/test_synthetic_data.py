@@ -31,7 +31,7 @@ def test_golden_cases_reference_ticket_expectations() -> None:
     tickets = build_tickets(runbooks, count=3, seed=1)
     cases = build_golden_cases(tickets, limit=3)
 
-    assert len(cases) == 12
+    assert len(cases) == 15
     assert cases[0]["expected_citation_ids"] == tickets[0].gold_citation_ids
     assert cases[0]["should_abstain"] is False
     assert any(case["noise_type"] == "abbreviated_ticket" for case in cases)
@@ -43,10 +43,13 @@ def test_full_golden_cases_include_harder_noise_types() -> None:
     cases = build_golden_cases(tickets)
     noise_types = {str(case["noise_type"]) for case in cases}
 
-    assert len(cases) == 168
+    assert len(cases) == 192
     assert "distractor_terms" in noise_types
     assert "typo_abbreviation" in noise_types
     assert "adversarial_instruction" in noise_types
+    assert "human_colloquial" in noise_types
+    assert "primary_signal_with_secondary_chatter" in noise_types
+    assert "retrieved_doc_injection" in noise_types
 
 
 def test_generate_all_writes_expected_files(tmp_path: Path) -> None:
@@ -55,7 +58,7 @@ def test_generate_all_writes_expected_files(tmp_path: Path) -> None:
     assert counts == {
         "runbooks": 24,
         "tickets": 12,
-        "golden_cases": 48,
+        "golden_cases": 60,
         "red_team_cases": 40,
     }
     assert (tmp_path / "data/synthetic/raw_docs/runbooks.jsonl").exists()

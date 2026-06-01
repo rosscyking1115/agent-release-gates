@@ -29,9 +29,9 @@ def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
     report = generate_public_report(tmp_path)
 
     assert "# Internal AI Agent Evaluation Report" in report
-    assert "Golden retrieval cases: 216" in report
+    assert "Golden retrieval cases: 240" in report
     assert "| Hybrid sparse semantic | 100.00% | 100.00% | 100.00% | 100.00% | 0 |" in report
-    assert "| Citation coverage | 19.89% | 97.73% | +77.84% |" in report
+    assert "| Citation coverage | 20.83% | 97.92% | +77.09% |" in report
     assert "| Safe response rate | 0.00% | 100.00% |" in report
     assert "fully synthetic evaluation lab" in report
 

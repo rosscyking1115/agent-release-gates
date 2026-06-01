@@ -109,7 +109,7 @@ def test_baseline_eval_writes_report(tmp_path: Path) -> None:
     generate_all(tmp_path, ticket_count=24)
     report = evaluate_baseline(tmp_path)
 
-    assert report["case_count"] == 96
+    assert report["case_count"] == 120
     assert "retrieval_hit_rate_at_3" in report["metrics"]
     assert "by_noise_type" in report
     assert "failure_reasons" in report
@@ -123,7 +123,7 @@ def test_hybrid_eval_writes_report(tmp_path: Path) -> None:
     generate_all(tmp_path, ticket_count=24)
     report = evaluate_hybrid(tmp_path)
 
-    assert report["case_count"] == 96
+    assert report["case_count"] == 120
     assert report["system_version"] == "hybrid_sparse_semantic_retrieval"
     assert (tmp_path / "reports/hybrid_eval_summary.json").exists()
     assert (tmp_path / "reports/hybrid_eval_cases.jsonl").exists()
@@ -135,7 +135,7 @@ def test_eval_comparison_writes_before_after_report(tmp_path: Path) -> None:
     generate_all(tmp_path, ticket_count=24)
     report = evaluate_comparison(tmp_path)
 
-    assert report["case_count"] == 96
+    assert report["case_count"] == 120
     assert (
         report["metrics"]["citation_coverage"]["improved"]
         >= report["metrics"]["citation_coverage"]["baseline"]

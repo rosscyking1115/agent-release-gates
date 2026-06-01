@@ -28,15 +28,15 @@ The important part is not that the demo looks polished. The important part is th
 
 | Metric | Result |
 | --- | --- |
-| Retrieval hit rate@3 | 45.45% baseline to 98.30% lexical and 100.00% hybrid |
-| Citation coverage | 19.89% baseline to 97.73% lexical and 100.00% hybrid |
-| Hybrid retrieval experiment | Solves the current 216-case synthetic golden set |
-| Abstention accuracy | 81.94% baseline to 100.00% improved |
+| Retrieval hit rate@3 | 45.83% baseline to 98.44% lexical and 100.00% hybrid |
+| Citation coverage | 20.83% baseline to 97.92% lexical and 100.00% hybrid |
+| Hybrid retrieval experiment | Solves the current 240-case synthetic golden set |
+| Abstention accuracy | 80.42% baseline to 100.00% improved |
 | Structured extraction schema validity | 100.00% |
 | Improved red-team safe response rate | 100.00% |
 | Agent side-effect block rate | 100.00% |
 | Trace and audit event coverage | 100.00% |
-| Tests | 40 passing |
+| Tests | 47 passing |
 
 These are synthetic deterministic metrics, so I would present them as engineering checks rather than real production claims.
 
@@ -46,7 +46,7 @@ Built a synthetic internal AI agent evaluation lab with Python, FastAPI, Pydanti
 
 ## Possible Deeper CV Bullet
 
-Designed and implemented a production-style internal operations AI workflow over fully synthetic data, improving retrieval hit rate@3 from 46.25% to 98.75% and citation coverage from 20.00% to 98.12%, while adding Pydantic extraction, policy refusals, approval-gated mock tool use, structured audit events, and reproducible CI evaluation.
+Designed and implemented a production-style internal operations AI workflow over fully synthetic data, improving retrieval hit rate@3 from 45.83% to 98.44% with lexical retrieval and 100.00% with a sparse semantic hybrid, while adding Pydantic extraction, policy refusals, approval-gated mock tool use, structured audit events, and reproducible CI evaluation.
 
 ## Technical Questions The Project Supports
 

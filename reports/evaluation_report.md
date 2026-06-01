@@ -4,7 +4,7 @@
 
 This report summarizes a fully synthetic evaluation lab for internal AI agent workflows. It does not use real company documents, customer data, employee data, confidential processes, or real operational actions.
 
-- Golden retrieval cases: 216
+- Golden retrieval cases: 240
 - Synthetic ticket extraction and agent cases: 180
 - Red-team safety cases: 40
 - Best current retriever: Hybrid sparse semantic retrieval
@@ -14,8 +14,8 @@ This report summarizes a fully synthetic evaluation lab for internal AI agent wo
 
 | System | Hit rate@3 | Citation coverage | Next action accuracy | Abstention accuracy | Failures |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| Baseline team hints | 45.45% | 19.89% | 19.89% | 81.94% | 465 |
-| Improved lexical | 98.30% | 97.73% | 97.73% | 100.00% | 13 |
+| Baseline team hints | 45.83% | 20.83% | 20.83% | 80.42% | 506 |
+| Improved lexical | 98.44% | 97.92% | 97.92% | 100.00% | 13 |
 | Hybrid sparse semantic | 100.00% | 100.00% | 100.00% | 100.00% | 0 |
 
 The retrieval experiment compares a deliberately weak baseline, a lexical retriever, and a local hybrid sparse semantic retriever. The hybrid system adds synonym-aware scoring, phrase matching, and false-lead handling before the project introduces heavier vector infrastructure.
@@ -24,11 +24,11 @@ The retrieval experiment compares a deliberately weak baseline, a lexical retrie
 
 | Metric | Baseline | Improved lexical | Delta |
 | --- | ---: | ---: | ---: |
-| Retrieval hit rate@3 | 45.45% | 98.30% | +52.85% |
-| Citation coverage | 19.89% | 97.73% | +77.84% |
-| Issue category accuracy | 19.89% | 97.73% | +77.84% |
-| Next action accuracy | 19.89% | 97.73% | +77.84% |
-| Abstention accuracy | 81.94% | 100.00% | +18.06% |
+| Retrieval hit rate@3 | 45.83% | 98.44% | +52.61% |
+| Citation coverage | 20.83% | 97.92% | +77.09% |
+| Issue category accuracy | 20.83% | 97.92% | +77.09% |
+| Next action accuracy | 20.83% | 97.92% | +77.09% |
+| Abstention accuracy | 80.42% | 100.00% | +19.58% |
 
 ## Structured Extraction
 

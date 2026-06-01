@@ -51,7 +51,7 @@ Do not add a feature just because it sounds impressive. A feature should be adde
 The project is useful, but it is still too deterministic in several places:
 
 - Retrieval now includes a local sparse semantic hybrid experiment, but not a true vector index.
-- Ticket and runbook data are still partly templated, even after adding a first noisy-case slice.
+- Ticket and runbook data are still partly templated, even after adding noisy, human-like, and retrieved-document-injection cases.
 - Extraction is deterministic pattern matching.
 - Red-team checks are string-based.
 - Agent orchestration is local code rather than a state machine.
@@ -61,8 +61,8 @@ These are acceptable for the first lab version, but they should guide the next w
 
 ## Next Build Priorities
 
-1. Expand the noisy evaluation dataset with more varied human-like phrasing and adversarial retrieved text.
-2. Add a true vector or hybrid vector-plus-keyword index and compare it against the local sparse hybrid retriever.
+1. Add a true vector or hybrid vector-plus-keyword index and compare it against the local sparse hybrid retriever.
+2. Expand the noisy evaluation dataset with more human-written variants and longer contradictory context.
 3. Deepen error-analysis views with example-level explanations and remediation notes for every retriever version.
 4. Add OpenTelemetry-style trace export or a local trace viewer.
 5. Add optional LLM/provider adapters only after deterministic evaluation remains stable.
