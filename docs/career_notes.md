@@ -54,6 +54,7 @@ Designed and implemented a production-style internal operations AI workflow over
 - Why did I use synthetic data?
 - Why measure a weak baseline first?
 - Why are citations and abstention important in operations workflows?
+- Why separate retrieval hit@3 from final citation correctness?
 - How does the approval gate reduce excessive agency risk?
 - How are prompt injection and system-prompt leakage handled?
 - What would change if this became a real production system?

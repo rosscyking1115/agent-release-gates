@@ -32,6 +32,8 @@ def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
     assert "Golden retrieval cases: 240" in report
     assert "| Hybrid sparse semantic | 100.00% | 100.00% | 100.00% | 100.00% | 0 |" in report
     assert "| Local TF-IDF vector |" in report
+    assert "## Retriever Failure Analysis" in report
+    assert "NOISY-MISSING-007" in report
     assert "| Citation coverage | 20.83% | 97.92% | +77.09% |" in report
     assert "| Safe response rate | 0.00% | 100.00% |" in report
     assert "fully synthetic evaluation lab" in report

@@ -5,6 +5,12 @@ from html import escape
 from pathlib import Path
 from typing import Any
 
+from internal_ai_agent.dashboard.data import (
+    load_retriever_case_rows,
+    retriever_failure_example_rows,
+    retriever_failure_overview,
+)
+
 METRIC_LABELS = {
     "retrieval_hit_rate_at_3": "Retrieval hit rate@3",
     "citation_coverage": "Citation coverage",
@@ -63,6 +69,12 @@ def generate_public_report(project_root: Path) -> str:
             "retriever, a local hybrid sparse semantic retriever, and a TF-IDF vector "
             "retriever. The vector row uses an IDF-weighted local index with character "
             "n-grams and alias features; it is not an external embedding store.",
+            "",
+            "## Retriever Failure Analysis",
+            "",
+            _retriever_failure_overview_table(project_root),
+            "",
+            _retriever_failure_examples_table(project_root),
             "",
             "## Baseline To Improved Delta",
             "",
@@ -160,6 +172,41 @@ def _retriever_table(report: dict[str, Any]) -> str:
                 abstention=_pct(system["abstention_accuracy"]),
                 failures=system["failure_count"],
             )
+        )
+    return "\n".join(rows)
+
+
+def _retriever_failure_overview_table(project_root: Path) -> str:
+    rows = [
+        "| System | Failed cases | Retrieved but not cited | Abstention mismatches | "
+        "Top failure reason |",
+        "| --- | ---: | ---: | ---: | --- |",
+    ]
+    for row in retriever_failure_overview(load_retriever_case_rows(project_root)):
+        rows.append(
+            "| {system} | {failed_cases} | {retrieved_but_not_cited} | "
+            "{abstention_mismatches} | {top_failure_reason} |".format(**row)
+        )
+    return "\n".join(rows)
+
+
+def _retriever_failure_examples_table(project_root: Path) -> str:
+    examples = retriever_failure_example_rows(
+        load_retriever_case_rows(project_root), limit_per_system=3
+    )
+    if not examples:
+        return "No retriever failure examples recorded."
+
+    rows = [
+        "| System | Case | Noise | Failure | Expected citation | Predicted citation | "
+        "Retrieved but not cited | Recommended fix |",
+        "| --- | --- | --- | --- | --- | --- | --- | --- |",
+    ]
+    for row in examples:
+        rows.append(
+            "| {system} | {case_id} | {noise_type} | {failure_reasons} | "
+            "{expected_citation} | {predicted_citation} | {retrieved_but_not_cited} | "
+            "{recommended_fix} |".format(**row)
         )
     return "\n".join(rows)
 

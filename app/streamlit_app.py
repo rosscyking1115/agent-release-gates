@@ -20,10 +20,13 @@ from internal_ai_agent.dashboard.data import (
     load_extraction_summary,
     load_public_report,
     load_public_report_html,
+    load_retriever_case_rows,
     load_retriever_comparison,
     load_security_summary,
     metric_rows,
     retriever_experiment_rows,
+    retriever_failure_example_rows,
+    retriever_failure_overview,
     security_metric_rows,
 )
 
@@ -51,10 +54,12 @@ def main() -> None:
     agent_rows = agent_metric_rows(agent_summary)
     improved_cases = load_case_rows(PROJECT_ROOT, "improved")
     baseline_cases = load_case_rows(PROJECT_ROOT, "baseline")
+    retriever_cases = load_retriever_case_rows(PROJECT_ROOT)
 
     _render_summary(comparison, rows, improved_cases)
     _render_metric_comparison(rows)
     _render_retriever_experiment(retriever_comparison)
+    _render_retriever_error_analysis(retriever_cases)
     _render_error_analysis()
     _render_extraction_metrics(extraction_summary, extraction_rows)
     _render_security_metrics(security_summary, security_rows)
@@ -130,6 +135,48 @@ def _render_retriever_experiment(comparison: dict[str, object]) -> None:
         "Failures",
     ]
     st.dataframe(table_df, hide_index=True, use_container_width=True)
+
+
+def _render_retriever_error_analysis(
+    cases_by_system: dict[str, list[dict[str, object]]],
+) -> None:
+    st.subheader("Retriever Failure Analysis")
+    overview_rows = retriever_failure_overview(cases_by_system)
+    overview_df = pd.DataFrame(overview_rows)
+    if not overview_df.empty:
+        overview_df.columns = [
+            "System",
+            "Failed cases",
+            "Retrieved but not cited",
+            "Abstention mismatches",
+            "Top failure reason",
+        ]
+        st.dataframe(overview_df, hide_index=True, use_container_width=True)
+
+    example_rows = retriever_failure_example_rows(cases_by_system)
+    example_df = pd.DataFrame(example_rows)
+    if example_df.empty:
+        st.success("No retriever failures recorded.")
+        return
+
+    st.dataframe(
+        example_df[
+            [
+                "system",
+                "case_id",
+                "noise_type",
+                "failure_reasons",
+                "expected_citation",
+                "predicted_citation",
+                "retrieved_citations",
+                "retrieved_but_not_cited",
+                "diagnostic",
+                "recommended_fix",
+            ]
+        ],
+        hide_index=True,
+        use_container_width=True,
+    )
 
 
 def _render_error_analysis() -> None:

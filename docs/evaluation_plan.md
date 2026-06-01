@@ -87,6 +87,8 @@ The retriever comparison report saves a four-system table:
 - hybrid sparse semantic retrieval
 - local TF-IDF vector retrieval
 
+The public report and dashboard also surface retriever failure analysis. The overview counts failed cases, cases where the expected section was retrieved but not finally cited, abstention mismatches, and the top failure reason for each retriever. The example table keeps the diagnostic and recommended fix attached to concrete case ids.
+
 ## Structured Extraction Version
 
 The first extraction version is `deterministic_structured_extraction`. It validates a `TicketExtraction` schema and a `RoutingDecision` schema over synthetic ticket descriptions. It reports schema validity, issue-category accuracy, severity accuracy, impacted-system accuracy, and routing-team accuracy.

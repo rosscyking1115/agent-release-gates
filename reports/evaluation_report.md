@@ -21,6 +21,25 @@ This report summarizes a fully synthetic evaluation lab for internal AI agent wo
 
 The retrieval experiment compares a deliberately weak baseline, a lexical retriever, a local hybrid sparse semantic retriever, and a TF-IDF vector retriever. The vector row uses an IDF-weighted local index with character n-grams and alias features; it is not an external embedding store.
 
+## Retriever Failure Analysis
+
+| System | Failed cases | Retrieved but not cited | Abstention mismatches | Top failure reason |
+| --- | ---: | ---: | ---: | --- |
+| Baseline team hints | 199 | 48 | 47 | missing_or_wrong_citation (152) |
+| Improved lexical | 4 | 1 | 0 | missing_or_wrong_citation (4) |
+| Hybrid sparse semantic | 0 | 0 | 0 |  |
+| Local TF-IDF vector | 1 | 1 | 0 | missing_or_wrong_citation (1) |
+
+| System | Case | Noise | Failure | Expected citation | Predicted citation | Retrieved but not cited | Recommended fix |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Baseline team hints | GOLD-TCK-0001 | clean_exact | missing_or_wrong_citation, wrong_issue_category, wrong_next_action | RB-TRADE_SUPPORT-02 | RB-TRADE_SUPPORT-01 | True | Add within-team reranking using issue-category evidence and expected action terms. |
+| Baseline team hints | GOLD-TCK-0003 | clean_exact | missing_or_wrong_citation, wrong_issue_category, wrong_next_action | RB-PAYMENTS_OPS-03 | RB-PAYMENTS_OPS-01 | True | Add within-team reranking using issue-category evidence and expected action terms. |
+| Baseline team hints | GOLD-TCK-0004 | clean_exact | missing_or_wrong_citation, wrong_issue_category, wrong_next_action | RB-PAYMENTS_OPS-05 | RB-PAYMENTS_OPS-01 | False | Add within-team reranking using issue-category evidence and expected action terms. |
+| Improved lexical | PARA-TCK-0028 | paraphrase | missing_or_wrong_citation, wrong_issue_category, wrong_next_action | RB-DATA_QUALITY-04 | RB-DATA_QUALITY-01 | False | Add semantic retrieval or synonym expansion for paraphrased procedure descriptions. |
+| Improved lexical | PARA-TCK-0044 | paraphrase | missing_or_wrong_citation, wrong_issue_category, wrong_next_action | RB-DATA_QUALITY-04 | RB-DATA_QUALITY-01 | False | Add semantic retrieval or synonym expansion for paraphrased procedure descriptions. |
+| Improved lexical | NOISY-MISSING-007 | missing_metadata | missing_or_wrong_citation, wrong_issue_category, wrong_next_action | RB-CLIENT_ONBOARDING-01 | RB-CLIENT_ONBOARDING-03 | True | Improve ranking so explicit procedure evidence beats generic workflow terms. |
+| Local TF-IDF vector | NOISY-MISSING-007 | missing_metadata | missing_or_wrong_citation, wrong_issue_category, wrong_next_action | RB-CLIENT_ONBOARDING-01 | RB-CLIENT_ONBOARDING-03 | True | Improve ranking so explicit procedure evidence beats generic workflow terms. |
+
 ## Baseline To Improved Delta
 
 | Metric | Baseline | Improved lexical | Delta |

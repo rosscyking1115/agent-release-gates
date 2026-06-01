@@ -70,6 +70,8 @@ Retrieval case result files include `baseline_eval_cases.jsonl`, `improved_eval_
 | `diagnostic` | Short explanation of the failure mode. |
 | `recommended_fix` | Suggested retrieval or policy improvement. |
 
+The dashboard and public report derive retriever error-analysis tables from these fields, including a `retrieved_but_not_cited` flag when the expected citation appears in the retrieved set but not in the final cited answer.
+
 ## `reports/extraction_eval_cases.jsonl`
 
 | Field | Description |

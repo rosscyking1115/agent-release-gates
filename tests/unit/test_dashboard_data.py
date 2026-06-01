@@ -10,6 +10,8 @@ from internal_ai_agent.dashboard.data import (
     load_public_report_html,
     metric_rows,
     retriever_experiment_rows,
+    retriever_failure_example_rows,
+    retriever_failure_overview,
     security_metric_rows,
 )
 
@@ -168,6 +170,61 @@ def test_failure_example_rows_format_diagnostics() -> None:
     assert rows[0]["case_id"] == "CASE-1"
     assert rows[0]["failure_reasons"] == "wrong_issue_category"
     assert rows[0]["recommended_fix"] == "Add semantic retrieval."
+
+
+def test_retriever_failure_overview_flags_retrieved_but_not_cited() -> None:
+    cases_by_system = {
+        "Vector": [
+            {
+                "abstention_correct": True,
+                "expected_abstain": False,
+                "citation_match": False,
+                "next_action_match": False,
+                "retrieval_hit_at_3": True,
+                "failure_reasons": ["missing_or_wrong_citation"],
+            }
+        ]
+    }
+
+    rows = retriever_failure_overview(cases_by_system)
+
+    assert rows == [
+        {
+            "system": "Vector",
+            "failed_cases": 1,
+            "retrieved_but_not_cited": 1,
+            "abstention_mismatches": 0,
+            "top_failure_reason": "missing_or_wrong_citation (1)",
+        }
+    ]
+
+
+def test_retriever_failure_example_rows_formats_case_level_diagnostics() -> None:
+    cases_by_system = {
+        "Vector": [
+            {
+                "abstention_correct": True,
+                "expected_abstain": False,
+                "citation_match": False,
+                "next_action_match": False,
+                "retrieval_hit_at_3": True,
+                "case_id": "CASE-1",
+                "noise_type": "missing_metadata",
+                "failure_reasons": ["missing_or_wrong_citation"],
+                "expected_citation_ids": ["RB-1"],
+                "predicted_citation_ids": ["RB-2"],
+                "retrieved_citation_ids": ["RB-2", "RB-1"],
+                "diagnostic": "Expected section retrieved but not selected.",
+                "recommended_fix": "Improve reranking.",
+            }
+        ]
+    }
+
+    rows = retriever_failure_example_rows(cases_by_system)
+
+    assert rows[0]["system"] == "Vector"
+    assert rows[0]["retrieved_but_not_cited"] is True
+    assert rows[0]["retrieved_citations"] == "RB-2, RB-1"
 
 
 def test_security_metric_rows_formats_before_after_scores() -> None:
