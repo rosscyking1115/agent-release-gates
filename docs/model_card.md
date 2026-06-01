@@ -46,9 +46,9 @@ The project does not use real company documents, customer data, employee data, p
 | Metric | Baseline | Improved lexical | Hybrid sparse semantic |
 | --- | ---: | ---: | ---: |
 | Retrieval hit rate@3 | 45.45% | 98.30% | 100.00% |
-| Citation coverage | 19.89% | 97.73% | 99.43% |
-| Issue category accuracy | 19.89% | 97.73% | 99.43% |
-| Next action accuracy | 19.89% | 97.73% | 99.43% |
+| Citation coverage | 19.89% | 97.73% | 100.00% |
+| Issue category accuracy | 19.89% | 97.73% | 100.00% |
+| Next action accuracy | 19.89% | 97.73% | 100.00% |
 | Abstention accuracy | 81.94% | 100.00% | 100.00% |
 
 Structured extraction over templated synthetic tickets currently reports 100.00% schema validity, issue-category accuracy, severity accuracy, impacted-system accuracy, and routing-team accuracy.

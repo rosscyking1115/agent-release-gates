@@ -249,8 +249,11 @@ def retrieve_hybrid(
         lexical_score = (len(query_tokens & title_tokens) * 5) + len(query_tokens & content_tokens)
         semantic_score = _cosine_similarity(query_vector, section_vector) * 12
         alias_score = _alias_overlap(query_tokens, category) * 4
+        phrase_score = _title_phrase_score(question, category)
         team_score = _team_hint_score(question, str(section["team"])) * 0.5
-        score = lexical_score + semantic_score + alias_score + team_score
+        negation_penalty = _negated_category_penalty(question, category)
+        score = lexical_score + semantic_score + alias_score + phrase_score + team_score
+        score -= negation_penalty
 
         if score <= 0:
             continue
@@ -392,6 +395,48 @@ def _alias_overlap(query_tokens: set[str], category: str) -> int:
     return len(query_tokens & aliases)
 
 
+def _title_phrase_score(question: str, category: str) -> float:
+    normalized = " ".join(_token_sequence(question))
+    title_tokens = _token_sequence(category.replace("_", " "))
+    if len(title_tokens) < 2:
+        return 0.0
+    matching_pairs = 0
+    for left, right in zip(title_tokens, title_tokens[1:], strict=False):
+        if f"{left} {right}" in normalized:
+            matching_pairs += 1
+    return matching_pairs * 8.0
+
+
 def _team_hint_score(question: str, team: str) -> int:
     normalized = question.lower()
     return sum(1 for hint in SYSTEM_HINTS.get(team, []) if hint in normalized)
+
+
+def _negated_category_penalty(question: str, category: str) -> float:
+    tokens = _token_sequence(question)
+    if not tokens:
+        return 0.0
+
+    category_tokens = _token_sequence(category.replace("_", " "))
+    alias_tokens = set(SEMANTIC_ALIASES.get(category, []))
+    negation_positions = [
+        index
+        for index, token in enumerate(tokens)
+        if token in {"not", "no", "without", "isnt", "isn", "isn't"}
+    ]
+
+    for index in negation_positions:
+        window = set(tokens[index + 1 : index + 7])
+        if category_tokens and set(category_tokens).issubset(window):
+            return 40.0
+        if len(window & alias_tokens) >= 2:
+            return 20.0
+    return 0.0
+
+
+def _token_sequence(text: str) -> list[str]:
+    return [
+        token
+        for token in re.findall(r"[a-z0-9]+", text.lower())
+        if len(token) > 1 and token not in STOPWORDS
+    ]

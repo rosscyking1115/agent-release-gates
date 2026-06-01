@@ -92,14 +92,14 @@ Current deterministic evaluation:
 | Metric | Baseline | Improved lexical | Hybrid sparse semantic |
 | --- | ---: | ---: | ---: |
 | Retrieval hit rate@3 | 45.45% | 98.30% | 100.00% |
-| Citation coverage | 19.89% | 97.73% | 99.43% |
-| Issue category accuracy | 19.89% | 97.73% | 99.43% |
-| Next action accuracy | 19.89% | 97.73% | 99.43% |
+| Citation coverage | 19.89% | 97.73% | 100.00% |
+| Issue category accuracy | 19.89% | 97.73% | 100.00% |
+| Next action accuracy | 19.89% | 97.73% | 100.00% |
 | Abstention accuracy | 81.94% | 100.00% | 100.00% |
 
 These are first-pass synthetic metrics across exact, paraphrased, noisy, distractor, typo, weak-evidence, conflicting-evidence, and adversarial-instruction cases. Later phases should add a true vector index, more adversarial retrieval cases, and red-team scoring.
 
-The hybrid retriever is intentionally local and deterministic: it combines lexical scoring with sparse semantic alias features. It is useful for measuring the value of synonym-aware retrieval before introducing a vector database or paid embedding model.
+The hybrid retriever is intentionally local and deterministic: it combines lexical scoring with sparse semantic alias features, negated false-lead handling, and phrase matching. It is useful for measuring the value of synonym-aware retrieval before introducing a vector database or paid embedding model.
 
 Current structured extraction evaluation:
 

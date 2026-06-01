@@ -69,6 +69,40 @@ def test_hybrid_retrieval_uses_semantic_aliases_for_paraphrase() -> None:
     assert answer.citations == ["RB-DATA_QUALITY-04"]
 
 
+def test_hybrid_retrieval_penalizes_negated_false_leads() -> None:
+    from internal_ai_agent.data.synthetic import build_runbooks
+
+    runbooks = [section.__dict__ for section in build_runbooks()]
+    answer = answer_with_hybrid(
+        (
+            "Triage note with a false lead: this is not confirmation pending even though "
+            "that term appears in the chat. The actual evidence says several records look "
+            "duplicated and need stewardship review on Atlas Data Controls."
+        ),
+        runbooks,
+    )
+
+    assert answer.issue_category == "duplicate_record_cluster"
+    assert answer.citations == ["RB-DATA_QUALITY-04"]
+
+
+def test_hybrid_retrieval_prefers_specific_phrase_over_generic_status_terms() -> None:
+    from internal_ai_agent.data.synthetic import build_runbooks
+
+    runbooks = [section.__dict__ for section in build_runbooks()]
+    answer = answer_with_hybrid(
+        (
+            "New ticket without a stable id yet. The parties disagree on the trade date "
+            "shown in the exception. The affected platform is Helios Trade Exceptions. "
+            "Generated control output and workflow status are present."
+        ),
+        runbooks,
+    )
+
+    assert answer.issue_category == "trade_date_dispute"
+    assert answer.citations == ["RB-TRADE_SUPPORT-04"]
+
+
 def test_baseline_eval_writes_report(tmp_path: Path) -> None:
     from internal_ai_agent.data.synthetic import generate_all
 
