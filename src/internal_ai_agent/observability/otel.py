@@ -287,6 +287,79 @@ def otel_spans_from_agent_approval_cases(cases: list[dict[str, Any]]) -> list[di
     return spans
 
 
+def otel_spans_from_extraction_cases(cases: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    trace_label = "extraction_cases"
+    trace_id = _stable_hex(trace_label, length=32)
+    root_span_id = _stable_hex(f"{trace_label}:root", length=16)
+    trace_start = BASE_TIME_UNIX_NANO + 400 * TRACE_GAP_NANO
+    trace_end = trace_start + (len(cases) + 1) * SPAN_GAP_NANO
+    spans = [
+        _make_span(
+            trace_id=trace_id,
+            span_id=root_span_id,
+            parent_span_id=None,
+            name="extraction.case_analysis",
+            start_time_unix_nano=trace_start,
+            end_time_unix_nano=trace_end,
+            status_code="OK",
+            attributes={
+                "lab.trace_id": trace_label,
+                "lab.component": "extraction",
+                "extraction.case_count": len(cases),
+                "extraction.schema_valid_count": _count_true(cases, "schema_valid"),
+                "extraction.issue_category_match_count": _count_true(
+                    cases, "issue_category_match"
+                ),
+                "extraction.severity_match_count": _count_true(cases, "severity_match"),
+                "extraction.impacted_system_match_count": _count_true(
+                    cases, "impacted_system_match"
+                ),
+                "extraction.routing_team_match_count": _count_true(
+                    cases, "routing_team_match"
+                ),
+            },
+        )
+    ]
+    for sequence, case in enumerate(cases, start=1):
+        span_start = trace_start + sequence * SPAN_GAP_NANO
+        status_code = "OK" if _extraction_case_passed(case) else "ERROR"
+        spans.append(
+            _make_span(
+                trace_id=trace_id,
+                span_id=_stable_hex(f"{trace_label}:{sequence}:{case['ticket_id']}", length=16),
+                parent_span_id=root_span_id,
+                name="extraction.case_result",
+                start_time_unix_nano=span_start,
+                end_time_unix_nano=span_start + SPAN_DURATION_NANO,
+                status_code=status_code,
+                attributes={
+                    "lab.trace_id": trace_label,
+                    "lab.component": "extraction",
+                    "eval.sequence": sequence,
+                    "ticket.id": case["ticket_id"],
+                    "extraction.schema_valid": case.get("schema_valid", False),
+                    "extraction.expected_issue_category": case.get(
+                        "expected_issue_category", ""
+                    ),
+                    "extraction.predicted_issue_category": case.get(
+                        "predicted_issue_category", ""
+                    ),
+                    "extraction.issue_category_match": case.get(
+                        "issue_category_match", False
+                    ),
+                    "extraction.severity_match": case.get("severity_match", False),
+                    "extraction.impacted_system_match": case.get(
+                        "impacted_system_match", False
+                    ),
+                    "extraction.expected_team": case.get("expected_team", ""),
+                    "extraction.predicted_team": case.get("predicted_team", ""),
+                    "extraction.routing_team_match": case.get("routing_team_match", False),
+                },
+            )
+        )
+    return spans
+
+
 def _root_span(
     trace: dict[str, Any],
     trace_id: str,
@@ -407,6 +480,16 @@ def _approval_case_passed(case: dict[str, Any]) -> bool:
         and bool(case.get("monitoring_snapshot_present"))
         and bool(case.get("trace_id_present"))
         and not bool(case.get("unnecessary_tool_call"))
+    )
+
+
+def _extraction_case_passed(case: dict[str, Any]) -> bool:
+    return (
+        bool(case.get("schema_valid"))
+        and bool(case.get("issue_category_match"))
+        and bool(case.get("severity_match"))
+        and bool(case.get("impacted_system_match"))
+        and bool(case.get("routing_team_match"))
     )
 
 

@@ -2,6 +2,7 @@ from internal_ai_agent.observability.otel import (
     otel_spans_from_agent_approval_cases,
     otel_spans_from_agent_traces,
     otel_spans_from_evaluation_run,
+    otel_spans_from_extraction_cases,
     otel_spans_from_retriever_failures,
 )
 
@@ -201,3 +202,47 @@ def test_otel_spans_from_agent_approval_cases_exports_case_level_spans() -> None
     assert spans[1]["attributes"]["agent.approval_required"] is True
     assert spans[2]["status"]["code"] == "ERROR"
     assert spans[2]["attributes"]["agent.side_effect_blocked_without_approval"] is False
+
+
+def test_otel_spans_from_extraction_cases_exports_case_level_spans() -> None:
+    spans = otel_spans_from_extraction_cases(
+        [
+            {
+                "ticket_id": "TCK-0001",
+                "schema_valid": True,
+                "expected_issue_category": "confirmation_pending",
+                "predicted_issue_category": "confirmation_pending",
+                "issue_category_match": True,
+                "severity_match": True,
+                "impacted_system_match": True,
+                "expected_team": "trade_support",
+                "predicted_team": "trade_support",
+                "routing_team_match": True,
+            },
+            {
+                "ticket_id": "TCK-0002",
+                "schema_valid": True,
+                "expected_issue_category": "file_validation_failed",
+                "predicted_issue_category": "file_validation_failed",
+                "issue_category_match": True,
+                "severity_match": True,
+                "impacted_system_match": True,
+                "expected_team": "payments_ops",
+                "predicted_team": "trade_support",
+                "routing_team_match": False,
+            },
+        ]
+    )
+
+    assert len(spans) == 3
+    assert spans[0]["name"] == "extraction.case_analysis"
+    assert spans[0]["status"]["code"] == "OK"
+    assert spans[0]["attributes"]["extraction.case_count"] == 2
+    assert spans[0]["attributes"]["extraction.routing_team_match_count"] == 1
+    assert spans[1]["name"] == "extraction.case_result"
+    assert spans[1]["status"]["code"] == "OK"
+    assert spans[1]["parent_span_id"] == spans[0]["span_id"]
+    assert spans[1]["attributes"]["ticket.id"] == "TCK-0001"
+    assert spans[1]["attributes"]["extraction.predicted_team"] == "trade_support"
+    assert spans[2]["status"]["code"] == "ERROR"
+    assert spans[2]["attributes"]["extraction.routing_team_match"] is False

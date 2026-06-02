@@ -152,7 +152,7 @@ Current controlled agent evaluation:
 
 Read-only tools can run automatically. The side-effecting `route_ticket_mock` tool is prepared but blocked until approval is granted. Each agent run returns a trace id, structured audit events, and a monitoring snapshot.
 
-The agent eval exports deterministic OpenTelemetry-style spans to `reports/agent_otel_spans.jsonl`. The full orchestration run also writes `reports/observability_otel_spans.jsonl`, combining those agent spans with an evaluation-run trace for data generation, retriever comparison, extraction, security, agent evaluation, report/API artifact export, case-level retriever failure spans, and case-level agent approval spans. These are local interoperability artifacts, not a live tracing backend.
+The agent eval exports deterministic OpenTelemetry-style spans to `reports/agent_otel_spans.jsonl`. The full orchestration run also writes `reports/observability_otel_spans.jsonl`, combining those agent spans with an evaluation-run trace for data generation, retriever comparison, extraction, security, agent evaluation, report/API artifact export, case-level retriever failure spans, case-level extraction spans, and case-level agent approval spans. These are local interoperability artifacts, not a live tracing backend.
 
 ## Dashboard
 

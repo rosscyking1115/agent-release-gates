@@ -12,6 +12,7 @@ from internal_ai_agent.io import read_jsonl, write_jsonl
 from internal_ai_agent.observability.otel import (
     otel_spans_from_agent_approval_cases,
     otel_spans_from_evaluation_run,
+    otel_spans_from_extraction_cases,
     otel_spans_from_retriever_failures,
 )
 from internal_ai_agent.reporting.public_report import write_public_report
@@ -65,6 +66,9 @@ def write_observability_spans(
     retriever_failure_spans = otel_spans_from_retriever_failures(
         _retriever_cases_by_system(project_root)
     )
+    extraction_case_spans = otel_spans_from_extraction_cases(
+        read_jsonl(project_root / "reports/extraction_eval_cases.jsonl")
+    )
     agent_approval_spans = otel_spans_from_agent_approval_cases(
         read_jsonl(project_root / "reports/agent_eval_cases.jsonl")
     )
@@ -74,6 +78,7 @@ def write_observability_spans(
         [
             *evaluation_spans,
             *retriever_failure_spans,
+            *extraction_case_spans,
             *agent_approval_spans,
             *agent_spans,
         ],
