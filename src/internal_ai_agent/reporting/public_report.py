@@ -124,6 +124,11 @@ def generate_public_report(project_root: Path) -> str:
             "",
             _agent_otel_summary_table(project_root),
             "",
+            (
+                "The combined export includes workflow-level spans, agent tool/audit spans, "
+                "and case-level retriever failure spans for local inspection."
+            ),
+            "",
             "## What This Proves",
             "",
             "- The project can generate synthetic enterprise operations data safely.",

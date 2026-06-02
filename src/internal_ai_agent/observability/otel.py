@@ -146,6 +146,80 @@ def otel_spans_from_evaluation_run(
     return spans
 
 
+def otel_spans_from_retriever_failures(
+    cases_by_system: dict[str, list[dict[str, Any]]],
+) -> list[dict[str, Any]]:
+    spans: list[dict[str, Any]] = []
+    for system_index, (system, cases) in enumerate(sorted(cases_by_system.items())):
+        failed_cases = [case for case in cases if case.get("failure_reasons")]
+        trace_label = f"retriever_failures_{_slug(system)}"
+        trace_id = _stable_hex(trace_label, length=32)
+        root_span_id = _stable_hex(f"{trace_label}:root", length=16)
+        trace_start = BASE_TIME_UNIX_NANO + (200 + system_index) * TRACE_GAP_NANO
+        trace_end = trace_start + (len(failed_cases) + 1) * SPAN_GAP_NANO
+        spans.append(
+            _make_span(
+                trace_id=trace_id,
+                span_id=root_span_id,
+                parent_span_id=None,
+                name="retriever.failure_analysis",
+                start_time_unix_nano=trace_start,
+                end_time_unix_nano=trace_end,
+                status_code="OK",
+                attributes={
+                    "lab.trace_id": trace_label,
+                    "lab.component": "retrieval",
+                    "retriever.system": system,
+                    "retriever.failed_case_count": len(failed_cases),
+                },
+            )
+        )
+        for sequence, case in enumerate(failed_cases, start=1):
+            span_start = trace_start + sequence * SPAN_GAP_NANO
+            spans.append(
+                _make_span(
+                    trace_id=trace_id,
+                    span_id=_stable_hex(
+                        f"{trace_label}:{sequence}:{case['case_id']}", length=16
+                    ),
+                    parent_span_id=root_span_id,
+                    name="retriever.case_failure",
+                    start_time_unix_nano=span_start,
+                    end_time_unix_nano=span_start + SPAN_DURATION_NANO,
+                    status_code="ERROR",
+                    attributes={
+                        "lab.trace_id": trace_label,
+                        "lab.component": "retrieval",
+                        "eval.sequence": sequence,
+                        "eval.case_id": case["case_id"],
+                        "eval.task_type": case.get("task_type", ""),
+                        "eval.noise_type": case.get("noise_type", ""),
+                        "retriever.system": system,
+                        "retriever.failure_reasons": ", ".join(
+                            case.get("failure_reasons", [])
+                        ),
+                        "retriever.retrieval_hit_at_3": case.get(
+                            "retrieval_hit_at_3", False
+                        ),
+                        "retriever.expected_citation_ids": ", ".join(
+                            case.get("expected_citation_ids", [])
+                        ),
+                        "retriever.predicted_citation_ids": ", ".join(
+                            case.get("predicted_citation_ids", [])
+                        ),
+                        "retriever.retrieved_citation_ids": ", ".join(
+                            case.get("retrieved_citation_ids", [])
+                        ),
+                        "retriever.top_candidate_scores": _candidate_score_summary(
+                            case.get("retrieved_candidate_scores", [])
+                        ),
+                        "retriever.recommended_fix": case.get("recommended_fix", ""),
+                    },
+                )
+            )
+    return spans
+
+
 def _root_span(
     trace: dict[str, Any],
     trace_id: str,
@@ -240,6 +314,23 @@ def _best_retriever_label(report: dict[str, Any]) -> str:
 
 def _max_metric(systems: list[dict[str, Any]], metric: str) -> float:
     return max(float(system[metric]) for system in systems)
+
+
+def _candidate_score_summary(candidates: object) -> str:
+    if not isinstance(candidates, list):
+        return ""
+    summaries: list[str] = []
+    for candidate in candidates[:3]:
+        if not isinstance(candidate, dict):
+            continue
+        section_id = str(candidate.get("section_id", ""))
+        score = candidate.get("score", "")
+        summaries.append(f"{section_id}={score}")
+    return "; ".join(summaries)
+
+
+def _slug(value: str) -> str:
+    return "_".join(value.lower().replace("-", " ").split())
 
 
 def _stable_hex(value: str, *, length: int) -> str:

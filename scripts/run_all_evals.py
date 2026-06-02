@@ -9,7 +9,10 @@ from internal_ai_agent.evals.extraction import evaluate_extraction
 from internal_ai_agent.evals.runner import evaluate_comparison, evaluate_retriever_comparison
 from internal_ai_agent.evals.security import evaluate_security
 from internal_ai_agent.io import read_jsonl, write_jsonl
-from internal_ai_agent.observability.otel import otel_spans_from_evaluation_run
+from internal_ai_agent.observability.otel import (
+    otel_spans_from_evaluation_run,
+    otel_spans_from_retriever_failures,
+)
 from internal_ai_agent.reporting.public_report import write_public_report
 
 
@@ -58,9 +61,22 @@ def write_observability_spans(
         security=security,
         agent=agent,
     )
+    retriever_failure_spans = otel_spans_from_retriever_failures(
+        _retriever_cases_by_system(project_root)
+    )
     output_path = project_root / "reports/observability_otel_spans.jsonl"
-    write_jsonl(output_path, [*evaluation_spans, *agent_spans])
+    write_jsonl(output_path, [*evaluation_spans, *retriever_failure_spans, *agent_spans])
     return output_path
+
+
+def _retriever_cases_by_system(project_root: Path) -> dict[str, list[dict[str, Any]]]:
+    return {
+        "Baseline team hints": read_jsonl(project_root / "reports/baseline_eval_cases.jsonl"),
+        "Improved lexical": read_jsonl(project_root / "reports/improved_eval_cases.jsonl"),
+        "Hybrid sparse semantic": read_jsonl(project_root / "reports/hybrid_eval_cases.jsonl"),
+        "Local TF-IDF vector": read_jsonl(project_root / "reports/vector_eval_cases.jsonl"),
+        "Local embedding store": read_jsonl(project_root / "reports/embedding_eval_cases.jsonl"),
+    }
 
 
 def main() -> None:

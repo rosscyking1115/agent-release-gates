@@ -48,6 +48,7 @@ def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
     assert "## Observability Span Export" in report
     assert "| OTel-style spans |" in report
     assert "| Child spans |" in report
+    assert "case-level retriever failure spans" in report
     assert "fully synthetic evaluation lab" in report
 
 

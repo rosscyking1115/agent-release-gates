@@ -116,11 +116,13 @@ The controlled workflow separates read-only tools from side-effecting actions. T
 
 | Export metric | Value |
 | --- | ---: |
-| OTel-style spans | 57 |
-| Exported traces | 11 |
-| Root spans | 11 |
-| Child spans | 46 |
+| OTel-style spans | 286 |
+| Exported traces | 16 |
+| Root spans | 16 |
+| Child spans | 270 |
 | Tool spans | 40 |
+
+The combined export includes workflow-level spans, agent tool/audit spans, and case-level retriever failure spans for local inspection.
 
 ## What This Proves
 

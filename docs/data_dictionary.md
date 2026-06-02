@@ -126,7 +126,7 @@ Each row is an OpenTelemetry-style span derived from `reports/agent_trace_exampl
 
 ## `reports/observability_otel_spans.jsonl`
 
-Each row is an OpenTelemetry-style span for the broader lab observability view. The file combines `reports/agent_otel_spans.jsonl` with one deterministic `evaluation.run` trace that describes the orchestration path for synthetic data generation, retriever comparison, extraction evaluation, security evaluation, controlled-agent evaluation, and report/API artifact export.
+Each row is an OpenTelemetry-style span for the broader lab observability view. The file combines `reports/agent_otel_spans.jsonl` with one deterministic `evaluation.run` trace that describes the orchestration path for synthetic data generation, retriever comparison, extraction evaluation, security evaluation, controlled-agent evaluation, and report/API artifact export. It also includes retriever failure traces with one child span per failed case so concrete retrieval misses can be inspected from the same timeline surface.
 
 Additional attributes may include:
 
@@ -136,4 +136,9 @@ Additional attributes may include:
 | `eval.sequence` | Deterministic child-span order inside the evaluation trace. |
 | `eval.case_count` | Number of cases evaluated by the component. |
 | `retriever.best_system` | Best retriever label by citation coverage and failed-case count. |
+| `retriever.failure_reasons` | Comma-separated deterministic failure labels for a failed retrieval case. |
+| `retriever.expected_citation_ids` | Gold citation ids for a failed retrieval case. |
+| `retriever.predicted_citation_ids` | Final citation ids selected by the retriever. |
+| `retriever.retrieved_citation_ids` | Top retrieved citation ids before final answer selection. |
+| `retriever.top_candidate_scores` | Compact top-candidate score summary for a failed case. |
 | `http.route.*` | Local report/API routes represented by the artifact-export span. |
