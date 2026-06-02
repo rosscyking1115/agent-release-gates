@@ -116,13 +116,13 @@ The controlled workflow separates read-only tools from side-effecting actions. T
 
 | Export metric | Value |
 | --- | ---: |
-| OTel-style spans | 286 |
-| Exported traces | 16 |
-| Root spans | 16 |
-| Child spans | 270 |
+| OTel-style spans | 467 |
+| Exported traces | 17 |
+| Root spans | 17 |
+| Child spans | 450 |
 | Tool spans | 40 |
 
-The combined export includes workflow-level spans, agent tool/audit spans, and case-level retriever failure spans for local inspection.
+The combined export includes workflow-level spans, agent tool/audit spans, case-level retriever failure spans, and case-level agent approval spans for local inspection.
 
 ## What This Proves
 
@@ -144,5 +144,5 @@ The combined export includes workflow-level spans, agent tool/audit spans, and c
 - Add noisier, human-written ticket variants.
 - Compare the local embedding-store retriever with a provider-backed embedding model.
 - Add downloadable PDF report export.
-- Add richer spans for retrieval, extraction, approval decisions, and API errors.
+- Add richer spans for retrieval, extraction, and API errors.
 - Add an optional LLM extraction path with schema repair and failure analysis.

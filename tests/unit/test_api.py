@@ -41,6 +41,7 @@ def test_observability_otel_spans_endpoint_returns_jsonl() -> None:
 
     assert '"name": "evaluation.run"' in report
     assert '"name": "retriever.case_failure"' in report
+    assert '"name": "agent.approval_decision"' in report
     assert '"name": "agent.run"' in report
     assert '"span_id":' in report
 

@@ -56,7 +56,7 @@ The project is useful, but it is still too deterministic in several places:
 - Extraction is deterministic pattern matching.
 - Red-team checks are string-based.
 - Agent orchestration is local code rather than a state machine.
-- Observability now includes local structured data, deterministic OpenTelemetry-style spans for agent traces, evaluation workflow stages, and retriever failure cases, plus a dashboard trace timeline, but not a live collector.
+- Observability now includes local structured data, deterministic OpenTelemetry-style spans for agent traces, evaluation workflow stages, retriever failure cases, and agent approval cases, plus a dashboard trace timeline, but not a live collector.
 
 These are acceptable for the first lab version, but they should guide the next work.
 
@@ -65,7 +65,7 @@ These are acceptable for the first lab version, but they should guide the next w
 1. Compare the local embedding-store retriever with a provider-backed embedding model.
 2. Make the golden suite less templated with new non-generated tickets and harder retrieved-context attacks.
 3. Add timestamped historical snapshots once the deterministic report contract is stable.
-4. Add case-level spans for extraction, approval decisions, and API errors.
+4. Add case-level spans for extraction and API errors.
 5. Add more non-templated tickets after the current 264-case contract remains stable.
 
 ## Secondary Use

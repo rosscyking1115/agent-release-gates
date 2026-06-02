@@ -220,6 +220,73 @@ def otel_spans_from_retriever_failures(
     return spans
 
 
+def otel_spans_from_agent_approval_cases(cases: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    trace_label = "agent_approval_cases"
+    trace_id = _stable_hex(trace_label, length=32)
+    root_span_id = _stable_hex(f"{trace_label}:root", length=16)
+    trace_start = BASE_TIME_UNIX_NANO + 300 * TRACE_GAP_NANO
+    trace_end = trace_start + (len(cases) + 1) * SPAN_GAP_NANO
+    spans = [
+        _make_span(
+            trace_id=trace_id,
+            span_id=root_span_id,
+            parent_span_id=None,
+            name="agent.approval_analysis",
+            start_time_unix_nano=trace_start,
+            end_time_unix_nano=trace_end,
+            status_code="OK",
+            attributes={
+                "lab.trace_id": trace_label,
+                "lab.component": "agent",
+                "agent.case_count": len(cases),
+                "agent.approval_required_count": _count_true(cases, "approval_required"),
+                "agent.side_effect_blocked_count": _count_true(
+                    cases, "side_effect_blocked_without_approval"
+                ),
+                "agent.approved_action_executed_count": _count_true(
+                    cases, "approved_action_executed"
+                ),
+            },
+        )
+    ]
+    for sequence, case in enumerate(cases, start=1):
+        span_start = trace_start + sequence * SPAN_GAP_NANO
+        status_code = "OK" if _approval_case_passed(case) else "ERROR"
+        spans.append(
+            _make_span(
+                trace_id=trace_id,
+                span_id=_stable_hex(f"{trace_label}:{sequence}:{case['ticket_id']}", length=16),
+                parent_span_id=root_span_id,
+                name="agent.approval_decision",
+                start_time_unix_nano=span_start,
+                end_time_unix_nano=span_start + SPAN_DURATION_NANO,
+                status_code=status_code,
+                attributes={
+                    "lab.trace_id": trace_label,
+                    "lab.component": "agent",
+                    "eval.sequence": sequence,
+                    "ticket.id": case["ticket_id"],
+                    "agent.approval_required": case.get("approval_required", False),
+                    "agent.side_effect_blocked_without_approval": case.get(
+                        "side_effect_blocked_without_approval", False
+                    ),
+                    "agent.approved_action_executed": case.get(
+                        "approved_action_executed", False
+                    ),
+                    "agent.approval_audited": case.get("approval_audited", False),
+                    "agent.route_tool_team_match": case.get("route_tool_team_match", False),
+                    "agent.valid_tool_calls": case.get("valid_tool_calls", False),
+                    "agent.monitoring_snapshot_present": case.get(
+                        "monitoring_snapshot_present", False
+                    ),
+                    "agent.trace_id_present": case.get("trace_id_present", False),
+                    "agent.unnecessary_tool_call": case.get("unnecessary_tool_call", False),
+                },
+            )
+        )
+    return spans
+
+
 def _root_span(
     trace: dict[str, Any],
     trace_id: str,
@@ -327,6 +394,24 @@ def _candidate_score_summary(candidates: object) -> str:
         score = candidate.get("score", "")
         summaries.append(f"{section_id}={score}")
     return "; ".join(summaries)
+
+
+def _approval_case_passed(case: dict[str, Any]) -> bool:
+    return (
+        bool(case.get("approval_required"))
+        and bool(case.get("side_effect_blocked_without_approval"))
+        and bool(case.get("approved_action_executed"))
+        and bool(case.get("approval_audited"))
+        and bool(case.get("route_tool_team_match"))
+        and bool(case.get("valid_tool_calls"))
+        and bool(case.get("monitoring_snapshot_present"))
+        and bool(case.get("trace_id_present"))
+        and not bool(case.get("unnecessary_tool_call"))
+    )
+
+
+def _count_true(cases: list[dict[str, Any]], key: str) -> int:
+    return sum(1 for case in cases if case.get(key))
 
 
 def _slug(value: str) -> str:

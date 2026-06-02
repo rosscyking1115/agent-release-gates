@@ -1,4 +1,5 @@
 from internal_ai_agent.observability.otel import (
+    otel_spans_from_agent_approval_cases,
     otel_spans_from_agent_traces,
     otel_spans_from_evaluation_run,
     otel_spans_from_retriever_failures,
@@ -155,3 +156,48 @@ def test_otel_spans_from_retriever_failures_exports_case_level_spans() -> None:
     assert spans[1]["attributes"]["retriever.top_candidate_scores"] == (
         "RB-TRADE_SUPPORT-06=24.76; RB-CLIENT_ONBOARDING-01=22.91"
     )
+
+
+def test_otel_spans_from_agent_approval_cases_exports_case_level_spans() -> None:
+    spans = otel_spans_from_agent_approval_cases(
+        [
+            {
+                "ticket_id": "TCK-0001",
+                "approval_required": True,
+                "side_effect_blocked_without_approval": True,
+                "approved_action_executed": True,
+                "approval_audited": True,
+                "route_tool_team_match": True,
+                "valid_tool_calls": True,
+                "monitoring_snapshot_present": True,
+                "trace_id_present": True,
+                "unnecessary_tool_call": False,
+            },
+            {
+                "ticket_id": "TCK-0002",
+                "approval_required": True,
+                "side_effect_blocked_without_approval": False,
+                "approved_action_executed": True,
+                "approval_audited": True,
+                "route_tool_team_match": True,
+                "valid_tool_calls": True,
+                "monitoring_snapshot_present": True,
+                "trace_id_present": True,
+                "unnecessary_tool_call": False,
+            },
+        ]
+    )
+
+    assert len(spans) == 3
+    assert spans[0]["name"] == "agent.approval_analysis"
+    assert spans[0]["status"]["code"] == "OK"
+    assert spans[0]["attributes"]["agent.case_count"] == 2
+    assert spans[0]["attributes"]["agent.approval_required_count"] == 2
+    assert spans[0]["attributes"]["agent.side_effect_blocked_count"] == 1
+    assert spans[1]["name"] == "agent.approval_decision"
+    assert spans[1]["status"]["code"] == "OK"
+    assert spans[1]["parent_span_id"] == spans[0]["span_id"]
+    assert spans[1]["attributes"]["ticket.id"] == "TCK-0001"
+    assert spans[1]["attributes"]["agent.approval_required"] is True
+    assert spans[2]["status"]["code"] == "ERROR"
+    assert spans[2]["attributes"]["agent.side_effect_blocked_without_approval"] is False

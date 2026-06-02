@@ -126,7 +126,7 @@ Each row is an OpenTelemetry-style span derived from `reports/agent_trace_exampl
 
 ## `reports/observability_otel_spans.jsonl`
 
-Each row is an OpenTelemetry-style span for the broader lab observability view. The file combines `reports/agent_otel_spans.jsonl` with one deterministic `evaluation.run` trace that describes the orchestration path for synthetic data generation, retriever comparison, extraction evaluation, security evaluation, controlled-agent evaluation, and report/API artifact export. It also includes retriever failure traces with one child span per failed case so concrete retrieval misses can be inspected from the same timeline surface.
+Each row is an OpenTelemetry-style span for the broader lab observability view. The file combines `reports/agent_otel_spans.jsonl` with one deterministic `evaluation.run` trace that describes the orchestration path for synthetic data generation, retriever comparison, extraction evaluation, security evaluation, controlled-agent evaluation, and report/API artifact export. It also includes retriever failure traces with one child span per failed case, plus an agent approval trace with one child span per synthetic ticket, so concrete retrieval misses and approval-gate decisions can be inspected from the same timeline surface.
 
 Additional attributes may include:
 
@@ -141,4 +141,9 @@ Additional attributes may include:
 | `retriever.predicted_citation_ids` | Final citation ids selected by the retriever. |
 | `retriever.retrieved_citation_ids` | Top retrieved citation ids before final answer selection. |
 | `retriever.top_candidate_scores` | Compact top-candidate score summary for a failed case. |
+| `agent.approval_required` | Whether the synthetic case required approval before a side-effecting mock tool. |
+| `agent.side_effect_blocked_without_approval` | Whether the side-effecting mock tool was blocked before approval. |
+| `agent.approved_action_executed` | Whether the mock tool executed after approval was granted. |
+| `agent.approval_audited` | Whether approval outcomes appeared in the audit trail. |
+| `agent.unnecessary_tool_call` | Whether the agent called a tool unnecessarily. |
 | `http.route.*` | Local report/API routes represented by the artifact-export span. |

@@ -117,15 +117,15 @@ Known limitation: the current extraction cases are templated. Future eval sets s
 
 The first controlled-agent version is `controlled_agent_approval_gate`. It uses deterministic read-only tools for runbook search, ticket extraction, and escalation-note drafting, then requires explicit approval before running `route_ticket_mock`.
 
-It reports trace coverage rate, audit event coverage rate, approval audit rate, monitoring snapshot rate, valid tool-call rate, approval trigger rate, side-effect block rate, approved action execution rate, route-tool selection accuracy, and unnecessary tool-call rate. It also exports deterministic trace examples and OpenTelemetry-style spans for representative blocked and approved mock route runs.
+It reports trace coverage rate, audit event coverage rate, approval audit rate, monitoring snapshot rate, valid tool-call rate, approval trigger rate, side-effect block rate, approved action execution rate, route-tool selection accuracy, and unnecessary tool-call rate. It also exports deterministic trace examples, OpenTelemetry-style spans for representative blocked and approved mock route runs, and case-level approval-decision spans for every synthetic ticket.
 
 Known limitation: this is a deterministic local workflow rather than a LangGraph runtime. The shape is intentionally close to a future state machine so the approval and audit contract can be tested before adding orchestration dependencies.
 
 ## Observability Version
 
-The first observability version adds trace ids, structured audit events, and monitoring snapshots to each controlled-agent run. It also writes deterministic OpenTelemetry-style span rows for representative blocked and approved tool routes. The full orchestration run adds an evaluation-level trace covering data generation, retriever comparison, extraction evaluation, security evaluation, agent evaluation, and report/API artifact export. Retriever failures are exported as case-level spans with expected, predicted, and retrieved citation attributes, then normalized into the local dashboard trace timeline. This makes the project easier to debug and gives the dashboard measurable operational controls rather than only answer-quality metrics.
+The first observability version adds trace ids, structured audit events, and monitoring snapshots to each controlled-agent run. It also writes deterministic OpenTelemetry-style span rows for representative blocked and approved tool routes. The full orchestration run adds an evaluation-level trace covering data generation, retriever comparison, extraction evaluation, security evaluation, agent evaluation, and report/API artifact export. Retriever failures are exported as case-level spans with expected, predicted, and retrieved citation attributes; agent approval outcomes are exported as case-level spans with approval, blocking, execution, audit, and tool-validity attributes. These spans are normalized into the local dashboard trace timeline. This makes the project easier to debug and gives the dashboard measurable operational controls rather than only answer-quality metrics.
 
-Known limitation: the span export is local JSONL rather than a live OpenTelemetry collector pipeline. Future versions should add case-level spans for extraction, approval decisions, and API errors.
+Known limitation: the span export is local JSONL rather than a live OpenTelemetry collector pipeline. Future versions should add case-level spans for extraction and API errors.
 
 ## Security Red-Team Version
 

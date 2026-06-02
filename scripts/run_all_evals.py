@@ -10,6 +10,7 @@ from internal_ai_agent.evals.runner import evaluate_comparison, evaluate_retriev
 from internal_ai_agent.evals.security import evaluate_security
 from internal_ai_agent.io import read_jsonl, write_jsonl
 from internal_ai_agent.observability.otel import (
+    otel_spans_from_agent_approval_cases,
     otel_spans_from_evaluation_run,
     otel_spans_from_retriever_failures,
 )
@@ -64,8 +65,19 @@ def write_observability_spans(
     retriever_failure_spans = otel_spans_from_retriever_failures(
         _retriever_cases_by_system(project_root)
     )
+    agent_approval_spans = otel_spans_from_agent_approval_cases(
+        read_jsonl(project_root / "reports/agent_eval_cases.jsonl")
+    )
     output_path = project_root / "reports/observability_otel_spans.jsonl"
-    write_jsonl(output_path, [*evaluation_spans, *retriever_failure_spans, *agent_spans])
+    write_jsonl(
+        output_path,
+        [
+            *evaluation_spans,
+            *retriever_failure_spans,
+            *agent_approval_spans,
+            *agent_spans,
+        ],
+    )
     return output_path
 
 

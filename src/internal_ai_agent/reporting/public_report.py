@@ -126,7 +126,8 @@ def generate_public_report(project_root: Path) -> str:
             "",
             (
                 "The combined export includes workflow-level spans, agent tool/audit spans, "
-                "and case-level retriever failure spans for local inspection."
+                "case-level retriever failure spans, and case-level agent approval spans "
+                "for local inspection."
             ),
             "",
             "## What This Proves",
@@ -158,7 +159,7 @@ def generate_public_report(project_root: Path) -> str:
             "- Add noisier, human-written ticket variants.",
             "- Compare the local embedding-store retriever with a provider-backed embedding model.",
             "- Add downloadable PDF report export.",
-            "- Add richer spans for retrieval, extraction, approval decisions, and API errors.",
+            "- Add richer spans for retrieval, extraction, and API errors.",
             "- Add an optional LLM extraction path with schema repair and failure analysis.",
             "",
         ]
