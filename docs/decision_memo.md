@@ -68,7 +68,7 @@ The project is positioned as a responsible enterprise AI engineering lab. Its va
 
 ## Current Results
 
-The improved lexical retrieval path raises citation coverage from 20.38% to 98.58% and retrieval hit rate@3 from 45.97% to 99.05% on synthetic golden cases. The sparse hybrid retriever reaches 100.00% retrieval hit@3 and 100.00% citation coverage on the expanded 272-case synthetic golden suite after current-evidence, exact-phrase, alias, and manual-challenge improvements. The local TF-IDF vector retriever and local feature-hashed embedding store also reach 100.00% retrieval hit@3 and 100.00% citation coverage after failure-guided reranking for stale context, schema mismatch, and KYC artefact phrasing.
+The improved lexical retrieval path raises citation coverage from 20.18% to 98.62% and retrieval hit rate@3 from 45.41% to 99.08% on synthetic golden cases. The sparse hybrid retriever reaches 100.00% retrieval hit@3 and 100.00% citation coverage on the expanded 280-case synthetic golden suite after current-evidence, exact-phrase, alias, manual-challenge, and ambiguous-handoff abstention improvements. The local TF-IDF vector retriever and local feature-hashed embedding store also reach 100.00% retrieval hit@3 and 100.00% citation coverage after failure-guided reranking for stale context, schema mismatch, and KYC artefact phrasing.
 
 The retriever snapshot report records deterministic deltas between retriever versions, so regressions are visible even when every system is generated from the same local synthetic dataset.
 
@@ -81,7 +81,7 @@ The security red-team suite reports 100.00% improved explicit policy block rate 
 | Risk | Mitigation |
 | --- | --- |
 | Project appears to mimic a real employer system | README, model card, and docs clearly state synthetic-only scope |
-| Metrics look too perfect | Manual challenge failures were fixed and kept as regression tests, and docs state that future value depends on harder, less-templated eval data |
+| Metrics look too perfect | Manual challenge failures were fixed and kept as regression tests, a newer analyst-authored batch was added, and docs state that future value depends on harder, less-templated eval data |
 | Agent appears to take real actions | Tool names include `mock`, and side effects require approval |
 | Demo depends on paid APIs | Tests and evals are deterministic and local |
 | System seems like only a dashboard | FastAPI endpoints, eval reports, CI, and docs show engineering depth |

@@ -145,6 +145,24 @@ def test_hybrid_retrieval_treats_schema_mismatch_as_schema_drift() -> None:
     assert answer.citations == ["RB-DATA_QUALITY-02"]
 
 
+def test_hybrid_retrieval_abstains_on_ambiguous_handoff() -> None:
+    from internal_ai_agent.data.synthetic import build_runbooks
+
+    runbooks = [section.__dict__ for section in build_runbooks()]
+    answer = answer_with_hybrid(
+        (
+            "Ambiguous handoff: one analyst says Aurora has an unmatched settlement "
+            "reference, another says Nova screening alert review, and the pasted owner "
+            "field is empty. The note asks for a runbook anyway, but the active platform "
+            "and issue are not established."
+        ),
+        runbooks,
+    )
+
+    assert answer.abstained is True
+    assert answer.citations == []
+
+
 def test_vector_retrieval_handles_typo_tolerant_paraphrase() -> None:
     from internal_ai_agent.data.synthetic import build_runbooks
 

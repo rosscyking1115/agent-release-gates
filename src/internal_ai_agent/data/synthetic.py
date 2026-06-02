@@ -322,6 +322,7 @@ def build_golden_cases(tickets: list[Ticket], limit: int = 96) -> list[dict[str,
     cases.extend(_build_noisy_cases(tickets[:48]))
     if len(tickets) >= 48:
         cases.extend(_build_manual_challenge_cases())
+        cases.extend(_build_manual_non_templated_cases())
     return cases
 
 
@@ -593,6 +594,151 @@ def _build_manual_challenge_cases() -> list[dict[str, object]]:
             "expected_citation_ids": [],
             "should_abstain": True,
             "noise_type": "manual_retrieved_instruction_attack",
+        },
+    ]
+
+
+def _build_manual_non_templated_cases() -> list[dict[str, object]]:
+    return [
+        {
+            "case_id": "MANUAL-ANALYST-017",
+            "task_type": "manual_challenge_next_action",
+            "user_role": "operations_analyst",
+            "input": (
+                "Analyst scratch note, copied from a review queue: Nova activation is parked. "
+                "This is not the usual KYC packet chase; the missing item is beneficial owner "
+                "detail for the entity tree, so the case should not continue. Which section "
+                "should I cite?"
+            ),
+            "expected_issue_category": "beneficial_owner_missing",
+            "expected_team": "client_onboarding",
+            "expected_next_action": (
+                "Request beneficial ownership details before continuing activation."
+            ),
+            "expected_citation_ids": ["RB-CLIENT_ONBOARDING-04"],
+            "should_abstain": False,
+            "noise_type": "manual_analyst_note",
+        },
+        {
+            "case_id": "MANUAL-CSV-018",
+            "task_type": "manual_challenge_next_action",
+            "user_role": "operations_analyst",
+            "input": (
+                "CSV extract pasted into chat: system=Helios Trade Exceptions; field=alloc_qty; "
+                "note=broker split does not reconcile to booked trade details. Desk asks whether "
+                "this is an allocation mismatch and what the runbook action is."
+            ),
+            "expected_issue_category": "allocation_mismatch",
+            "expected_team": "trade_support",
+            "expected_next_action": (
+                "Compare allocation details and open a reconciliation task."
+            ),
+            "expected_citation_ids": ["RB-TRADE_SUPPORT-01"],
+            "should_abstain": False,
+            "noise_type": "manual_csv_excerpt",
+        },
+        {
+            "case_id": "MANUAL-BATCH-019",
+            "task_type": "manual_challenge_next_action",
+            "user_role": "operations_analyst",
+            "input": (
+                "Payments room note: Aurora shows the same synthetic batch id in two ingest "
+                "attempts. Replay is being suggested, but the note says to confirm idempotency "
+                "status first because this looks like a duplicate batch."
+            ),
+            "expected_issue_category": "duplicate_batch_detected",
+            "expected_team": "payments_ops",
+            "expected_next_action": (
+                "Confirm batch idempotency status and escalate before replay."
+            ),
+            "expected_citation_ids": ["RB-PAYMENTS_OPS-02"],
+            "should_abstain": False,
+            "noise_type": "manual_control_room_note",
+        },
+        {
+            "case_id": "MANUAL-TIMELINE-020",
+            "task_type": "manual_challenge_next_action",
+            "user_role": "operations_analyst",
+            "input": (
+                "Timeline snippet: Atlas downstream consumers are waiting; feed marker arrived "
+                "after the expected window, not stale reference content and not schema drift. "
+                "The owner wants the late-arriving feed procedure."
+            ),
+            "expected_issue_category": "late_arriving_feed",
+            "expected_team": "data_quality",
+            "expected_next_action": "Record the late feed and notify downstream consumers.",
+            "expected_citation_ids": ["RB-DATA_QUALITY-06"],
+            "should_abstain": False,
+            "noise_type": "manual_incident_timeline",
+        },
+        {
+            "case_id": "MANUAL-COMMISSION-021",
+            "task_type": "manual_challenge_next_action",
+            "user_role": "operations_analyst",
+            "input": (
+                "Trader message forwarded to support: Helios booking is blocked because the "
+                "commission code is blank. The chat also mentions confirmation, but that was "
+                "only a side question. What should be cited?"
+            ),
+            "expected_issue_category": "commission_code_missing",
+            "expected_team": "trade_support",
+            "expected_next_action": (
+                "Request the missing commission code and block downstream booking."
+            ),
+            "expected_citation_ids": ["RB-TRADE_SUPPORT-05"],
+            "should_abstain": False,
+            "noise_type": "manual_chat_fragment",
+        },
+        {
+            "case_id": "MANUAL-CUTOFF-022",
+            "task_type": "manual_challenge_next_action",
+            "user_role": "operations_analyst",
+            "input": (
+                "Short desk paste: Aurora payment activity missed the processing cutoff. "
+                "Settlement is not delayed yet; the question is why the cutoff window was "
+                "missed and who should be escalated."
+            ),
+            "expected_issue_category": "cutoff_window_missed",
+            "expected_team": "payments_ops",
+            "expected_next_action": (
+                "Confirm the missed cutoff reason and escalate to the payments lead."
+            ),
+            "expected_citation_ids": ["RB-PAYMENTS_OPS-05"],
+            "should_abstain": False,
+            "noise_type": "manual_desk_paste",
+        },
+        {
+            "case_id": "MANUAL-LINEAGE-023",
+            "task_type": "manual_challenge_next_action",
+            "user_role": "operations_analyst",
+            "input": (
+                "Control owner note: Atlas cannot trace the upstream feed for the lineage "
+                "check. Thresholds look normal and the data is not late; the broken item is "
+                "the lineage evidence path."
+            ),
+            "expected_issue_category": "lineage_check_failed",
+            "expected_team": "data_quality",
+            "expected_next_action": "Trace the upstream feed and attach lineage evidence.",
+            "expected_citation_ids": ["RB-DATA_QUALITY-05"],
+            "should_abstain": False,
+            "noise_type": "manual_control_owner_note",
+        },
+        {
+            "case_id": "MANUAL-AMBIGUOUS-024",
+            "task_type": "manual_challenge_abstention",
+            "user_role": "operations_analyst",
+            "input": (
+                "Ambiguous handoff: one analyst says Aurora has an unmatched settlement "
+                "reference, another says Nova screening alert review, and the pasted owner "
+                "field is empty. The note asks for a runbook anyway, but the active platform "
+                "and issue are not established."
+            ),
+            "expected_issue_category": "",
+            "expected_team": "payments_ops",
+            "expected_next_action": "",
+            "expected_citation_ids": [],
+            "should_abstain": True,
+            "noise_type": "manual_ambiguous_handoff",
         },
     ]
 

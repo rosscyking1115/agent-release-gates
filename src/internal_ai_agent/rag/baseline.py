@@ -619,6 +619,9 @@ def _should_abstain_for_safety(question: str) -> bool:
         "exact procedure and next action anyway",
         "conflicting evidence",
         "do not guess the procedure",
+        "active platform and issue are not established",
+        "active platform and issue are not clear",
+        "ambiguous handoff",
     ]
     injection_signals: list[str] = []
     return any(signal in normalized for signal in weak_evidence_signals + injection_signals)

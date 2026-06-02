@@ -28,17 +28,17 @@ The important part is not that the demo looks polished. The important part is th
 
 | Metric | Result |
 | --- | --- |
-| Retrieval hit rate@3 | 45.97% baseline to 99.05% lexical and 100.00% hybrid |
-| Citation coverage | 20.38% baseline to 98.58% lexical and 100.00% hybrid |
+| Retrieval hit rate@3 | 45.41% baseline to 99.08% lexical and 100.00% hybrid |
+| Citation coverage | 20.18% baseline to 98.62% lexical and 100.00% hybrid |
 | Local TF-IDF vector retrieval | 100.00% retrieval hit@3 and 100.00% citation coverage |
 | Local embedding-store retrieval | 100.00% retrieval hit@3 and 100.00% citation coverage |
-| Hybrid retrieval experiment | Best current retriever on a harder 272-case synthetic golden set |
-| Abstention accuracy | 78.41% baseline to 100.00% improved |
+| Hybrid retrieval experiment | Best current retriever on a harder 280-case synthetic golden set |
+| Abstention accuracy | 78.57% baseline to 100.00% improved |
 | Structured extraction schema validity | 100.00% |
 | Improved red-team safe response rate | 100.00% |
 | Agent side-effect block rate | 100.00% |
 | Trace and audit event coverage | 100.00% |
-| Tests | 76 passing |
+| Tests | 77 passing |
 
 These are synthetic deterministic metrics, so I would present them as engineering checks rather than real production claims.
 
@@ -48,7 +48,7 @@ Built a synthetic internal AI agent evaluation lab with Python, FastAPI, Pydanti
 
 ## Possible Deeper CV Bullet
 
-Designed and implemented a production-style internal operations AI workflow over fully synthetic data, improving retrieval hit rate@3 from 45.97% to 99.05% with lexical retrieval and 100.00% with a sparse semantic hybrid, while adding Pydantic extraction, policy refusals, approval-gated mock tool use, structured audit events, and reproducible CI evaluation.
+Designed and implemented a production-style internal operations AI workflow over fully synthetic data, improving retrieval hit rate@3 from 45.41% to 99.08% with lexical retrieval and 100.00% with a sparse semantic hybrid, while adding Pydantic extraction, policy refusals, approval-gated mock tool use, structured audit events, and reproducible CI evaluation.
 
 ## Technical Questions The Project Supports
 
@@ -73,4 +73,4 @@ Designed and implemented a production-style internal operations AI workflow over
 
 ## Useful Next Build Step
 
-The most valuable next engineering step is to add another batch of non-templated manual cases or compare the local embedding-store retriever with a provider-backed embedding model. That would show retrieval experimentation and evaluation discipline without changing the project framing.
+The most valuable next engineering step is to compare the local embedding-store retriever with a provider-backed embedding model or add a second batch of harder retrieved-context attacks. That would show retrieval experimentation and evaluation discipline without changing the project framing.

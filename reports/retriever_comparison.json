@@ -1,28 +1,28 @@
 {
-  "case_count": 272,
+  "case_count": 280,
   "notes": [
     "Hybrid, vector, and embedding-store retrieval are compared as experiments; the older two-system report is kept for continuity.",
     "All systems run over the same synthetic golden cases."
   ],
   "systems": [
     {
-      "abstention_accuracy": 0.7831,
-      "citation_coverage": 0.2038,
-      "failure_count": 227,
-      "issue_category_accuracy": 0.2038,
+      "abstention_accuracy": 0.7857,
+      "citation_coverage": 0.2018,
+      "failure_count": 234,
+      "issue_category_accuracy": 0.2018,
       "label": "Baseline team hints",
-      "next_action_accuracy": 0.2038,
-      "retrieval_hit_rate_at_3": 0.4597,
+      "next_action_accuracy": 0.2018,
+      "retrieval_hit_rate_at_3": 0.4541,
       "system_version": "baseline_team_hint_retrieval"
     },
     {
       "abstention_accuracy": 1.0,
-      "citation_coverage": 0.9858,
+      "citation_coverage": 0.9862,
       "failure_count": 3,
-      "issue_category_accuracy": 0.9858,
+      "issue_category_accuracy": 0.9862,
       "label": "Improved lexical",
-      "next_action_accuracy": 0.9858,
-      "retrieval_hit_rate_at_3": 0.9905,
+      "next_action_accuracy": 0.9862,
+      "retrieval_hit_rate_at_3": 0.9908,
       "system_version": "improved_lexical_retrieval"
     },
     {
