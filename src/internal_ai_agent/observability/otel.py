@@ -220,6 +220,82 @@ def otel_spans_from_retriever_failures(
     return spans
 
 
+def otel_spans_from_retriever_rankings(
+    cases_by_system: dict[str, list[dict[str, Any]]],
+) -> list[dict[str, Any]]:
+    spans: list[dict[str, Any]] = []
+    for system_index, (system, cases) in enumerate(sorted(cases_by_system.items())):
+        cases_with_scores = [
+            case for case in cases if _has_candidate_score_breakdown(case)
+        ]
+        trace_label = f"retriever_rankings_{_slug(system)}"
+        trace_id = _stable_hex(trace_label, length=32)
+        root_span_id = _stable_hex(f"{trace_label}:root", length=16)
+        trace_start = BASE_TIME_UNIX_NANO + (600 + system_index) * TRACE_GAP_NANO
+        trace_end = trace_start + (len(cases_with_scores) + 1) * SPAN_GAP_NANO
+        spans.append(
+            _make_span(
+                trace_id=trace_id,
+                span_id=root_span_id,
+                parent_span_id=None,
+                name="retriever.ranking_analysis",
+                start_time_unix_nano=trace_start,
+                end_time_unix_nano=trace_end,
+                status_code="OK",
+                attributes={
+                    "lab.trace_id": trace_label,
+                    "lab.component": "retrieval",
+                    "retriever.system": system,
+                    "retriever.ranked_case_count": len(cases_with_scores),
+                    "retriever.failed_case_count": sum(
+                        1 for case in cases_with_scores if case.get("failure_reasons")
+                    ),
+                },
+            )
+        )
+        for sequence, case in enumerate(cases_with_scores, start=1):
+            span_start = trace_start + sequence * SPAN_GAP_NANO
+            status_code = "ERROR" if case.get("failure_reasons") else "OK"
+            spans.append(
+                _make_span(
+                    trace_id=trace_id,
+                    span_id=_stable_hex(
+                        f"{trace_label}:{sequence}:{case['case_id']}", length=16
+                    ),
+                    parent_span_id=root_span_id,
+                    name="retriever.ranking_case",
+                    start_time_unix_nano=span_start,
+                    end_time_unix_nano=span_start + SPAN_DURATION_NANO,
+                    status_code=status_code,
+                    attributes={
+                        "lab.trace_id": trace_label,
+                        "lab.component": "retrieval",
+                        "eval.sequence": sequence,
+                        "eval.case_id": case["case_id"],
+                        "eval.task_type": case.get("task_type", ""),
+                        "eval.noise_type": case.get("noise_type", ""),
+                        "retriever.system": system,
+                        "retriever.failure_reasons": ", ".join(
+                            case.get("failure_reasons", [])
+                        ),
+                        "retriever.retrieval_hit_at_3": case.get(
+                            "retrieval_hit_at_3", False
+                        ),
+                        "retriever.expected_citation_ids": ", ".join(
+                            case.get("expected_citation_ids", [])
+                        ),
+                        "retriever.predicted_citation_ids": ", ".join(
+                            case.get("predicted_citation_ids", [])
+                        ),
+                        **_ranking_candidate_attributes(
+                            case.get("retrieved_candidate_scores", [])
+                        ),
+                    },
+                )
+            )
+    return spans
+
+
 def otel_spans_from_agent_approval_cases(cases: list[dict[str, Any]]) -> list[dict[str, Any]]:
     trace_label = "agent_approval_cases"
     trace_id = _stable_hex(trace_label, length=32)
@@ -566,6 +642,56 @@ def _candidate_score_summary(candidates: object) -> str:
         score = candidate.get("score", "")
         summaries.append(f"{section_id}={score}")
     return "; ".join(summaries)
+
+
+def _has_candidate_score_breakdown(case: dict[str, Any]) -> bool:
+    candidates = case.get("retrieved_candidate_scores", [])
+    if not isinstance(candidates, list):
+        return False
+    return any(
+        isinstance(candidate, dict) and candidate.get("score_breakdown")
+        for candidate in candidates
+    )
+
+
+def _ranking_candidate_attributes(candidates: object) -> dict[str, Any]:
+    if not isinstance(candidates, list):
+        return {}
+    attributes: dict[str, Any] = {
+        "retriever.top_candidate_count": min(len(candidates), 3),
+        "retriever.winning_margin": _winning_margin(candidates),
+    }
+    for rank, candidate in enumerate(candidates[:3], start=1):
+        if not isinstance(candidate, dict):
+            continue
+        prefix = f"retriever.top_{rank}"
+        attributes[f"{prefix}.section_id"] = str(candidate.get("section_id", ""))
+        attributes[f"{prefix}.team"] = str(candidate.get("team", ""))
+        attributes[f"{prefix}.title"] = str(candidate.get("title", ""))
+        attributes[f"{prefix}.score"] = candidate.get("score", 0)
+        attributes[f"{prefix}.score_breakdown"] = _score_breakdown_summary(
+            candidate.get("score_breakdown", {})
+        )
+    return attributes
+
+
+def _winning_margin(candidates: list[object]) -> float:
+    if len(candidates) < 2:
+        return 0.0
+    first = candidates[0]
+    second = candidates[1]
+    if not isinstance(first, dict) or not isinstance(second, dict):
+        return 0.0
+    return round(float(first.get("score", 0)) - float(second.get("score", 0)), 4)
+
+
+def _score_breakdown_summary(breakdown: object) -> str:
+    if not isinstance(breakdown, dict):
+        return ""
+    parts = []
+    for key in sorted(breakdown):
+        parts.append(f"{key}={breakdown[key]}")
+    return "; ".join(parts)
 
 
 def _approval_case_passed(case: dict[str, Any]) -> bool:

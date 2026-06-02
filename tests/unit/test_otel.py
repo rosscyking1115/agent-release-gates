@@ -5,6 +5,7 @@ from internal_ai_agent.observability.otel import (
     otel_spans_from_evaluation_run,
     otel_spans_from_extraction_cases,
     otel_spans_from_retriever_failures,
+    otel_spans_from_retriever_rankings,
 )
 
 
@@ -157,6 +158,68 @@ def test_otel_spans_from_retriever_failures_exports_case_level_spans() -> None:
     assert spans[1]["attributes"]["retriever.retrieval_hit_at_3"] is True
     assert spans[1]["attributes"]["retriever.top_candidate_scores"] == (
         "RB-TRADE_SUPPORT-06=24.76; RB-CLIENT_ONBOARDING-01=22.91"
+    )
+
+
+def test_otel_spans_from_retriever_rankings_exports_score_breakdowns() -> None:
+    spans = otel_spans_from_retriever_rankings(
+        {
+            "Local TF-IDF vector": [
+                {
+                    "case_id": "CASE-001",
+                    "task_type": "answer_next_action",
+                    "noise_type": "clean_exact",
+                    "failure_reasons": [],
+                    "retrieval_hit_at_3": True,
+                    "expected_citation_ids": ["RB-TRADE_SUPPORT-02"],
+                    "predicted_citation_ids": ["RB-TRADE_SUPPORT-02"],
+                    "retrieved_candidate_scores": [
+                        {
+                            "section_id": "RB-TRADE_SUPPORT-02",
+                            "team": "trade_support",
+                            "title": "Confirmation Pending",
+                            "score": 64.8621,
+                            "score_breakdown": {
+                                "alias": 10,
+                                "team_hint": 0.75,
+                                "vector": 48.1121,
+                            },
+                        },
+                        {
+                            "section_id": "RB-TRADE_SUPPORT-06",
+                            "team": "trade_support",
+                            "title": "Booking Status Stuck",
+                            "score": 25.8895,
+                            "score_breakdown": {
+                                "alias": 5,
+                                "team_hint": 0.75,
+                                "vector": 20.1395,
+                            },
+                        },
+                    ],
+                },
+                {
+                    "case_id": "CASE-002",
+                    "failure_reasons": [],
+                    "retrieved_candidate_scores": [
+                        {"section_id": "RB-TRADE_SUPPORT-02", "score": 3}
+                    ],
+                },
+            ]
+        }
+    )
+
+    assert len(spans) == 2
+    assert spans[0]["name"] == "retriever.ranking_analysis"
+    assert spans[0]["attributes"]["retriever.ranked_case_count"] == 1
+    assert spans[1]["name"] == "retriever.ranking_case"
+    assert spans[1]["status"]["code"] == "OK"
+    assert spans[1]["parent_span_id"] == spans[0]["span_id"]
+    assert spans[1]["attributes"]["eval.case_id"] == "CASE-001"
+    assert spans[1]["attributes"]["retriever.winning_margin"] == 38.9726
+    assert spans[1]["attributes"]["retriever.top_1.section_id"] == "RB-TRADE_SUPPORT-02"
+    assert spans[1]["attributes"]["retriever.top_1.score_breakdown"] == (
+        "alias=10; team_hint=0.75; vector=48.1121"
     )
 
 

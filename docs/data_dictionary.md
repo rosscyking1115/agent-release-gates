@@ -126,7 +126,7 @@ Each row is an OpenTelemetry-style span derived from `reports/agent_trace_exampl
 
 ## `reports/observability_otel_spans.jsonl`
 
-Each row is an OpenTelemetry-style span for the broader lab observability view. The file combines `reports/agent_otel_spans.jsonl` with one deterministic `evaluation.run` trace that describes the orchestration path for synthetic data generation, retriever comparison, extraction evaluation, security evaluation, controlled-agent evaluation, and report/API artifact export. It also includes retriever failure traces with one child span per failed case, an extraction trace with one child span per synthetic ticket, an agent approval trace with one child span per synthetic ticket, and an API contract trace with endpoint and expected-error spans. Concrete retrieval misses, extraction checks, approval-gate decisions, and API validation boundaries can be inspected from the same timeline surface.
+Each row is an OpenTelemetry-style span for the broader lab observability view. The file combines `reports/agent_otel_spans.jsonl` with one deterministic `evaluation.run` trace that describes the orchestration path for synthetic data generation, retriever comparison, extraction evaluation, security evaluation, controlled-agent evaluation, and report/API artifact export. It also includes retriever failure traces with one child span per failed case, retriever ranking-detail traces for local vector and embedding-store systems, an extraction trace with one child span per synthetic ticket, an agent approval trace with one child span per synthetic ticket, and an API contract trace with endpoint and expected-error spans. Concrete retrieval misses, ranking score components, extraction checks, approval-gate decisions, and API validation boundaries can be inspected from the same timeline surface.
 
 Additional attributes may include:
 
@@ -141,6 +141,10 @@ Additional attributes may include:
 | `retriever.predicted_citation_ids` | Final citation ids selected by the retriever. |
 | `retriever.retrieved_citation_ids` | Top retrieved citation ids before final answer selection. |
 | `retriever.top_candidate_scores` | Compact top-candidate score summary for a failed case. |
+| `retriever.winning_margin` | Score difference between the top two ranked candidates. |
+| `retriever.top_*.section_id` | Ranked candidate section id, currently for the top three candidates. |
+| `retriever.top_*.score` | Ranked candidate total score. |
+| `retriever.top_*.score_breakdown` | Compact component breakdown such as alias, vector, embedding, team hint, title phrase, current evidence, and negation penalty. |
 | `extraction.schema_valid` | Whether structured extraction passed schema validation. |
 | `extraction.expected_issue_category` | Gold issue category for the synthetic ticket. |
 | `extraction.predicted_issue_category` | Issue category returned by the extractor. |
