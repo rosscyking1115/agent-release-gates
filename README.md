@@ -157,7 +157,7 @@ The Streamlit dashboard presents the evaluation outcome as an inspection surface
 - baseline vs improved metric chart
 - retriever experiment table comparing baseline, lexical, hybrid, vector, and embedding-store retrieval
 - retriever metric snapshots showing citation deltas, failure deltas, and regression flags
-- retriever failure analysis showing recovered evidence, final-citation misses, and fixes
+- retriever failure analysis showing recovered evidence, final-citation misses, score breakdowns, and fixes
 - before/after metric table
 - noisy-case and failure-reason analysis
 - controlled agent approval and tool-governance metrics

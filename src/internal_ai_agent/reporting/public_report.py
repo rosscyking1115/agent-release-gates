@@ -224,14 +224,14 @@ def _retriever_failure_examples_table(project_root: Path) -> str:
 
     rows = [
         "| System | Case | Noise | Failure | Expected citation | Predicted citation | "
-        "Retrieved but not cited | Recommended fix |",
-        "| --- | --- | --- | --- | --- | --- | --- | --- |",
+        "Retrieved but not cited | Top retrieved scores | Recommended fix |",
+        "| --- | --- | --- | --- | --- | --- | --- | --- | --- |",
     ]
     for row in examples:
         rows.append(
             "| {system} | {case_id} | {noise_type} | {failure_reasons} | "
             "{expected_citation} | {predicted_citation} | {retrieved_but_not_cited} | "
-            "{recommended_fix} |".format(**row)
+            "{score_explanation} | {recommended_fix} |".format(**row)
         )
     return "\n".join(rows)
 

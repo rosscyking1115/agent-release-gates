@@ -24,6 +24,7 @@ class CaseResult:
     expected_citation_ids: list[str]
     predicted_citation_ids: list[str]
     retrieved_citation_ids: list[str]
+    retrieved_candidate_scores: list[dict[str, Any]]
     expected_issue_category: str
     predicted_issue_category: str | None
     expected_team: str
@@ -341,6 +342,7 @@ def _evaluate_case(case: dict[str, Any], answer: BaselineAnswer) -> CaseResult:
         expected_citation_ids=expected_citations,
         predicted_citation_ids=predicted_citations,
         retrieved_citation_ids=retrieved_citations,
+        retrieved_candidate_scores=_retrieved_candidate_scores(answer),
         expected_issue_category=str(case.get("expected_issue_category", "")),
         predicted_issue_category=answer.issue_category,
         expected_team=str(case.get("expected_team", "")),
@@ -464,6 +466,7 @@ def _failure_examples(results: list[CaseResult], limit: int = 10) -> list[dict[s
                 "expected_citation_ids": row.expected_citation_ids,
                 "predicted_citation_ids": row.predicted_citation_ids,
                 "retrieved_citation_ids": row.retrieved_citation_ids,
+                "retrieved_candidate_scores": row.retrieved_candidate_scores,
                 "expected_issue_category": row.expected_issue_category,
                 "predicted_issue_category": row.predicted_issue_category,
                 "diagnostic": row.diagnostic,
@@ -471,6 +474,21 @@ def _failure_examples(results: list[CaseResult], limit: int = 10) -> list[dict[s
             }
         )
     return examples[:limit]
+
+
+def _retrieved_candidate_scores(answer: BaselineAnswer) -> list[dict[str, Any]]:
+    candidates: list[dict[str, Any]] = []
+    for section in answer.retrieved_sections:
+        candidates.append(
+            {
+                "section_id": section.section_id,
+                "title": section.title,
+                "team": section.team,
+                "score": section.score,
+                "score_breakdown": section.score_breakdown or {},
+            }
+        )
+    return candidates
 
 
 def _system_row(label: str, report: dict[str, Any]) -> dict[str, Any]:

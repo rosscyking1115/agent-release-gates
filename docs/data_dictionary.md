@@ -66,11 +66,12 @@ Retrieval case result files include `baseline_eval_cases.jsonl`, `improved_eval_
 | `expected_citation_ids` | Gold supporting runbook sections. |
 | `predicted_citation_ids` | Final cited sections from the retriever answer. |
 | `retrieved_citation_ids` | Top retrieved sections before final answer selection. |
+| `retrieved_candidate_scores` | Top retrieved sections with total score and optional component breakdown, such as vector similarity, embedding similarity, alias boost, team hint, current-evidence boost, and negation penalty. |
 | `failure_reasons` | Deterministic failure labels used for error analysis. |
 | `diagnostic` | Short explanation of the failure mode. |
 | `recommended_fix` | Suggested retrieval or policy improvement. |
 
-The dashboard and public report derive retriever error-analysis tables from these fields, including a `retrieved_but_not_cited` flag when the expected citation appears in the retrieved set but not in the final cited answer.
+The dashboard and public report derive retriever error-analysis tables from these fields, including a `retrieved_but_not_cited` flag when the expected citation appears in the retrieved set but not in the final cited answer. Failure examples also show top retrieved scores so ranking mistakes can be inspected without rerunning the retriever.
 
 ## `reports/retriever_metric_snapshots.json`
 

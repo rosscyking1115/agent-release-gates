@@ -39,6 +39,7 @@ def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
     assert "NOISY-MISSING-007" in report
     assert "| Local embedding store | 100.00% | 99.51% | 99.51% | 100.00% | 1 |" in report
     assert "MANUAL-CHAT-001" in report
+    assert "Top retrieved scores" in report
     assert "HUMAN-EMAIL-THREAD-004" not in report
     assert "| Citation coverage | 20.98% | 98.54% | +77.56% |" in report
     assert "| Safe response rate | 0.00% | 100.00% |" in report

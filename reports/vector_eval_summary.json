@@ -249,6 +249,50 @@
       ],
       "predicted_issue_category": "booking_status_stuck",
       "recommended_fix": "Add hybrid retrieval and stronger metadata filters before final answer selection.",
+      "retrieved_candidate_scores": [
+        {
+          "score": 24.7607,
+          "score_breakdown": {
+            "alias": 5,
+            "current_evidence": 0.0,
+            "negation_penalty": 0.0,
+            "team_hint": 0.0,
+            "title_phrase": 0.0,
+            "vector": 19.7607
+          },
+          "section_id": "RB-TRADE_SUPPORT-06",
+          "team": "trade_support",
+          "title": "Booking Status Stuck"
+        },
+        {
+          "score": 22.9157,
+          "score_breakdown": {
+            "alias": 5,
+            "current_evidence": 0.0,
+            "negation_penalty": 0.0,
+            "team_hint": 1.25,
+            "title_phrase": 0.0,
+            "vector": 16.6657
+          },
+          "section_id": "RB-CLIENT_ONBOARDING-01",
+          "team": "client_onboarding",
+          "title": "Missing Kyc Document"
+        },
+        {
+          "score": 20.6146,
+          "score_breakdown": {
+            "alias": 5,
+            "current_evidence": 0.0,
+            "negation_penalty": 0.0,
+            "team_hint": 1.25,
+            "title_phrase": 0.0,
+            "vector": 14.3646
+          },
+          "section_id": "RB-CLIENT_ONBOARDING-06",
+          "team": "client_onboarding",
+          "title": "Tax Form Expired"
+        }
+      ],
       "retrieved_citation_ids": [
         "RB-TRADE_SUPPORT-06",
         "RB-CLIENT_ONBOARDING-01",

@@ -19,6 +19,7 @@ class RetrievedSection:
     team: str
     content: str
     score: float
+    score_breakdown: dict[str, float] | None = None
 
 
 @dataclass(frozen=True)
@@ -374,11 +375,19 @@ def retrieve_vector(
         section_vector = _tfidf_vector(features, idf)
 
         vector_score = _cosine_similarity(query_vector, section_vector) * 100
-        keyword_score = _alias_overlap(_tokenize(question), category) * 5
-        keyword_score += _title_phrase_score(question, category) * 0.75
-        keyword_score += _team_hint_score(question, str(section["team"])) * 0.25
-        keyword_score += _current_evidence_score(question, category, str(section["team"])) * 0.75
-        score = vector_score + keyword_score - _negated_category_penalty(question, category)
+        alias_score = _alias_overlap(_tokenize(question), category) * 5
+        title_phrase_score = _title_phrase_score(question, category) * 0.75
+        team_hint_score = _team_hint_score(question, str(section["team"])) * 0.25
+        evidence_score = _current_evidence_score(question, category, str(section["team"])) * 0.75
+        negation_penalty = _negated_category_penalty(question, category)
+        score = (
+            vector_score
+            + alias_score
+            + title_phrase_score
+            + team_hint_score
+            + evidence_score
+            - negation_penalty
+        )
 
         if score <= 0:
             continue
@@ -390,6 +399,14 @@ def retrieve_vector(
                 team=str(section["team"]),
                 content=content,
                 score=round(score, 4),
+                score_breakdown={
+                    "vector": round(vector_score, 4),
+                    "alias": round(alias_score, 4),
+                    "title_phrase": round(title_phrase_score, 4),
+                    "team_hint": round(team_hint_score, 4),
+                    "current_evidence": round(evidence_score, 4),
+                    "negation_penalty": round(negation_penalty, 4),
+                },
             )
         )
 
@@ -473,11 +490,19 @@ def retrieve_embedding_store(
         category = title.lower().replace(" ", "_")
 
         embedding_score = _dense_cosine_similarity(query_embedding, record.embedding) * 100
-        ranking_score = _alias_overlap(query_tokens, category) * 6
-        ranking_score += _title_phrase_score(question, category) * 2
-        ranking_score += _team_hint_score(question, str(section["team"])) * 0.25
-        ranking_score += _current_evidence_score(question, category, str(section["team"])) * 0.75
-        score = embedding_score + ranking_score - _negated_category_penalty(question, category)
+        alias_score = _alias_overlap(query_tokens, category) * 6
+        title_phrase_score = _title_phrase_score(question, category) * 2
+        team_hint_score = _team_hint_score(question, str(section["team"])) * 0.25
+        evidence_score = _current_evidence_score(question, category, str(section["team"])) * 0.75
+        negation_penalty = _negated_category_penalty(question, category)
+        score = (
+            embedding_score
+            + alias_score
+            + title_phrase_score
+            + team_hint_score
+            + evidence_score
+            - negation_penalty
+        )
 
         if score <= 0:
             continue
@@ -489,6 +514,14 @@ def retrieve_embedding_store(
                 team=str(section["team"]),
                 content=content,
                 score=round(score, 4),
+                score_breakdown={
+                    "embedding": round(embedding_score, 4),
+                    "alias": round(alias_score, 4),
+                    "title_phrase": round(title_phrase_score, 4),
+                    "team_hint": round(team_hint_score, 4),
+                    "current_evidence": round(evidence_score, 4),
+                    "negation_penalty": round(negation_penalty, 4),
+                },
             )
         )
 

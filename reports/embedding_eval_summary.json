@@ -248,6 +248,50 @@
       ],
       "predicted_issue_category": "beneficial_owner_missing",
       "recommended_fix": "Add within-team reranking using issue-category evidence and expected action terms.",
+      "retrieved_candidate_scores": [
+        {
+          "score": 22.9824,
+          "score_breakdown": {
+            "alias": 6,
+            "current_evidence": 0.0,
+            "embedding": 15.7324,
+            "negation_penalty": 0.0,
+            "team_hint": 1.25,
+            "title_phrase": 0.0
+          },
+          "section_id": "RB-CLIENT_ONBOARDING-04",
+          "team": "client_onboarding",
+          "title": "Beneficial Owner Missing"
+        },
+        {
+          "score": 19.9999,
+          "score_breakdown": {
+            "alias": 6,
+            "current_evidence": 0.0,
+            "embedding": 12.7499,
+            "negation_penalty": 0.0,
+            "team_hint": 1.25,
+            "title_phrase": 0.0
+          },
+          "section_id": "RB-CLIENT_ONBOARDING-01",
+          "team": "client_onboarding",
+          "title": "Missing Kyc Document"
+        },
+        {
+          "score": 19.8496,
+          "score_breakdown": {
+            "alias": 6,
+            "current_evidence": 0.0,
+            "embedding": 12.5996,
+            "negation_penalty": 0.0,
+            "team_hint": 1.25,
+            "title_phrase": 0.0
+          },
+          "section_id": "RB-CLIENT_ONBOARDING-05",
+          "team": "client_onboarding",
+          "title": "Screening Alert Review"
+        }
+      ],
       "retrieved_citation_ids": [
         "RB-CLIENT_ONBOARDING-04",
         "RB-CLIENT_ONBOARDING-01",

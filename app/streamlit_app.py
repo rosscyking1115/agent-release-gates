@@ -209,6 +209,7 @@ def _render_retriever_error_analysis(
                 "expected_citation",
                 "predicted_citation",
                 "retrieved_citations",
+                "score_explanation",
                 "retrieved_but_not_cited",
                 "diagnostic",
                 "recommended_fix",

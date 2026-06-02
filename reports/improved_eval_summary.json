@@ -248,6 +248,29 @@
       ],
       "predicted_issue_category": "stale_reference_data",
       "recommended_fix": "Add semantic retrieval or synonym expansion for paraphrased procedure descriptions.",
+      "retrieved_candidate_scores": [
+        {
+          "score": 13.0,
+          "score_breakdown": {},
+          "section_id": "RB-DATA_QUALITY-01",
+          "team": "data_quality",
+          "title": "Stale Reference Data"
+        },
+        {
+          "score": 11.0,
+          "score_breakdown": {},
+          "section_id": "RB-CLIENT_ONBOARDING-02",
+          "team": "client_onboarding",
+          "title": "Entity Match Review"
+        },
+        {
+          "score": 11.0,
+          "score_breakdown": {},
+          "section_id": "RB-CLIENT_ONBOARDING-05",
+          "team": "client_onboarding",
+          "title": "Screening Alert Review"
+        }
+      ],
       "retrieved_citation_ids": [
         "RB-DATA_QUALITY-01",
         "RB-CLIENT_ONBOARDING-02",
@@ -273,6 +296,29 @@
       ],
       "predicted_issue_category": "stale_reference_data",
       "recommended_fix": "Add semantic retrieval or synonym expansion for paraphrased procedure descriptions.",
+      "retrieved_candidate_scores": [
+        {
+          "score": 13.0,
+          "score_breakdown": {},
+          "section_id": "RB-DATA_QUALITY-01",
+          "team": "data_quality",
+          "title": "Stale Reference Data"
+        },
+        {
+          "score": 11.0,
+          "score_breakdown": {},
+          "section_id": "RB-CLIENT_ONBOARDING-02",
+          "team": "client_onboarding",
+          "title": "Entity Match Review"
+        },
+        {
+          "score": 11.0,
+          "score_breakdown": {},
+          "section_id": "RB-CLIENT_ONBOARDING-05",
+          "team": "client_onboarding",
+          "title": "Screening Alert Review"
+        }
+      ],
       "retrieved_citation_ids": [
         "RB-DATA_QUALITY-01",
         "RB-CLIENT_ONBOARDING-02",
@@ -298,6 +344,29 @@
       ],
       "predicted_issue_category": "workflow_sla_breach",
       "recommended_fix": "Improve ranking so explicit procedure evidence beats generic workflow terms.",
+      "retrieved_candidate_scores": [
+        {
+          "score": 12.0,
+          "score_breakdown": {},
+          "section_id": "RB-CLIENT_ONBOARDING-03",
+          "team": "client_onboarding",
+          "title": "Workflow Sla Breach"
+        },
+        {
+          "score": 11.0,
+          "score_breakdown": {},
+          "section_id": "RB-CLIENT_ONBOARDING-01",
+          "team": "client_onboarding",
+          "title": "Missing Kyc Document"
+        },
+        {
+          "score": 8.0,
+          "score_breakdown": {},
+          "section_id": "RB-TRADE_SUPPORT-06",
+          "team": "trade_support",
+          "title": "Booking Status Stuck"
+        }
+      ],
       "retrieved_citation_ids": [
         "RB-CLIENT_ONBOARDING-03",
         "RB-CLIENT_ONBOARDING-01",

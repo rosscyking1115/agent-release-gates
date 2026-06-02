@@ -331,12 +331,37 @@ def retriever_failure_example_rows(
                     "expected_citation": ", ".join(case["expected_citation_ids"]),
                     "predicted_citation": ", ".join(case["predicted_citation_ids"]),
                     "retrieved_citations": ", ".join(case["retrieved_citation_ids"]),
+                    "score_explanation": _candidate_score_summary(
+                        case.get("retrieved_candidate_scores", [])
+                    ),
                     "retrieved_but_not_cited": retrieved_but_not_cited(case),
                     "diagnostic": case["diagnostic"],
                     "recommended_fix": case["recommended_fix"],
                 }
             )
     return rows
+
+
+def _candidate_score_summary(candidates: object) -> str:
+    if not isinstance(candidates, list):
+        return ""
+    summaries: list[str] = []
+    for candidate in candidates[:3]:
+        if not isinstance(candidate, dict):
+            continue
+        section_id = str(candidate.get("section_id", ""))
+        score = candidate.get("score", "")
+        breakdown = candidate.get("score_breakdown", {})
+        if not isinstance(breakdown, dict) or not breakdown:
+            summaries.append(f"{section_id} total={score}")
+            continue
+        components = ", ".join(
+            f"{key}={value}"
+            for key, value in breakdown.items()
+            if isinstance(value, (int, float)) and value != 0
+        )
+        summaries.append(f"{section_id} total={score} ({components})")
+    return "; ".join(summaries)
 
 
 def case_mix(rows: list[dict[str, Any]]) -> dict[str, int]:

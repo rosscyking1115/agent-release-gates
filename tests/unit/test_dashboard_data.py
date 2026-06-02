@@ -254,6 +254,18 @@ def test_retriever_failure_example_rows_formats_case_level_diagnostics() -> None
                 "expected_citation_ids": ["RB-1"],
                 "predicted_citation_ids": ["RB-2"],
                 "retrieved_citation_ids": ["RB-2", "RB-1"],
+                "retrieved_candidate_scores": [
+                    {
+                        "section_id": "RB-2",
+                        "score": 12.5,
+                        "score_breakdown": {"vector": 10.0, "alias": 2.5},
+                    },
+                    {
+                        "section_id": "RB-1",
+                        "score": 11.0,
+                        "score_breakdown": {"vector": 9.0, "current_evidence": 2.0},
+                    },
+                ],
                 "diagnostic": "Expected section retrieved but not selected.",
                 "recommended_fix": "Improve reranking.",
             }
@@ -265,6 +277,10 @@ def test_retriever_failure_example_rows_formats_case_level_diagnostics() -> None
     assert rows[0]["system"] == "Vector"
     assert rows[0]["retrieved_but_not_cited"] is True
     assert rows[0]["retrieved_citations"] == "RB-2, RB-1"
+    assert rows[0]["score_explanation"] == (
+        "RB-2 total=12.5 (vector=10.0, alias=2.5); "
+        "RB-1 total=11.0 (vector=9.0, current_evidence=2.0)"
+    )
 
 
 def test_security_metric_rows_formats_before_after_scores() -> None:

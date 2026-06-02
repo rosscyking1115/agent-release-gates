@@ -248,6 +248,29 @@
       ],
       "predicted_issue_category": "allocation_mismatch",
       "recommended_fix": "Add within-team reranking using issue-category evidence and expected action terms.",
+      "retrieved_candidate_scores": [
+        {
+          "score": 3,
+          "score_breakdown": {},
+          "section_id": "RB-TRADE_SUPPORT-01",
+          "team": "trade_support",
+          "title": "Allocation Mismatch"
+        },
+        {
+          "score": 3,
+          "score_breakdown": {},
+          "section_id": "RB-TRADE_SUPPORT-02",
+          "team": "trade_support",
+          "title": "Confirmation Pending"
+        },
+        {
+          "score": 3,
+          "score_breakdown": {},
+          "section_id": "RB-TRADE_SUPPORT-03",
+          "team": "trade_support",
+          "title": "Reference Data Gap"
+        }
+      ],
       "retrieved_citation_ids": [
         "RB-TRADE_SUPPORT-01",
         "RB-TRADE_SUPPORT-02",
@@ -273,6 +296,29 @@
       ],
       "predicted_issue_category": "file_validation_failed",
       "recommended_fix": "Add within-team reranking using issue-category evidence and expected action terms.",
+      "retrieved_candidate_scores": [
+        {
+          "score": 4,
+          "score_breakdown": {},
+          "section_id": "RB-PAYMENTS_OPS-01",
+          "team": "payments_ops",
+          "title": "File Validation Failed"
+        },
+        {
+          "score": 4,
+          "score_breakdown": {},
+          "section_id": "RB-PAYMENTS_OPS-02",
+          "team": "payments_ops",
+          "title": "Duplicate Batch Detected"
+        },
+        {
+          "score": 4,
+          "score_breakdown": {},
+          "section_id": "RB-PAYMENTS_OPS-03",
+          "team": "payments_ops",
+          "title": "Settlement Delay"
+        }
+      ],
       "retrieved_citation_ids": [
         "RB-PAYMENTS_OPS-01",
         "RB-PAYMENTS_OPS-02",
@@ -298,6 +344,29 @@
       ],
       "predicted_issue_category": "file_validation_failed",
       "recommended_fix": "Add within-team reranking using issue-category evidence and expected action terms.",
+      "retrieved_candidate_scores": [
+        {
+          "score": 3,
+          "score_breakdown": {},
+          "section_id": "RB-PAYMENTS_OPS-01",
+          "team": "payments_ops",
+          "title": "File Validation Failed"
+        },
+        {
+          "score": 3,
+          "score_breakdown": {},
+          "section_id": "RB-PAYMENTS_OPS-02",
+          "team": "payments_ops",
+          "title": "Duplicate Batch Detected"
+        },
+        {
+          "score": 3,
+          "score_breakdown": {},
+          "section_id": "RB-PAYMENTS_OPS-03",
+          "team": "payments_ops",
+          "title": "Settlement Delay"
+        }
+      ],
       "retrieved_citation_ids": [
         "RB-PAYMENTS_OPS-01",
         "RB-PAYMENTS_OPS-02",
@@ -323,6 +392,29 @@
       ],
       "predicted_issue_category": "file_validation_failed",
       "recommended_fix": "Add within-team reranking using issue-category evidence and expected action terms.",
+      "retrieved_candidate_scores": [
+        {
+          "score": 3,
+          "score_breakdown": {},
+          "section_id": "RB-PAYMENTS_OPS-01",
+          "team": "payments_ops",
+          "title": "File Validation Failed"
+        },
+        {
+          "score": 3,
+          "score_breakdown": {},
+          "section_id": "RB-PAYMENTS_OPS-02",
+          "team": "payments_ops",
+          "title": "Duplicate Batch Detected"
+        },
+        {
+          "score": 3,
+          "score_breakdown": {},
+          "section_id": "RB-PAYMENTS_OPS-03",
+          "team": "payments_ops",
+          "title": "Settlement Delay"
+        }
+      ],
       "retrieved_citation_ids": [
         "RB-PAYMENTS_OPS-01",
         "RB-PAYMENTS_OPS-02",
@@ -348,6 +440,29 @@
       ],
       "predicted_issue_category": "file_validation_failed",
       "recommended_fix": "Add within-team reranking using issue-category evidence and expected action terms.",
+      "retrieved_candidate_scores": [
+        {
+          "score": 3,
+          "score_breakdown": {},
+          "section_id": "RB-PAYMENTS_OPS-01",
+          "team": "payments_ops",
+          "title": "File Validation Failed"
+        },
+        {
+          "score": 3,
+          "score_breakdown": {},
+          "section_id": "RB-PAYMENTS_OPS-02",
+          "team": "payments_ops",
+          "title": "Duplicate Batch Detected"
+        },
+        {
+          "score": 3,
+          "score_breakdown": {},
+          "section_id": "RB-PAYMENTS_OPS-03",
+          "team": "payments_ops",
+          "title": "Settlement Delay"
+        }
+      ],
       "retrieved_citation_ids": [
         "RB-PAYMENTS_OPS-01",
         "RB-PAYMENTS_OPS-02",
@@ -373,6 +488,29 @@
       ],
       "predicted_issue_category": "missing_kyc_document",
       "recommended_fix": "Add within-team reranking using issue-category evidence and expected action terms.",
+      "retrieved_candidate_scores": [
+        {
+          "score": 3,
+          "score_breakdown": {},
+          "section_id": "RB-CLIENT_ONBOARDING-01",
+          "team": "client_onboarding",
+          "title": "Missing Kyc Document"
+        },
+        {
+          "score": 3,
+          "score_breakdown": {},
+          "section_id": "RB-CLIENT_ONBOARDING-02",
+          "team": "client_onboarding",
+          "title": "Entity Match Review"
+        },
+        {
+          "score": 3,
+          "score_breakdown": {},
+          "section_id": "RB-CLIENT_ONBOARDING-03",
+          "team": "client_onboarding",
+          "title": "Workflow Sla Breach"
+        }
+      ],
       "retrieved_citation_ids": [
         "RB-CLIENT_ONBOARDING-01",
         "RB-CLIENT_ONBOARDING-02",
@@ -398,6 +536,29 @@
       ],
       "predicted_issue_category": "file_validation_failed",
       "recommended_fix": "Add within-team reranking using issue-category evidence and expected action terms.",
+      "retrieved_candidate_scores": [
+        {
+          "score": 3,
+          "score_breakdown": {},
+          "section_id": "RB-PAYMENTS_OPS-01",
+          "team": "payments_ops",
+          "title": "File Validation Failed"
+        },
+        {
+          "score": 3,
+          "score_breakdown": {},
+          "section_id": "RB-PAYMENTS_OPS-02",
+          "team": "payments_ops",
+          "title": "Duplicate Batch Detected"
+        },
+        {
+          "score": 3,
+          "score_breakdown": {},
+          "section_id": "RB-PAYMENTS_OPS-03",
+          "team": "payments_ops",
+          "title": "Settlement Delay"
+        }
+      ],
       "retrieved_citation_ids": [
         "RB-PAYMENTS_OPS-01",
         "RB-PAYMENTS_OPS-02",
@@ -423,6 +584,29 @@
       ],
       "predicted_issue_category": "file_validation_failed",
       "recommended_fix": "Add within-team reranking using issue-category evidence and expected action terms.",
+      "retrieved_candidate_scores": [
+        {
+          "score": 3,
+          "score_breakdown": {},
+          "section_id": "RB-PAYMENTS_OPS-01",
+          "team": "payments_ops",
+          "title": "File Validation Failed"
+        },
+        {
+          "score": 3,
+          "score_breakdown": {},
+          "section_id": "RB-PAYMENTS_OPS-02",
+          "team": "payments_ops",
+          "title": "Duplicate Batch Detected"
+        },
+        {
+          "score": 3,
+          "score_breakdown": {},
+          "section_id": "RB-PAYMENTS_OPS-03",
+          "team": "payments_ops",
+          "title": "Settlement Delay"
+        }
+      ],
       "retrieved_citation_ids": [
         "RB-PAYMENTS_OPS-01",
         "RB-PAYMENTS_OPS-02",
@@ -448,6 +632,29 @@
       ],
       "predicted_issue_category": "allocation_mismatch",
       "recommended_fix": "Add within-team reranking using issue-category evidence and expected action terms.",
+      "retrieved_candidate_scores": [
+        {
+          "score": 2,
+          "score_breakdown": {},
+          "section_id": "RB-TRADE_SUPPORT-01",
+          "team": "trade_support",
+          "title": "Allocation Mismatch"
+        },
+        {
+          "score": 2,
+          "score_breakdown": {},
+          "section_id": "RB-TRADE_SUPPORT-02",
+          "team": "trade_support",
+          "title": "Confirmation Pending"
+        },
+        {
+          "score": 2,
+          "score_breakdown": {},
+          "section_id": "RB-TRADE_SUPPORT-03",
+          "team": "trade_support",
+          "title": "Reference Data Gap"
+        }
+      ],
       "retrieved_citation_ids": [
         "RB-TRADE_SUPPORT-01",
         "RB-TRADE_SUPPORT-02",
@@ -473,6 +680,29 @@
       ],
       "predicted_issue_category": "file_validation_failed",
       "recommended_fix": "Add within-team reranking using issue-category evidence and expected action terms.",
+      "retrieved_candidate_scores": [
+        {
+          "score": 3,
+          "score_breakdown": {},
+          "section_id": "RB-PAYMENTS_OPS-01",
+          "team": "payments_ops",
+          "title": "File Validation Failed"
+        },
+        {
+          "score": 3,
+          "score_breakdown": {},
+          "section_id": "RB-PAYMENTS_OPS-02",
+          "team": "payments_ops",
+          "title": "Duplicate Batch Detected"
+        },
+        {
+          "score": 3,
+          "score_breakdown": {},
+          "section_id": "RB-PAYMENTS_OPS-03",
+          "team": "payments_ops",
+          "title": "Settlement Delay"
+        }
+      ],
       "retrieved_citation_ids": [
         "RB-PAYMENTS_OPS-01",
         "RB-PAYMENTS_OPS-02",
