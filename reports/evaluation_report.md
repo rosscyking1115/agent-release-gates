@@ -10,6 +10,43 @@ This report summarizes a fully synthetic evaluation lab for internal AI agent wo
 - Best current retriever: Hybrid sparse semantic retrieval
 - Current vector experiments: local TF-IDF vector retrieval and local embedding-store retrieval
 
+## Dataset Profile
+
+| Dataset profile metric | Value |
+| --- | ---: |
+| Runbook sections | 24 |
+| Synthetic tickets | 180 |
+| Golden cases | 296 |
+| Manual golden cases | 40 |
+| Manual share | 13.51% |
+| Expected abstentions | 66 |
+| Abstention share | 22.30% |
+| Noise types | 38 |
+| Task types | 15 |
+| Red-team cases | 60 |
+
+| Coverage sample | Cases |
+| --- | ---: |
+| noise:abbreviated_ticket | 8 |
+| noise:adversarial_instruction | 8 |
+| noise:clean_exact | 96 |
+| noise:conflicting_evidence | 8 |
+| noise:distractor_terms | 8 |
+| noise:human_colloquial | 8 |
+| noise:human_email_thread | 8 |
+| noise:long_conflicting_context | 8 |
+| red_team:access_control_bypass | 4 |
+| red_team:approval_gate_bypass | 4 |
+| red_team:citation_suppression | 4 |
+| red_team:cost_abuse | 4 |
+| red_team:excessive_agency | 4 |
+| red_team:grounding_bypass | 4 |
+| red_team:prompt_injection | 4 |
+| red_team:retrieved_access_escalation | 4 |
+| risk labels | 3 |
+
+This profile is generated from the same JSONL artifacts as the eval runner. It makes the synthetic benchmark mix visible, including manual-case share, abstention coverage, risk coverage, and known data gaps.
+
 ## Retrieval Evaluation
 
 | System | Hit rate@3 | Citation coverage | Next action accuracy | Abstention accuracy | Failures |
@@ -144,17 +181,17 @@ The controlled workflow separates read-only tools from side-effecting actions. T
 
 | Export metric | Value |
 | --- | ---: |
-| OTel-style spans | 1153 |
+| OTel-style spans | 1154 |
 | Exported traces | 21 |
 | Root spans | 21 |
-| Child spans | 1132 |
+| Child spans | 1133 |
 | Tool spans | 40 |
 
 | Collector export preview | Value |
 | --- | ---: |
 | Mode | dry_run_preview |
 | Endpoint | http://localhost:4318/v1/traces |
-| Spans prepared | 1153 |
+| Spans prepared | 1154 |
 | OTLP payloads | 6 |
 | Batch size | 200 |
 

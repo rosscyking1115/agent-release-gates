@@ -81,6 +81,11 @@ def load_evaluation_history(project_root: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def load_dataset_profile(project_root: Path) -> dict[str, Any]:
+    path = project_root / "reports/dataset_profile.json"
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
 def load_extraction_summary(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/extraction_eval_summary.json"
     return json.loads(path.read_text(encoding="utf-8"))
@@ -234,6 +239,20 @@ def evaluation_history_rows(history: dict[str, Any]) -> list[dict[str, Any]]:
             }
         )
     return rows
+
+
+def coverage_count_rows(profile: dict[str, Any], section: str) -> list[dict[str, Any]]:
+    return [
+        {"value": value, "case_count": count}
+        for value, count in profile["golden_coverage"].get(section, {}).items()
+    ]
+
+
+def red_team_coverage_rows(profile: dict[str, Any], section: str) -> list[dict[str, Any]]:
+    return [
+        {"value": value, "case_count": count}
+        for value, count in profile["red_team_coverage"].get(section, {}).items()
+    ]
 
 
 def error_analysis_rows(summary: dict[str, Any], dimension: str) -> list[dict[str, Any]]:

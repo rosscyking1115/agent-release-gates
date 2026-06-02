@@ -2,7 +2,7 @@
 
 A synthetic evaluation lab for testing how internal AI agents behave in enterprise operations workflows.
 
-The lab provides generated runbooks, tickets, golden cases, red-team cases, API endpoints, evaluation reports, and a dashboard for studying grounded answers, structured extraction, safe refusal, approval-gated tools, and auditability.
+The lab provides generated runbooks, tickets, golden cases, red-team cases, dataset-profile reports, API endpoints, evaluation reports, and a dashboard for studying grounded answers, structured extraction, safe refusal, approval-gated tools, and auditability.
 
 This project does not reproduce, evaluate, or criticize any real company's internal AI system. It uses fully synthetic runbooks, tickets, teams, and procedures so the work can be used, inspected, and extended safely.
 
@@ -29,6 +29,7 @@ The current version creates a local, reproducible lab:
 - structured ticket extraction and routing
 - deterministic red-team policy checks
 - controlled agent workflow with approval-gated mock tools
+- dataset-profile artifact for benchmark mix, manual-case share, abstention coverage, and coverage gaps
 - trace IDs, audit events, monitoring snapshots, OTel-style trace timeline, and an
   optional OTLP/HTTP collector exporter with a local capture smoke test
 - FastAPI service, Streamlit dashboard, Docker/Compose runtime, CI workflow, and operations runbook
@@ -86,6 +87,7 @@ The baseline evaluation writes:
 - `reports/retriever_metric_snapshots.json`
 - `reports/evaluation_history.json`
 - `reports/eval_comparison.json`
+- `reports/dataset_profile.json`
 - `reports/extraction_eval_summary.json`
 - `reports/extraction_eval_cases.jsonl`
 - `reports/security_eval_summary.json`
@@ -102,7 +104,7 @@ The baseline evaluation writes:
 
 The current baseline is intentionally simple: it uses broad system/team keyword hints rather than procedure-level retrieval. This gives the project a measurable starting point before improved retrieval is added.
 
-The generated Markdown, HTML, and PDF reports are the easiest static artifacts to share or review without running the dashboard.
+The generated dataset profile makes the benchmark mix inspectable: manual versus generated cases, abstention share, coverage by task/noise/issue/team, red-team risk coverage, and current data-quality gap labels. The generated Markdown, HTML, and PDF reports are the easiest static artifacts to share or review without running the dashboard.
 
 Current deterministic evaluation:
 
@@ -183,6 +185,7 @@ uv run python scripts/smoke_otel_collector.py
 The Streamlit dashboard presents the evaluation outcome as an inspection surface:
 
 - headline case counts
+- dataset profile for manual-case share, abstention coverage, noise/task/issue coverage, red-team coverage, and benchmark gap labels
 - baseline vs improved metric chart
 - retriever experiment table comparing baseline, lexical, hybrid, vector, and embedding-store retrieval
 - retriever metric snapshots showing citation deltas, failure deltas, and regression flags
@@ -211,6 +214,7 @@ http://localhost:8000/reports/evaluation
 http://localhost:8000/reports/evaluation.html
 http://localhost:8000/reports/evaluation.pdf
 http://localhost:8000/reports/evaluation/history
+http://localhost:8000/reports/dataset-profile
 http://localhost:8000/reports/agent/otel-spans
 http://localhost:8000/reports/observability/otel-spans
 http://localhost:8000/reports/observability/collector-preview

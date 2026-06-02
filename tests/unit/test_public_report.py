@@ -4,6 +4,7 @@ from pathlib import Path
 
 from internal_ai_agent.data.synthetic import generate_all
 from internal_ai_agent.evals.agent import evaluate_agent
+from internal_ai_agent.evals.dataset_profile import write_dataset_profile
 from internal_ai_agent.evals.extraction import evaluate_extraction
 from internal_ai_agent.evals.runner import (
     evaluate_comparison,
@@ -22,6 +23,7 @@ from internal_ai_agent.reporting.public_report import (
 
 def _prepare_reports(project_root: Path) -> None:
     generate_all(project_root)
+    write_dataset_profile(project_root)
     evaluate_comparison(project_root)
     retriever_comparison = evaluate_retriever_comparison(project_root)
     extraction = evaluate_extraction(project_root)
@@ -53,6 +55,10 @@ def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
 
     assert "# Internal AI Agent Evaluation Report" in report
     assert "Golden retrieval cases: 296" in report
+    assert "## Dataset Profile" in report
+    assert "| Manual golden cases | 40 |" in report
+    assert "| Manual share | 13.51% |" in report
+    assert "manual-case share" in report
     assert "| Hybrid sparse semantic | 100.00% | 100.00% | 100.00% | 100.00% | 0 |" in report
     assert "| Local TF-IDF vector |" in report
     assert "| Local embedding store |" in report
@@ -114,6 +120,7 @@ def test_generate_public_report_html_renders_tables_and_safety_boundary(tmp_path
     assert "<td>Local embedding store</td>" in html
     assert "<h2>Retriever Metric Snapshots</h2>" in html
     assert "<h2>Historical Evaluation Snapshots</h2>" in html
+    assert "<h2>Dataset Profile</h2>" in html
     assert "<td>dry_run_preview</td>" in html
     assert "It does not use real company documents" in html
 

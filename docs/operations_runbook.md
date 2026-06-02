@@ -19,7 +19,7 @@ Expected result:
 - lint passes
 - tests pass
 - synthetic data is regenerated
-- baseline, extraction, security, controlled-agent, history, observability, collector-preview, Markdown, HTML, and PDF reports are written to `reports/`
+- baseline, extraction, security, controlled-agent, dataset-profile, history, observability, collector-preview, Markdown, HTML, and PDF reports are written to `reports/`
 - OTLP/HTTP payloads are posted to a temporary local capture endpoint and verified
 
 ## Dashboard
@@ -58,6 +58,7 @@ http://127.0.0.1:8000/reports/evaluation
 http://127.0.0.1:8000/reports/evaluation/history
 http://127.0.0.1:8000/reports/evaluation.html
 http://127.0.0.1:8000/reports/evaluation.pdf
+http://127.0.0.1:8000/reports/dataset-profile
 http://127.0.0.1:8000/reports/observability/collector-preview
 ```
 

@@ -14,6 +14,7 @@ from internal_ai_agent.dashboard.data import (
     agent_otel_timeline_rows,
     agent_trace_rows,
     case_mix,
+    coverage_count_rows,
     error_analysis_rows,
     evaluation_history_rows,
     extraction_metric_rows,
@@ -25,6 +26,7 @@ from internal_ai_agent.dashboard.data import (
     load_case_rows,
     load_collector_export_preview,
     load_comparison,
+    load_dataset_profile,
     load_evaluation_history,
     load_extraction_summary,
     load_observability_otel_spans,
@@ -37,6 +39,7 @@ from internal_ai_agent.dashboard.data import (
     load_security_summary,
     metric_rows,
     observability_component_rows,
+    red_team_coverage_rows,
     retriever_experiment_rows,
     retriever_failure_example_rows,
     retriever_failure_overview,
@@ -57,6 +60,7 @@ def main() -> None:
     st.caption("Project 5: synthetic internal AI agent evaluation dashboard")
 
     comparison = load_comparison(PROJECT_ROOT)
+    dataset_profile = load_dataset_profile(PROJECT_ROOT)
     retriever_comparison = load_retriever_comparison(PROJECT_ROOT)
     retriever_snapshots = load_retriever_snapshots(PROJECT_ROOT)
     evaluation_history = load_evaluation_history(PROJECT_ROOT)
@@ -78,6 +82,7 @@ def main() -> None:
     retriever_cases = load_retriever_case_rows(PROJECT_ROOT)
 
     _render_summary(comparison, rows, improved_cases)
+    _render_dataset_profile(dataset_profile)
     _render_metric_comparison(rows)
     _render_retriever_experiment(retriever_comparison)
     _render_retriever_snapshots(retriever_snapshots)
@@ -133,6 +138,49 @@ def _render_metric_comparison(rows: list[dict[str, object]]) -> None:
     table_df = pd.DataFrame(rows)[["label", "baseline_pct", "improved_pct", "delta_pct"]]
     table_df.columns = ["Metric", "Baseline", "Improved lexical", "Delta"]
     st.dataframe(table_df, hide_index=True, use_container_width=True)
+
+
+def _render_dataset_profile(profile: dict[str, object]) -> None:
+    st.subheader("Dataset Profile")
+    mix = profile["golden_case_mix"]
+    cols = st.columns(5)
+    cols[0].metric("Golden cases", profile["dataset_counts"]["golden_cases"])
+    cols[1].metric("Manual cases", mix["manual_cases"])
+    cols[2].metric("Manual share", f"{mix['manual_share'] * 100:.2f}%")
+    cols[3].metric("Noise types", mix["noise_type_count"])
+    cols[4].metric("Expected abstentions", mix["expected_abstentions"])
+
+    tab_noise, tab_task, tab_issue, tab_red_team, tab_gaps = st.tabs(
+        ["Noise", "Tasks", "Issues", "Red-team", "Gaps"]
+    )
+    with tab_noise:
+        st.dataframe(
+            pd.DataFrame(coverage_count_rows(profile, "by_noise_type")),
+            hide_index=True,
+            use_container_width=True,
+        )
+    with tab_task:
+        st.dataframe(
+            pd.DataFrame(coverage_count_rows(profile, "by_task_type")),
+            hide_index=True,
+            use_container_width=True,
+        )
+    with tab_issue:
+        st.dataframe(
+            pd.DataFrame(coverage_count_rows(profile, "by_issue_category")),
+            hide_index=True,
+            use_container_width=True,
+        )
+    with tab_red_team:
+        risk_rows = red_team_coverage_rows(profile, "by_risk_type")
+        st.dataframe(pd.DataFrame(risk_rows), hide_index=True, use_container_width=True)
+    with tab_gaps:
+        st.table(
+            pd.DataFrame({"risk_label": profile["risk_labels"]}),
+        )
+        st.table(
+            pd.DataFrame({"recommended_next_data_work": profile["recommended_next_data_work"]}),
+        )
 
 
 def _render_retriever_experiment(comparison: dict[str, object]) -> None:

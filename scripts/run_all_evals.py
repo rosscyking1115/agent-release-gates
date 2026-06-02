@@ -5,6 +5,7 @@ from typing import Any
 
 from internal_ai_agent.data.synthetic import generate_all
 from internal_ai_agent.evals.agent import evaluate_agent
+from internal_ai_agent.evals.dataset_profile import write_dataset_profile
 from internal_ai_agent.evals.extraction import evaluate_extraction
 from internal_ai_agent.evals.runner import (
     evaluate_comparison,
@@ -27,6 +28,7 @@ from internal_ai_agent.reporting.public_report import write_public_report
 
 def run_all(project_root: Path) -> dict[str, Any]:
     dataset_counts = generate_all(project_root)
+    dataset_profile = write_dataset_profile(project_root)
     comparison = evaluate_comparison(project_root)
     retriever_comparison = evaluate_retriever_comparison(project_root)
     extraction = evaluate_extraction(project_root)
@@ -51,6 +53,7 @@ def run_all(project_root: Path) -> dict[str, Any]:
     public_report_path = write_public_report(project_root)
     return {
         "dataset_counts": dataset_counts,
+        "dataset_profile": dataset_profile,
         "comparison": comparison,
         "retriever_comparison": retriever_comparison,
         "extraction": extraction,
@@ -174,6 +177,10 @@ def main() -> None:
     print(
         "- collector_export_payloads: "
         f"{summary['collector_export_preview']['payload_count']} dry-run payloads"
+    )
+    print(
+        "- manual_golden_cases: "
+        f"{summary['dataset_profile']['golden_case_mix']['manual_cases']}"
     )
     print(f"Public report: {summary['public_report_path']}")
 

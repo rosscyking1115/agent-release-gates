@@ -15,6 +15,7 @@ from internal_ai_agent.api.schemas import (
     RetrievedSectionResponse,
 )
 from internal_ai_agent.data.synthetic import build_runbooks
+from internal_ai_agent.evals.dataset_profile import write_dataset_profile
 from internal_ai_agent.extraction.service import extract_and_route
 from internal_ai_agent.io import read_jsonl
 from internal_ai_agent.observability.collector import collector_export_preview
@@ -68,6 +69,14 @@ def evaluation_history() -> dict[str, object]:
     return json.loads(
         (PROJECT_ROOT / "reports/evaluation_history.json").read_text(encoding="utf-8")
     )
+
+
+@app.get("/reports/dataset-profile", response_class=JSONResponse)
+def dataset_profile() -> dict[str, object]:
+    profile_path = PROJECT_ROOT / "reports/dataset_profile.json"
+    if profile_path.exists():
+        return json.loads(profile_path.read_text(encoding="utf-8"))
+    return write_dataset_profile(PROJECT_ROOT)
 
 
 @app.get("/reports/agent/otel-spans", response_class=PlainTextResponse)

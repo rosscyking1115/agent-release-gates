@@ -1,0 +1,179 @@
+{
+  "dataset_counts": {
+    "golden_cases": 296,
+    "red_team_cases": 60,
+    "runbooks": 24,
+    "tickets": 180
+  },
+  "golden_case_mix": {
+    "abstention_share": 0.223,
+    "answerable_cases": 230,
+    "expected_abstentions": 66,
+    "generated_cases": 256,
+    "issue_category_count": 24,
+    "manual_cases": 40,
+    "manual_share": 0.1351,
+    "noise_type_count": 38,
+    "task_type_count": 15,
+    "team_count": 4
+  },
+  "golden_coverage": {
+    "by_issue_category": {
+      "allocation_mismatch": 1,
+      "beneficial_owner_missing": 9,
+      "booking_status_stuck": 13,
+      "commission_code_missing": 14,
+      "confirmation_pending": 12,
+      "control_threshold_breach": 10,
+      "cutoff_window_missed": 36,
+      "duplicate_batch_detected": 7,
+      "duplicate_record_cluster": 10,
+      "entity_match_review": 8,
+      "file_validation_failed": 15,
+      "late_arriving_feed": 6,
+      "lineage_check_failed": 2,
+      "missing_kyc_document": 10,
+      "reference_data_gap": 7,
+      "repair_queue_backlog": 4,
+      "schema_drift": 3,
+      "screening_alert_review": 6,
+      "settlement_delay": 4,
+      "stale_reference_data": 20,
+      "tax_form_expired": 5,
+      "trade_date_dispute": 10,
+      "unmatched_settlement_reference": 8,
+      "workflow_sla_breach": 10
+    },
+    "by_noise_type": {
+      "abbreviated_ticket": 8,
+      "adversarial_instruction": 8,
+      "clean_exact": 96,
+      "conflicting_evidence": 8,
+      "distractor_terms": 8,
+      "human_colloquial": 8,
+      "human_email_thread": 8,
+      "long_conflicting_context": 8,
+      "manual_ambiguous_handoff": 1,
+      "manual_ambiguous_note": 1,
+      "manual_analyst_note": 1,
+      "manual_chat_fragment": 2,
+      "manual_conflicting_handoff": 1,
+      "manual_conflicting_notes": 2,
+      "manual_control_owner_note": 1,
+      "manual_control_room_note": 2,
+      "manual_csv_excerpt": 1,
+      "manual_desk_note": 1,
+      "manual_desk_paste": 2,
+      "manual_evidence_packet": 6,
+      "manual_evidence_packet_conflict": 2,
+      "manual_incident_timeline": 1,
+      "manual_meeting_note": 1,
+      "manual_ops_chat_handoff": 1,
+      "manual_redacted_fragment": 1,
+      "manual_retrieved_injection": 1,
+      "manual_retrieved_instruction_attack": 1,
+      "manual_review_bundle": 6,
+      "manual_review_bundle_conflict": 2,
+      "manual_screenshot_note": 1,
+      "manual_shift_handoff": 1,
+      "manual_stale_thread": 1,
+      "missing_metadata": 8,
+      "paraphrase": 48,
+      "primary_signal_with_secondary_chatter": 8,
+      "retrieved_doc_injection": 8,
+      "typo_abbreviation": 8,
+      "weak_evidence": 24
+    },
+    "by_task_type": {
+      "adversarial_instruction_abstention": 8,
+      "conflicting_evidence_abstention": 16,
+      "manual_challenge_abstention": 6,
+      "manual_challenge_next_action": 18,
+      "manual_evidence_packet_abstention": 2,
+      "manual_evidence_packet_next_action": 6,
+      "manual_review_bundle_abstention": 2,
+      "manual_review_bundle_next_action": 6,
+      "retrieved_doc_injection_abstention": 8,
+      "ticket_next_action": 96,
+      "ticket_next_action_hard": 16,
+      "ticket_next_action_human_like": 24,
+      "ticket_next_action_noisy": 16,
+      "ticket_next_action_paraphrased": 48,
+      "weak_evidence_abstention": 24
+    },
+    "by_team": {
+      "client_onboarding": 65,
+      "data_quality": 65,
+      "payments_ops": 93,
+      "trade_support": 73
+    }
+  },
+  "profile_type": "synthetic_dataset_profile",
+  "recommended_next_data_work": [
+    "Add more hand-authored golden cases before more reranking.",
+    "Compare local retrieval with a provider-backed embedding option.",
+    "Keep all public benchmark data synthetic and reproducible."
+  ],
+  "red_team_coverage": {
+    "by_attack_channel": {
+      "retrieved_document": 24,
+      "user_prompt": 36
+    },
+    "by_risk_type": {
+      "access_control_bypass": 4,
+      "approval_gate_bypass": 4,
+      "citation_suppression": 4,
+      "cost_abuse": 4,
+      "excessive_agency": 4,
+      "grounding_bypass": 4,
+      "prompt_injection": 4,
+      "retrieved_access_escalation": 4,
+      "retrieved_context_priority_attack": 4,
+      "retrieved_doc_injection": 4,
+      "sensitive_data_request": 4,
+      "system_prompt_leakage": 4,
+      "tool_misuse": 4,
+      "unsupported_resolution": 4,
+      "weak_evidence": 4
+    }
+  },
+  "risk_labels": [
+    "manual_case_share_below_25_percent",
+    "provider_backed_embedding_comparison_not_covered",
+    "real_company_data_intentionally_excluded"
+  ],
+  "top_manual_noise_types": [
+    {
+      "case_count": 6,
+      "value": "manual_evidence_packet"
+    },
+    {
+      "case_count": 6,
+      "value": "manual_review_bundle"
+    },
+    {
+      "case_count": 2,
+      "value": "manual_chat_fragment"
+    },
+    {
+      "case_count": 2,
+      "value": "manual_conflicting_notes"
+    },
+    {
+      "case_count": 2,
+      "value": "manual_control_room_note"
+    },
+    {
+      "case_count": 2,
+      "value": "manual_desk_paste"
+    },
+    {
+      "case_count": 2,
+      "value": "manual_evidence_packet_conflict"
+    },
+    {
+      "case_count": 2,
+      "value": "manual_review_bundle_conflict"
+    }
+  ]
+}

@@ -5,6 +5,7 @@ from internal_ai_agent.dashboard.data import (
     agent_otel_timeline_rows,
     agent_trace_rows,
     case_mix,
+    coverage_count_rows,
     error_analysis_rows,
     evaluation_history_rows,
     extraction_metric_rows,
@@ -12,10 +13,12 @@ from internal_ai_agent.dashboard.data import (
     failure_example_rows,
     failure_reason_rows,
     load_collector_export_preview,
+    load_dataset_profile,
     load_public_report,
     load_public_report_html,
     load_public_report_pdf,
     metric_rows,
+    red_team_coverage_rows,
     retriever_experiment_rows,
     retriever_failure_example_rows,
     retriever_failure_overview,
@@ -41,6 +44,44 @@ def test_load_collector_export_preview_reads_json(tmp_path) -> None:
 
     assert preview["export_mode"] == "dry_run_preview"
     assert preview["span_count"] == 10
+
+
+def test_load_dataset_profile_reads_json(tmp_path) -> None:
+    reports_dir = tmp_path / "reports"
+    reports_dir.mkdir()
+    (reports_dir / "dataset_profile.json").write_text(
+        '{"profile_type": "synthetic_dataset_profile", "golden_case_mix": {"manual_cases": 2}}\n',
+        encoding="utf-8",
+    )
+
+    profile = load_dataset_profile(tmp_path)
+
+    assert profile["profile_type"] == "synthetic_dataset_profile"
+    assert profile["golden_case_mix"]["manual_cases"] == 2
+
+
+def test_dataset_profile_rows_format_coverage_counts() -> None:
+    profile = {
+        "golden_coverage": {
+            "by_noise_type": {
+                "manual_review_bundle": 6,
+                "clean_exact": 48,
+            }
+        },
+        "red_team_coverage": {
+            "by_risk_type": {
+                "prompt_injection": 4,
+            }
+        },
+    }
+
+    assert coverage_count_rows(profile, "by_noise_type") == [
+        {"value": "manual_review_bundle", "case_count": 6},
+        {"value": "clean_exact", "case_count": 48},
+    ]
+    assert red_team_coverage_rows(profile, "by_risk_type") == [
+        {"value": "prompt_injection", "case_count": 4}
+    ]
 
 
 def test_metric_rows_formats_before_after_values() -> None:

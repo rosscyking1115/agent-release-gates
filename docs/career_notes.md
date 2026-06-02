@@ -4,7 +4,7 @@ These notes are secondary. The project should be built as a useful synthetic eva
 
 ## Short Project Explanation
 
-I built an original synthetic Internal AI Agent Evaluation Lab for testing internal AI agent reliability without confidential data. Instead of making a generic chatbot, I created synthetic operations runbooks, tickets, golden eval cases, red-team cases, FastAPI endpoints, a dashboard, and deterministic evaluation reports. The project measures grounding, citation coverage, structured extraction, routing, safety refusals, approval-gated tool use, and auditability.
+I built an original synthetic Internal AI Agent Evaluation Lab for testing internal AI agent reliability without confidential data. Instead of making a generic chatbot, I created synthetic operations runbooks, tickets, golden eval cases, red-team cases, dataset-profile reports, FastAPI endpoints, a dashboard, and deterministic evaluation reports. The project measures grounding, citation coverage, structured extraction, routing, safety refusals, approval-gated tool use, auditability, and benchmark coverage gaps.
 
 ## What Problem It Solves
 
@@ -33,6 +33,7 @@ The important part is not that the demo looks polished. The important part is th
 | Local TF-IDF vector retrieval | 100.00% retrieval hit@3 and 100.00% citation coverage |
 | Local embedding-store retrieval | 100.00% retrieval hit@3 and 100.00% citation coverage |
 | Hybrid retrieval experiment | Best current retriever on a harder 296-case synthetic golden set |
+| Dataset profile | 40 manual cases, 66 expected abstentions, 38 noise types, and a manual-share gap label |
 | Abstention accuracy | 78.38% baseline to 100.00% improved |
 | Structured extraction schema validity | 100.00% |
 | Improved red-team safe response rate | 100.00% |
@@ -46,7 +47,7 @@ These are synthetic deterministic metrics, so I would present them as engineerin
 
 ## Possible CV Bullet
 
-Built a synthetic internal AI agent evaluation lab with Python, FastAPI, Pydantic, Streamlit, deterministic RAG, local TF-IDF vector retrieval, local embedding-store retrieval, structured ticket extraction, red-team policy checks, approval-gated mock tools, traceable audit events, local span timeline, and CI-backed evaluation reports over synthetic operations tickets and runbooks.
+Built a synthetic internal AI agent evaluation lab with Python, FastAPI, Pydantic, Streamlit, deterministic RAG, local TF-IDF vector retrieval, local embedding-store retrieval, structured ticket extraction, dataset profiling, red-team policy checks, approval-gated mock tools, traceable audit events, local span timeline, and CI-backed evaluation reports over synthetic operations tickets and runbooks.
 
 ## Possible Deeper CV Bullet
 
@@ -69,6 +70,7 @@ Designed and implemented a production-style internal operations AI workflow over
 
 - Current embedding retrieval uses local feature hashing rather than provider-backed embeddings.
 - The dataset is synthetic and still partly templated, although it now includes manual evidence packets and mixed review bundles with stale side chatter, current-evidence cues, table extracts, and ownership-conflict abstentions.
+- The dataset profile currently flags manual-case share below 25%, so more hand-authored cases are the clearest next data-quality improvement.
 - The extraction layer is deterministic and should be tested on the newer evidence-packet, email-thread, and conflicting-context styles.
 - Red-team checks are string-based and should be expanded with more varied phrasing.
 - The controlled agent is a local workflow rather than a LangGraph graph.

@@ -315,10 +315,10 @@ def test_otel_spans_from_extraction_cases_exports_case_level_spans() -> None:
 def test_otel_spans_from_api_contracts_exports_endpoint_and_error_spans() -> None:
     spans = otel_spans_from_api_contracts()
 
-    assert len(spans) == 16
+    assert len(spans) == 17
     assert spans[0]["name"] == "api.contract_analysis"
     assert spans[0]["status"]["code"] == "OK"
-    assert spans[0]["attributes"]["api.endpoint_contract_count"] == 11
+    assert spans[0]["attributes"]["api.endpoint_contract_count"] == 12
     assert spans[0]["attributes"]["api.error_case_count"] == 4
     pdf_span = next(
         span
@@ -334,6 +334,13 @@ def test_otel_spans_from_api_contracts_exports_endpoint_and_error_spans() -> Non
         and span["attributes"]["http.route"] == "/reports/evaluation/history"
     )
     assert history_span["attributes"]["api.operation"] == "evaluation_history"
+    dataset_span = next(
+        span
+        for span in spans
+        if span["name"] == "api.endpoint_contract"
+        and span["attributes"]["http.route"] == "/reports/dataset-profile"
+    )
+    assert dataset_span["attributes"]["api.operation"] == "dataset_profile"
     endpoint_span = next(
         span
         for span in spans

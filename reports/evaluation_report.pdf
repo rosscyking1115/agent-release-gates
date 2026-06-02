@@ -4,7 +4,7 @@
 << /Type /Catalog /Pages 2 0 R >>
 endobj
 2 0 obj
-<< /Type /Pages /Kids [4 0 R 6 0 R 8 0 R 10 0 R 12 0 R] /Count 5 >>
+<< /Type /Pages /Kids [4 0 R 6 0 R 8 0 R 10 0 R 12 0 R 14 0 R] /Count 6 >>
 endobj
 3 0 obj
 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
@@ -13,7 +13,7 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 5 0 R >>
 endobj
 5 0 obj
-<< /Length 2524 >>
+<< /Length 1786 >>
 stream
 BT
 /F1 10 Tf
@@ -50,6 +50,97 @@ T*
 (- Best current retriever: Hybrid sparse semantic retrieval) Tj
 T*
 (- Current vector experiments: local TF-IDF vector retrieval and local embedding-store retrieval) Tj
+T*
+() Tj
+T*
+() Tj
+T*
+(Dataset Profile) Tj
+T*
+() Tj
+T*
+() Tj
+T*
+(Dataset profile metric | Value) Tj
+T*
+(Runbook sections | 24) Tj
+T*
+(Synthetic tickets | 180) Tj
+T*
+(Golden cases | 296) Tj
+T*
+(Manual golden cases | 40) Tj
+T*
+(Manual share | 13.51%) Tj
+T*
+(Expected abstentions | 66) Tj
+T*
+(Abstention share | 22.30%) Tj
+T*
+(Noise types | 38) Tj
+T*
+(Task types | 15) Tj
+T*
+(Red-team cases | 60) Tj
+T*
+() Tj
+T*
+(Coverage sample | Cases) Tj
+T*
+(noise:abbreviated_ticket | 8) Tj
+T*
+(noise:adversarial_instruction | 8) Tj
+T*
+(noise:clean_exact | 96) Tj
+T*
+(noise:conflicting_evidence | 8) Tj
+T*
+(noise:distractor_terms | 8) Tj
+T*
+(noise:human_colloquial | 8) Tj
+T*
+(noise:human_email_thread | 8) Tj
+T*
+(noise:long_conflicting_context | 8) Tj
+T*
+(red_team:access_control_bypass | 4) Tj
+T*
+(red_team:approval_gate_bypass | 4) Tj
+T*
+(red_team:citation_suppression | 4) Tj
+T*
+(red_team:cost_abuse | 4) Tj
+T*
+(red_team:excessive_agency | 4) Tj
+T*
+(red_team:grounding_bypass | 4) Tj
+T*
+(red_team:prompt_injection | 4) Tj
+T*
+(red_team:retrieved_access_escalation | 4) Tj
+T*
+(risk labels | 3) Tj
+T*
+() Tj
+T*
+ET
+endstream
+endobj
+6 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 7 0 R >>
+endobj
+7 0 obj
+<< /Length 2744 >>
+stream
+BT
+/F1 10 Tf
+14 TL
+54 738 Td
+(This profile is generated from the same JSONL artifacts as the eval runner. It makes the) Tj
+T*
+(synthetic benchmark mix visible, including manual-case share, abstention coverage, risk) Tj
+T*
+(coverage, and known data gaps.) Tj
 T*
 () Tj
 T*
@@ -123,19 +214,6 @@ T*
 T*
 (2026-06-02T10:00:00Z | Improved lexical | 98.70% | 3 | +78.70% | -245) Tj
 T*
-ET
-endstream
-endobj
-6 0 obj
-<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 7 0 R >>
-endobj
-7 0 obj
-<< /Length 3541 >>
-stream
-BT
-/F1 10 Tf
-14 TL
-54 738 Td
 (2026-06-02T11:00:00Z | Hybrid sparse semantic | 100.00% | 0 | +1.30% | -3) Tj
 T*
 (2026-06-02T12:00:00Z | Local TF-IDF vector | 100.00% | 0 | +0.00% | +0) Tj
@@ -162,6 +240,19 @@ T*
 T*
 (Local TF-IDF vector | 0 | 0 | 0 |) Tj
 T*
+ET
+endstream
+endobj
+8 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 9 0 R >>
+endobj
+9 0 obj
+<< /Length 3239 >>
+stream
+BT
+/F1 10 Tf
+14 TL
+54 738 Td
 (Local embedding store | 0 | 0 | 0 |) Tj
 T*
 () Tj
@@ -240,19 +331,6 @@ T*
 T*
 (Next action accuracy | 20.00% | 98.70% | +78.70%) Tj
 T*
-ET
-endstream
-endobj
-8 0 obj
-<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 9 0 R >>
-endobj
-9 0 obj
-<< /Length 2338 >>
-stream
-BT
-/F1 10 Tf
-14 TL
-54 738 Td
 (Abstention accuracy | 78.38% | 100.00% | +21.62%) Tj
 T*
 () Tj
@@ -279,6 +357,19 @@ T*
 T*
 () Tj
 T*
+ET
+endstream
+endobj
+10 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 11 0 R >>
+endobj
+11 0 obj
+<< /Length 2527 >>
+stream
+BT
+/F1 10 Tf
+14 TL
+54 738 Td
 (Extraction currently uses deterministic synthetic ticket patterns. The value of this stage is) Tj
 T*
 (the schema, routing contract, and evaluation harness rather than a claim that messy real tickets) Tj
@@ -357,19 +448,6 @@ T*
 T*
 () Tj
 T*
-ET
-endstream
-endobj
-10 0 obj
-<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 11 0 R >>
-endobj
-11 0 obj
-<< /Length 2498 >>
-stream
-BT
-/F1 10 Tf
-14 TL
-54 738 Td
 (Metric | Score) Tj
 T*
 (Trace coverage | 100.00%) Tj
@@ -396,6 +474,19 @@ T*
 T*
 () Tj
 T*
+ET
+endstream
+endobj
+12 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 13 0 R >>
+endobj
+13 0 obj
+<< /Length 2514 >>
+stream
+BT
+/F1 10 Tf
+14 TL
+54 738 Td
 (Agent Trace Examples) Tj
 T*
 () Tj
@@ -436,13 +527,13 @@ T*
 T*
 (Export metric | Value) Tj
 T*
-(OTel-style spans | 1153) Tj
+(OTel-style spans | 1154) Tj
 T*
 (Exported traces | 21) Tj
 T*
 (Root spans | 21) Tj
 T*
-(Child spans | 1132) Tj
+(Child spans | 1133) Tj
 T*
 (Tool spans | 40) Tj
 T*
@@ -454,7 +545,7 @@ T*
 T*
 (Endpoint | http://localhost:4318/v1/traces) Tj
 T*
-(Spans prepared | 1153) Tj
+(Spans prepared | 1154) Tj
 T*
 (OTLP payloads | 6) Tj
 T*
@@ -474,19 +565,6 @@ T*
 T*
 () Tj
 T*
-ET
-endstream
-endobj
-12 0 obj
-<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 13 0 R >>
-endobj
-13 0 obj
-<< /Length 1415 >>
-stream
-BT
-/F1 10 Tf
-14 TL
-54 738 Td
 () Tj
 T*
 (What This Proves) Tj
@@ -513,6 +591,19 @@ T*
 T*
 (Current Limitations) Tj
 T*
+ET
+endstream
+endobj
+14 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 15 0 R >>
+endobj
+15 0 obj
+<< /Length 860 >>
+stream
+BT
+/F1 10 Tf
+14 TL
+54 738 Td
 () Tj
 T*
 () Tj
@@ -551,23 +642,25 @@ ET
 endstream
 endobj
 xref
-0 14
+0 16
 0000000000 65535 f 
 0000000015 00000 n 
 0000000064 00000 n 
-0000000147 00000 n 
-0000000217 00000 n 
-0000000343 00000 n 
-0000002919 00000 n 
-0000003045 00000 n 
-0000006638 00000 n 
-0000006764 00000 n 
-0000009154 00000 n 
-0000009282 00000 n 
-0000011833 00000 n 
-0000011961 00000 n 
+0000000154 00000 n 
+0000000224 00000 n 
+0000000350 00000 n 
+0000002188 00000 n 
+0000002314 00000 n 
+0000005110 00000 n 
+0000005236 00000 n 
+0000008527 00000 n 
+0000008655 00000 n 
+0000011235 00000 n 
+0000011363 00000 n 
+0000013930 00000 n 
+0000014058 00000 n 
 trailer
-<< /Size 14 /Root 1 0 R >>
+<< /Size 16 /Root 1 0 R >>
 startxref
-13429
+14970
 %%EOF

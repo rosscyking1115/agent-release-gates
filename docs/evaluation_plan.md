@@ -53,6 +53,7 @@ The dashboard reads the saved report artifacts rather than recomputing metrics o
 - `reports/retriever_metric_snapshots.json`
 - `reports/evaluation_history.json`
 - `reports/eval_comparison.json`
+- `reports/dataset_profile.json`
 - `reports/baseline_eval_cases.jsonl`
 - `reports/improved_eval_cases.jsonl`
 - `reports/vector_eval_cases.jsonl`
@@ -75,6 +76,8 @@ The first baseline is `baseline_team_hint_retrieval`. It uses broad synthetic sy
 The first improved version is `improved_lexical_retrieval`. It scores token overlap against runbook titles and content, then filters by the requesting role. This is still deterministic and local, but it gives the project a concrete before/after comparison before adding embeddings or a full vector store.
 
 The current golden set includes exact, paraphrased, abbreviated, missing-metadata, false-lead, typo/abbreviation, human email-thread, manually authored chat/meeting/screenshot/desk-note/handoff/control-room/redacted/stale-thread fragments, evidence packets, mixed review bundles, analyst scratch notes, CSV extracts, incident timelines, control-owner notes, adversarial-instruction, weak-evidence, conflicting-evidence, and long conflicting-context cases. Reports include grouped analysis by task type and noise type, plus failure-reason counts.
+
+The dataset profile should be regenerated with each full eval run. It records case counts, manual-versus-generated mix, abstention share, coverage by task/noise/issue/team, red-team risk coverage, and explicit gap labels so benchmark quality can be reviewed alongside model or retriever quality.
 
 Known limitation: most golden cases are still generated from templates, even when they simulate email threads, evidence packets, mixed review bundles, and contradictory context. The expanded manual challenge set is still small; it exposed residual final-selection and ambiguous-handoff abstention failures that are now fixed and regression-tested. Future eval sets should include more varied human-written phrasing, misleading system names, and adversarial retrieved text.
 

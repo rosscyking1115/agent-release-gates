@@ -59,12 +59,15 @@ The deterministic red-team suite reports 100.00% improved safe response rate, 10
 
 The controlled-agent eval reports 100.00% trace coverage, audit event coverage, approval audit rate, monitoring snapshot rate, valid tool-call rate, side-effect block rate, approved action execution rate, and route-tool selection accuracy. It also exports deterministic OpenTelemetry-style spans for sampled blocked and approved tool routes. The full run adds evaluation-stage spans for data generation, retrieval, extraction, security, agent evaluation, report/API artifacts, case-level retriever failures, case-level retriever ranking details, case-level extraction outcomes, case-level agent approval decisions, and API contract/error cases, and the dashboard renders those spans as a local trace timeline. The lab also includes an optional OTLP/HTTP exporter with a deterministic dry-run preview and a local capture smoke test for POST-path verification.
 
+The dataset profile reports 40 manual golden cases, 66 expected abstentions, 38 noise types, 15 task types, and a current data-quality gap label for manual-case share below 25%. That profile is treated as part of the evaluation evidence because benchmark coverage affects how much trust the headline scores deserve.
+
 The retriever snapshot report records deterministic version-to-version deltas and flags regressions when citation coverage falls or failed-case count rises. The evaluation history report adds stable dated lab milestones for the same local benchmark sequence, plus a current cross-workflow quality summary.
 
 ## Known Limitations
 
 - The current embedding-store implementation uses deterministic feature hashing, not a provider-backed embedding model or vector database.
 - Ticket text and runbook text are synthetic and still partly templated, although the golden set now includes noisy abbreviations, missing metadata, false leads, typos, human-like phrasing, human email threads, manually authored chat/meeting/screenshot/handoff/control-room/redacted/stale-thread fragments, evidence packets, mixed manual review bundles, analyst scratch notes, CSV excerpts, incident timelines, retrieved-document injection, adversarial instructions, conflicting evidence, and long conflicting context.
+- The dataset profile currently flags manual-case share below 25%; the strongest next data-quality step is adding more hand-authored cases before further retriever tuning.
 - The current retrievers now pass the expanded synthetic golden suite after failure-guided reranking for schema mismatch, stale context, KYC artefact phrasing, and ambiguous-handoff abstention. Future work should keep making the suite less templated before treating metric gains as meaningful.
 - Structured extraction is deterministic pattern matching, not LLM extraction.
 - Security checks and severity weights are deterministic controls, even after adding harder retrieved-context attacks and residual-risk scoring; they are not a full adversarial red-team harness.

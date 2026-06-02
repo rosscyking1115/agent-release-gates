@@ -103,6 +103,7 @@ def otel_spans_from_evaluation_run(
                 "http.route.evaluation_html": "/reports/evaluation.html",
                 "http.route.evaluation_pdf": "/reports/evaluation.pdf",
                 "http.route.evaluation_history": "/reports/evaluation/history",
+                "http.route.dataset_profile": "/reports/dataset-profile",
                 "http.route.agent_otel_spans": "/reports/agent/otel-spans",
                 "http.route.observability_otel_spans": "/reports/observability/otel-spans",
                 "http.route.observability_collector_preview": (
@@ -455,6 +456,7 @@ def otel_spans_from_api_contracts() -> list[dict[str, Any]]:
         ("GET", "/reports/evaluation.html", 200, "html_report", "OK"),
         ("GET", "/reports/evaluation.pdf", 200, "pdf_report", "OK"),
         ("GET", "/reports/evaluation/history", 200, "evaluation_history", "OK"),
+        ("GET", "/reports/dataset-profile", 200, "dataset_profile", "OK"),
         ("GET", "/reports/agent/otel-spans", 200, "agent_span_export", "OK"),
         (
             "GET",

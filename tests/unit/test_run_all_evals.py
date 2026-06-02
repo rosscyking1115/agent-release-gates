@@ -19,6 +19,8 @@ def test_run_all_evals_generates_reports(tmp_path) -> None:
     summary = run_all(tmp_path)
 
     assert summary["dataset_counts"]["runbooks"] == 24
+    assert summary["dataset_profile"]["golden_case_mix"]["manual_cases"] == 40
+    assert summary["dataset_profile"]["golden_case_mix"]["noise_type_count"] >= 30
     assert summary["comparison"]["case_count"] == 296
     assert summary["retriever_comparison"]["case_count"] == 296
     assert len(summary["retriever_comparison"]["systems"]) == 5
@@ -36,6 +38,7 @@ def test_run_all_evals_generates_reports(tmp_path) -> None:
     assert summary["collector_export_preview"]["span_count"] > 0
     assert summary["collector_export_preview"]["payload_count"] > 0
     assert (tmp_path / "reports/eval_comparison.json").exists()
+    assert (tmp_path / "reports/dataset_profile.json").exists()
     assert (tmp_path / "reports/retriever_comparison.json").exists()
     assert (tmp_path / "reports/retriever_metric_snapshots.json").exists()
     assert (tmp_path / "reports/evaluation_history.json").exists()

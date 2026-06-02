@@ -9,10 +9,13 @@ from typing import Any
 from internal_ai_agent.dashboard.data import (
     agent_otel_summary,
     agent_trace_rows,
+    coverage_count_rows,
     evaluation_history_rows,
     load_agent_trace_examples,
+    load_dataset_profile,
     load_observability_otel_spans,
     load_retriever_case_rows,
+    red_team_coverage_rows,
     retriever_failure_example_rows,
     retriever_failure_overview,
     retriever_snapshot_rows,
@@ -51,6 +54,7 @@ def generate_public_report(project_root: Path) -> str:
     retrievers = _read_json(reports_dir / "retriever_comparison.json")
     retriever_snapshots = _read_json(reports_dir / "retriever_metric_snapshots.json")
     evaluation_history = _read_json(reports_dir / "evaluation_history.json")
+    dataset_profile = load_dataset_profile(project_root)
     collector_preview = _read_json(reports_dir / "collector_export_preview.json")
     extraction = _read_json(reports_dir / "extraction_eval_summary.json")
     security = _read_json(reports_dir / "security_eval_summary.json")
@@ -74,6 +78,16 @@ def generate_public_report(project_root: Path) -> str:
                 "- Current vector experiments: local TF-IDF vector retrieval and local "
                 "embedding-store retrieval"
             ),
+            "",
+            "## Dataset Profile",
+            "",
+            _dataset_profile_table(dataset_profile),
+            "",
+            _dataset_profile_coverage_table(dataset_profile),
+            "",
+            "This profile is generated from the same JSONL artifacts as the eval runner. "
+            "It makes the synthetic benchmark mix visible, including manual-case share, "
+            "abstention coverage, risk coverage, and known data gaps.",
             "",
             "## Retrieval Evaluation",
             "",
@@ -271,6 +285,41 @@ def _collector_export_table(preview: dict[str, Any]) -> str:
         f"| OTLP payloads | {preview['payload_count']} |",
         f"| Batch size | {preview['batch_size']} |",
     ]
+    return "\n".join(rows)
+
+
+def _dataset_profile_table(profile: dict[str, Any]) -> str:
+    counts = profile["dataset_counts"]
+    mix = profile["golden_case_mix"]
+    rows = [
+        "| Dataset profile metric | Value |",
+        "| --- | ---: |",
+        f"| Runbook sections | {counts['runbooks']} |",
+        f"| Synthetic tickets | {counts['tickets']} |",
+        f"| Golden cases | {counts['golden_cases']} |",
+        f"| Manual golden cases | {mix['manual_cases']} |",
+        f"| Manual share | {_pct(mix['manual_share'])} |",
+        f"| Expected abstentions | {mix['expected_abstentions']} |",
+        f"| Abstention share | {_pct(mix['abstention_share'])} |",
+        f"| Noise types | {mix['noise_type_count']} |",
+        f"| Task types | {mix['task_type_count']} |",
+        f"| Red-team cases | {counts['red_team_cases']} |",
+    ]
+    return "\n".join(rows)
+
+
+def _dataset_profile_coverage_table(profile: dict[str, Any]) -> str:
+    top_noise = coverage_count_rows(profile, "by_noise_type")[:8]
+    risk_rows = red_team_coverage_rows(profile, "by_risk_type")[:8]
+    rows = [
+        "| Coverage sample | Cases |",
+        "| --- | ---: |",
+    ]
+    for row in top_noise:
+        rows.append(f"| noise:{row['value']} | {row['case_count']} |")
+    for row in risk_rows:
+        rows.append(f"| red_team:{row['value']} | {row['case_count']} |")
+    rows.append(f"| risk labels | {len(profile['risk_labels'])} |")
     return "\n".join(rows)
 
 

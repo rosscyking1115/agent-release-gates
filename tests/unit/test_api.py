@@ -6,6 +6,7 @@ from internal_ai_agent.api.main import (
     agent_run,
     app,
     ask,
+    dataset_profile,
     evaluation_history,
     evaluation_report,
     evaluation_report_html,
@@ -50,6 +51,15 @@ def test_evaluation_history_endpoint_returns_json() -> None:
     assert history["history_type"] == "deterministic_lab_milestones"
     assert history["current_summary"]["best_retriever"] == "Hybrid sparse semantic"
     assert len(history["milestones"]) == 5
+
+
+def test_dataset_profile_endpoint_returns_json() -> None:
+    profile = dataset_profile()
+
+    assert profile["profile_type"] == "synthetic_dataset_profile"
+    assert profile["dataset_counts"]["golden_cases"] == 296
+    assert profile["golden_case_mix"]["manual_cases"] == 40
+    assert "manual_case_share_below_25_percent" in profile["risk_labels"]
 
 
 def test_agent_otel_spans_endpoint_returns_jsonl() -> None:
