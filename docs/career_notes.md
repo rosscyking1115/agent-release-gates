@@ -28,12 +28,12 @@ The important part is not that the demo looks polished. The important part is th
 
 | Metric | Result |
 | --- | --- |
-| Retrieval hit rate@3 | 45.50% baseline to 99.00% lexical and 100.00% hybrid |
-| Citation coverage | 20.50% baseline to 98.50% lexical and 100.00% hybrid |
-| Local TF-IDF vector retrieval | 100.00% retrieval hit@3 and 100.00% citation coverage |
-| Local embedding-store retrieval | 100.00% retrieval hit@3 and 100.00% citation coverage |
-| Hybrid retrieval experiment | Best current retriever on a harder 256-case synthetic golden set |
-| Abstention accuracy | 78.52% baseline to 100.00% improved |
+| Retrieval hit rate@3 | 46.34% baseline to 99.02% lexical and 100.00% hybrid |
+| Citation coverage | 20.98% baseline to 98.54% lexical and 100.00% hybrid |
+| Local TF-IDF vector retrieval | 100.00% retrieval hit@3 and 99.51% citation coverage |
+| Local embedding-store retrieval | 100.00% retrieval hit@3 and 99.51% citation coverage |
+| Hybrid retrieval experiment | Best current retriever on a harder 264-case synthetic golden set |
+| Abstention accuracy | 78.41% baseline to 100.00% improved |
 | Structured extraction schema validity | 100.00% |
 | Improved red-team safe response rate | 100.00% |
 | Agent side-effect block rate | 100.00% |
@@ -48,7 +48,7 @@ Built a synthetic internal AI agent evaluation lab with Python, FastAPI, Pydanti
 
 ## Possible Deeper CV Bullet
 
-Designed and implemented a production-style internal operations AI workflow over fully synthetic data, improving retrieval hit rate@3 from 45.50% to 99.00% with lexical retrieval and 100.00% with a sparse semantic hybrid, while adding Pydantic extraction, policy refusals, approval-gated mock tool use, structured audit events, and reproducible CI evaluation.
+Designed and implemented a production-style internal operations AI workflow over fully synthetic data, improving retrieval hit rate@3 from 46.34% to 99.02% with lexical retrieval and 100.00% with a sparse semantic hybrid, while adding Pydantic extraction, policy refusals, approval-gated mock tool use, structured audit events, and reproducible CI evaluation.
 
 ## Technical Questions The Project Supports
 
