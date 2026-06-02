@@ -71,7 +71,7 @@ The first improved version is `improved_lexical_retrieval`. It scores token over
 
 The current golden set includes exact, paraphrased, abbreviated, missing-metadata, false-lead, typo/abbreviation, human email-thread, manually authored chat/meeting/screenshot/desk-note/handoff/control-room/redacted/stale-thread fragments, adversarial-instruction, weak-evidence, conflicting-evidence, and long conflicting-context cases. Reports include grouped analysis by task type and noise type, plus failure-reason counts.
 
-Known limitation: most golden cases are still generated from templates, even when they simulate email threads and contradictory context. The expanded manual challenge set is still small, but it now exposes residual final-selection failures; future eval sets should include more varied human-written phrasing, misleading system names, and adversarial retrieved text.
+Known limitation: most golden cases are still generated from templates, even when they simulate email threads and contradictory context. The expanded manual challenge set is still small; it exposed residual final-selection failures that are now fixed and regression-tested. Future eval sets should include more varied human-written phrasing, misleading system names, and adversarial retrieved text.
 
 ## Hybrid Sparse Semantic Version
 
@@ -83,13 +83,13 @@ This version is deliberately local and dependency-free. It is not a production e
 
 The vector version is `local_tfidf_vector_retrieval`. It builds an IDF-weighted local vector index over runbook titles, content, team hints, procedure aliases, and character n-grams, then scores with cosine similarity plus a small keyword rerank.
 
-This is a real local vector-space retrieval experiment, but it is not an embedding model, pgvector store, or paid provider. Its current value is comparison discipline: it reaches full retrieval hit@3 on the synthetic suite, while preserving a visible final-ranking failure for missing-metadata analysis.
+This is a real local vector-space retrieval experiment, but it is not an embedding model, pgvector store, or paid provider. Its current value is comparison discipline: it reaches full retrieval hit@3 and citation coverage on the current synthetic suite while still exposing ranking score components for future failures.
 
 ## Local Embedding Store Version
 
 The embedding-store version is `local_hashed_embedding_store_retrieval`. It builds a local store of dense, stable feature-hashed vectors over runbook titles, content, team hints, and procedure aliases, then searches with cosine similarity plus lightweight reranking.
 
-This is not a paid embedding provider or production vector database. It exercises the same evaluation contract an embedding-backed vector store would need: index build, query embedding, top-k retrieval, final answer selection, citation checking, and failure analysis. In the current synthetic suite it reaches full retrieval hit@3 but has more final-selection failures than the TF-IDF vector retriever, which is useful evidence that embeddings do not remove the need for reranking and answer-grounding checks.
+This is not a paid embedding provider or production vector database. It exercises the same evaluation contract an embedding-backed vector store would need: index build, query embedding, top-k retrieval, final answer selection, citation checking, and failure analysis. In the current synthetic suite it reaches full retrieval hit@3 and citation coverage after the same reranking checks used by the local vector retriever, which reinforces that embeddings still need answer-grounding checks.
 
 The retriever comparison report saves a five-system table:
 

@@ -30,16 +30,17 @@ def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
 
     assert "# Internal AI Agent Evaluation Report" in report
     assert "Golden retrieval cases: 272" in report
-    assert "| Hybrid sparse semantic | 100.00% | 99.53% | 99.53% | 100.00% | 1 |" in report
+    assert "| Hybrid sparse semantic | 100.00% | 100.00% | 100.00% | 100.00% | 0 |" in report
     assert "| Local TF-IDF vector |" in report
     assert "| Local embedding store |" in report
     assert "## Retriever Metric Snapshots" in report
-    assert "citation_coverage_decreased" in report
+    assert "004_local_tf_idf_vector" in report
+    assert "citation_coverage_decreased" not in report
     assert "## Retriever Failure Analysis" in report
     assert "NOISY-MISSING-007" in report
-    assert "| Local embedding store | 100.00% | 99.05% | 99.05% | 100.00% | 2 |" in report
-    assert "MANUAL-CHAT-001" in report
-    assert "MANUAL-CONTROL-011" in report
+    assert "| Local embedding store | 100.00% | 100.00% | 100.00% | 100.00% | 0 |" in report
+    assert "MANUAL-CHAT-001" not in report
+    assert "MANUAL-CONTROL-011" not in report
     assert "Top retrieved scores" in report
     assert "HUMAN-EMAIL-THREAD-004" not in report
     assert "| Citation coverage | 20.38% | 98.58% | +78.20% |" in report

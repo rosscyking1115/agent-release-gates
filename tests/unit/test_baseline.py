@@ -128,6 +128,23 @@ def test_hybrid_retrieval_prefers_current_evidence_over_stale_thread() -> None:
     assert answer.citations == ["RB-DATA_QUALITY-04"]
 
 
+def test_hybrid_retrieval_treats_schema_mismatch_as_schema_drift() -> None:
+    from internal_ai_agent.data.synthetic import build_runbooks
+
+    runbooks = [section.__dict__ for section in build_runbooks()]
+    answer = answer_with_hybrid(
+        (
+            "Control-room note: Atlas accepted yesterday's files, but today's incoming "
+            "payload shape no longer matches the expected schema version. The analyst "
+            "asks whether downstream publication should be blocked."
+        ),
+        runbooks,
+    )
+
+    assert answer.issue_category == "schema_drift"
+    assert answer.citations == ["RB-DATA_QUALITY-02"]
+
+
 def test_vector_retrieval_handles_typo_tolerant_paraphrase() -> None:
     from internal_ai_agent.data.synthetic import build_runbooks
 
@@ -159,6 +176,40 @@ def test_vector_retrieval_prefers_specific_missing_metadata_evidence() -> None:
 
     assert answer.issue_category == "missing_kyc_document"
     assert answer.citations == ["RB-CLIENT_ONBOARDING-01"]
+
+
+def test_vector_retrieval_handles_manual_kyc_artefact_spelling() -> None:
+    from internal_ai_agent.data.synthetic import build_runbooks
+
+    runbooks = [section.__dict__ for section in build_runbooks()]
+    answer = answer_with_vector(
+        (
+            "Ops chat paste, no clean ticket id yet: Nova intake is stuck before activation. "
+            "The analyst says the required KYC artefact is not in the packet, and the client "
+            "file cannot move until that evidence is supplied."
+        ),
+        runbooks,
+    )
+
+    assert answer.issue_category == "missing_kyc_document"
+    assert answer.citations == ["RB-CLIENT_ONBOARDING-01"]
+
+
+def test_vector_retrieval_prefers_current_repair_queue_over_stale_guess() -> None:
+    from internal_ai_agent.data.synthetic import build_runbooks
+
+    runbooks = [section.__dict__ for section in build_runbooks()]
+    answer = answer_with_vector(
+        (
+            "Forwarded payments thread: an older comment guessed settlement delay, but the "
+            "current evidence says Aurora repair items are piling up and high-severity rows "
+            "need triage. Use the current evidence, not the stale guess."
+        ),
+        runbooks,
+    )
+
+    assert answer.issue_category == "repair_queue_backlog"
+    assert answer.citations == ["RB-PAYMENTS_OPS-06"]
 
 
 def test_embedding_store_prefers_exact_issue_phrase() -> None:
@@ -193,6 +244,23 @@ def test_embedding_store_retrieval_handles_missing_metadata_case() -> None:
 
     assert answer.issue_category == "missing_kyc_document"
     assert answer.citations == ["RB-CLIENT_ONBOARDING-01"]
+
+
+def test_embedding_store_prefers_current_repair_queue_over_stale_guess() -> None:
+    from internal_ai_agent.data.synthetic import build_runbooks
+
+    runbooks = [section.__dict__ for section in build_runbooks()]
+    answer = answer_with_embedding_store(
+        (
+            "Forwarded payments thread: an older comment guessed settlement delay, but the "
+            "current evidence says Aurora repair items are piling up and high-severity rows "
+            "need triage. Use the current evidence, not the stale guess."
+        ),
+        runbooks,
+    )
+
+    assert answer.issue_category == "repair_queue_backlog"
+    assert answer.citations == ["RB-PAYMENTS_OPS-06"]
 
 
 def test_baseline_eval_writes_report(tmp_path: Path) -> None:

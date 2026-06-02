@@ -52,8 +52,26 @@ SEMANTIC_ALIASES = {
     "settlement_delay": ["settlement", "delay", "waiting", "window", "retry"],
     "unmatched_settlement_reference": ["unmatched", "settlement", "reference", "reconcile"],
     "cutoff_window_missed": ["cutoff", "missed", "processing", "deadline"],
-    "repair_queue_backlog": ["repair", "queue", "backlog", "triage", "growing"],
-    "missing_kyc_document": ["missing", "kyc", "document", "artifact", "absent"],
+    "repair_queue_backlog": [
+        "repair",
+        "queue",
+        "backlog",
+        "triage",
+        "growing",
+        "items",
+        "piling",
+        "rows",
+    ],
+    "missing_kyc_document": [
+        "missing",
+        "kyc",
+        "document",
+        "artifact",
+        "artefact",
+        "absent",
+        "packet",
+        "supplied",
+    ],
     "entity_match_review": ["entity", "match", "screening", "review", "possible"],
     "workflow_sla_breach": ["workflow", "sla", "breach", "service", "target", "exceeded"],
     "beneficial_owner_missing": ["beneficial", "owner", "ownership", "missing", "activation"],
@@ -66,7 +84,7 @@ SEMANTIC_ALIASES = {
     "commission_code_missing": ["commission", "code", "missing", "booking"],
     "booking_status_stuck": ["booking", "status", "stuck", "stopped", "progressing"],
     "stale_reference_data": ["stale", "reference", "data", "freshness", "older", "feed"],
-    "schema_drift": ["schema", "drift", "shape", "version", "incoming"],
+    "schema_drift": ["schema", "drift", "shape", "version", "incoming", "payload", "match"],
     "control_threshold_breach": ["control", "threshold", "breach", "exceeded", "configured"],
     "duplicate_record_cluster": ["duplicate", "duplicated", "record", "records", "cluster"],
     "lineage_check_failed": ["lineage", "check", "failed", "trace", "upstream"],
@@ -266,6 +284,7 @@ def retrieve_hybrid(
         team_score = _team_hint_score(question, str(section["team"])) * 0.5
         current_evidence_score = _current_evidence_score(question, category, str(section["team"]))
         negation_penalty = _negated_category_penalty(question, category)
+        stale_context_penalty = _stale_context_penalty(question, category)
         score = (
             lexical_score
             + semantic_score
@@ -274,7 +293,7 @@ def retrieve_hybrid(
             + team_score
             + current_evidence_score
         )
-        score -= negation_penalty
+        score -= negation_penalty + stale_context_penalty
 
         if score <= 0:
             continue
@@ -380,6 +399,7 @@ def retrieve_vector(
         team_hint_score = _team_hint_score(question, str(section["team"])) * 0.25
         evidence_score = _current_evidence_score(question, category, str(section["team"])) * 0.75
         negation_penalty = _negated_category_penalty(question, category)
+        stale_context_penalty = _stale_context_penalty(question, category)
         score = (
             vector_score
             + alias_score
@@ -387,6 +407,7 @@ def retrieve_vector(
             + team_hint_score
             + evidence_score
             - negation_penalty
+            - stale_context_penalty
         )
 
         if score <= 0:
@@ -406,6 +427,7 @@ def retrieve_vector(
                     "team_hint": round(team_hint_score, 4),
                     "current_evidence": round(evidence_score, 4),
                     "negation_penalty": round(negation_penalty, 4),
+                    "stale_context_penalty": round(stale_context_penalty, 4),
                 },
             )
         )
@@ -495,6 +517,7 @@ def retrieve_embedding_store(
         team_hint_score = _team_hint_score(question, str(section["team"])) * 0.25
         evidence_score = _current_evidence_score(question, category, str(section["team"])) * 0.75
         negation_penalty = _negated_category_penalty(question, category)
+        stale_context_penalty = _stale_context_penalty(question, category)
         score = (
             embedding_score
             + alias_score
@@ -502,6 +525,7 @@ def retrieve_embedding_store(
             + team_hint_score
             + evidence_score
             - negation_penalty
+            - stale_context_penalty
         )
 
         if score <= 0:
@@ -521,6 +545,7 @@ def retrieve_embedding_store(
                     "team_hint": round(team_hint_score, 4),
                     "current_evidence": round(evidence_score, 4),
                     "negation_penalty": round(negation_penalty, 4),
+                    "stale_context_penalty": round(stale_context_penalty, 4),
                 },
             )
         )
@@ -884,6 +909,14 @@ def _evidence_summary_text(focused_text: str) -> str:
 
 
 def _negated_category_penalty(question: str, category: str) -> float:
+    normalized = question.lower()
+    if category == "schema_drift" and (
+        "no longer matches" in normalized or "no longer match" in normalized
+    ):
+        evidence_terms = {"schema", "shape", "version", "payload"}
+        if evidence_terms & set(_token_sequence(question)):
+            return 0.0
+
     tokens = _token_sequence(question)
     if not tokens:
         return 0.0
@@ -902,6 +935,41 @@ def _negated_category_penalty(question: str, category: str) -> float:
             return 40.0
         if len(window & alias_tokens) >= 2:
             return 20.0
+    return 0.0
+
+
+def _stale_context_penalty(question: str, category: str) -> float:
+    normalized = question.lower()
+    current_start = min(
+        (
+            index
+            for marker in CURRENT_EVIDENCE_MARKERS
+            if (index := normalized.find(marker)) >= 0
+        ),
+        default=-1,
+    )
+    if current_start < 0:
+        return 0.0
+
+    earlier_context = normalized[:current_start]
+    stale_markers = (
+        "older comment",
+        "stale comment",
+        "stale thread",
+        "false lead",
+        "wondered whether",
+        "guessed",
+    )
+    if not any(marker in earlier_context for marker in stale_markers):
+        return 0.0
+
+    category_phrase = category.replace("_", " ")
+    if category_phrase in earlier_context:
+        return 35.0
+
+    earlier_tokens = _tokenize(earlier_context)
+    if _alias_overlap(earlier_tokens, category) >= 2:
+        return 20.0
     return 0.0
 
 

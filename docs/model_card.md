@@ -48,9 +48,9 @@ The project does not use real company documents, customer data, employee data, p
 | Metric | Baseline | Improved lexical | Hybrid sparse semantic | Local TF-IDF vector | Local embedding store |
 | --- | ---: | ---: | ---: | ---: | ---: |
 | Retrieval hit rate@3 | 45.97% | 99.05% | 100.00% | 100.00% | 100.00% |
-| Citation coverage | 20.38% | 98.58% | 99.53% | 99.05% | 99.05% |
-| Issue category accuracy | 20.38% | 98.58% | 99.53% | 99.05% | 99.05% |
-| Next action accuracy | 20.38% | 98.58% | 99.53% | 99.05% | 99.05% |
+| Citation coverage | 20.38% | 98.58% | 100.00% | 100.00% | 100.00% |
+| Issue category accuracy | 20.38% | 98.58% | 100.00% | 100.00% | 100.00% |
+| Next action accuracy | 20.38% | 98.58% | 100.00% | 100.00% | 100.00% |
 | Abstention accuracy | 78.41% | 100.00% | 100.00% | 100.00% | 100.00% |
 
 Structured extraction over templated synthetic tickets currently reports 100.00% schema validity, issue-category accuracy, severity accuracy, impacted-system accuracy, and routing-team accuracy.
@@ -65,7 +65,7 @@ The retriever snapshot report records deterministic version-to-version deltas an
 
 - The current embedding-store implementation uses deterministic feature hashing, not a provider-backed embedding model or vector database.
 - Ticket text and runbook text are synthetic and still partly templated, although the golden set now includes noisy abbreviations, missing metadata, false leads, typos, human-like phrasing, human email threads, manually authored chat/meeting/screenshot/handoff/control-room/redacted/stale-thread fragments, retrieved-document injection, adversarial instructions, conflicting evidence, and long conflicting context.
-- The hybrid retriever is the best current retriever, but the expanded manual set now exposes a schema-drift/control-threshold final-selection failure; the vector and embedding-store retrievers also miss chat-fragment and stale-thread cases. Future work should keep making the suite less templated before treating metric gains as meaningful.
+- The current retrievers now pass the expanded synthetic golden suite after failure-guided reranking for schema mismatch, stale context, and KYC artefact phrasing. Future work should keep making the suite less templated before treating metric gains as meaningful.
 - Structured extraction is deterministic pattern matching, not LLM extraction.
 - Security checks are deterministic string-based controls, not a full adversarial red-team harness.
 - The controlled agent is a local workflow, not a LangGraph state machine yet.
@@ -89,7 +89,7 @@ Side-effecting operations are mock-only and require explicit approval.
 
 - Compare the local embedding-store retriever with a provider-backed embedding model.
 - Add timestamped historical evaluation snapshots after the deterministic snapshot contract remains stable.
-- Add more non-templated tickets and retrieved-context attacks, then use the new residual manual-case failures to guide reranking improvements.
+- Add more non-templated tickets and retrieved-context attacks so the next retriever weaknesses are measured before more tuning.
 - Add optional live collector export for the OpenTelemetry-style spans.
 - Replace deterministic extraction with an optional LLM extraction provider plus schema repair.
 - Add a LangGraph state machine once the local workflow contract is stable.
