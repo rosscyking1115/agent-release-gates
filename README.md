@@ -1,112 +1,49 @@
 # Internal AI Agent Evaluation Lab
 
-A synthetic evaluation lab for testing how internal AI agents behave in enterprise operations workflows.
+A public synthetic evaluation lab for testing internal AI agent reliability across grounded retrieval, structured extraction, safe refusal, approval-gated tools, auditability, and observability.
 
-The lab provides generated runbooks, tickets, golden cases, red-team cases, dataset-profile reports, API endpoints, evaluation reports, and a dashboard for studying grounded answers, structured extraction, safe refusal, approval-gated tools, and auditability.
+This project is not a clone or critique of any real company's internal AI system. It uses fully synthetic runbooks, tickets, teams, procedures, and metrics so the work can be inspected and extended safely.
 
-This project does not reproduce, evaluate, or criticize any real company's internal AI system. It uses fully synthetic runbooks, tickets, teams, and procedures so the work can be used, inspected, and extended safely.
+## Live Project
 
-## Problem
+- Public site: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/
+- Full evaluation report: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/evaluation_report.html
+- Dataset profile: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/dataset_profile.json
 
-Internal AI agents can be useful only when their answers are grounded, measurable, access-aware, and auditable. This lab treats the agent as an operational system rather than a generic chatbot:
+## What This Project Demonstrates
 
-- answer procedure questions with citations
-- extract structured ticket fields
-- route synthetic tickets to the right team
-- refuse when evidence is insufficient
-- block prompt injection from users and retrieved documents
-- require approval before side-effecting tool calls
-- log decisions for evaluation and audit
+Internal AI agents are only useful when their answers are grounded, measurable, access-aware, safe, and auditable. This lab treats the agent as an operational system rather than a generic chatbot:
 
-## Current Scope
+- retrieves synthetic runbook evidence and answers with citations
+- extracts structured fields from synthetic operations tickets
+- routes tickets to synthetic owner teams
+- refuses unsafe, weak-evidence, or policy-bypassing requests
+- blocks prompt injection from both user prompts and retrieved documents
+- requires approval before side-effecting mock tool calls
+- records traces, audit events, monitoring snapshots, and OpenTelemetry-style spans
+- publishes deterministic reports and a public benchmark profile
 
-The current version creates a local, reproducible lab:
+## Highlights
 
-- synthetic data generator
-- baseline and improved retrieval evaluations
-- hybrid sparse semantic, local TF-IDF vector, and local embedding-store retrieval experiments
-- noisy golden cases for abbreviations, missing metadata, human email threads, and conflicting evidence
-- structured ticket extraction and routing
-- deterministic red-team policy checks
-- controlled agent workflow with approval-gated mock tools
-- dataset-profile artifact for benchmark mix, manual-case share, abstention coverage, and coverage gaps
-- trace IDs, audit events, monitoring snapshots, OTel-style trace timeline, and an
-  optional OTLP/HTTP collector exporter with a local capture smoke test
-- FastAPI service, Streamlit dashboard, Docker/Compose runtime, CI workflow, and operations runbook
+| Area | Implementation |
+| --- | --- |
+| Retrieval evaluation | Baseline, lexical, hybrid sparse semantic, local TF-IDF vector, and local hashed embedding-store retrievers |
+| Structured extraction | Pydantic-validated ticket extraction and routing decisions |
+| Safety testing | Red-team cases for prompt injection, leakage, weak evidence, excessive agency, access escalation, and tool misuse |
+| Agent governance | Read-only tools plus approval-gated mock side effects |
+| Observability | Trace IDs, audit events, monitoring snapshots, local span timeline, OTLP/HTTP export preview, and local collector smoke test |
+| Deployment | Public GitHub Pages report site, Docker image, Docker Compose, CI workflow |
 
-## Tech Stack
+## Current Evaluation Snapshot
 
-- Python 3.12
-- uv
-- FastAPI
-- Pydantic
-- pytest
-- ruff
-- Docker
-
-Later phases should add provider-backed embeddings, noisier evaluation data, richer spans for additional workflows, a full OpenTelemetry Collector deployment check, and optional LangGraph orchestration.
-
-## Quick Start
-
-```powershell
-uv sync
-uv run python scripts/run_all_evals.py
-uv run streamlit run C:\Files\Jobs\project-5-jpm_internal_ai_agent\app\streamlit_app.py --server.port 8510
-uv run pytest
-```
-
-The generator writes synthetic data to:
-
-- `data/synthetic/raw_docs/runbooks.jsonl`
-- `data/synthetic/raw_tickets/tickets.jsonl`
-- `data/eval/golden_cases.jsonl`
-- `data/eval/red_team_cases.jsonl`
-
-Current generated seed dataset:
+The current benchmark is synthetic and deterministic:
 
 | Dataset | Rows |
 | --- | ---: |
 | Runbook sections | 24 |
-| Operations tickets | 180 |
-| Golden eval cases | 296 |
+| Synthetic operations tickets | 180 |
+| Golden evaluation cases | 296 |
 | Red-team cases | 60 |
-
-The baseline evaluation writes:
-
-- `reports/baseline_eval_summary.json`
-- `reports/baseline_eval_cases.jsonl`
-- `reports/improved_eval_summary.json`
-- `reports/improved_eval_cases.jsonl`
-- `reports/hybrid_eval_summary.json`
-- `reports/hybrid_eval_cases.jsonl`
-- `reports/vector_eval_summary.json`
-- `reports/vector_eval_cases.jsonl`
-- `reports/embedding_eval_summary.json`
-- `reports/embedding_eval_cases.jsonl`
-- `reports/retriever_comparison.json`
-- `reports/retriever_metric_snapshots.json`
-- `reports/evaluation_history.json`
-- `reports/eval_comparison.json`
-- `reports/dataset_profile.json`
-- `reports/extraction_eval_summary.json`
-- `reports/extraction_eval_cases.jsonl`
-- `reports/security_eval_summary.json`
-- `reports/security_eval_cases.jsonl`
-- `reports/agent_eval_summary.json`
-- `reports/agent_eval_cases.jsonl`
-- `reports/agent_trace_examples.jsonl`
-- `reports/agent_otel_spans.jsonl`
-- `reports/observability_otel_spans.jsonl`
-- `reports/collector_export_preview.json`
-- `reports/evaluation_report.md`
-- `reports/evaluation_report.html`
-- `reports/evaluation_report.pdf`
-
-The current baseline is intentionally simple: it uses broad system/team keyword hints rather than procedure-level retrieval. This gives the project a measurable starting point before improved retrieval is added.
-
-The generated dataset profile makes the benchmark mix inspectable: manual versus generated cases, abstention share, coverage by task/noise/issue/team, red-team risk coverage, and current data-quality gap labels. The generated Markdown, HTML, and PDF reports are the easiest static artifacts to share or review without running the dashboard.
-
-Current deterministic evaluation:
 
 | Metric | Baseline | Improved lexical | Hybrid sparse semantic | Local TF-IDF vector | Local embedding store |
 | --- | ---: | ---: | ---: | ---: | ---: |
@@ -116,144 +53,78 @@ Current deterministic evaluation:
 | Next action accuracy | 20.00% | 98.70% | 100.00% | 100.00% | 100.00% |
 | Abstention accuracy | 78.38% | 100.00% | 100.00% | 100.00% | 100.00% |
 
-These are first-pass synthetic metrics across exact, paraphrased, noisy, human-like, human email-thread, manually authored chat/handoff/control-room/redacted/stale-thread cases, evidence packets, mixed review bundles, analyst scratch notes, CSV excerpts, timeline notes, control-owner notes, distractor, typo, weak-evidence, conflicting-evidence, long-conflicting-context, retrieved-document injection, and adversarial-instruction cases. Later phases should add provider-backed embedding comparison, more adversarial retrieval cases, and more non-templated human-authored evidence.
+Additional evaluation results:
 
-The hybrid retriever is intentionally local and deterministic: it combines lexical scoring with sparse semantic alias features, negated false-lead handling, phrase matching, and current-evidence reranking for forwarded-thread cases. The local TF-IDF vector retriever adds an IDF-weighted cosine index with character n-grams and alias features. The local embedding-store retriever builds stable feature-hashed dense vectors and searches them with cosine similarity. The expanded 272-case suite exposed residual manual-case final-selection failures, then the reranker was updated with stale-context penalties, schema-mismatch handling, and KYC artefact vocabulary. The 280-case suite added non-templated analyst-authored prompts and fixed an ambiguous-handoff abstention gap. The 288-case suite added manually authored evidence packets with stale side chatter, current-evidence cues, and ownership-conflict abstentions. The current 296-case suite adds mixed manual review bundles that combine screenshot notes, chat snippets, table extracts, stale references, and conflicting ownership cues. Those recovered cases are regression-tested synthetic benchmarks, not claims that messy real tickets are solved.
-
-Current structured extraction evaluation:
-
-| Metric | Score |
+| Evaluation | Result |
 | --- | ---: |
-| Schema validity | 100.00% |
-| Issue category accuracy | 100.00% |
-| Severity accuracy | 100.00% |
-| Impacted system accuracy | 100.00% |
-| Routing team accuracy | 100.00% |
+| Structured extraction schema validity | 100.00% |
+| Structured extraction routing accuracy | 100.00% |
+| Improved red-team safe response rate | 100.00% |
+| Improved red-team residual risk score | 0 |
+| Agent side-effect block rate | 100.00% |
+| Agent approval audit rate | 100.00% |
+| Exported OTel-style spans | 1,154 |
 
-These extraction scores are deterministic over templated synthetic tickets. Later phases should add noisier ticket text and LLM-backed extraction with schema repair.
+These scores are engineering checks over synthetic data, not claims about real-world production performance.
 
-Current security red-team evaluation:
+## Benchmark Transparency
 
-| Metric | Baseline | Improved policy |
-| --- | ---: | ---: |
-| Policy block rate | 0.00% | 100.00% |
-| Safe response rate | 0.00% | 100.00% |
-| Weighted safe response rate | 0.00% | 100.00% |
-| Residual risk score | 136 | 0 |
+The project includes a dataset profile because high scores on synthetic cases are only meaningful when the benchmark mix is visible.
 
-Block rate requires an explicit policy refusal, not only an accidental no-answer response. The suite now includes harder retrieved-context attacks for priority inversion, approval-gate bypass, citation suppression, unsupported resolution, and access escalation hidden in retrieved text. Weighted safe response rate prioritizes high-severity prompt-injection, access-control, leakage, and retrieved-access-escalation cases; residual risk score is the remaining severity-weighted unsafe case total.
+Current dataset-profile highlights:
 
-Current controlled agent evaluation:
+- 40 manually authored golden cases
+- 66 expected abstention cases
+- 38 noise types and 15 task types
+- explicit gap label: `manual_case_share_below_25_percent`
+- all public benchmark data is synthetic and reproducible
 
-| Metric | Score |
-| --- | ---: |
-| Trace coverage rate | 100.00% |
-| Audit event coverage rate | 100.00% |
-| Approval audit rate | 100.00% |
-| Monitoring snapshot rate | 100.00% |
-| Valid tool-call rate | 100.00% |
-| Approval trigger rate | 100.00% |
-| Side-effect block rate | 100.00% |
-| Approved action execution rate | 100.00% |
-| Route-tool selection accuracy | 100.00% |
-| Unnecessary tool-call rate | 0.00% |
+The most important next data-quality step is adding more hand-authored cases before further retriever tuning.
 
-Read-only tools can run automatically. The side-effecting `route_ticket_mock` tool is prepared but blocked until approval is granted. Each agent run returns a trace id, structured audit events, and a monitoring snapshot.
-
-The agent eval exports deterministic OpenTelemetry-style spans to `reports/agent_otel_spans.jsonl`. The full orchestration run also writes `reports/observability_otel_spans.jsonl`, combining those agent spans with an evaluation-run trace for data generation, retriever comparison, extraction, security, agent evaluation, report/API artifact export, case-level retriever failure spans, retriever ranking-detail spans, case-level extraction spans, case-level agent approval spans, and API contract/error-case spans. `reports/collector_export_preview.json` records the OTLP/HTTP payload count that would be sent to a collector. These are local interoperability artifacts by default; posting to a live collector is optional.
-
-Dry-run the collector export without network traffic:
-
-```powershell
-uv run python scripts/export_otel_collector.py
-```
-
-Post the same spans to an OTLP/HTTP collector:
-
-```powershell
-uv run python scripts/export_otel_collector.py --endpoint http://localhost:4318/v1/traces --post
-```
-
-Smoke-test the POST path without an external collector:
-
-```powershell
-uv run python scripts/smoke_otel_collector.py
-```
-
-## Dashboard
-
-The Streamlit dashboard presents the evaluation outcome as an inspection surface:
-
-- headline case counts
-- dataset profile for manual-case share, abstention coverage, noise/task/issue coverage, red-team coverage, and benchmark gap labels
-- baseline vs improved metric chart
-- retriever experiment table comparing baseline, lexical, hybrid, vector, and embedding-store retrieval
-- retriever metric snapshots showing citation deltas, failure deltas, and regression flags
-- retriever failure analysis showing recovered evidence, final-citation misses, score breakdowns, and fixes
-- before/after metric table
-- noisy-case and failure-reason analysis
-- controlled agent approval and tool-governance metrics
-- trace and audit coverage metrics
-- deterministic agent trace examples for blocked and approved mock routes
-- OpenTelemetry-style observability summary, trace timeline, component rows, and span rows
-- OTLP/HTTP collector-export preview metrics
-- failed-case review tables
-
-Run it with:
-
-```powershell
-uv run streamlit run C:\Files\Jobs\project-5-jpm_internal_ai_agent\app\streamlit_app.py --server.port 8510
-```
-
-The `/ask` API supports `baseline`, `improved`, `hybrid`, `vector`, and `embedding` modes. The `hybrid` mode uses the local sparse semantic retriever, `vector` uses the local TF-IDF vector retriever, `embedding` uses the local feature-hashed embedding store, and `improved` is kept as the lexical retriever for comparison.
-
-The generated evaluation report is available from the dashboard and from:
+## Architecture
 
 ```text
-http://localhost:8000/reports/evaluation
-http://localhost:8000/reports/evaluation.html
-http://localhost:8000/reports/evaluation.pdf
-http://localhost:8000/reports/evaluation/history
-http://localhost:8000/reports/dataset-profile
-http://localhost:8000/reports/agent/otel-spans
-http://localhost:8000/reports/observability/otel-spans
-http://localhost:8000/reports/observability/collector-preview
+Synthetic data generator
+  -> runbooks, tickets, golden cases, red-team cases
+
+Evaluation runners
+  -> retrieval, extraction, safety, controlled-agent, observability
+
+Application surfaces
+  -> FastAPI endpoints, Streamlit dashboard, generated reports
+
+Delivery
+  -> GitHub Pages static site, Docker, Docker Compose, GitHub Actions CI
 ```
 
-## Public Site
+## Tech Stack
 
-The public static site is deployed with GitHub Pages from `.github/workflows/pages.yml`.
-It regenerates the deterministic reports, builds `public/index.html`, and publishes:
+- Python 3.12
+- FastAPI
+- Streamlit
+- Pydantic
+- pytest
+- ruff
+- Docker / Docker Compose
+- GitHub Actions
+- GitHub Pages
 
-- landing page with headline metrics and safety framing
-- full HTML evaluation report
-- downloadable PDF report
-- dataset profile JSON
+## Run Locally
 
-Expected public URL:
-
-```text
-https://rosscyking1115.github.io/internal-ai-agent-eval-lab/
-```
-
-The public site is static. The interactive FastAPI and Streamlit dashboard remain available
-through Docker or local commands until a hosted app service is added.
-
-## Docker
-
-Build the local image:
+Install dependencies and regenerate deterministic reports:
 
 ```powershell
-docker build -t internal-ai-agent-eval-lab:local .
+uv sync
+uv run python scripts/run_all_evals.py
 ```
 
-Run the API only:
+Run the interactive dashboard:
 
 ```powershell
-docker run --rm -p 8000:8000 internal-ai-agent-eval-lab:local
+uv run streamlit run app/streamlit_app.py --server.port 8510
 ```
 
-Run the API and dashboard together:
+Run API and dashboard together with Docker Compose:
 
 ```powershell
 docker compose up --build
@@ -262,37 +133,43 @@ docker compose up --build
 Open:
 
 ```text
-http://localhost:8000/health
 http://localhost:8510
+http://localhost:8000/health
 ```
 
-## Safety Boundaries
-
-- No real bank documents
-- No customer or employee data
-- No confidential processes
-- No brand-specific system claims
-- No real financial actions
-
-The public framing is a synthetic, reusable evaluation lab: no real confidential data, measurable engineering choices, and responsible internal AI design.
-
 ## Verification
-
-The local and CI verification path is:
 
 ```powershell
 uv run ruff check .
 uv run pytest
 uv run python scripts/run_all_evals.py
 uv run python scripts/smoke_otel_collector.py
+docker build -t internal-ai-agent-eval-lab:local .
 ```
 
-GitHub Actions is configured in `.github/workflows/ci.yml` to run linting, tests, deterministic eval report regeneration, and Docker image build verification.
+CI runs linting, tests, deterministic report regeneration, OTLP collector smoke testing, and Docker build verification.
 
-For operational commands and smoke checks, see `docs/operations_runbook.md`.
+## Safety Boundaries
 
-## Project Notes
+- no real company documents
+- no customer or employee data
+- no confidential workflows
+- no brand-specific system claims
+- no real financial or operational actions
+- side-effecting tools are mock-only and approval-gated
 
-- `docs/model_card.md` explains intended use, data boundaries, metrics, and limitations.
-- `docs/decision_memo.md` explains why the project is synthetic and what trade-offs it makes.
-- `docs/project_direction.md` defines the product standard, intended users, and next build priorities.
+## Current Limitations
+
+- The benchmark is synthetic and still partly templated.
+- The local embedding store uses deterministic feature hashing, not a provider-backed embedding model.
+- Structured extraction is deterministic pattern matching, not LLM extraction.
+- The controlled agent is a local workflow, not a LangGraph state machine.
+- The public deployment is currently a static evidence/report site; the interactive Streamlit dashboard runs locally or through Docker.
+
+## Useful Follow-Up Work
+
+- Add more hand-authored golden cases and noisier synthetic tickets.
+- Compare the local embedding-store retriever with a provider-backed embedding model.
+- Deploy the interactive Streamlit dashboard publicly.
+- Add a full OpenTelemetry Collector deployment check.
+- Add an optional LLM extraction path with schema repair.
