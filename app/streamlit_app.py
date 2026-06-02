@@ -56,8 +56,7 @@ def main() -> None:
         page_title="Internal AI Agent Evaluation Lab",
         layout="wide",
     )
-    st.title("Internal AI Agent Evaluation Lab")
-    st.caption("Project 5: synthetic internal AI agent evaluation dashboard")
+    _render_app_header()
 
     comparison = load_comparison(PROJECT_ROOT)
     dataset_profile = load_dataset_profile(PROJECT_ROOT)
@@ -81,25 +80,76 @@ def main() -> None:
     baseline_cases = load_case_rows(PROJECT_ROOT, "baseline")
     retriever_cases = load_retriever_case_rows(PROJECT_ROOT)
 
-    _render_summary(comparison, rows, improved_cases)
-    _render_dataset_profile(dataset_profile)
-    _render_metric_comparison(rows)
-    _render_retriever_experiment(retriever_comparison)
-    _render_retriever_snapshots(retriever_snapshots)
-    _render_evaluation_history(evaluation_history)
-    _render_retriever_error_analysis(retriever_cases)
-    _render_error_analysis()
-    _render_extraction_metrics(extraction_summary, extraction_rows)
-    _render_security_metrics(security_summary, security_rows)
-    _render_agent_metrics(
-        agent_summary,
-        agent_rows,
-        agent_traces,
-        observability_otel_spans,
-        collector_export_preview,
+    section = _render_sidebar()
+    if section == "Overview":
+        _render_summary(comparison, rows, improved_cases)
+        _render_dataset_profile_summary(dataset_profile)
+        _render_metric_comparison(rows)
+        _render_retriever_experiment(retriever_comparison)
+    elif section == "Dataset Profile":
+        _render_dataset_profile(dataset_profile)
+    elif section == "Retrieval Evaluation":
+        _render_retriever_experiment(retriever_comparison)
+        _render_retriever_snapshots(retriever_snapshots)
+        _render_evaluation_history(evaluation_history)
+        _render_retriever_error_analysis(retriever_cases)
+        _render_error_analysis()
+    elif section == "Safety And Extraction":
+        _render_extraction_metrics(extraction_summary, extraction_rows)
+        _render_security_metrics(security_summary, security_rows)
+    elif section == "Agent Observability":
+        _render_agent_metrics(
+            agent_summary,
+            agent_rows,
+            agent_traces,
+            observability_otel_spans,
+            collector_export_preview,
+        )
+    elif section == "Evaluation Report":
+        _render_public_report(public_report, public_report_html, public_report_pdf)
+    elif section == "Case Review":
+        _render_case_analysis(baseline_cases, improved_cases)
+
+
+def _render_app_header() -> None:
+    st.title("Internal AI Agent Evaluation Lab")
+    st.caption(
+        "Synthetic evaluation dashboard for grounded retrieval, structured extraction, "
+        "safety controls, approval-gated tools, and observability."
     )
-    _render_public_report(public_report, public_report_html, public_report_pdf)
-    _render_case_analysis(baseline_cases, improved_cases)
+    st.info(
+        "All runbooks, tickets, teams, procedures, and metrics are synthetic. "
+        "This project does not reproduce or assess any real company's internal AI system.",
+    )
+
+
+def _render_sidebar() -> str:
+    st.sidebar.title("Evaluation Lab")
+    section = st.sidebar.radio(
+        "View",
+        [
+            "Overview",
+            "Dataset Profile",
+            "Retrieval Evaluation",
+            "Safety And Extraction",
+            "Agent Observability",
+            "Evaluation Report",
+            "Case Review",
+        ],
+    )
+    st.sidebar.markdown("---")
+    st.sidebar.link_button(
+        "Public project site",
+        "https://rosscyking1115.github.io/internal-ai-agent-eval-lab/",
+        use_container_width=True,
+    )
+    st.sidebar.link_button(
+        "GitHub repository",
+        "https://github.com/rosscyking1115/internal-ai-agent-eval-lab",
+        use_container_width=True,
+    )
+    st.sidebar.caption("Public deployment uses synthetic data only.")
+    return section
 
 
 def _render_summary(
@@ -181,6 +231,18 @@ def _render_dataset_profile(profile: dict[str, object]) -> None:
         st.table(
             pd.DataFrame({"recommended_next_data_work": profile["recommended_next_data_work"]}),
         )
+
+
+def _render_dataset_profile_summary(profile: dict[str, object]) -> None:
+    st.subheader("Benchmark Transparency")
+    mix = profile["golden_case_mix"]
+    cols = st.columns(4)
+    cols[0].metric("Manual golden cases", mix["manual_cases"])
+    cols[1].metric("Manual share", f"{mix['manual_share'] * 100:.2f}%")
+    cols[2].metric("Noise types", mix["noise_type_count"])
+    cols[3].metric("Expected abstentions", mix["expected_abstentions"])
+    risk_labels = ", ".join(str(label) for label in profile["risk_labels"])
+    st.caption(f"Current data-quality labels: {risk_labels}")
 
 
 def _render_retriever_experiment(comparison: dict[str, object]) -> None:

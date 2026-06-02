@@ -36,7 +36,7 @@ services:
       - --no-dev
       - streamlit
       - run
-      - app/streamlit_app.py
+      - streamlit_app.py
       - --server.address
       - 0.0.0.0
       - --server.port

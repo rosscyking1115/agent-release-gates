@@ -7,7 +7,7 @@ ENV PYTHONUNBUFFERED=1
 ENV UV_LINK_MODE=copy
 ENV STREAMLIT_BROWSER_GATHER_USAGE_STATS=false
 
-COPY pyproject.toml uv.lock README.md ./
+COPY pyproject.toml uv.lock README.md streamlit_app.py ./
 COPY src ./src
 
 RUN uv sync --locked --no-dev

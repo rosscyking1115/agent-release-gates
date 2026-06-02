@@ -121,7 +121,7 @@ uv run python scripts/run_all_evals.py
 Run the interactive dashboard:
 
 ```powershell
-uv run streamlit run app/streamlit_app.py --server.port 8510
+uv run streamlit run streamlit_app.py --server.port 8510
 ```
 
 Run API and dashboard together with Docker Compose:
@@ -148,6 +148,19 @@ docker build -t internal-ai-agent-eval-lab:local .
 ```
 
 CI runs linting, tests, deterministic report regeneration, OTLP collector smoke testing, and Docker build verification.
+
+## Streamlit Cloud Deployment
+
+The repository is prepared for Streamlit Community Cloud:
+
+```text
+Repository: rosscyking1115/internal-ai-agent-eval-lab
+Branch: main
+Main file path: streamlit_app.py
+App URL: internal-ai-agent-eval-lab
+```
+
+The root `streamlit_app.py` entrypoint loads the dashboard from `app/streamlit_app.py`, and `requirements.txt` installs the local package plus dependencies.
 
 ## Safety Boundaries
 
