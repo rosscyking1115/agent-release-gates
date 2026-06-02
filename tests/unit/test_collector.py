@@ -10,6 +10,7 @@ from internal_ai_agent.observability.collector import (
     otlp_trace_payloads,
     write_collector_export_preview,
 )
+from internal_ai_agent.observability.collector_smoke import run_local_collector_smoke
 
 
 def _span(
@@ -185,3 +186,25 @@ def test_write_collector_export_preview_reads_observability_spans(tmp_path: Path
     assert preview["span_count"] == 2
     assert preview["payload_count"] == 2
     assert output_path.exists()
+
+
+def test_run_local_collector_smoke_posts_to_capture_endpoint() -> None:
+    summary = run_local_collector_smoke(
+        [
+            _span(trace_id="a" * 32, span_id="b" * 16),
+            _span(trace_id="a" * 32, span_id="c" * 16, parent_span_id="b" * 16),
+            _span(trace_id="d" * 32, span_id="e" * 16),
+        ],
+        batch_size=2,
+    )
+
+    assert summary["export_mode"] == "local_collector_smoke"
+    assert summary["span_count"] == 3
+    assert summary["payload_count"] == 2
+    assert summary["posted_payload_count"] == 2
+    assert summary["received_request_count"] == 2
+    assert summary["received_span_count"] == 3
+    assert summary["status_codes"] == [200, 200]
+    assert summary["content_types"] == ["application/json"]
+    assert summary["passed"] is True
+    assert summary["failed_checks"] == []

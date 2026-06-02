@@ -56,7 +56,7 @@ The project is useful, but it is still too deterministic in several places:
 - Extraction is deterministic pattern matching.
 - Red-team checks include harder retrieved-context attacks, but are still string-based.
 - Agent orchestration is local code rather than a state machine.
-- Observability now includes local structured data, deterministic OpenTelemetry-style spans for agent traces, evaluation workflow stages, retriever failure cases, retriever ranking details, extraction cases, agent approval cases, API contract/error cases, a dashboard trace timeline, and an optional OTLP/HTTP collector exporter. It still does not have an integration test against a running collector.
+- Observability now includes local structured data, deterministic OpenTelemetry-style spans for agent traces, evaluation workflow stages, retriever failure cases, retriever ranking details, extraction cases, agent approval cases, API contract/error cases, a dashboard trace timeline, an optional OTLP/HTTP collector exporter, and a local capture smoke test for the POST path. It still does not have a full OpenTelemetry Collector deployment check.
 
 These are acceptable for the first lab version, but they should guide the next work.
 
@@ -64,7 +64,7 @@ These are acceptable for the first lab version, but they should guide the next w
 
 1. Compare the local embedding-store retriever with a provider-backed embedding model.
 2. Continue making the golden suite less templated with new non-generated tickets, mixed evidence bundles, and harder retrieved-context evidence.
-3. Add a local collector integration test for the OTLP/HTTP span exporter.
+3. Add a full OpenTelemetry Collector deployment check for the OTLP/HTTP span exporter.
 4. Add model-assisted adversarial review for the red-team suite after the deterministic scoring contract remains stable.
 5. Add an optional LLM extraction path with schema repair once noisier tickets are in place.
 

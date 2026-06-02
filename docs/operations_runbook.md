@@ -11,6 +11,7 @@ uv sync
 uv run ruff check .
 uv run pytest
 uv run python scripts/run_all_evals.py
+uv run python scripts/smoke_otel_collector.py
 ```
 
 Expected result:
@@ -19,6 +20,7 @@ Expected result:
 - tests pass
 - synthetic data is regenerated
 - baseline, extraction, security, controlled-agent, history, observability, collector-preview, Markdown, HTML, and PDF reports are written to `reports/`
+- OTLP/HTTP payloads are posted to a temporary local capture endpoint and verified
 
 ## Dashboard
 
@@ -82,6 +84,19 @@ Post to a collector only when one is running:
 ```powershell
 uv run python scripts/export_otel_collector.py --endpoint http://localhost:4318/v1/traces --post
 ```
+
+Smoke-test the live HTTP POST path without running an external collector:
+
+```powershell
+uv run python scripts/smoke_otel_collector.py
+```
+
+Expected result:
+
+- a local capture endpoint starts on `127.0.0.1`
+- each OTLP/HTTP payload is posted with `Content-Type: application/json`
+- the received span count matches `reports/observability_otel_spans.jsonl`
+- `reports/collector_export_smoke.json` is written locally and ignored by git
 
 ## Container Verification
 

@@ -481,7 +481,7 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 13 0 R >>
 endobj
 13 0 obj
-<< /Length 1412 >>
+<< /Length 1415 >>
 stream
 BT
 /F1 10 Tf
@@ -543,7 +543,7 @@ T*
 T*
 (- Compare the local embedding-store retriever with a provider-backed embedding model.) Tj
 T*
-(- Connect the OTLP/HTTP exporter to a local collector in an integration test.) Tj
+(- Test the OTLP/HTTP exporter against a full OpenTelemetry Collector deployment.) Tj
 T*
 (- Add an optional LLM extraction path with schema repair and failure analysis.) Tj
 T*
@@ -569,5 +569,5 @@ xref
 trailer
 << /Size 14 /Root 1 0 R >>
 startxref
-13426
+13429
 %%EOF

@@ -72,7 +72,7 @@ Designed and implemented a production-style internal operations AI workflow over
 - The extraction layer is deterministic and should be tested on the newer evidence-packet, email-thread, and conflicting-context styles.
 - Red-team checks are string-based and should be expanded with more varied phrasing.
 - The controlled agent is a local workflow rather than a LangGraph graph.
-- Telemetry is local JSONL, including OpenTelemetry-style agent spans, evaluation-stage spans, case-level retriever failure spans, retriever ranking-detail spans, case-level extraction spans, case-level agent approval spans, API contract/error spans, a dashboard trace timeline, and an optional OTLP/HTTP collector exporter. The remaining gap is integration-testing it against a live collector.
+- Telemetry is local JSONL, including OpenTelemetry-style agent spans, evaluation-stage spans, case-level retriever failure spans, retriever ranking-detail spans, case-level extraction spans, case-level agent approval spans, API contract/error spans, a dashboard trace timeline, an optional OTLP/HTTP collector exporter, and a local capture smoke test for POST-path verification. The remaining gap is testing it against a full OpenTelemetry Collector deployment.
 
 ## Useful Next Build Step
 

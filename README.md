@@ -30,7 +30,7 @@ The current version creates a local, reproducible lab:
 - deterministic red-team policy checks
 - controlled agent workflow with approval-gated mock tools
 - trace IDs, audit events, monitoring snapshots, OTel-style trace timeline, and an
-  optional OTLP/HTTP collector exporter
+  optional OTLP/HTTP collector exporter with a local capture smoke test
 - FastAPI service, Streamlit dashboard, Docker/Compose runtime, CI workflow, and operations runbook
 
 ## Tech Stack
@@ -43,7 +43,7 @@ The current version creates a local, reproducible lab:
 - ruff
 - Docker
 
-Later phases should add provider-backed embeddings, noisier evaluation data, richer spans for additional workflows, a live collector integration test, and optional LangGraph orchestration.
+Later phases should add provider-backed embeddings, noisier evaluation data, richer spans for additional workflows, a full OpenTelemetry Collector deployment check, and optional LangGraph orchestration.
 
 ## Quick Start
 
@@ -172,6 +172,12 @@ Post the same spans to an OTLP/HTTP collector:
 uv run python scripts/export_otel_collector.py --endpoint http://localhost:4318/v1/traces --post
 ```
 
+Smoke-test the POST path without an external collector:
+
+```powershell
+uv run python scripts/smoke_otel_collector.py
+```
+
 ## Dashboard
 
 The Streamlit dashboard presents the evaluation outcome as an inspection surface:
@@ -255,6 +261,7 @@ The local and CI verification path is:
 uv run ruff check .
 uv run pytest
 uv run python scripts/run_all_evals.py
+uv run python scripts/smoke_otel_collector.py
 ```
 
 GitHub Actions is configured in `.github/workflows/ci.yml` to run linting, tests, deterministic eval report regeneration, and Docker image build verification.

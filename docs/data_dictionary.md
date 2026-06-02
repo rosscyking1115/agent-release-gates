@@ -214,3 +214,21 @@ This file records the deterministic dry-run summary for exporting `reports/obser
 | `payload_count` | Number of OTLP payloads that would be posted. |
 | `first_payload_span_count` | Number of spans in the first generated OTLP payload. |
 | `notes` | Human-readable notes clarifying dry-run behavior and POST usage. |
+
+## `reports/collector_export_smoke.json`
+
+This local-only file is written by `scripts/smoke_otel_collector.py` and ignored by git. The script starts a temporary OTLP/HTTP-compatible capture endpoint on `127.0.0.1`, posts the generated OTLP payloads to it, and verifies request count, content type, status codes, and received span count.
+
+| Field | Description |
+| --- | --- |
+| `export_mode` | Smoke mode, currently `local_collector_smoke`. |
+| `collector_endpoint` | Temporary local endpoint used during the smoke test. |
+| `span_count` | Number of local spans submitted to the exporter. |
+| `payload_count` | Number of OTLP payloads prepared for export. |
+| `posted_payload_count` | Number of payloads posted by the exporter. |
+| `received_request_count` | Number of requests captured by the local endpoint. |
+| `received_span_count` | Number of spans decoded from received OTLP payloads. |
+| `status_codes` | HTTP status codes returned by the local capture endpoint. |
+| `content_types` | Captured request content types. |
+| `passed` | Whether all smoke checks passed. |
+| `failed_checks` | Failed smoke-check labels, empty on success. |

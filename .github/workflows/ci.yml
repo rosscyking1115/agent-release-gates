@@ -33,5 +33,8 @@ jobs:
       - name: Regenerate deterministic eval reports
         run: uv run python scripts/run_all_evals.py
 
+      - name: Smoke OTLP collector export
+        run: uv run python scripts/smoke_otel_collector.py
+
       - name: Build Docker image
         run: docker build -t internal-ai-agent-eval-lab:ci .

@@ -179,5 +179,5 @@ The combined export includes workflow-level spans, agent tool/audit spans, case-
 
 - Add noisier, human-written ticket variants.
 - Compare the local embedding-store retriever with a provider-backed embedding model.
-- Connect the OTLP/HTTP exporter to a local collector in an integration test.
+- Test the OTLP/HTTP exporter against a full OpenTelemetry Collector deployment.
 - Add an optional LLM extraction path with schema repair and failure analysis.
