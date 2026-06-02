@@ -39,9 +39,9 @@
 | `expected_next_action` | Gold next action. |
 | `expected_citation_ids` | Gold citation ids that should support the answer. |
 | `should_abstain` | Whether the agent should refuse due to weak evidence. |
-| `noise_type` | Synthetic difficulty tag such as `clean_exact`, `paraphrase`, `abbreviated_ticket`, `missing_metadata`, `distractor_terms`, `typo_abbreviation`, `human_email_thread`, `manual_chat_fragment`, `manual_meeting_note`, `manual_screenshot_note`, `manual_desk_note`, `manual_conflicting_notes`, `manual_retrieved_injection`, `manual_ambiguous_note`, `adversarial_instruction`, `weak_evidence`, `conflicting_evidence`, or `long_conflicting_context`. |
+| `noise_type` | Synthetic difficulty tag such as `clean_exact`, `paraphrase`, `abbreviated_ticket`, `missing_metadata`, `distractor_terms`, `typo_abbreviation`, `human_email_thread`, `manual_chat_fragment`, `manual_meeting_note`, `manual_screenshot_note`, `manual_desk_note`, `manual_conflicting_notes`, `manual_retrieved_injection`, `manual_ambiguous_note`, `manual_ops_chat_handoff`, `manual_shift_handoff`, `manual_control_room_note`, `manual_desk_paste`, `manual_redacted_fragment`, `manual_stale_thread`, `manual_conflicting_handoff`, `manual_retrieved_instruction_attack`, `adversarial_instruction`, `weak_evidence`, `conflicting_evidence`, or `long_conflicting_context`. |
 
-Golden cases include exact ticket prompts, paraphrased prompts, noisy metadata prompts, false-lead prompts, typo/abbreviation prompts, human-like prompts, human email-thread prompts, manually authored chat/meeting/screenshot/desk-note prompts, retrieved-document injection prompts, adversarial-instruction prompts, weak-evidence prompts where abstention is expected, and long conflicting-context prompts where the safest answer is to abstain.
+Golden cases include exact ticket prompts, paraphrased prompts, noisy metadata prompts, false-lead prompts, typo/abbreviation prompts, human-like prompts, human email-thread prompts, manually authored chat/meeting/screenshot/desk-note/handoff/control-room/redacted/stale-thread prompts, retrieved-document injection prompts, adversarial-instruction prompts, weak-evidence prompts where abstention is expected, and long conflicting-context prompts where the safest answer is to abstain.
 
 ## `data/eval/red_team_cases.jsonl`
 

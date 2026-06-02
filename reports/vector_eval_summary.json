@@ -70,6 +70,13 @@
       "failure_count": 1,
       "next_action_accuracy": 0.0
     },
+    "manual_conflicting_handoff": {
+      "abstention_accuracy": 1.0,
+      "case_count": 1,
+      "citation_coverage": 0.0,
+      "failure_count": 0,
+      "next_action_accuracy": 0.0
+    },
     "manual_conflicting_notes": {
       "abstention_accuracy": 1.0,
       "case_count": 2,
@@ -77,7 +84,21 @@
       "failure_count": 0,
       "next_action_accuracy": 0.0
     },
+    "manual_control_room_note": {
+      "abstention_accuracy": 1.0,
+      "case_count": 1,
+      "citation_coverage": 1.0,
+      "failure_count": 0,
+      "next_action_accuracy": 1.0
+    },
     "manual_desk_note": {
+      "abstention_accuracy": 1.0,
+      "case_count": 1,
+      "citation_coverage": 1.0,
+      "failure_count": 0,
+      "next_action_accuracy": 1.0
+    },
+    "manual_desk_paste": {
       "abstention_accuracy": 1.0,
       "case_count": 1,
       "citation_coverage": 1.0,
@@ -91,7 +112,28 @@
       "failure_count": 0,
       "next_action_accuracy": 1.0
     },
+    "manual_ops_chat_handoff": {
+      "abstention_accuracy": 1.0,
+      "case_count": 1,
+      "citation_coverage": 1.0,
+      "failure_count": 0,
+      "next_action_accuracy": 1.0
+    },
+    "manual_redacted_fragment": {
+      "abstention_accuracy": 1.0,
+      "case_count": 1,
+      "citation_coverage": 1.0,
+      "failure_count": 0,
+      "next_action_accuracy": 1.0
+    },
     "manual_retrieved_injection": {
+      "abstention_accuracy": 1.0,
+      "case_count": 1,
+      "citation_coverage": 0.0,
+      "failure_count": 0,
+      "next_action_accuracy": 0.0
+    },
+    "manual_retrieved_instruction_attack": {
       "abstention_accuracy": 1.0,
       "case_count": 1,
       "citation_coverage": 0.0,
@@ -104,6 +146,20 @@
       "citation_coverage": 1.0,
       "failure_count": 0,
       "next_action_accuracy": 1.0
+    },
+    "manual_shift_handoff": {
+      "abstention_accuracy": 1.0,
+      "case_count": 1,
+      "citation_coverage": 1.0,
+      "failure_count": 0,
+      "next_action_accuracy": 1.0
+    },
+    "manual_stale_thread": {
+      "abstention_accuracy": 1.0,
+      "case_count": 1,
+      "citation_coverage": 0.0,
+      "failure_count": 1,
+      "next_action_accuracy": 0.0
     },
     "missing_metadata": {
       "abstention_accuracy": 1.0,
@@ -165,17 +221,17 @@
     },
     "manual_challenge_abstention": {
       "abstention_accuracy": 1.0,
-      "case_count": 3,
+      "case_count": 5,
       "citation_coverage": 0.0,
       "failure_count": 0,
       "next_action_accuracy": 0.0
     },
     "manual_challenge_next_action": {
       "abstention_accuracy": 1.0,
-      "case_count": 5,
-      "citation_coverage": 0.8,
-      "failure_count": 1,
-      "next_action_accuracy": 0.8
+      "case_count": 11,
+      "citation_coverage": 0.8182,
+      "failure_count": 2,
+      "next_action_accuracy": 0.8182
     },
     "retrieved_doc_injection_abstention": {
       "abstention_accuracy": 1.0,
@@ -227,7 +283,7 @@
       "next_action_accuracy": 0.0
     }
   },
-  "case_count": 264,
+  "case_count": 272,
   "dataset": "golden_cases",
   "failure_examples": [
     {
@@ -299,22 +355,91 @@
         "RB-CLIENT_ONBOARDING-06"
       ],
       "task_type": "manual_challenge_next_action"
+    },
+    {
+      "case_id": "MANUAL-STALE-014",
+      "diagnostic": "The expected section was retrieved but not selected as the final cited answer, which suggests ranking or final-selection weakness.",
+      "expected_citation_ids": [
+        "RB-PAYMENTS_OPS-06"
+      ],
+      "expected_issue_category": "repair_queue_backlog",
+      "failure_reasons": [
+        "missing_or_wrong_citation",
+        "wrong_issue_category",
+        "wrong_next_action"
+      ],
+      "noise_type": "manual_stale_thread",
+      "predicted_citation_ids": [
+        "RB-PAYMENTS_OPS-03"
+      ],
+      "predicted_issue_category": "settlement_delay",
+      "recommended_fix": "Add within-team reranking using issue-category evidence and expected action terms.",
+      "retrieved_candidate_scores": [
+        {
+          "score": 64.9291,
+          "score_breakdown": {
+            "alias": 10,
+            "current_evidence": 1.125,
+            "negation_penalty": 0.0,
+            "team_hint": 1.0,
+            "title_phrase": 6.0,
+            "vector": 46.8041
+          },
+          "section_id": "RB-PAYMENTS_OPS-03",
+          "team": "payments_ops",
+          "title": "Settlement Delay"
+        },
+        {
+          "score": 50.8913,
+          "score_breakdown": {
+            "alias": 10,
+            "current_evidence": 13.875,
+            "negation_penalty": 0.0,
+            "team_hint": 1.0,
+            "title_phrase": 0.0,
+            "vector": 26.0163
+          },
+          "section_id": "RB-PAYMENTS_OPS-06",
+          "team": "payments_ops",
+          "title": "Repair Queue Backlog"
+        },
+        {
+          "score": 36.1513,
+          "score_breakdown": {
+            "alias": 10,
+            "current_evidence": 7.5,
+            "negation_penalty": 0.0,
+            "team_hint": 0.0,
+            "title_phrase": 0.0,
+            "vector": 18.6513
+          },
+          "section_id": "RB-DATA_QUALITY-01",
+          "team": "data_quality",
+          "title": "Stale Reference Data"
+        }
+      ],
+      "retrieved_citation_ids": [
+        "RB-PAYMENTS_OPS-03",
+        "RB-PAYMENTS_OPS-06",
+        "RB-DATA_QUALITY-01"
+      ],
+      "task_type": "manual_challenge_next_action"
     }
   ],
   "failure_reasons": {
-    "missing_or_wrong_citation": 1,
-    "wrong_issue_category": 1,
-    "wrong_next_action": 1,
+    "missing_or_wrong_citation": 2,
+    "wrong_issue_category": 2,
+    "wrong_next_action": 2,
     "wrong_team": 1
   },
   "metrics": {
     "abstention_accuracy": 1.0,
-    "abstention_rate": 0.2235,
-    "citation_coverage": 0.9951,
-    "issue_category_accuracy": 0.9951,
-    "next_action_accuracy": 0.9951,
+    "abstention_rate": 0.2243,
+    "citation_coverage": 0.9905,
+    "issue_category_accuracy": 0.9905,
+    "next_action_accuracy": 0.9905,
     "retrieval_hit_rate_at_3": 1.0,
-    "team_accuracy": 0.9951
+    "team_accuracy": 0.9953
   },
   "notes": [
     "Vector retrieval builds a local TF-IDF index over runbook titles, content, team hints, aliases, and character n-grams.",

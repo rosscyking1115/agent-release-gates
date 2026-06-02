@@ -51,7 +51,7 @@ Do not add a feature just because it sounds impressive. A feature should be adde
 The project is useful, but it is still too deterministic in several places:
 
 - Retrieval now includes sparse hybrid, local TF-IDF vector, local feature-hashed embedding-store experiments, and current-evidence reranking, but not a provider-backed embedding model.
-- Error analysis now identifies retrieved-but-not-cited failures and deterministic retriever-version trend snapshots; the hybrid retriever solves the current suite, while vector and embedding retrievers still miss a manually authored chat-fragment case.
+- Error analysis now identifies retrieved-but-not-cited failures and deterministic retriever-version trend snapshots; the expanded manual challenge set exposes one hybrid final-selection failure and two vector/embedding final-selection failures.
 - Ticket and runbook data are still partly templated, even after adding noisy, human-like, human email-thread, retrieved-document-injection, and long-conflicting-context cases.
 - Extraction is deterministic pattern matching.
 - Red-team checks are string-based.
@@ -66,7 +66,7 @@ These are acceptable for the first lab version, but they should guide the next w
 2. Make the golden suite less templated with new non-generated tickets and harder retrieved-context attacks.
 3. Add timestamped historical snapshots once the deterministic report contract is stable.
 4. Add optional live collector export for the OpenTelemetry-style spans.
-5. Add more non-templated tickets after the current 264-case contract remains stable.
+5. Use the current 272-case contract to improve reranking on the new manual-case failures.
 
 ## Secondary Use
 
