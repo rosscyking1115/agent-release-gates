@@ -59,7 +59,7 @@ The deterministic red-team suite reports 100.00% improved safe response rate, 10
 
 The controlled-agent eval reports 100.00% trace coverage, audit event coverage, approval audit rate, monitoring snapshot rate, valid tool-call rate, side-effect block rate, approved action execution rate, and route-tool selection accuracy. It also exports deterministic OpenTelemetry-style spans for sampled blocked and approved tool routes. The full run adds evaluation-stage spans for data generation, retrieval, extraction, security, agent evaluation, report/API artifacts, case-level retriever failures, case-level retriever ranking details, case-level extraction outcomes, case-level agent approval decisions, and API contract/error cases, and the dashboard renders those spans as a local trace timeline.
 
-The retriever snapshot report records deterministic version-to-version deltas and flags regressions when citation coverage falls or failed-case count rises.
+The retriever snapshot report records deterministic version-to-version deltas and flags regressions when citation coverage falls or failed-case count rises. The evaluation history report adds stable dated lab milestones for the same local benchmark sequence, plus a current cross-workflow quality summary.
 
 ## Known Limitations
 
@@ -88,7 +88,6 @@ Side-effecting operations are mock-only and require explicit approval.
 ## Recommended Next Improvements
 
 - Compare the local embedding-store retriever with a provider-backed embedding model.
-- Add timestamped historical evaluation snapshots after the deterministic snapshot contract remains stable.
 - Add more non-templated tickets and provider-backed retrieval comparisons so the next weaknesses are measured before more tuning.
 - Add optional live collector export for the OpenTelemetry-style spans.
 - Replace deterministic extraction with an optional LLM extraction provider plus schema repair.

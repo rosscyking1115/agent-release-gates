@@ -51,6 +51,7 @@ The dashboard reads the saved report artifacts rather than recomputing metrics o
 - `reports/embedding_eval_summary.json`
 - `reports/retriever_comparison.json`
 - `reports/retriever_metric_snapshots.json`
+- `reports/evaluation_history.json`
 - `reports/eval_comparison.json`
 - `reports/baseline_eval_cases.jsonl`
 - `reports/improved_eval_cases.jsonl`
@@ -109,6 +110,8 @@ The public report and dashboard also surface retriever failure analysis. The ove
 The snapshot report is `retriever_metric_snapshots.json`. It records the ordered retriever versions as deterministic snapshots rather than timestamped run history. This keeps CI reproducible while making metric regressions visible.
 
 Each snapshot stores citation coverage, retrieval hit rate@3, next-action accuracy, abstention accuracy, failed-case count, deltas from the previous retriever, and regression flags. A regression is flagged when citation coverage decreases or failed-case count increases compared with the previous snapshot.
+
+The history report is `evaluation_history.json`. It records deterministic dated lab milestones over the same retriever versions, plus a current summary that combines the best retriever with extraction, security, and controlled-agent quality checks. The timestamps are stable milestone timestamps, not live production telemetry.
 
 ## Structured Extraction Version
 

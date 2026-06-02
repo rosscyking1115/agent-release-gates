@@ -9,6 +9,7 @@ from typing import Any
 from internal_ai_agent.dashboard.data import (
     agent_otel_summary,
     agent_trace_rows,
+    evaluation_history_rows,
     load_agent_trace_examples,
     load_observability_otel_spans,
     load_retriever_case_rows,
@@ -49,6 +50,7 @@ def generate_public_report(project_root: Path) -> str:
     comparison = _read_json(reports_dir / "eval_comparison.json")
     retrievers = _read_json(reports_dir / "retriever_comparison.json")
     retriever_snapshots = _read_json(reports_dir / "retriever_metric_snapshots.json")
+    evaluation_history = _read_json(reports_dir / "evaluation_history.json")
     extraction = _read_json(reports_dir / "extraction_eval_summary.json")
     security = _read_json(reports_dir / "security_eval_summary.json")
     agent = _read_json(reports_dir / "agent_eval_summary.json")
@@ -84,6 +86,10 @@ def generate_public_report(project_root: Path) -> str:
             "## Retriever Metric Snapshots",
             "",
             _retriever_snapshot_table(retriever_snapshots),
+            "",
+            "## Historical Evaluation Snapshots",
+            "",
+            _evaluation_history_table(evaluation_history),
             "",
             "## Retriever Failure Analysis",
             "",
@@ -261,6 +267,20 @@ def _retriever_snapshot_table(report: dict[str, Any]) -> str:
             "| {snapshot_id} | {system} | {citation_coverage_pct} | {failure_count} | "
             "{citation_delta_pct} | {failure_delta} | {regression} | "
             "{regression_reasons} |".format(**row)
+        )
+    return "\n".join(rows)
+
+
+def _evaluation_history_table(report: dict[str, Any]) -> str:
+    rows = [
+        "| Milestone time | Milestone | Citation coverage | Failed cases | "
+        "Citation delta | Failure delta |",
+        "| --- | --- | ---: | ---: | ---: | ---: |",
+    ]
+    for row in evaluation_history_rows(report):
+        rows.append(
+            "| {milestone_at_utc} | {milestone} | {citation_coverage_pct} | "
+            "{failure_count} | {citation_delta_pct} | {failure_delta} |".format(**row)
         )
     return "\n".join(rows)
 

@@ -13,7 +13,7 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 5 0 R >>
 endobj
 5 0 obj
-<< /Length 2519 >>
+<< /Length 2524 >>
 stream
 BT
 /F1 10 Tf
@@ -111,6 +111,41 @@ T*
 T*
 () Tj
 T*
+(Historical Evaluation Snapshots) Tj
+T*
+() Tj
+T*
+() Tj
+T*
+(Milestone time | Milestone | Citation coverage | Failed cases | Citation delta | Failure delta) Tj
+T*
+(2026-06-02T09:00:00Z | Baseline team hints | 20.09% | 241 |  |) Tj
+T*
+(2026-06-02T10:00:00Z | Improved lexical | 98.66% | 3 | +78.57% | -238) Tj
+T*
+ET
+endstream
+endobj
+6 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 7 0 R >>
+endobj
+7 0 obj
+<< /Length 3541 >>
+stream
+BT
+/F1 10 Tf
+14 TL
+54 738 Td
+(2026-06-02T11:00:00Z | Hybrid sparse semantic | 100.00% | 0 | +1.34% | -3) Tj
+T*
+(2026-06-02T12:00:00Z | Local TF-IDF vector | 100.00% | 0 | +0.00% | +0) Tj
+T*
+(2026-06-02T13:00:00Z | Local embedding store | 100.00% | 0 | +0.00% | +0) Tj
+T*
+() Tj
+T*
+() Tj
+T*
 (Retriever Failure Analysis) Tj
 T*
 () Tj
@@ -123,19 +158,6 @@ T*
 T*
 (Improved lexical | 3 | 1 | 0 | missing_or_wrong_citation \(3\)) Tj
 T*
-ET
-endstream
-endobj
-6 0 obj
-<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 7 0 R >>
-endobj
-7 0 obj
-<< /Length 3277 >>
-stream
-BT
-/F1 10 Tf
-14 TL
-54 738 Td
 (Hybrid sparse semantic | 0 | 0 | 0 |) Tj
 T*
 (Local TF-IDF vector | 0 | 0 | 0 |) Tj
@@ -218,6 +240,19 @@ T*
 T*
 (Next action accuracy | 20.09% | 98.66% | +78.57%) Tj
 T*
+ET
+endstream
+endobj
+8 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 9 0 R >>
+endobj
+9 0 obj
+<< /Length 2338 >>
+stream
+BT
+/F1 10 Tf
+14 TL
+54 738 Td
 (Abstention accuracy | 78.47% | 100.00% | +21.53%) Tj
 T*
 () Tj
@@ -240,19 +275,6 @@ T*
 T*
 (Impacted system accuracy | 100.00%) Tj
 T*
-ET
-endstream
-endobj
-8 0 obj
-<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 9 0 R >>
-endobj
-9 0 obj
-<< /Length 2558 >>
-stream
-BT
-/F1 10 Tf
-14 TL
-54 738 Td
 (Routing team accuracy | 100.00%) Tj
 T*
 () Tj
@@ -335,6 +357,19 @@ T*
 T*
 () Tj
 T*
+ET
+endstream
+endobj
+10 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 11 0 R >>
+endobj
+11 0 obj
+<< /Length 2545 >>
+stream
+BT
+/F1 10 Tf
+14 TL
+54 738 Td
 (Metric | Score) Tj
 T*
 (Trace coverage | 100.00%) Tj
@@ -357,19 +392,6 @@ T*
 T*
 (audit, and monitoring fields.) Tj
 T*
-ET
-endstream
-endobj
-10 0 obj
-<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 11 0 R >>
-endobj
-11 0 obj
-<< /Length 2578 >>
-stream
-BT
-/F1 10 Tf
-14 TL
-54 738 Td
 () Tj
 T*
 () Tj
@@ -414,13 +436,13 @@ T*
 T*
 (Export metric | Value) Tj
 T*
-(OTel-style spans | 1132) Tj
+(OTel-style spans | 1133) Tj
 T*
 (Exported traces | 21) Tj
 T*
 (Root spans | 21) Tj
 T*
-(Child spans | 1111) Tj
+(Child spans | 1112) Tj
 T*
 (Tool spans | 40) Tj
 T*
@@ -452,6 +474,19 @@ T*
 T*
 (  evaluated as product behavior, not only as model output.) Tj
 T*
+ET
+endstream
+endobj
+12 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 13 0 R >>
+endobj
+13 0 obj
+<< /Length 983 >>
+stream
+BT
+/F1 10 Tf
+14 TL
+54 738 Td
 (- The dashboard, API, Docker runtime, and CI workflow make the lab reproducible.) Tj
 T*
 () Tj
@@ -474,19 +509,6 @@ T*
 T*
 (- Scores should be read as regression-test results for this lab, not as claims about production) Tj
 T*
-ET
-endstream
-endobj
-12 0 obj
-<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 13 0 R >>
-endobj
-13 0 obj
-<< /Length 429 >>
-stream
-BT
-/F1 10 Tf
-14 TL
-54 738 Td
 (  accuracy.) Tj
 T*
 () Tj
@@ -518,16 +540,16 @@ xref
 0000000147 00000 n 
 0000000217 00000 n 
 0000000343 00000 n 
-0000002914 00000 n 
-0000003040 00000 n 
-0000006369 00000 n 
-0000006495 00000 n 
-0000009105 00000 n 
-0000009233 00000 n 
-0000011864 00000 n 
-0000011992 00000 n 
+0000002919 00000 n 
+0000003045 00000 n 
+0000006638 00000 n 
+0000006764 00000 n 
+0000009154 00000 n 
+0000009282 00000 n 
+0000011880 00000 n 
+0000012008 00000 n 
 trailer
 << /Size 14 /Root 1 0 R >>
 startxref
-12473
+13043
 %%EOF

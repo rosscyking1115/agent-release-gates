@@ -15,6 +15,7 @@ from internal_ai_agent.dashboard.data import (
     agent_trace_rows,
     case_mix,
     error_analysis_rows,
+    evaluation_history_rows,
     extraction_metric_rows,
     failed_case_rows,
     failure_example_rows,
@@ -23,6 +24,7 @@ from internal_ai_agent.dashboard.data import (
     load_agent_trace_examples,
     load_case_rows,
     load_comparison,
+    load_evaluation_history,
     load_extraction_summary,
     load_observability_otel_spans,
     load_public_report,
@@ -56,6 +58,7 @@ def main() -> None:
     comparison = load_comparison(PROJECT_ROOT)
     retriever_comparison = load_retriever_comparison(PROJECT_ROOT)
     retriever_snapshots = load_retriever_snapshots(PROJECT_ROOT)
+    evaluation_history = load_evaluation_history(PROJECT_ROOT)
     extraction_summary = load_extraction_summary(PROJECT_ROOT)
     security_summary = load_security_summary(PROJECT_ROOT)
     agent_summary = load_agent_summary(PROJECT_ROOT)
@@ -76,6 +79,7 @@ def main() -> None:
     _render_metric_comparison(rows)
     _render_retriever_experiment(retriever_comparison)
     _render_retriever_snapshots(retriever_snapshots)
+    _render_evaluation_history(evaluation_history)
     _render_retriever_error_analysis(retriever_cases)
     _render_error_analysis()
     _render_extraction_metrics(extraction_summary, extraction_rows)
@@ -186,6 +190,48 @@ def _render_retriever_snapshots(snapshot_report: dict[str, object]) -> None:
         "Failure delta",
         "Regression",
         "Reason",
+    ]
+    st.dataframe(display_df, hide_index=True, use_container_width=True)
+
+
+def _render_evaluation_history(history: dict[str, object]) -> None:
+    st.subheader("Evaluation History")
+    rows = evaluation_history_rows(history)
+    table_df = pd.DataFrame(rows)
+    if table_df.empty:
+        st.info("No evaluation history milestones recorded.")
+        return
+
+    summary = history["current_summary"]
+    cols = st.columns(4)
+    cols[0].metric("Latest milestone", summary["latest_milestone"])
+    cols[1].metric(
+        "Current citation",
+        f"{summary['current_citation_coverage'] * 100:.2f}%",
+    )
+    cols[2].metric("Current failures", summary["current_failure_count"])
+    cols[3].metric("Best retriever", summary["best_retriever"])
+
+    chart_df = table_df.set_index("milestone_at_utc")[["citation_coverage"]]
+    st.line_chart(chart_df, height=240)
+
+    display_df = table_df[
+        [
+            "milestone_at_utc",
+            "milestone",
+            "citation_coverage_pct",
+            "failure_count",
+            "citation_delta_pct",
+            "failure_delta",
+        ]
+    ]
+    display_df.columns = [
+        "Milestone time",
+        "Milestone",
+        "Citation",
+        "Failures",
+        "Citation delta",
+        "Failure delta",
     ]
     st.dataframe(display_df, hide_index=True, use_container_width=True)
 

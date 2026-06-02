@@ -6,6 +6,7 @@ from internal_ai_agent.dashboard.data import (
     agent_trace_rows,
     case_mix,
     error_analysis_rows,
+    evaluation_history_rows,
     extraction_metric_rows,
     failed_case_rows,
     failure_example_rows,
@@ -110,6 +111,44 @@ def test_retriever_snapshot_rows_formats_regression_deltas() -> None:
     assert rows[1]["regression_reasons"] == (
         "citation_coverage_decreased, failed_case_count_increased"
     )
+
+
+def test_evaluation_history_rows_formats_milestone_deltas() -> None:
+    rows = evaluation_history_rows(
+        {
+            "milestones": [
+                {
+                    "milestone_at_utc": "2026-06-02T09:00:00Z",
+                    "milestone": "Baseline",
+                    "system_version": "baseline",
+                    "retrieval_hit_rate_at_3": 0.45,
+                    "citation_coverage": 0.2,
+                    "next_action_accuracy": 0.2,
+                    "abstention_accuracy": 0.78,
+                    "failure_count": 200,
+                    "citation_delta_from_previous": None,
+                    "failure_delta_from_previous": None,
+                },
+                {
+                    "milestone_at_utc": "2026-06-02T10:00:00Z",
+                    "milestone": "Hybrid",
+                    "system_version": "hybrid",
+                    "retrieval_hit_rate_at_3": 1.0,
+                    "citation_coverage": 1.0,
+                    "next_action_accuracy": 1.0,
+                    "abstention_accuracy": 1.0,
+                    "failure_count": 0,
+                    "citation_delta_from_previous": 0.8,
+                    "failure_delta_from_previous": -200,
+                },
+            ]
+        }
+    )
+
+    assert rows[0]["citation_delta_pct"] == ""
+    assert rows[1]["citation_coverage_pct"] == "100.00%"
+    assert rows[1]["citation_delta_pct"] == "+80.00%"
+    assert rows[1]["failure_delta"] == "-200"
 
 
 def test_failed_case_rows_flags_wrong_citation_or_abstention() -> None:

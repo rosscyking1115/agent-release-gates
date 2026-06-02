@@ -51,7 +51,7 @@ Do not add a feature just because it sounds impressive. A feature should be adde
 The project is useful, but it is still too deterministic in several places:
 
 - Retrieval now includes sparse hybrid, local TF-IDF vector, local feature-hashed embedding-store experiments, and current-evidence reranking, but not a provider-backed embedding model.
-- Error analysis now identifies retrieved-but-not-cited failures and deterministic retriever-version trend snapshots; the expanded manual challenge set drove reranking fixes for schema mismatch, stale context, KYC artefact phrasing, and ambiguous-handoff abstention.
+- Error analysis now identifies retrieved-but-not-cited failures, deterministic retriever-version trend snapshots, and dated lab milestone history; the expanded manual challenge set drove reranking fixes for schema mismatch, stale context, KYC artefact phrasing, and ambiguous-handoff abstention.
 - Ticket and runbook data are still partly templated, even after adding noisy, human-like, human email-thread, retrieved-document-injection, and long-conflicting-context cases.
 - Extraction is deterministic pattern matching.
 - Red-team checks include harder retrieved-context attacks, but are still string-based.
@@ -64,9 +64,9 @@ These are acceptable for the first lab version, but they should guide the next w
 
 1. Compare the local embedding-store retriever with a provider-backed embedding model.
 2. Make the golden suite less templated with new non-generated tickets and harder retrieved-context evidence.
-3. Add timestamped historical snapshots once the deterministic report contract is stable.
-4. Add optional live collector export for the OpenTelemetry-style spans.
-5. Add model-assisted adversarial review for the red-team suite after the deterministic scoring contract remains stable.
+3. Add optional live collector export for the OpenTelemetry-style spans.
+4. Add model-assisted adversarial review for the red-team suite after the deterministic scoring contract remains stable.
+5. Add an optional LLM extraction path with schema repair once noisier tickets are in place.
 
 ## Secondary Use
 

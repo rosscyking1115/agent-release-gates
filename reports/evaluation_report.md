@@ -32,6 +32,16 @@ The retrieval experiment compares a deliberately weak baseline, a lexical retrie
 | 004_local_tf_idf_vector | Local TF-IDF vector | 100.00% | 0 | +0.00% | +0 | False |  |
 | 005_local_embedding_store | Local embedding store | 100.00% | 0 | +0.00% | +0 | False |  |
 
+## Historical Evaluation Snapshots
+
+| Milestone time | Milestone | Citation coverage | Failed cases | Citation delta | Failure delta |
+| --- | --- | ---: | ---: | ---: | ---: |
+| 2026-06-02T09:00:00Z | Baseline team hints | 20.09% | 241 |  |  |
+| 2026-06-02T10:00:00Z | Improved lexical | 98.66% | 3 | +78.57% | -238 |
+| 2026-06-02T11:00:00Z | Hybrid sparse semantic | 100.00% | 0 | +1.34% | -3 |
+| 2026-06-02T12:00:00Z | Local TF-IDF vector | 100.00% | 0 | +0.00% | +0 |
+| 2026-06-02T13:00:00Z | Local embedding store | 100.00% | 0 | +0.00% | +0 |
+
 ## Retriever Failure Analysis
 
 | System | Failed cases | Retrieved but not cited | Abstention mismatches | Top failure reason |
@@ -134,10 +144,10 @@ The controlled workflow separates read-only tools from side-effecting actions. T
 
 | Export metric | Value |
 | --- | ---: |
-| OTel-style spans | 1132 |
+| OTel-style spans | 1133 |
 | Exported traces | 21 |
 | Root spans | 21 |
-| Child spans | 1111 |
+| Child spans | 1112 |
 | Tool spans | 40 |
 
 The combined export includes workflow-level spans, agent tool/audit spans, case-level retriever failure spans, retriever ranking-detail spans, case-level extraction spans, case-level agent approval spans, plus API contract and error-case spans for local inspection.

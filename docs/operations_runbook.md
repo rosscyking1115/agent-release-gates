@@ -18,7 +18,7 @@ Expected result:
 - lint passes
 - tests pass
 - synthetic data is regenerated
-- baseline, extraction, security, controlled-agent, Markdown, HTML, and PDF reports are written to `reports/`
+- baseline, extraction, security, controlled-agent, history, Markdown, HTML, and PDF reports are written to `reports/`
 
 ## Dashboard
 
@@ -53,6 +53,7 @@ Check:
 ```text
 http://127.0.0.1:8000/health
 http://127.0.0.1:8000/reports/evaluation
+http://127.0.0.1:8000/reports/evaluation/history
 http://127.0.0.1:8000/reports/evaluation.html
 http://127.0.0.1:8000/reports/evaluation.pdf
 ```

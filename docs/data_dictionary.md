@@ -101,6 +101,17 @@ The dashboard and public report derive retriever error-analysis tables from thes
 | `regression` | Whether citation coverage decreased or failed-case count increased. |
 | `regression_reasons` | Deterministic labels explaining the regression flag. |
 
+## `reports/evaluation_history.json`
+
+This file records deterministic dated lab milestones for evaluation history. It is not production telemetry; stable timestamps mark ordered local benchmark milestones so CI can regenerate the artifact exactly.
+
+| Field | Description |
+| --- | --- |
+| `history_type` | History contract type, currently `deterministic_lab_milestones`. |
+| `generated_at_utc` | Stable artifact generation timestamp used for deterministic report regeneration. |
+| `current_summary` | Latest milestone, best retriever, current citation coverage, failure count, and cross-workflow quality checks. |
+| `milestones` | Ordered retrieval milestone rows with milestone timestamp, system version, citation coverage, next-action accuracy, abstention accuracy, failure count, and deltas from the previous milestone. |
+
 ## Public report artifacts
 
 The report generator writes `reports/evaluation_report.md`, `reports/evaluation_report.html`, and `reports/evaluation_report.pdf` from the same deterministic Markdown source. The PDF is a dependency-free, paginated text export intended for quick sharing and review; the Markdown and HTML artifacts remain the easiest files to diff.

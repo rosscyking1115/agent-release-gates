@@ -6,6 +6,7 @@ from internal_ai_agent.api.main import (
     agent_run,
     app,
     ask,
+    evaluation_history,
     evaluation_report,
     evaluation_report_html,
     evaluation_report_pdf,
@@ -40,6 +41,14 @@ def test_evaluation_report_pdf_endpoint_returns_pdf() -> None:
     assert response.media_type == "application/pdf"
     assert response.body.startswith(b"%PDF-1.4")
     assert b"INTERNAL AI AGENT EVALUATION REPORT" in response.body
+
+
+def test_evaluation_history_endpoint_returns_json() -> None:
+    history = evaluation_history()
+
+    assert history["history_type"] == "deterministic_lab_milestones"
+    assert history["current_summary"]["best_retriever"] == "Hybrid sparse semantic"
+    assert len(history["milestones"]) == 5
 
 
 def test_agent_otel_spans_endpoint_returns_jsonl() -> None:

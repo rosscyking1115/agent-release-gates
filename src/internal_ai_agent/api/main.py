@@ -1,7 +1,8 @@
+import json
 from pathlib import Path
 
 from fastapi import FastAPI
-from fastapi.responses import HTMLResponse, PlainTextResponse, Response
+from fastapi.responses import HTMLResponse, JSONResponse, PlainTextResponse, Response
 
 from internal_ai_agent.agent.workflow import run_controlled_agent
 from internal_ai_agent.api.schemas import (
@@ -57,6 +58,13 @@ def evaluation_report_pdf() -> Response:
                 'attachment; filename="internal_ai_agent_evaluation_report.pdf"'
             )
         },
+    )
+
+
+@app.get("/reports/evaluation/history", response_class=JSONResponse)
+def evaluation_history() -> dict[str, object]:
+    return json.loads(
+        (PROJECT_ROOT / "reports/evaluation_history.json").read_text(encoding="utf-8")
     )
 
 

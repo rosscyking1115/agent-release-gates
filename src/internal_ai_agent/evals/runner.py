@@ -328,6 +328,56 @@ def write_retriever_metric_snapshots(
     return report
 
 
+def write_evaluation_history(
+    project_root: Path,
+    *,
+    retriever_report: dict[str, Any],
+    extraction: dict[str, Any],
+    security: dict[str, Any],
+    agent: dict[str, Any],
+) -> dict[str, Any]:
+    milestones: list[dict[str, Any]] = []
+    previous: dict[str, Any] | None = None
+    for sequence, system in enumerate(retriever_report["systems"], start=1):
+        milestone = _history_milestone(sequence, system, previous)
+        milestones.append(milestone)
+        previous = milestone
+
+    current = milestones[-1]
+    report = {
+        "history_type": "deterministic_lab_milestones",
+        "generated_at_utc": "2026-06-02T00:00:00Z",
+        "dataset": "golden_cases",
+        "case_count": retriever_report["case_count"],
+        "current_summary": {
+            "latest_milestone_id": current["milestone_id"],
+            "latest_milestone": current["milestone"],
+            "best_retriever": _best_retriever_label(retriever_report),
+            "current_citation_coverage": current["citation_coverage"],
+            "current_failure_count": current["failure_count"],
+            "extraction_schema_validity": extraction["metrics"]["schema_validity"],
+            "security_weighted_safe_rate": security["metrics"][
+                "improved_weighted_safe_rate"
+            ],
+            "agent_side_effect_block_rate": agent["metrics"]["side_effect_block_rate"],
+        },
+        "milestones": milestones,
+        "notes": [
+            (
+                "This is a deterministic lab history, not production telemetry. The stable "
+                "timestamps mark ordered evaluation milestones so CI can regenerate the "
+                "artifact exactly."
+            ),
+            (
+                "Provider-backed model comparisons can add new rows later without changing "
+                "the existing local benchmark rows."
+            ),
+        ],
+    }
+    write_json(project_root / "reports/evaluation_history.json", report)
+    return report
+
+
 def _evaluate_case(case: dict[str, Any], answer: BaselineAnswer) -> CaseResult:
     expected_citations = [str(item) for item in case["expected_citation_ids"]]
     retrieved_citations = [section.section_id for section in answer.retrieved_sections]
@@ -540,6 +590,46 @@ def _snapshot_row(
         "regression": bool(regression_reasons),
         "regression_reasons": regression_reasons,
     }
+
+
+def _history_milestone(
+    sequence: int,
+    system: dict[str, Any],
+    previous: dict[str, Any] | None,
+) -> dict[str, Any]:
+    citation_delta = None
+    failure_delta = None
+    if previous is not None:
+        citation_delta = round(
+            system["citation_coverage"] - previous["citation_coverage"], 4
+        )
+        failure_delta = system["failure_count"] - previous["failure_count"]
+    return {
+        "milestone_id": f"{sequence:03d}_{_slug(system['label'])}",
+        "milestone_at_utc": f"2026-06-02T{8 + sequence:02d}:00:00Z",
+        "milestone": system["label"],
+        "system_version": system["system_version"],
+        "retrieval_hit_rate_at_3": system["retrieval_hit_rate_at_3"],
+        "citation_coverage": system["citation_coverage"],
+        "next_action_accuracy": system["next_action_accuracy"],
+        "abstention_accuracy": system["abstention_accuracy"],
+        "failure_count": system["failure_count"],
+        "citation_delta_from_previous": citation_delta,
+        "failure_delta_from_previous": failure_delta,
+    }
+
+
+def _best_retriever_label(report: dict[str, Any]) -> str:
+    best = sorted(
+        report["systems"],
+        key=lambda system: (
+            -float(system["citation_coverage"]),
+            int(system["failure_count"]),
+            -float(system["retrieval_hit_rate_at_3"]),
+            str(system["label"]),
+        ),
+    )[0]
+    return str(best["label"])
 
 
 def _slug(value: str) -> str:

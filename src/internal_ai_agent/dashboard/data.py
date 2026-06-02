@@ -76,6 +76,11 @@ def load_retriever_snapshots(project_root: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def load_evaluation_history(project_root: Path) -> dict[str, Any]:
+    path = project_root / "reports/evaluation_history.json"
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
 def load_extraction_summary(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/extraction_eval_summary.json"
     return json.loads(path.read_text(encoding="utf-8"))
@@ -181,6 +186,44 @@ def retriever_snapshot_rows(snapshot_report: dict[str, Any]) -> list[dict[str, A
                     snapshot["citation_delta_from_previous"]
                 ),
                 "failure_delta": _optional_signed_int(snapshot["failure_delta_from_previous"]),
+            }
+        )
+    return rows
+
+
+def evaluation_history_rows(history: dict[str, Any]) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for milestone in history["milestones"]:
+        rows.append(
+            {
+                "milestone_at_utc": milestone["milestone_at_utc"],
+                "milestone": milestone["milestone"],
+                "system_version": milestone["system_version"],
+                "retrieval_hit_rate_at_3": milestone["retrieval_hit_rate_at_3"],
+                "citation_coverage": milestone["citation_coverage"],
+                "next_action_accuracy": milestone["next_action_accuracy"],
+                "abstention_accuracy": milestone["abstention_accuracy"],
+                "failure_count": milestone["failure_count"],
+                "citation_delta_from_previous": milestone[
+                    "citation_delta_from_previous"
+                ],
+                "failure_delta_from_previous": milestone["failure_delta_from_previous"],
+                "retrieval_hit_rate_at_3_pct": _as_percent(
+                    milestone["retrieval_hit_rate_at_3"]
+                ),
+                "citation_coverage_pct": _as_percent(milestone["citation_coverage"]),
+                "next_action_accuracy_pct": _as_percent(
+                    milestone["next_action_accuracy"]
+                ),
+                "abstention_accuracy_pct": _as_percent(
+                    milestone["abstention_accuracy"]
+                ),
+                "citation_delta_pct": _optional_signed_percent(
+                    milestone["citation_delta_from_previous"]
+                ),
+                "failure_delta": _optional_signed_int(
+                    milestone["failure_delta_from_previous"]
+                ),
             }
         )
     return rows

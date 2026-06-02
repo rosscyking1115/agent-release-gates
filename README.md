@@ -83,6 +83,7 @@ The baseline evaluation writes:
 - `reports/embedding_eval_cases.jsonl`
 - `reports/retriever_comparison.json`
 - `reports/retriever_metric_snapshots.json`
+- `reports/evaluation_history.json`
 - `reports/eval_comparison.json`
 - `reports/extraction_eval_summary.json`
 - `reports/extraction_eval_cases.jsonl`
@@ -188,6 +189,7 @@ The generated evaluation report is available from the dashboard and from:
 http://localhost:8000/reports/evaluation
 http://localhost:8000/reports/evaluation.html
 http://localhost:8000/reports/evaluation.pdf
+http://localhost:8000/reports/evaluation/history
 http://localhost:8000/reports/agent/otel-spans
 http://localhost:8000/reports/observability/otel-spans
 ```

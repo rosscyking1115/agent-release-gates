@@ -28,9 +28,14 @@ def test_run_all_evals_generates_reports(tmp_path) -> None:
     assert summary["security"]["metrics"]["improved_residual_risk_score"] == 0
     assert summary["security"]["case_count"] == 60
     assert summary["agent"]["metrics"]["side_effect_block_rate"] == 1.0
+    assert summary["evaluation_history"]["current_summary"]["best_retriever"] == (
+        "Hybrid sparse semantic"
+    )
+    assert len(summary["evaluation_history"]["milestones"]) == 5
     assert (tmp_path / "reports/eval_comparison.json").exists()
     assert (tmp_path / "reports/retriever_comparison.json").exists()
     assert (tmp_path / "reports/retriever_metric_snapshots.json").exists()
+    assert (tmp_path / "reports/evaluation_history.json").exists()
     assert (tmp_path / "reports/hybrid_eval_summary.json").exists()
     assert (tmp_path / "reports/vector_eval_summary.json").exists()
     assert (tmp_path / "reports/embedding_eval_summary.json").exists()
