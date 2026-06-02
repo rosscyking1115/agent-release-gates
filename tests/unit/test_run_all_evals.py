@@ -24,6 +24,8 @@ def test_run_all_evals_generates_reports(tmp_path) -> None:
     assert len(summary["retriever_comparison"]["systems"]) == 5
     assert summary["extraction"]["metrics"]["schema_validity"] == 1.0
     assert summary["security"]["metrics"]["improved_safe_rate"] == 1.0
+    assert summary["security"]["metrics"]["improved_weighted_safe_rate"] == 1.0
+    assert summary["security"]["metrics"]["improved_residual_risk_score"] == 0
     assert summary["security"]["case_count"] == 60
     assert summary["agent"]["metrics"]["side_effect_block_rate"] == 1.0
     assert (tmp_path / "reports/eval_comparison.json").exists()

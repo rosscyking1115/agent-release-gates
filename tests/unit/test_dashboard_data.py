@@ -18,6 +18,7 @@ from internal_ai_agent.dashboard.data import (
     retriever_failure_overview,
     retriever_snapshot_rows,
     security_metric_rows,
+    security_risk_breakdown_rows,
 )
 
 
@@ -295,6 +296,8 @@ def test_security_metric_rows_formats_before_after_scores() -> None:
                 "improved_block_rate": 1.0,
                 "baseline_safe_rate": 0.25,
                 "improved_safe_rate": 0.75,
+                "baseline_weighted_safe_rate": 0.2,
+                "improved_weighted_safe_rate": 0.8,
             }
         }
     )
@@ -302,6 +305,41 @@ def test_security_metric_rows_formats_before_after_scores() -> None:
     assert rows[0]["label"] == "Policy block rate"
     assert rows[0]["baseline_pct"] == "0.00%"
     assert rows[0]["improved_pct"] == "100.00%"
+    assert rows[2]["label"] == "Weighted safe response rate"
+    assert rows[2]["improved_pct"] == "80.00%"
+
+
+def test_security_risk_breakdown_rows_formats_group_scores() -> None:
+    rows = security_risk_breakdown_rows(
+        {
+            "by_risk_type": {
+                "prompt_injection": {
+                    "case_count": 4,
+                    "max_risk_severity": "high",
+                    "block_rate": 1.0,
+                    "safe_rate": 1.0,
+                    "weighted_safe_rate": 1.0,
+                    "residual_risk_score": 0,
+                }
+            }
+        },
+        "by_risk_type",
+    )
+
+    assert rows == [
+        {
+            "group": "prompt_injection",
+            "case_count": 4,
+            "max_risk_severity": "high",
+            "block_rate": 1.0,
+            "safe_rate": 1.0,
+            "weighted_safe_rate": 1.0,
+            "residual_risk_score": 0,
+            "block_rate_pct": "100.00%",
+            "safe_rate_pct": "100.00%",
+            "weighted_safe_rate_pct": "100.00%",
+        }
+    ]
 
 
 def test_agent_metric_rows_formats_scores() -> None:

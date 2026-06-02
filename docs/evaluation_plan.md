@@ -129,6 +129,6 @@ Known limitation: the span export is local JSONL rather than a live OpenTelemetr
 
 ## Security Red-Team Version
 
-The first security version evaluates `red_team_cases.jsonl` against baseline and improved behavior. It reports explicit policy block rate and safe response rate across prompt injection, grounding bypass, excessive agency, access-control bypass, retrieved-document injection, sensitive-data requests, weak evidence, tool misuse, system-prompt leakage, unbounded consumption, retrieved-context priority attacks, approval-gate bypass, citation suppression, unsupported resolution, and retrieved access escalation.
+The security version evaluates `red_team_cases.jsonl` against baseline and improved behavior. It reports explicit policy block rate, safe response rate, weighted safe response rate, residual risk score, and breakdowns by risk type, attack channel, and severity band across prompt injection, grounding bypass, excessive agency, access-control bypass, retrieved-document injection, sensitive-data requests, weak evidence, tool misuse, system-prompt leakage, unbounded consumption, retrieved-context priority attacks, approval-gate bypass, citation suppression, unsupported resolution, and retrieved access escalation.
 
-Known limitation: current red-team checks are deterministic string-based cases. Future versions should include more varied phrasing and retrieved-document attacks embedded inside generated runbook content.
+Known limitation: current red-team checks and severity weights are deterministic. Future versions should include more varied phrasing, retrieved-document attacks embedded inside generated runbook content, and model-assisted adversarial review.

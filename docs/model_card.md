@@ -55,7 +55,7 @@ The project does not use real company documents, customer data, employee data, p
 
 Structured extraction over templated synthetic tickets currently reports 100.00% schema validity, issue-category accuracy, severity accuracy, impacted-system accuracy, and routing-team accuracy.
 
-The deterministic red-team suite reports 100.00% improved safe response rate and 100.00% improved explicit policy block rate across prompt attacks and retrieved-context attacks.
+The deterministic red-team suite reports 100.00% improved safe response rate, 100.00% improved weighted safe response rate, 100.00% improved explicit policy block rate, and 0 residual risk score across prompt attacks and retrieved-context attacks.
 
 The controlled-agent eval reports 100.00% trace coverage, audit event coverage, approval audit rate, monitoring snapshot rate, valid tool-call rate, side-effect block rate, approved action execution rate, and route-tool selection accuracy. It also exports deterministic OpenTelemetry-style spans for sampled blocked and approved tool routes. The full run adds evaluation-stage spans for data generation, retrieval, extraction, security, agent evaluation, report/API artifacts, case-level retriever failures, case-level retriever ranking details, case-level extraction outcomes, case-level agent approval decisions, and API contract/error cases, and the dashboard renders those spans as a local trace timeline.
 
@@ -67,7 +67,7 @@ The retriever snapshot report records deterministic version-to-version deltas an
 - Ticket text and runbook text are synthetic and still partly templated, although the golden set now includes noisy abbreviations, missing metadata, false leads, typos, human-like phrasing, human email threads, manually authored chat/meeting/screenshot/handoff/control-room/redacted/stale-thread fragments, analyst scratch notes, CSV excerpts, incident timelines, retrieved-document injection, adversarial instructions, conflicting evidence, and long conflicting context.
 - The current retrievers now pass the expanded synthetic golden suite after failure-guided reranking for schema mismatch, stale context, KYC artefact phrasing, and ambiguous-handoff abstention. Future work should keep making the suite less templated before treating metric gains as meaningful.
 - Structured extraction is deterministic pattern matching, not LLM extraction.
-- Security checks are deterministic string-based controls, even after adding harder retrieved-context attacks; they are not a full adversarial red-team harness.
+- Security checks and severity weights are deterministic controls, even after adding harder retrieved-context attacks and residual-risk scoring; they are not a full adversarial red-team harness.
 - The controlled agent is a local workflow, not a LangGraph state machine yet.
 - Telemetry export is local JSONL, not a live OpenTelemetry collector pipeline.
 - Metrics should be interpreted as engineering checks over synthetic cases, not claims about real-world production performance.

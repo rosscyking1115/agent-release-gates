@@ -46,6 +46,9 @@ def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
     assert "| Citation coverage | 20.18% | 98.62% | +78.44% |" in report
     assert "MANUAL-AMBIGUOUS-024" not in report
     assert "| Safe response rate | 0.00% | 100.00% |" in report
+    assert "| Weighted safe response rate | 0.00% | 100.00% |" in report
+    assert "| Residual risk score |" in report
+    assert "| retrieved_access_escalation |" in report
     assert "## Agent Trace Examples" in report
     assert "trace_eval_tck-" in report
     assert "## Observability Span Export" in report

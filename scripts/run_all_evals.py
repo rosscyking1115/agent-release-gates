@@ -141,6 +141,14 @@ def main() -> None:
         f"- security_improved_safe_rate: {summary['security']['metrics']['improved_safe_rate']:.4f}"
     )
     print(
+        "- security_improved_weighted_safe_rate: "
+        f"{summary['security']['metrics']['improved_weighted_safe_rate']:.4f}"
+    )
+    print(
+        "- security_improved_residual_risk_score: "
+        f"{summary['security']['metrics']['improved_residual_risk_score']}"
+    )
+    print(
         "- agent_side_effect_block_rate: "
         f"{summary['agent']['metrics']['side_effect_block_rate']:.4f}"
     )

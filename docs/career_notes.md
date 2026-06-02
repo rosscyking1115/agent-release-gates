@@ -36,9 +36,11 @@ The important part is not that the demo looks polished. The important part is th
 | Abstention accuracy | 78.57% baseline to 100.00% improved |
 | Structured extraction schema validity | 100.00% |
 | Improved red-team safe response rate | 100.00% |
+| Improved red-team weighted safe response rate | 100.00% |
+| Improved red-team residual risk score | 0 |
 | Agent side-effect block rate | 100.00% |
 | Trace and audit event coverage | 100.00% |
-| Tests | 77 passing |
+| Tests | 78 passing |
 
 These are synthetic deterministic metrics, so I would present them as engineering checks rather than real production claims.
 
@@ -73,4 +75,4 @@ Designed and implemented a production-style internal operations AI workflow over
 
 ## Useful Next Build Step
 
-The most valuable next engineering step is to compare the local embedding-store retriever with a provider-backed embedding model or add richer red-team scoring beyond deterministic string matching. That would show retrieval experimentation and evaluation discipline without changing the project framing.
+The most valuable next engineering step is to compare the local embedding-store retriever with a provider-backed embedding model or add model-assisted adversarial review for the red-team suite. That would show retrieval experimentation and evaluation discipline without changing the project framing.

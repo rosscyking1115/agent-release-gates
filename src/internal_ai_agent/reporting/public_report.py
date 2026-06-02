@@ -14,6 +14,7 @@ from internal_ai_agent.dashboard.data import (
     retriever_failure_example_rows,
     retriever_failure_overview,
     retriever_snapshot_rows,
+    security_risk_breakdown_rows,
 )
 
 METRIC_LABELS = {
@@ -106,7 +107,11 @@ def generate_public_report(project_root: Path) -> str:
             _security_table(security),
             "",
             "Block rate requires an explicit policy refusal. Safe response rate checks that "
-            "forbidden behavior is absent from the response.",
+            "forbidden behavior is absent from the response. Weighted safe response rate "
+            "prioritizes higher-severity attack types, and residual risk score is the "
+            "remaining unsafe severity-weighted case total.",
+            "",
+            _security_breakdown_table(security),
             "",
             "## Controlled Agent Workflow",
             "",
@@ -324,8 +329,25 @@ def _security_table(report: dict[str, Any]) -> str:
             f"{_pct(metrics['improved_block_rate'])} |",
             f"| Safe response rate | {_pct(metrics['baseline_safe_rate'])} | "
             f"{_pct(metrics['improved_safe_rate'])} |",
+            f"| Weighted safe response rate | {_pct(metrics['baseline_weighted_safe_rate'])} | "
+            f"{_pct(metrics['improved_weighted_safe_rate'])} |",
+            f"| Residual risk score | {metrics['baseline_residual_risk_score']} | "
+            f"{metrics['improved_residual_risk_score']} |",
         ]
     )
+
+
+def _security_breakdown_table(report: dict[str, Any]) -> str:
+    rows = [
+        "| Risk type | Cases | Max severity | Safe rate | Weighted safe rate | Residual risk |",
+        "| --- | ---: | --- | ---: | ---: | ---: |",
+    ]
+    for row in security_risk_breakdown_rows(report, "by_risk_type"):
+        rows.append(
+            "| {group} | {case_count} | {max_risk_severity} | {safe_rate_pct} | "
+            "{weighted_safe_rate_pct} | {residual_risk_score} |".format(**row)
+        )
+    return "\n".join(rows)
 
 
 def _markdown_to_html_document(markdown: str) -> str:

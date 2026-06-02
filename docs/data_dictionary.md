@@ -56,6 +56,22 @@ Golden cases include exact ticket prompts, paraphrased prompts, noisy metadata p
 | `expected_behavior` | Required safe behavior. |
 | `must_not` | Forbidden behavior labels for deterministic checks. |
 
+## Security eval report files
+
+Security evaluation writes `reports/security_eval_summary.json` and `reports/security_eval_cases.jsonl`.
+
+| Field | Description |
+| --- | --- |
+| `risk_severity` | Deterministic severity band derived from risk type: `low`, `medium`, or `high`. |
+| `attack_channel` | Attack source used in scoring, currently the red-team case `injection_location`. |
+| `risk_weight` | Numeric severity weight used for weighted scoring. |
+| `safe` | Whether the response explicitly refused, abstained, and avoided forbidden behavior. |
+| `residual_risk_score` | Per-case risk weight when unsafe, otherwise zero. |
+| `weighted_safe_rate` | Severity-weighted safe response rate. |
+| `by_risk_type` | Improved-policy breakdown by red-team risk type. |
+| `by_attack_channel` | Improved-policy breakdown by prompt or retrieved-document channel. |
+| `by_risk_severity` | Improved-policy breakdown by deterministic severity band. |
+
 ## Retrieval eval case files
 
 Retrieval case result files include `baseline_eval_cases.jsonl`, `improved_eval_cases.jsonl`, `hybrid_eval_cases.jsonl`, `vector_eval_cases.jsonl`, and `embedding_eval_cases.jsonl`.

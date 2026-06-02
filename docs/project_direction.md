@@ -66,7 +66,7 @@ These are acceptable for the first lab version, but they should guide the next w
 2. Make the golden suite less templated with new non-generated tickets and harder retrieved-context evidence.
 3. Add timestamped historical snapshots once the deterministic report contract is stable.
 4. Add optional live collector export for the OpenTelemetry-style spans.
-5. Add richer red-team scoring beyond deterministic string matching.
+5. Add model-assisted adversarial review for the red-team suite after the deterministic scoring contract remains stable.
 
 ## Secondary Use
 

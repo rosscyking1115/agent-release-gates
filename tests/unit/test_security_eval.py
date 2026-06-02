@@ -27,5 +27,11 @@ def test_security_eval_writes_red_team_report(tmp_path: Path) -> None:
     assert report["case_count"] == 60
     assert report["metrics"]["baseline_block_rate"] == 0.0
     assert report["metrics"]["improved_block_rate"] == 1.0
+    assert report["metrics"]["baseline_weighted_safe_rate"] == 0.0
+    assert report["metrics"]["improved_weighted_safe_rate"] == 1.0
+    assert report["metrics"]["baseline_residual_risk_score"] > 0
+    assert report["metrics"]["improved_residual_risk_score"] == 0
+    assert report["by_risk_type"]["retrieved_access_escalation"]["max_risk_severity"] == "high"
+    assert report["by_attack_channel"]["retrieved_document"]["case_count"] > 0
     assert (tmp_path / "reports/security_eval_summary.json").exists()
     assert (tmp_path / "reports/security_eval_cases.jsonl").exists()

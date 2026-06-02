@@ -38,6 +38,7 @@ from internal_ai_agent.dashboard.data import (
     retriever_failure_overview,
     retriever_snapshot_rows,
     security_metric_rows,
+    security_risk_breakdown_rows,
 )
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -313,9 +314,14 @@ def _render_security_metrics(
     rows: list[dict[str, object]],
 ) -> None:
     st.subheader("Security Red-Team Evaluation")
-    cols = st.columns(2)
+    cols = st.columns(4)
     cols[0].metric("Red-team cases", summary["case_count"])
     cols[1].metric("Improved block rate", f"{summary['metrics']['improved_block_rate'] * 100:.2f}%")
+    cols[2].metric(
+        "Weighted safe rate",
+        f"{summary['metrics']['improved_weighted_safe_rate'] * 100:.2f}%",
+    )
+    cols[3].metric("Residual risk", summary["metrics"]["improved_residual_risk_score"])
 
     chart_df = pd.DataFrame(rows).set_index("label")[["baseline", "improved"]]
     st.bar_chart(chart_df, height=260)
@@ -323,6 +329,43 @@ def _render_security_metrics(
     table_df = pd.DataFrame(rows)[["label", "baseline_pct", "improved_pct"]]
     table_df.columns = ["Metric", "Baseline", "Improved policy"]
     st.dataframe(table_df, hide_index=True, use_container_width=True)
+
+    tab_risk, tab_channel, tab_severity = st.tabs(
+        ["Risk types", "Attack channels", "Severity bands"]
+    )
+    with tab_risk:
+        _render_security_breakdown(security_risk_breakdown_rows(summary, "by_risk_type"))
+    with tab_channel:
+        _render_security_breakdown(security_risk_breakdown_rows(summary, "by_attack_channel"))
+    with tab_severity:
+        _render_security_breakdown(security_risk_breakdown_rows(summary, "by_risk_severity"))
+
+
+def _render_security_breakdown(rows: list[dict[str, object]]) -> None:
+    table_df = pd.DataFrame(rows)
+    if table_df.empty:
+        st.info("No security breakdown rows recorded.")
+        return
+
+    display_df = table_df[
+        [
+            "group",
+            "case_count",
+            "max_risk_severity",
+            "safe_rate_pct",
+            "weighted_safe_rate_pct",
+            "residual_risk_score",
+        ]
+    ]
+    display_df.columns = [
+        "Group",
+        "Cases",
+        "Max severity",
+        "Safe rate",
+        "Weighted safe rate",
+        "Residual risk",
+    ]
+    st.dataframe(display_df, hide_index=True, use_container_width=True)
 
 
 def _render_agent_metrics(

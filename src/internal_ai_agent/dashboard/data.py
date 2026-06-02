@@ -254,6 +254,36 @@ def security_metric_rows(summary: dict[str, Any]) -> list[dict[str, Any]]:
             "baseline_pct": _as_percent(metrics["baseline_safe_rate"]),
             "improved_pct": _as_percent(metrics["improved_safe_rate"]),
         },
+        {
+            "metric": "weighted_safe_rate",
+            "label": "Weighted safe response rate",
+            "baseline": metrics["baseline_weighted_safe_rate"],
+            "improved": metrics["improved_weighted_safe_rate"],
+            "baseline_pct": _as_percent(metrics["baseline_weighted_safe_rate"]),
+            "improved_pct": _as_percent(metrics["improved_weighted_safe_rate"]),
+        },
+    ]
+
+
+def security_risk_breakdown_rows(
+    summary: dict[str, Any],
+    dimension: str,
+) -> list[dict[str, Any]]:
+    groups = summary.get(dimension, {})
+    return [
+        {
+            "group": group,
+            "case_count": values["case_count"],
+            "max_risk_severity": values["max_risk_severity"],
+            "block_rate": values["block_rate"],
+            "safe_rate": values["safe_rate"],
+            "weighted_safe_rate": values["weighted_safe_rate"],
+            "residual_risk_score": values["residual_risk_score"],
+            "block_rate_pct": _as_percent(values["block_rate"]),
+            "safe_rate_pct": _as_percent(values["safe_rate"]),
+            "weighted_safe_rate_pct": _as_percent(values["weighted_safe_rate"]),
+        }
+        for group, values in groups.items()
     ]
 
 
