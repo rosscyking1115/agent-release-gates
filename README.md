@@ -220,6 +220,25 @@ http://localhost:8000/reports/observability/otel-spans
 http://localhost:8000/reports/observability/collector-preview
 ```
 
+## Public Site
+
+The public static site is deployed with GitHub Pages from `.github/workflows/pages.yml`.
+It regenerates the deterministic reports, builds `public/index.html`, and publishes:
+
+- landing page with headline metrics and safety framing
+- full HTML evaluation report
+- downloadable PDF report
+- dataset profile JSON
+
+Expected public URL:
+
+```text
+https://rosscyking1115.github.io/internal-ai-agent-eval-lab/
+```
+
+The public site is static. The interactive FastAPI and Streamlit dashboard remain available
+through Docker or local commands until a hosted app service is added.
+
 ## Docker
 
 Build the local image:

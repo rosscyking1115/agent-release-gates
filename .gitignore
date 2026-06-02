@@ -12,3 +12,4 @@ dist/
 build/
 *.egg-info/
 reports/collector_export_smoke.json
+public/
