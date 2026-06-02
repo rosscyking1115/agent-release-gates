@@ -6,6 +6,7 @@ This project is not a clone or critique of any real company's internal AI system
 
 ## Live Project
 
+- Interactive dashboard: https://agent-evaluation-lab.streamlit.app/
 - Public site: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/
 - Full evaluation report: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/evaluation_report.html
 - Dataset profile: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/dataset_profile.json
@@ -32,7 +33,7 @@ Internal AI agents are only useful when their answers are grounded, measurable, 
 | Safety testing | Red-team cases for prompt injection, leakage, weak evidence, excessive agency, access escalation, and tool misuse |
 | Agent governance | Read-only tools plus approval-gated mock side effects |
 | Observability | Trace IDs, audit events, monitoring snapshots, local span timeline, OTLP/HTTP export preview, and local collector smoke test |
-| Deployment | Public GitHub Pages report site, Docker image, Docker Compose, CI workflow |
+| Deployment | Public Streamlit dashboard, GitHub Pages report site, Docker image, Docker Compose, CI workflow |
 
 ## Current Evaluation Snapshot
 
@@ -151,13 +152,17 @@ CI runs linting, tests, deterministic report regeneration, OTLP collector smoke 
 
 ## Streamlit Cloud Deployment
 
-The repository is prepared for Streamlit Community Cloud:
+The interactive dashboard is deployed on Streamlit Community Cloud:
+
+- https://agent-evaluation-lab.streamlit.app/
+
+Deployment settings:
 
 ```text
 Repository: rosscyking1115/internal-ai-agent-eval-lab
 Branch: main
 Main file path: streamlit_app.py
-App URL: internal-ai-agent-eval-lab
+App URL: agent-evaluation-lab
 ```
 
 The root `streamlit_app.py` entrypoint loads the dashboard from `app/streamlit_app.py`, and `requirements.txt` installs the local package plus dependencies.
@@ -177,12 +182,10 @@ The root `streamlit_app.py` entrypoint loads the dashboard from `app/streamlit_a
 - The local embedding store uses deterministic feature hashing, not a provider-backed embedding model.
 - Structured extraction is deterministic pattern matching, not LLM extraction.
 - The controlled agent is a local workflow, not a LangGraph state machine.
-- The public deployment is currently a static evidence/report site; the interactive Streamlit dashboard runs locally or through Docker.
 
 ## Useful Follow-Up Work
 
 - Add more hand-authored golden cases and noisier synthetic tickets.
 - Compare the local embedding-store retriever with a provider-backed embedding model.
-- Deploy the interactive Streamlit dashboard publicly.
 - Add a full OpenTelemetry Collector deployment check.
 - Add an optional LLM extraction path with schema repair.

@@ -55,6 +55,7 @@ def _index_html(
         f"<li>{escape(item)}</li>" for item in profile["recommended_next_data_work"]
     )
     repo_url = "https://github.com/rosscyking1115/internal-ai-agent-eval-lab"
+    streamlit_url = "https://agent-evaluation-lab.streamlit.app/"
 
     return f"""<!doctype html>
 <html lang="en">
@@ -190,6 +191,7 @@ def _index_html(
         metrics, and workflows are synthetic.
       </p>
       <div class="actions">
+        <a class="button primary" href="{streamlit_url}">Open Interactive Dashboard</a>
         <a class="button primary" href="evaluation_report.html">Open Full Report</a>
         <a class="button" href="evaluation_report.pdf">Download PDF</a>
         <a class="button" href="dataset_profile.json">Dataset Profile JSON</a>
@@ -239,12 +241,13 @@ def _index_html(
     </section>
 
     <section class="section">
-      <h2>Run The Interactive Lab Locally</h2>
+      <h2>Use The Interactive Lab</h2>
       <p>
-        The public site is a static deployment of the generated evidence. The
-        interactive FastAPI and Streamlit dashboard are containerized and can be
-        run locally from the public repo.
+        The Streamlit dashboard is deployed publicly for exploration. The
+        FastAPI service and dashboard are also containerized so the full stack
+        can be run locally from the public repo.
       </p>
+      <p><a href="{streamlit_url}">Open the public Streamlit dashboard</a></p>
       <p><code>docker compose up --build</code></p>
       <p>
         Then open <code>http://localhost:8510</code> for the dashboard and
