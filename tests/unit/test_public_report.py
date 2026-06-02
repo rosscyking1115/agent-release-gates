@@ -10,6 +10,7 @@ from internal_ai_agent.evals.security import evaluate_security
 from internal_ai_agent.reporting.public_report import (
     generate_public_report,
     generate_public_report_html,
+    generate_public_report_pdf,
     write_public_report,
 )
 
@@ -71,6 +72,7 @@ def test_write_public_report_creates_markdown_artifact(tmp_path) -> None:
     assert output_path.exists()
     assert "## Recommended Next Work" in output_path.read_text(encoding="utf-8")
     assert output_path.with_suffix(".html").exists()
+    assert output_path.with_suffix(".pdf").exists()
 
 
 def test_generate_public_report_html_renders_tables_and_safety_boundary(tmp_path) -> None:
@@ -86,3 +88,14 @@ def test_generate_public_report_html_renders_tables_and_safety_boundary(tmp_path
     assert "<td>Local embedding store</td>" in html
     assert "<h2>Retriever Metric Snapshots</h2>" in html
     assert "It does not use real company documents" in html
+
+
+def test_generate_public_report_pdf_renders_shareable_artifact(tmp_path) -> None:
+    _prepare_reports(tmp_path)
+
+    pdf = generate_public_report_pdf(tmp_path)
+
+    assert pdf.startswith(b"%PDF-1.4")
+    assert b"INTERNAL AI AGENT EVALUATION REPORT" in pdf
+    assert b"Golden retrieval cases: 288" in pdf
+    assert b"%%EOF" in pdf

@@ -95,10 +95,11 @@ The baseline evaluation writes:
 - `reports/observability_otel_spans.jsonl`
 - `reports/evaluation_report.md`
 - `reports/evaluation_report.html`
+- `reports/evaluation_report.pdf`
 
 The current baseline is intentionally simple: it uses broad system/team keyword hints rather than procedure-level retrieval. This gives the project a measurable starting point before improved retrieval is added.
 
-The generated Markdown and HTML reports are the easiest static artifacts to share or review without running the dashboard.
+The generated Markdown, HTML, and PDF reports are the easiest static artifacts to share or review without running the dashboard.
 
 Current deterministic evaluation:
 
@@ -186,6 +187,7 @@ The generated evaluation report is available from the dashboard and from:
 ```text
 http://localhost:8000/reports/evaluation
 http://localhost:8000/reports/evaluation.html
+http://localhost:8000/reports/evaluation.pdf
 http://localhost:8000/reports/agent/otel-spans
 http://localhost:8000/reports/observability/otel-spans
 ```

@@ -39,5 +39,7 @@ def test_run_all_evals_generates_reports(tmp_path) -> None:
     assert (tmp_path / "reports/observability_otel_spans.jsonl").exists()
     assert (tmp_path / "reports/evaluation_report.md").exists()
     assert (tmp_path / "reports/evaluation_report.html").exists()
+    assert (tmp_path / "reports/evaluation_report.pdf").exists()
+    assert (tmp_path / "reports/evaluation_report.pdf").read_bytes().startswith(b"%PDF-1.4")
     assert Path(summary["observability_spans_path"]).name == "observability_otel_spans.jsonl"
     assert Path(summary["public_report_path"]).name == "evaluation_report.md"

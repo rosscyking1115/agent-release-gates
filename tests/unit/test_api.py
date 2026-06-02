@@ -8,6 +8,7 @@ from internal_ai_agent.api.main import (
     ask,
     evaluation_report,
     evaluation_report_html,
+    evaluation_report_pdf,
     extract,
     health,
     observability_otel_spans,
@@ -31,6 +32,14 @@ def test_evaluation_report_html_endpoint_returns_html() -> None:
 
     assert "<!doctype html>" in report
     assert "<h1>Internal AI Agent Evaluation Report</h1>" in report
+
+
+def test_evaluation_report_pdf_endpoint_returns_pdf() -> None:
+    response = evaluation_report_pdf()
+
+    assert response.media_type == "application/pdf"
+    assert response.body.startswith(b"%PDF-1.4")
+    assert b"INTERNAL AI AGENT EVALUATION REPORT" in response.body
 
 
 def test_agent_otel_spans_endpoint_returns_jsonl() -> None:

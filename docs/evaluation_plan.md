@@ -60,6 +60,9 @@ The dashboard reads the saved report artifacts rather than recomputing metrics o
 - `reports/agent_trace_examples.jsonl`
 - `reports/agent_otel_spans.jsonl`
 - `reports/observability_otel_spans.jsonl`
+- `reports/evaluation_report.md`
+- `reports/evaluation_report.html`
+- `reports/evaluation_report.pdf`
 
 ## Baseline Version
 

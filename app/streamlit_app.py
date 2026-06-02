@@ -27,6 +27,7 @@ from internal_ai_agent.dashboard.data import (
     load_observability_otel_spans,
     load_public_report,
     load_public_report_html,
+    load_public_report_pdf,
     load_retriever_case_rows,
     load_retriever_comparison,
     load_retriever_snapshots,
@@ -62,6 +63,7 @@ def main() -> None:
     observability_otel_spans = load_observability_otel_spans(PROJECT_ROOT)
     public_report = load_public_report(PROJECT_ROOT)
     public_report_html = load_public_report_html(PROJECT_ROOT)
+    public_report_pdf = load_public_report_pdf(PROJECT_ROOT)
     rows = metric_rows(comparison)
     extraction_rows = extraction_metric_rows(extraction_summary)
     security_rows = security_metric_rows(security_summary)
@@ -79,7 +81,7 @@ def main() -> None:
     _render_extraction_metrics(extraction_summary, extraction_rows)
     _render_security_metrics(security_summary, security_rows)
     _render_agent_metrics(agent_summary, agent_rows, agent_traces, observability_otel_spans)
-    _render_public_report(public_report, public_report_html)
+    _render_public_report(public_report, public_report_html, public_report_pdf)
     _render_case_analysis(baseline_cases, improved_cases)
 
 
@@ -466,9 +468,13 @@ def _render_agent_trace_timeline(otel_spans: list[dict[str, object]]) -> None:
     )
 
 
-def _render_public_report(report_markdown: str, report_html: str) -> None:
+def _render_public_report(
+    report_markdown: str,
+    report_html: str,
+    report_pdf: bytes,
+) -> None:
     st.subheader("Evaluation Report")
-    col_markdown, col_html = st.columns(2)
+    col_markdown, col_html, col_pdf = st.columns(3)
     col_markdown.download_button(
         "Download Markdown",
         data=report_markdown,
@@ -480,6 +486,12 @@ def _render_public_report(report_markdown: str, report_html: str) -> None:
         data=report_html,
         file_name="internal_ai_agent_evaluation_report.html",
         mime="text/html",
+    )
+    col_pdf.download_button(
+        "Download PDF",
+        data=report_pdf,
+        file_name="internal_ai_agent_evaluation_report.pdf",
+        mime="application/pdf",
     )
     st.markdown(report_markdown)
 

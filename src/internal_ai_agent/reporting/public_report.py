@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from html import escape
 from pathlib import Path
+from textwrap import wrap
 from typing import Any
 
 from internal_ai_agent.dashboard.data import (
@@ -164,7 +165,6 @@ def generate_public_report(project_root: Path) -> str:
             "",
             "- Add noisier, human-written ticket variants.",
             "- Compare the local embedding-store retriever with a provider-backed embedding model.",
-            "- Add downloadable PDF report export.",
             "- Add live collector export for the local OpenTelemetry-style spans.",
             "- Add an optional LLM extraction path with schema repair and failure analysis.",
             "",
@@ -177,12 +177,18 @@ def generate_public_report_html(project_root: Path) -> str:
     return _markdown_to_html_document(generate_public_report(project_root))
 
 
+def generate_public_report_pdf(project_root: Path) -> bytes:
+    return _markdown_to_pdf_document(generate_public_report(project_root))
+
+
 def write_public_report(project_root: Path) -> Path:
     output_path = project_root / "reports/evaluation_report.md"
     html_path = project_root / "reports/evaluation_report.html"
+    pdf_path = project_root / "reports/evaluation_report.pdf"
     markdown = generate_public_report(project_root)
     output_path.write_text(markdown, encoding="utf-8")
     html_path.write_text(_markdown_to_html_document(markdown), encoding="utf-8")
+    pdf_path.write_bytes(_markdown_to_pdf_document(markdown))
     return output_path
 
 
@@ -378,6 +384,148 @@ def _markdown_to_html_document(markdown: str) -> str:
             "",
         ]
     )
+
+
+def _markdown_to_pdf_document(markdown: str) -> bytes:
+    lines = _markdown_to_pdf_lines(markdown)
+    pages = _paginate_pdf_lines(lines)
+    return _build_pdf(pages)
+
+
+def _markdown_to_pdf_lines(markdown: str, width: int = 96) -> list[str]:
+    lines: list[str] = []
+    for raw_line in markdown.splitlines():
+        line = raw_line.strip()
+        if not line:
+            lines.append("")
+            continue
+        if line.startswith("# "):
+            lines.extend(_wrap_pdf_line(line[2:].upper(), width))
+            lines.append("")
+            continue
+        if line.startswith("## "):
+            lines.append("")
+            lines.extend(_wrap_pdf_line(line[3:], width))
+            lines.append("")
+            continue
+        if line.startswith("- "):
+            lines.extend(_wrap_pdf_line(f"- {line[2:]}", width, subsequent_indent="  "))
+            continue
+        if line.startswith("|"):
+            cells = _table_cells(line)
+            if _is_markdown_table_divider(cells):
+                continue
+            lines.extend(_wrap_pdf_line(" | ".join(cells), width))
+            continue
+        lines.extend(_wrap_pdf_line(line, width))
+    return lines
+
+
+def _wrap_pdf_line(
+    line: str,
+    width: int,
+    *,
+    subsequent_indent: str = "",
+) -> list[str]:
+    return wrap(
+        line,
+        width=width,
+        subsequent_indent=subsequent_indent,
+        break_long_words=False,
+        break_on_hyphens=False,
+    ) or [""]
+
+
+def _is_markdown_table_divider(cells: list[str]) -> bool:
+    return bool(cells) and all(set(cell.replace(":", "")) <= {"-"} for cell in cells)
+
+
+def _paginate_pdf_lines(lines: list[str], page_line_count: int = 52) -> list[list[str]]:
+    if not lines:
+        return [[""]]
+    return [
+        lines[index : index + page_line_count]
+        for index in range(0, len(lines), page_line_count)
+    ]
+
+
+def _build_pdf(pages: list[list[str]]) -> bytes:
+    objects: list[tuple[int, bytes]] = [
+        (1, b"<< /Type /Catalog /Pages 2 0 R >>"),
+        (3, b"<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>"),
+    ]
+    page_object_ids: list[int] = []
+    for page_index, page_lines in enumerate(pages):
+        page_object_id = 4 + page_index * 2
+        content_object_id = page_object_id + 1
+        page_object_ids.append(page_object_id)
+        content = _pdf_page_content(page_lines)
+        objects.append(
+            (
+                page_object_id,
+                (
+                    f"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] "
+                    f"/Resources << /Font << /F1 3 0 R >> >> "
+                    f"/Contents {content_object_id} 0 R >>"
+                ).encode("ascii"),
+            )
+        )
+        objects.append(
+            (
+                content_object_id,
+                (
+                    f"<< /Length {len(content)} >>\nstream\n".encode("ascii")
+                    + content
+                    + b"\nendstream"
+                ),
+            )
+        )
+
+    kids = " ".join(f"{object_id} 0 R" for object_id in page_object_ids)
+    objects.append(
+        (
+            2,
+            f"<< /Type /Pages /Kids [{kids}] /Count {len(page_object_ids)} >>".encode(
+                "ascii"
+            ),
+        )
+    )
+    objects.sort(key=lambda item: item[0])
+
+    max_object_id = max(object_id for object_id, _ in objects)
+    pdf = bytearray(b"%PDF-1.4\n%\xe2\xe3\xcf\xd3\n")
+    offsets = {0: 0}
+    for object_id, body in objects:
+        offsets[object_id] = len(pdf)
+        pdf.extend(f"{object_id} 0 obj\n".encode("ascii"))
+        pdf.extend(body)
+        pdf.extend(b"\nendobj\n")
+
+    xref_offset = len(pdf)
+    pdf.extend(f"xref\n0 {max_object_id + 1}\n".encode("ascii"))
+    pdf.extend(b"0000000000 65535 f \n")
+    for object_id in range(1, max_object_id + 1):
+        pdf.extend(f"{offsets[object_id]:010d} 00000 n \n".encode("ascii"))
+    pdf.extend(
+        (
+            f"trailer\n<< /Size {max_object_id + 1} /Root 1 0 R >>\n"
+            f"startxref\n{xref_offset}\n%%EOF\n"
+        ).encode("ascii")
+    )
+    return bytes(pdf)
+
+
+def _pdf_page_content(lines: list[str]) -> bytes:
+    commands = ["BT", "/F1 10 Tf", "14 TL", "54 738 Td"]
+    for line in lines:
+        commands.append(f"({_escape_pdf_text(line)}) Tj")
+        commands.append("T*")
+    commands.append("ET")
+    return "\n".join(commands).encode("latin-1", errors="replace")
+
+
+def _escape_pdf_text(value: str) -> str:
+    return value.replace("\\", "\\\\").replace("(", "\\(").replace(")", "\\)")
 
 
 def _markdown_to_body_html(markdown: str) -> str:

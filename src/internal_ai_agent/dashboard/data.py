@@ -116,6 +116,11 @@ def load_public_report_html(project_root: Path) -> str:
     return path.read_text(encoding="utf-8")
 
 
+def load_public_report_pdf(project_root: Path) -> bytes:
+    path = project_root / "reports/evaluation_report.pdf"
+    return path.read_bytes()
+
+
 def metric_rows(comparison: dict[str, Any]) -> list[dict[str, Any]]:
     metrics = comparison["metrics"]
     rows: list[dict[str, Any]] = []

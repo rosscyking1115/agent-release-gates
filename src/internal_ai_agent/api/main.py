@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from fastapi import FastAPI
-from fastapi.responses import HTMLResponse, PlainTextResponse
+from fastapi.responses import HTMLResponse, PlainTextResponse, Response
 
 from internal_ai_agent.agent.workflow import run_controlled_agent
 from internal_ai_agent.api.schemas import (
@@ -45,6 +45,19 @@ def evaluation_report() -> str:
 @app.get("/reports/evaluation.html", response_class=HTMLResponse)
 def evaluation_report_html() -> str:
     return (PROJECT_ROOT / "reports/evaluation_report.html").read_text(encoding="utf-8")
+
+
+@app.get("/reports/evaluation.pdf")
+def evaluation_report_pdf() -> Response:
+    return Response(
+        (PROJECT_ROOT / "reports/evaluation_report.pdf").read_bytes(),
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": (
+                'attachment; filename="internal_ai_agent_evaluation_report.pdf"'
+            )
+        },
+    )
 
 
 @app.get("/reports/agent/otel-spans", response_class=PlainTextResponse)

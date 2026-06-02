@@ -101,6 +101,10 @@ The dashboard and public report derive retriever error-analysis tables from thes
 | `regression` | Whether citation coverage decreased or failed-case count increased. |
 | `regression_reasons` | Deterministic labels explaining the regression flag. |
 
+## Public report artifacts
+
+The report generator writes `reports/evaluation_report.md`, `reports/evaluation_report.html`, and `reports/evaluation_report.pdf` from the same deterministic Markdown source. The PDF is a dependency-free, paginated text export intended for quick sharing and review; the Markdown and HTML artifacts remain the easiest files to diff.
+
 ## `reports/extraction_eval_cases.jsonl`
 
 | Field | Description |
