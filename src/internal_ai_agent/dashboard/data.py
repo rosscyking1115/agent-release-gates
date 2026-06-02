@@ -91,6 +91,10 @@ def load_agent_summary(project_root: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def load_agent_trace_examples(project_root: Path) -> list[dict[str, Any]]:
+    return read_jsonl(project_root / "reports/agent_trace_examples.jsonl")
+
+
 def load_public_report(project_root: Path) -> str:
     path = project_root / "reports/evaluation_report.md"
     return path.read_text(encoding="utf-8")
@@ -253,6 +257,22 @@ def agent_metric_rows(summary: dict[str, Any]) -> list[dict[str, Any]]:
         }
         for metric in AGENT_METRIC_ORDER
         if metric in metrics
+    ]
+
+
+def agent_trace_rows(traces: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    return [
+        {
+            "trace_id": trace["trace_id"],
+            "ticket_id": trace["ticket_id"],
+            "approval_granted": trace["approval_granted"],
+            "route_tool_outcome": trace["route_tool_outcome"],
+            "tool_call_count": trace["tool_call_count"],
+            "executed_tool_call_count": trace["executed_tool_call_count"],
+            "blocked_tool_call_count": trace["blocked_tool_call_count"],
+            "audit_event_count": len(trace.get("audit_events", [])),
+        }
+        for trace in traces
     ]
 
 

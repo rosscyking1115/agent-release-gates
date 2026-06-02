@@ -8,6 +8,7 @@ import streamlit as st
 
 from internal_ai_agent.dashboard.data import (
     agent_metric_rows,
+    agent_trace_rows,
     case_mix,
     error_analysis_rows,
     extraction_metric_rows,
@@ -15,6 +16,7 @@ from internal_ai_agent.dashboard.data import (
     failure_example_rows,
     failure_reason_rows,
     load_agent_summary,
+    load_agent_trace_examples,
     load_case_rows,
     load_comparison,
     load_extraction_summary,
@@ -49,6 +51,7 @@ def main() -> None:
     extraction_summary = load_extraction_summary(PROJECT_ROOT)
     security_summary = load_security_summary(PROJECT_ROOT)
     agent_summary = load_agent_summary(PROJECT_ROOT)
+    agent_traces = load_agent_trace_examples(PROJECT_ROOT)
     public_report = load_public_report(PROJECT_ROOT)
     public_report_html = load_public_report_html(PROJECT_ROOT)
     rows = metric_rows(comparison)
@@ -67,7 +70,7 @@ def main() -> None:
     _render_error_analysis()
     _render_extraction_metrics(extraction_summary, extraction_rows)
     _render_security_metrics(security_summary, security_rows)
-    _render_agent_metrics(agent_summary, agent_rows)
+    _render_agent_metrics(agent_summary, agent_rows, agent_traces)
     _render_public_report(public_report, public_report_html)
     _render_case_analysis(baseline_cases, improved_cases)
 
@@ -318,6 +321,7 @@ def _render_security_metrics(
 def _render_agent_metrics(
     summary: dict[str, object],
     rows: list[dict[str, object]],
+    traces: list[dict[str, object]],
 ) -> None:
     st.subheader("Controlled Agent And Tool Governance")
     cols = st.columns(2)
@@ -333,6 +337,10 @@ def _render_agent_metrics(
     table_df = pd.DataFrame(rows)[["label", "value_pct"]]
     table_df.columns = ["Metric", "Score"]
     st.dataframe(table_df, hide_index=True, use_container_width=True)
+
+    trace_rows = agent_trace_rows(traces)
+    if trace_rows:
+        st.dataframe(pd.DataFrame(trace_rows), hide_index=True, use_container_width=True)
 
 
 def _render_public_report(report_markdown: str, report_html: str) -> None:

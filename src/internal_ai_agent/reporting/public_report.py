@@ -6,6 +6,8 @@ from pathlib import Path
 from typing import Any
 
 from internal_ai_agent.dashboard.data import (
+    agent_trace_rows,
+    load_agent_trace_examples,
     load_retriever_case_rows,
     retriever_failure_example_rows,
     retriever_failure_overview,
@@ -112,6 +114,10 @@ def generate_public_report(project_root: Path) -> str:
             "The mock ticket routing tool is prepared but blocked until approval is granted, "
             "and every run returns trace, audit, and monitoring fields.",
             "",
+            "## Agent Trace Examples",
+            "",
+            _agent_trace_examples_table(project_root),
+            "",
             "## What This Proves",
             "",
             "- The project can generate synthetic enterprise operations data safely.",
@@ -182,6 +188,26 @@ def _retriever_table(report: dict[str, Any]) -> str:
                 abstention=_pct(system["abstention_accuracy"]),
                 failures=system["failure_count"],
             )
+        )
+    return "\n".join(rows)
+
+
+def _agent_trace_examples_table(project_root: Path) -> str:
+    traces = agent_trace_rows(load_agent_trace_examples(project_root))
+    if not traces:
+        return "No agent trace examples recorded."
+    rows = [
+        (
+            "| Trace | Ticket | Approval | Route outcome | Tool calls | Executed | "
+            "Blocked | Audit events |"
+        ),
+        "| --- | --- | --- | --- | ---: | ---: | ---: | ---: |",
+    ]
+    for trace in traces[:10]:
+        rows.append(
+            "| {trace_id} | {ticket_id} | {approval_granted} | {route_tool_outcome} | "
+            "{tool_call_count} | {executed_tool_call_count} | {blocked_tool_call_count} | "
+            "{audit_event_count} |".format(**trace)
         )
     return "\n".join(rows)
 

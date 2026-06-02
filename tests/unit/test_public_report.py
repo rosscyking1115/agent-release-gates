@@ -43,6 +43,8 @@ def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
     assert "HUMAN-EMAIL-THREAD-004" not in report
     assert "| Citation coverage | 20.98% | 98.54% | +77.56% |" in report
     assert "| Safe response rate | 0.00% | 100.00% |" in report
+    assert "## Agent Trace Examples" in report
+    assert "trace_eval_tck-" in report
     assert "fully synthetic evaluation lab" in report
 
 

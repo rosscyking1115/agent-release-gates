@@ -95,3 +95,15 @@ The dashboard and public report derive retriever error-analysis tables from thes
 | `severity_match` | Whether predicted severity matched gold. |
 | `impacted_system_match` | Whether predicted impacted system matched gold. |
 | `routing_team_match` | Whether predicted routing team matched gold. |
+
+## `reports/agent_trace_examples.jsonl`
+
+| Field | Description |
+| --- | --- |
+| `trace_id` | Stable synthetic trace id for the sample run. |
+| `ticket_id` | Synthetic ticket used to generate the trace. |
+| `approval_granted` | Whether the side-effecting mock route was approved for that run. |
+| `route_tool_outcome` | Final state of the `route_ticket_mock` tool: `approval_required`, `executed`, or `not_requested`. |
+| `tool_decisions` | Ordered tool decisions with schema validity, approval requirement, execution state, rationale, and mock output. |
+| `audit_events` | Ordered structured audit events for policy and tool actions. |
+| `monitoring` | Monitoring snapshot with tool counts, citation count, and abstention state. |

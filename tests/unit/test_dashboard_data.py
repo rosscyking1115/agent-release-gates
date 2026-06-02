@@ -1,5 +1,6 @@
 from internal_ai_agent.dashboard.data import (
     agent_metric_rows,
+    agent_trace_rows,
     case_mix,
     error_analysis_rows,
     extraction_metric_rows,
@@ -314,6 +315,36 @@ def test_agent_metric_rows_formats_scores() -> None:
 
     assert rows[0]["label"] == "Trace coverage rate"
     assert rows[0]["value_pct"] == "100.00%"
+
+
+def test_agent_trace_rows_formats_trace_examples() -> None:
+    rows = agent_trace_rows(
+        [
+            {
+                "trace_id": "trace_eval_tck_1_blocked",
+                "ticket_id": "TCK-1",
+                "approval_granted": False,
+                "route_tool_outcome": "approval_required",
+                "tool_call_count": 4,
+                "executed_tool_call_count": 3,
+                "blocked_tool_call_count": 1,
+                "audit_events": [{"event_type": "route_ticket_mock"}],
+            }
+        ]
+    )
+
+    assert rows == [
+        {
+            "trace_id": "trace_eval_tck_1_blocked",
+            "ticket_id": "TCK-1",
+            "approval_granted": False,
+            "route_tool_outcome": "approval_required",
+            "tool_call_count": 4,
+            "executed_tool_call_count": 3,
+            "blocked_tool_call_count": 1,
+            "audit_event_count": 1,
+        }
+    ]
 
 
 def test_load_public_report_reads_markdown(tmp_path) -> None:

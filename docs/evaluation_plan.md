@@ -57,6 +57,7 @@ The dashboard reads the saved report artifacts rather than recomputing metrics o
 - `reports/vector_eval_cases.jsonl`
 - `reports/agent_eval_summary.json`
 - `reports/agent_eval_cases.jsonl`
+- `reports/agent_trace_examples.jsonl`
 
 ## Baseline Version
 
@@ -114,7 +115,7 @@ Known limitation: the current extraction cases are templated. Future eval sets s
 
 The first controlled-agent version is `controlled_agent_approval_gate`. It uses deterministic read-only tools for runbook search, ticket extraction, and escalation-note drafting, then requires explicit approval before running `route_ticket_mock`.
 
-It reports trace coverage rate, audit event coverage rate, approval audit rate, monitoring snapshot rate, valid tool-call rate, approval trigger rate, side-effect block rate, approved action execution rate, route-tool selection accuracy, and unnecessary tool-call rate.
+It reports trace coverage rate, audit event coverage rate, approval audit rate, monitoring snapshot rate, valid tool-call rate, approval trigger rate, side-effect block rate, approved action execution rate, route-tool selection accuracy, and unnecessary tool-call rate. It also exports deterministic trace examples for representative blocked and approved mock route runs.
 
 Known limitation: this is a deterministic local workflow rather than a LangGraph runtime. The shape is intentionally close to a future state machine so the approval and audit contract can be tested before adding orchestration dependencies.
 

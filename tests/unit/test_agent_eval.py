@@ -25,4 +25,11 @@ def test_agent_eval_report_writes_tool_governance_metrics(tmp_path) -> None:
     assert report["metrics"]["valid_tool_call_rate"] == 1.0
     assert report["metrics"]["side_effect_block_rate"] == 1.0
     assert report["metrics"]["approved_action_execution_rate"] == 1.0
+    assert report["trace_example_count"] == 2
     assert (reports_dir / "agent_eval_summary.json").exists()
+    trace_path = reports_dir / "agent_trace_examples.jsonl"
+    assert trace_path.exists()
+    traces = trace_path.read_text(encoding="utf-8")
+    assert "trace_eval_tck-0003_blocked" in traces
+    assert "trace_eval_tck-0003_approved" in traces
+    assert "approval_required" in traces

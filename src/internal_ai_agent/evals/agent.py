@@ -26,10 +26,13 @@ class AgentCaseResult:
 def evaluate_agent(project_root: Path) -> dict[str, Any]:
     tickets = read_jsonl(project_root / "data/synthetic/raw_tickets/tickets.jsonl")
     results = [_evaluate_ticket(ticket) for ticket in tickets]
+    trace_examples = _trace_examples(tickets[:5])
     report = {
         "system_version": "controlled_agent_approval_gate",
         "dataset": "synthetic_tickets",
         "case_count": len(results),
+        "trace_example_count": len(trace_examples),
+        "trace_examples_path": "reports/agent_trace_examples.jsonl",
         "metrics": {
             "trace_coverage_rate": _rate(row.trace_id_present for row in results),
             "audit_event_coverage_rate": _rate(row.audit_events_present for row in results),
@@ -60,15 +63,13 @@ def evaluate_agent(project_root: Path) -> dict[str, Any]:
     }
     write_json(project_root / "reports/agent_eval_summary.json", report)
     write_jsonl(project_root / "reports/agent_eval_cases.jsonl", (asdict(row) for row in results))
+    write_jsonl(project_root / "reports/agent_trace_examples.jsonl", trace_examples)
     return report
 
 
 def _evaluate_ticket(ticket: dict[str, Any]) -> AgentCaseResult:
-    question = (
-        f"Ticket {ticket['ticket_id']}: {ticket['title']} observed in "
-        f"{ticket['impacted_system']}. What should happen next?"
-    )
-    ticket_text = f"Ticket {ticket['ticket_id']}: {ticket['description']}"
+    question = _ticket_question(ticket)
+    ticket_text = _ticket_text(ticket)
     blocked_run = run_controlled_agent(
         question,
         ticket_text=ticket_text,
@@ -102,11 +103,66 @@ def _evaluate_ticket(ticket: dict[str, Any]) -> AgentCaseResult:
     )
 
 
+def _trace_examples(tickets: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    examples: list[dict[str, Any]] = []
+    for ticket in tickets:
+        question = _ticket_question(ticket)
+        ticket_text = _ticket_text(ticket)
+        for approval_granted in (False, True):
+            mode = "approved" if approval_granted else "blocked"
+            trace_id = f"trace_eval_{str(ticket['ticket_id']).lower()}_{mode}"
+            run = run_controlled_agent(
+                question,
+                ticket_text=ticket_text,
+                approval_granted=approval_granted,
+                trace_id=trace_id,
+            )
+            route_tool = _route_tool(run.tool_decisions)
+            examples.append(
+                {
+                    "trace_id": run.trace_id,
+                    "ticket_id": str(ticket["ticket_id"]),
+                    "approval_granted": approval_granted,
+                    "answer_abstained": run.abstained,
+                    "citation_count": len(run.citations),
+                    "tool_call_count": run.monitoring["tool_call_count"],
+                    "executed_tool_call_count": run.monitoring["executed_tool_call_count"],
+                    "blocked_tool_call_count": run.monitoring["blocked_tool_call_count"],
+                    "route_tool_outcome": _route_tool_outcome(route_tool),
+                    "tool_decisions": [
+                        decision.model_dump(mode="json") for decision in run.tool_decisions
+                    ],
+                    "audit_events": [event.model_dump(mode="json") for event in run.audit_events],
+                    "monitoring": run.monitoring,
+                }
+            )
+    return examples
+
+
+def _ticket_question(ticket: dict[str, Any]) -> str:
+    return (
+        f"Ticket {ticket['ticket_id']}: {ticket['title']} observed in "
+        f"{ticket['impacted_system']}. What should happen next?"
+    )
+
+
+def _ticket_text(ticket: dict[str, Any]) -> str:
+    return f"Ticket {ticket['ticket_id']}: {ticket['description']}"
+
+
 def _route_tool(tool_decisions: list[Any]) -> Any:
     for decision in tool_decisions:
         if decision.tool_name == "route_ticket_mock":
             return decision
     return None
+
+
+def _route_tool_outcome(route_tool: Any) -> str:
+    if route_tool is None:
+        return "not_requested"
+    if route_tool.executed:
+        return "executed"
+    return route_tool.blocked_reason or "blocked"
 
 
 def _has_approval_event(run: Any) -> bool:

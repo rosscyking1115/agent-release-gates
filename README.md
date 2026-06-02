@@ -90,6 +90,7 @@ The baseline evaluation writes:
 - `reports/security_eval_cases.jsonl`
 - `reports/agent_eval_summary.json`
 - `reports/agent_eval_cases.jsonl`
+- `reports/agent_trace_examples.jsonl`
 - `reports/evaluation_report.md`
 - `reports/evaluation_report.html`
 
@@ -162,6 +163,7 @@ The Streamlit dashboard presents the evaluation outcome as an inspection surface
 - noisy-case and failure-reason analysis
 - controlled agent approval and tool-governance metrics
 - trace and audit coverage metrics
+- deterministic agent trace examples for blocked and approved mock routes
 - failed-case review tables
 
 Run it with:
