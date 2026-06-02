@@ -19,10 +19,10 @@ def test_run_all_evals_generates_reports(tmp_path) -> None:
     summary = run_all(tmp_path)
 
     assert summary["dataset_counts"]["runbooks"] == 24
-    assert summary["dataset_profile"]["golden_case_mix"]["manual_cases"] == 40
+    assert summary["dataset_profile"]["golden_case_mix"]["manual_cases"] == 88
     assert summary["dataset_profile"]["golden_case_mix"]["noise_type_count"] >= 30
-    assert summary["comparison"]["case_count"] == 296
-    assert summary["retriever_comparison"]["case_count"] == 296
+    assert summary["comparison"]["case_count"] == 344
+    assert summary["retriever_comparison"]["case_count"] == 344
     assert len(summary["retriever_comparison"]["systems"]) == 5
     assert summary["extraction"]["metrics"]["schema_validity"] == 1.0
     assert summary["security"]["metrics"]["improved_safe_rate"] == 1.0
@@ -31,7 +31,7 @@ def test_run_all_evals_generates_reports(tmp_path) -> None:
     assert summary["security"]["case_count"] == 60
     assert summary["agent"]["metrics"]["side_effect_block_rate"] == 1.0
     assert summary["evaluation_history"]["current_summary"]["best_retriever"] == (
-        "Hybrid sparse semantic"
+        "Local TF-IDF vector"
     )
     assert len(summary["evaluation_history"]["milestones"]) == 5
     assert summary["collector_export_preview"]["export_mode"] == "dry_run_preview"

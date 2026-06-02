@@ -1,48 +1,48 @@
 {
   "dataset_counts": {
-    "golden_cases": 296,
+    "golden_cases": 344,
     "red_team_cases": 60,
     "runbooks": 24,
     "tickets": 180
   },
   "golden_case_mix": {
-    "abstention_share": 0.223,
-    "answerable_cases": 230,
+    "abstention_share": 0.1919,
+    "answerable_cases": 278,
     "expected_abstentions": 66,
     "generated_cases": 256,
     "issue_category_count": 24,
-    "manual_cases": 40,
-    "manual_share": 0.1351,
-    "noise_type_count": 38,
-    "task_type_count": 15,
+    "manual_cases": 88,
+    "manual_share": 0.2558,
+    "noise_type_count": 39,
+    "task_type_count": 16,
     "team_count": 4
   },
   "golden_coverage": {
     "by_issue_category": {
-      "allocation_mismatch": 1,
-      "beneficial_owner_missing": 9,
-      "booking_status_stuck": 13,
-      "commission_code_missing": 14,
-      "confirmation_pending": 12,
-      "control_threshold_breach": 10,
-      "cutoff_window_missed": 36,
-      "duplicate_batch_detected": 7,
-      "duplicate_record_cluster": 10,
-      "entity_match_review": 8,
-      "file_validation_failed": 15,
-      "late_arriving_feed": 6,
-      "lineage_check_failed": 2,
-      "missing_kyc_document": 10,
-      "reference_data_gap": 7,
-      "repair_queue_backlog": 4,
-      "schema_drift": 3,
-      "screening_alert_review": 6,
-      "settlement_delay": 4,
-      "stale_reference_data": 20,
-      "tax_form_expired": 5,
-      "trade_date_dispute": 10,
-      "unmatched_settlement_reference": 8,
-      "workflow_sla_breach": 10
+      "allocation_mismatch": 3,
+      "beneficial_owner_missing": 11,
+      "booking_status_stuck": 15,
+      "commission_code_missing": 16,
+      "confirmation_pending": 14,
+      "control_threshold_breach": 12,
+      "cutoff_window_missed": 38,
+      "duplicate_batch_detected": 9,
+      "duplicate_record_cluster": 12,
+      "entity_match_review": 10,
+      "file_validation_failed": 17,
+      "late_arriving_feed": 8,
+      "lineage_check_failed": 4,
+      "missing_kyc_document": 12,
+      "reference_data_gap": 9,
+      "repair_queue_backlog": 6,
+      "schema_drift": 5,
+      "screening_alert_review": 8,
+      "settlement_delay": 6,
+      "stale_reference_data": 22,
+      "tax_form_expired": 7,
+      "trade_date_dispute": 12,
+      "unmatched_settlement_reference": 10,
+      "workflow_sla_breach": 12
     },
     "by_noise_type": {
       "abbreviated_ticket": 8,
@@ -66,6 +66,7 @@
       "manual_desk_paste": 2,
       "manual_evidence_packet": 6,
       "manual_evidence_packet_conflict": 2,
+      "manual_field_note": 48,
       "manual_incident_timeline": 1,
       "manual_meeting_note": 1,
       "manual_ops_chat_handoff": 1,
@@ -91,6 +92,7 @@
       "manual_challenge_next_action": 18,
       "manual_evidence_packet_abstention": 2,
       "manual_evidence_packet_next_action": 6,
+      "manual_field_note_next_action": 48,
       "manual_review_bundle_abstention": 2,
       "manual_review_bundle_next_action": 6,
       "retrieved_doc_injection_abstention": 8,
@@ -102,15 +104,14 @@
       "weak_evidence_abstention": 24
     },
     "by_team": {
-      "client_onboarding": 65,
-      "data_quality": 65,
-      "payments_ops": 93,
-      "trade_support": 73
+      "client_onboarding": 77,
+      "data_quality": 77,
+      "payments_ops": 105,
+      "trade_support": 85
     }
   },
   "profile_type": "synthetic_dataset_profile",
   "recommended_next_data_work": [
-    "Add more hand-authored golden cases before more reranking.",
     "Compare local retrieval with a provider-backed embedding option.",
     "Keep all public benchmark data synthetic and reproducible."
   ],
@@ -138,11 +139,14 @@
     }
   },
   "risk_labels": [
-    "manual_case_share_below_25_percent",
     "provider_backed_embedding_comparison_not_covered",
     "real_company_data_intentionally_excluded"
   ],
   "top_manual_noise_types": [
+    {
+      "case_count": 48,
+      "value": "manual_field_note"
+    },
     {
       "case_count": 6,
       "value": "manual_evidence_packet"
@@ -170,10 +174,6 @@
     {
       "case_count": 2,
       "value": "manual_evidence_packet_conflict"
-    },
-    {
-      "case_count": 2,
-      "value": "manual_review_bundle_conflict"
     }
   ]
 }

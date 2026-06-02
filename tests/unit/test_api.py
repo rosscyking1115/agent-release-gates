@@ -49,7 +49,7 @@ def test_evaluation_history_endpoint_returns_json() -> None:
     history = evaluation_history()
 
     assert history["history_type"] == "deterministic_lab_milestones"
-    assert history["current_summary"]["best_retriever"] == "Hybrid sparse semantic"
+    assert history["current_summary"]["best_retriever"] == "Local TF-IDF vector"
     assert len(history["milestones"]) == 5
 
 
@@ -57,9 +57,10 @@ def test_dataset_profile_endpoint_returns_json() -> None:
     profile = dataset_profile()
 
     assert profile["profile_type"] == "synthetic_dataset_profile"
-    assert profile["dataset_counts"]["golden_cases"] == 296
-    assert profile["golden_case_mix"]["manual_cases"] == 40
-    assert "manual_case_share_below_25_percent" in profile["risk_labels"]
+    assert profile["dataset_counts"]["golden_cases"] == 344
+    assert profile["golden_case_mix"]["manual_cases"] == 88
+    assert "manual_case_share_below_25_percent" not in profile["risk_labels"]
+    assert "provider_backed_embedding_comparison_not_covered" in profile["risk_labels"]
 
 
 def test_agent_otel_spans_endpoint_returns_jsonl() -> None:

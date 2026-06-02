@@ -4,10 +4,10 @@
 
 This report summarizes a fully synthetic evaluation lab for internal AI agent workflows. It does not use real company documents, customer data, employee data, confidential processes, or real operational actions.
 
-- Golden retrieval cases: 296
+- Golden retrieval cases: 344
 - Synthetic ticket extraction and agent cases: 180
 - Red-team safety cases: 60
-- Best current retriever: Hybrid sparse semantic retrieval
+- Best current retriever: Local TF-IDF vector
 - Current vector experiments: local TF-IDF vector retrieval and local embedding-store retrieval
 
 ## Dataset Profile
@@ -16,13 +16,13 @@ This report summarizes a fully synthetic evaluation lab for internal AI agent wo
 | --- | ---: |
 | Runbook sections | 24 |
 | Synthetic tickets | 180 |
-| Golden cases | 296 |
-| Manual golden cases | 40 |
-| Manual share | 13.51% |
+| Golden cases | 344 |
+| Manual golden cases | 88 |
+| Manual share | 25.58% |
 | Expected abstentions | 66 |
-| Abstention share | 22.30% |
-| Noise types | 38 |
-| Task types | 15 |
+| Abstention share | 19.19% |
+| Noise types | 39 |
+| Task types | 16 |
 | Red-team cases | 60 |
 
 | Coverage sample | Cases |
@@ -43,7 +43,7 @@ This report summarizes a fully synthetic evaluation lab for internal AI agent wo
 | red_team:grounding_bypass | 4 |
 | red_team:prompt_injection | 4 |
 | red_team:retrieved_access_escalation | 4 |
-| risk labels | 3 |
+| risk labels | 2 |
 
 This profile is generated from the same JSONL artifacts as the eval runner. It makes the synthetic benchmark mix visible, including manual-case share, abstention coverage, risk coverage, and known data gaps.
 
@@ -51,9 +51,9 @@ This profile is generated from the same JSONL artifacts as the eval runner. It m
 
 | System | Hit rate@3 | Citation coverage | Next action accuracy | Abstention accuracy | Failures |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| Baseline team hints | 45.22% | 20.00% | 20.00% | 78.38% | 248 |
-| Improved lexical | 99.13% | 98.70% | 98.70% | 100.00% | 3 |
-| Hybrid sparse semantic | 100.00% | 100.00% | 100.00% | 100.00% | 0 |
+| Baseline team hints | 45.68% | 19.42% | 19.42% | 81.40% | 288 |
+| Improved lexical | 99.28% | 98.56% | 98.56% | 100.00% | 4 |
+| Hybrid sparse semantic | 100.00% | 99.64% | 99.64% | 100.00% | 1 |
 | Local TF-IDF vector | 100.00% | 100.00% | 100.00% | 100.00% | 0 |
 | Local embedding store | 100.00% | 100.00% | 100.00% | 100.00% | 0 |
 
@@ -63,29 +63,29 @@ The retrieval experiment compares a deliberately weak baseline, a lexical retrie
 
 | Snapshot | System | Citation coverage | Failed cases | Citation delta | Failure delta | Regression | Reason |
 | --- | --- | ---: | ---: | ---: | ---: | --- | --- |
-| 001_baseline_team_hints | Baseline team hints | 20.00% | 248 |  |  | False |  |
-| 002_improved_lexical | Improved lexical | 98.70% | 3 | +78.70% | -245 | False |  |
-| 003_hybrid_sparse_semantic | Hybrid sparse semantic | 100.00% | 0 | +1.30% | -3 | False |  |
-| 004_local_tf_idf_vector | Local TF-IDF vector | 100.00% | 0 | +0.00% | +0 | False |  |
+| 001_baseline_team_hints | Baseline team hints | 19.42% | 288 |  |  | False |  |
+| 002_improved_lexical | Improved lexical | 98.56% | 4 | +79.14% | -284 | False |  |
+| 003_hybrid_sparse_semantic | Hybrid sparse semantic | 99.64% | 1 | +1.08% | -3 | False |  |
+| 004_local_tf_idf_vector | Local TF-IDF vector | 100.00% | 0 | +0.36% | -1 | False |  |
 | 005_local_embedding_store | Local embedding store | 100.00% | 0 | +0.00% | +0 | False |  |
 
 ## Historical Evaluation Snapshots
 
 | Milestone time | Milestone | Citation coverage | Failed cases | Citation delta | Failure delta |
 | --- | --- | ---: | ---: | ---: | ---: |
-| 2026-06-02T09:00:00Z | Baseline team hints | 20.00% | 248 |  |  |
-| 2026-06-02T10:00:00Z | Improved lexical | 98.70% | 3 | +78.70% | -245 |
-| 2026-06-02T11:00:00Z | Hybrid sparse semantic | 100.00% | 0 | +1.30% | -3 |
-| 2026-06-02T12:00:00Z | Local TF-IDF vector | 100.00% | 0 | +0.00% | +0 |
+| 2026-06-02T09:00:00Z | Baseline team hints | 19.42% | 288 |  |  |
+| 2026-06-02T10:00:00Z | Improved lexical | 98.56% | 4 | +79.14% | -284 |
+| 2026-06-02T11:00:00Z | Hybrid sparse semantic | 99.64% | 1 | +1.08% | -3 |
+| 2026-06-02T12:00:00Z | Local TF-IDF vector | 100.00% | 0 | +0.36% | -1 |
 | 2026-06-02T13:00:00Z | Local embedding store | 100.00% | 0 | +0.00% | +0 |
 
 ## Retriever Failure Analysis
 
 | System | Failed cases | Retrieved but not cited | Abstention mismatches | Top failure reason |
 | --- | ---: | ---: | ---: | --- |
-| Baseline team hints | 248 | 58 | 64 | missing_or_wrong_citation (184) |
-| Improved lexical | 3 | 1 | 0 | missing_or_wrong_citation (3) |
-| Hybrid sparse semantic | 0 | 0 | 0 |  |
+| Baseline team hints | 288 | 73 | 64 | missing_or_wrong_citation (224) |
+| Improved lexical | 4 | 2 | 0 | missing_or_wrong_citation (4) |
+| Hybrid sparse semantic | 1 | 1 | 0 | missing_or_wrong_citation (1) |
 | Local TF-IDF vector | 0 | 0 | 0 |  |
 | Local embedding store | 0 | 0 | 0 |  |
 
@@ -97,16 +97,17 @@ The retrieval experiment compares a deliberately weak baseline, a lexical retrie
 | Improved lexical | PARA-TCK-0028 | paraphrase | missing_or_wrong_citation, wrong_issue_category, wrong_next_action | RB-DATA_QUALITY-04 | RB-DATA_QUALITY-01 | False | RB-DATA_QUALITY-01 total=13.0; RB-CLIENT_ONBOARDING-02 total=11.0; RB-CLIENT_ONBOARDING-05 total=11.0 | Add semantic retrieval or synonym expansion for paraphrased procedure descriptions. |
 | Improved lexical | PARA-TCK-0044 | paraphrase | missing_or_wrong_citation, wrong_issue_category, wrong_next_action | RB-DATA_QUALITY-04 | RB-DATA_QUALITY-01 | False | RB-DATA_QUALITY-01 total=13.0; RB-CLIENT_ONBOARDING-02 total=11.0; RB-CLIENT_ONBOARDING-05 total=11.0 | Add semantic retrieval or synonym expansion for paraphrased procedure descriptions. |
 | Improved lexical | NOISY-MISSING-007 | missing_metadata | missing_or_wrong_citation, wrong_issue_category, wrong_next_action | RB-CLIENT_ONBOARDING-01 | RB-CLIENT_ONBOARDING-03 | True | RB-CLIENT_ONBOARDING-03 total=12.0; RB-CLIENT_ONBOARDING-01 total=11.0; RB-TRADE_SUPPORT-06 total=8.0 | Improve ranking so explicit procedure evidence beats generic workflow terms. |
+| Hybrid sparse semantic | MANUAL-FIELD-074 | manual_field_note | missing_or_wrong_citation, wrong_issue_category, wrong_next_action | RB-TRADE_SUPPORT-05 | RB-TRADE_SUPPORT-06 | True | RB-TRADE_SUPPORT-06 total=20.5255; RB-TRADE_SUPPORT-04 total=16.5456; RB-TRADE_SUPPORT-05 total=15.8784 | Add within-team reranking using issue-category evidence and expected action terms. |
 
 ## Baseline To Improved Delta
 
 | Metric | Baseline | Improved lexical | Delta |
 | --- | ---: | ---: | ---: |
-| Retrieval hit rate@3 | 45.22% | 99.13% | +53.91% |
-| Citation coverage | 20.00% | 98.70% | +78.70% |
-| Issue category accuracy | 20.00% | 98.70% | +78.70% |
-| Next action accuracy | 20.00% | 98.70% | +78.70% |
-| Abstention accuracy | 78.38% | 100.00% | +21.62% |
+| Retrieval hit rate@3 | 45.68% | 99.28% | +53.60% |
+| Citation coverage | 19.42% | 98.56% | +79.14% |
+| Issue category accuracy | 19.42% | 98.56% | +79.14% |
+| Next action accuracy | 19.42% | 98.56% | +79.14% |
+| Abstention accuracy | 81.40% | 100.00% | +18.60% |
 
 ## Structured Extraction
 
@@ -181,18 +182,18 @@ The controlled workflow separates read-only tools from side-effecting actions. T
 
 | Export metric | Value |
 | --- | ---: |
-| OTel-style spans | 1154 |
+| OTel-style spans | 1292 |
 | Exported traces | 21 |
 | Root spans | 21 |
-| Child spans | 1133 |
+| Child spans | 1271 |
 | Tool spans | 40 |
 
 | Collector export preview | Value |
 | --- | ---: |
 | Mode | dry_run_preview |
 | Endpoint | http://localhost:4318/v1/traces |
-| Spans prepared | 1154 |
-| OTLP payloads | 6 |
+| Spans prepared | 1292 |
+| OTLP payloads | 7 |
 | Batch size | 200 |
 
 The combined export includes workflow-level spans, agent tool/audit spans, case-level retriever failure spans, retriever ranking-detail spans, case-level extraction spans, case-level agent approval spans, plus API contract and error-case spans for local inspection. The collector adapter translates this local JSONL into OTLP/HTTP JSON and stays in dry-run mode unless explicitly asked to post to a collector.

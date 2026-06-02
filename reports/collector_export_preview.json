@@ -7,11 +7,11 @@
     "Dry run only; no network call is made by the evaluation runner.",
     "Use scripts/export_otel_collector.py with --endpoint to POST OTLP JSON."
   ],
-  "payload_count": 6,
+  "payload_count": 7,
   "root_span_count": 21,
   "service_name": "internal-ai-agent-eval-lab",
   "service_version": "0.1.0",
   "source_path": "reports/observability_otel_spans.jsonl",
-  "span_count": 1154,
+  "span_count": 1292,
   "trace_count": 21
 }

@@ -52,8 +52,8 @@ The project is useful, but it is still too deterministic in several places:
 
 - Retrieval now includes sparse hybrid, local TF-IDF vector, local feature-hashed embedding-store experiments, and current-evidence reranking, but not a provider-backed embedding model.
 - Error analysis now identifies retrieved-but-not-cited failures, deterministic retriever-version trend snapshots, and dated lab milestone history; the expanded manual challenge set drove reranking fixes for schema mismatch, stale context, KYC artefact phrasing, and ambiguous-handoff abstention.
-- Dataset profiling now exposes manual-versus-generated share, abstention coverage, task/noise/issue/team coverage, red-team coverage, and explicit data-quality gap labels. The profile currently shows that more hand-authored cases are still needed.
-- Ticket and runbook data are still partly templated, even after adding noisy, human-like, human email-thread, manual evidence-packet, mixed review-bundle, retrieved-document-injection, and long-conflicting-context cases.
+- Dataset profiling now exposes manual-versus-generated share, abstention coverage, task/noise/issue/team coverage, red-team coverage, and explicit data-quality gap labels. The profile now clears the previous manual-share gap with 88 hand-authored golden cases, while still flagging that provider-backed embedding comparison is not covered.
+- Ticket and runbook data are still partly templated, even after adding noisy, human-like, human email-thread, manual evidence-packet, manual field-note, mixed review-bundle, retrieved-document-injection, and long-conflicting-context cases.
 - Extraction is deterministic pattern matching.
 - Red-team checks include harder retrieved-context attacks, but are still string-based.
 - Agent orchestration is local code rather than a state machine.
@@ -64,8 +64,8 @@ These are acceptable for the first lab version, but they should guide the next w
 ## Next Build Priorities
 
 1. Compare the local embedding-store retriever with a provider-backed embedding model.
-2. Continue making the golden suite less templated with new non-generated tickets, mixed evidence bundles, and harder retrieved-context evidence.
-3. Add a full OpenTelemetry Collector deployment check for the OTLP/HTTP span exporter.
+2. Add a full OpenTelemetry Collector deployment check for the OTLP/HTTP span exporter.
+3. Continue making the golden suite less templated with new non-generated tickets, mixed evidence bundles, and harder retrieved-context evidence.
 4. Add model-assisted adversarial review for the red-team suite after the deterministic scoring contract remains stable.
 5. Add an optional LLM extraction path with schema repair once noisier tickets are in place.
 

@@ -325,6 +325,7 @@ def build_golden_cases(tickets: list[Ticket], limit: int = 96) -> list[dict[str,
         cases.extend(_build_manual_non_templated_cases())
         cases.extend(_build_manual_evidence_packet_cases())
         cases.extend(_build_manual_review_bundle_cases())
+        cases.extend(_build_manual_field_note_cases())
     return cases
 
 
@@ -1038,6 +1039,331 @@ def _build_manual_review_bundle_cases() -> list[dict[str, object]]:
             "noise_type": "manual_review_bundle_conflict",
         },
     ]
+
+
+def _build_manual_field_note_cases() -> list[dict[str, object]]:
+    category_lookup = {
+        (team_id, category): {
+            "section_id": f"RB-{team_id.upper()}-{index:02d}",
+            "action": action,
+        }
+        for team_id, team in TEAMS.items()
+        for index, (category, action) in enumerate(team["categories"], start=1)
+    }
+    specs = [
+        (
+            "payments_ops",
+            "file_validation_failed",
+            "Payments floor note: Aurora rejected the inbound file before posting. "
+            "The control panel shows file validation failed after the schema check, "
+            "and the analyst needs the cited next action.",
+        ),
+        (
+            "payments_ops",
+            "file_validation_failed",
+            "Queue review comment: the payment file did not enter processing because "
+            "the schema validator stopped it at intake. It is not a duplicate batch; "
+            "which runbook section should guide the requeue decision?",
+        ),
+        (
+            "payments_ops",
+            "duplicate_batch_detected",
+            "Ops channel summary: Aurora shows the same batch identifier twice in "
+            "the submission log, so the team suspects a duplicate batch detected "
+            "case before any replay is attempted.",
+        ),
+        (
+            "payments_ops",
+            "duplicate_batch_detected",
+            "Reviewer note: two payment batch rows share the same idempotency key and "
+            "the desk wants to know the approval path before replay. Cite the duplicate "
+            "batch procedure.",
+        ),
+        (
+            "payments_ops",
+            "settlement_delay",
+            "Liquidity handoff: Aurora settlement has not completed after the expected "
+            "window. The issue looks like settlement delay rather than file rejection.",
+        ),
+        (
+            "payments_ops",
+            "settlement_delay",
+            "Morning control note: payment settlement retry status is still pending and "
+            "the settlement window has passed. Which cited procedure gives the next step?",
+        ),
+        (
+            "payments_ops",
+            "unmatched_settlement_reference",
+            "Reconciliation note: the settlement reference in Aurora cannot be matched "
+            "to the control output reference. The desk needs the unmatched settlement "
+            "reference runbook.",
+        ),
+        (
+            "payments_ops",
+            "unmatched_settlement_reference",
+            "Control paste: payment reference ids differ between the settlement output "
+            "and the expected ledger note. Please cite the procedure for an unmatched "
+            "settlement reference.",
+        ),
+        (
+            "payments_ops",
+            "cutoff_window_missed",
+            "Payments lead note: activity arrived after the processing cutoff and the "
+            "Aurora queue shows cutoff window missed. What should the analyst do next?",
+        ),
+        (
+            "payments_ops",
+            "cutoff_window_missed",
+            "End-of-day review: the payment item was valid but missed the cutoff window. "
+            "The team needs the cited escalation step for payments.",
+        ),
+        (
+            "payments_ops",
+            "repair_queue_backlog",
+            "Repair desk note: Aurora repair queue has grown overnight and high-severity "
+            "items need triage. Use the repair queue backlog procedure.",
+        ),
+        (
+            "payments_ops",
+            "repair_queue_backlog",
+            "Payments queue snapshot: many repair items are stacked behind urgent cases. "
+            "Which runbook section covers repair queue backlog and the next action?",
+        ),
+        (
+            "client_onboarding",
+            "missing_kyc_document",
+            "Onboarding analyst note: Nova Client Intake cannot activate the client "
+            "because the KYC document is missing from the evidence pack.",
+        ),
+        (
+            "client_onboarding",
+            "missing_kyc_document",
+            "Case review: the required synthetic KYC artifact is absent and activation "
+            "is paused in Nova. Cite the missing KYC document procedure.",
+        ),
+        (
+            "client_onboarding",
+            "entity_match_review",
+            "Screening desk note: Nova produced a possible entity match and the analyst "
+            "needs second-line review with supporting evidence.",
+        ),
+        (
+            "client_onboarding",
+            "entity_match_review",
+            "Reviewer handoff: client intake found an entity match review flag, with "
+            "supporting evidence attached for escalation. What cited action applies?",
+        ),
+        (
+            "client_onboarding",
+            "workflow_sla_breach",
+            "Onboarding timeline: the Nova workflow has exceeded its SLA and the case "
+            "has not moved to activation. Which runbook covers workflow SLA breach?",
+        ),
+        (
+            "client_onboarding",
+            "workflow_sla_breach",
+            "Lead review: the intake case is past the workflow service target. The team "
+            "needs the cited escalation step for a workflow SLA breach.",
+        ),
+        (
+            "client_onboarding",
+            "beneficial_owner_missing",
+            "Client packet review: beneficial owner details are missing from Nova and "
+            "activation cannot continue until ownership evidence is provided.",
+        ),
+        (
+            "client_onboarding",
+            "beneficial_owner_missing",
+            "Intake note: the case has no beneficial ownership details in the current "
+            "packet. Which citation and next action fit this onboarding issue?",
+        ),
+        (
+            "client_onboarding",
+            "screening_alert_review",
+            "Compliance queue note: Nova raised a screening alert that needs evidence "
+            "collection before any decision is made.",
+        ),
+        (
+            "client_onboarding",
+            "screening_alert_review",
+            "Analyst comment: the client intake case is stopped on a screening alert "
+            "review, and the reviewer wants the cited evidence-gathering step.",
+        ),
+        (
+            "client_onboarding",
+            "tax_form_expired",
+            "Onboarding case note: the synthetic tax form in Nova has expired, so the "
+            "client packet cannot proceed.",
+        ),
+        (
+            "client_onboarding",
+            "tax_form_expired",
+            "Document review: activation is paused because the tax form is expired. "
+            "Which client onboarding procedure gives the next action?",
+        ),
+        (
+            "trade_support",
+            "allocation_mismatch",
+            "Trade support note: Helios allocation details do not reconcile with the "
+            "expected trade record. The analyst needs the allocation mismatch procedure.",
+        ),
+        (
+            "trade_support",
+            "allocation_mismatch",
+            "Desk paste: the block allocation differs from the downstream trade record. "
+            "Cite the Helios allocation mismatch next action.",
+        ),
+        (
+            "trade_support",
+            "confirmation_pending",
+            "Counterparty queue note: the trade confirmation has not arrived in Helios "
+            "and the support desk needs a reminder draft.",
+        ),
+        (
+            "trade_support",
+            "confirmation_pending",
+            "Trade exception update: confirmation remains pending with the counterparty. "
+            "Which cited runbook section should be used?",
+        ),
+        (
+            "trade_support",
+            "reference_data_gap",
+            "Helios exception note: required reference data fields are missing from the "
+            "trade support case, blocking downstream booking.",
+        ),
+        (
+            "trade_support",
+            "reference_data_gap",
+            "Reference desk handoff: the trade exception lacks required reference data "
+            "fields. Please cite the reference data gap procedure.",
+        ),
+        (
+            "trade_support",
+            "trade_date_dispute",
+            "Trade support timeline: the parties disagree on the trade date shown in "
+            "Helios, so the analyst needs the dispute summary step.",
+        ),
+        (
+            "trade_support",
+            "trade_date_dispute",
+            "Desk review: one side says the trade date is wrong and the timestamp evidence "
+            "needs comparison. Which trade date dispute citation applies?",
+        ),
+        (
+            "trade_support",
+            "commission_code_missing",
+            "Booking note: the commission code is missing from the Helios exception and "
+            "downstream booking should be blocked.",
+        ),
+        (
+            "trade_support",
+            "commission_code_missing",
+            "Trade support comment: the booking workflow has no commission code attached. "
+            "Cite the missing commission code next action.",
+        ),
+        (
+            "trade_support",
+            "booking_status_stuck",
+            "Helios queue note: booking status has stopped progressing and the desk wants "
+            "a follow-up task created.",
+        ),
+        (
+            "trade_support",
+            "booking_status_stuck",
+            "Support review: the trade booking workflow is stuck in the same status. "
+            "Which runbook section covers booking status stuck?",
+        ),
+        (
+            "data_quality",
+            "stale_reference_data",
+            "Atlas control note: the reference data feed is older than the expected "
+            "freshness window and needs the refresh checklist.",
+        ),
+        (
+            "data_quality",
+            "stale_reference_data",
+            "Data quality review: freshness badge is red because the reference data is "
+            "stale. Cite the stale reference data procedure.",
+        ),
+        (
+            "data_quality",
+            "schema_drift",
+            "Schema monitor note: the incoming Atlas data shape no longer matches the "
+            "expected schema version.",
+        ),
+        (
+            "data_quality",
+            "schema_drift",
+            "Publication review: downstream release should be blocked because schema "
+            "drift was detected in the Atlas feed.",
+        ),
+        (
+            "data_quality",
+            "control_threshold_breach",
+            "Control owner note: an Atlas data quality control exceeded its configured "
+            "threshold and the breach must be recorded.",
+        ),
+        (
+            "data_quality",
+            "control_threshold_breach",
+            "Dashboard alert: control threshold breach on Atlas is active, and the owner "
+            "needs notification. Which cited action applies?",
+        ),
+        (
+            "data_quality",
+            "duplicate_record_cluster",
+            "Stewardship note: several Atlas records share identifiers and appear to be "
+            "one duplicate record cluster.",
+        ),
+        (
+            "data_quality",
+            "duplicate_record_cluster",
+            "Review bundle: duplicate customer records were found in Atlas and need "
+            "quarantine before stewardship review.",
+        ),
+        (
+            "data_quality",
+            "lineage_check_failed",
+            "Lineage control note: Atlas cannot trace the upstream feed correctly, so "
+            "lineage evidence needs to be attached.",
+        ),
+        (
+            "data_quality",
+            "lineage_check_failed",
+            "Data quality handoff: upstream lineage check failed on the Atlas feed. "
+            "Which citation gives the next action?",
+        ),
+        (
+            "data_quality",
+            "late_arriving_feed",
+            "Consumer alert: the Atlas feed arrived late and downstream consumers are "
+            "waiting for an update.",
+        ),
+        (
+            "data_quality",
+            "late_arriving_feed",
+            "Control room note: late arriving feed detected in Atlas. The team needs to "
+            "record the late feed and notify consumers.",
+        ),
+    ]
+    cases: list[dict[str, object]] = []
+    for index, (team_id, category, prompt) in enumerate(specs, start=41):
+        expected = category_lookup[(team_id, category)]
+        cases.append(
+            {
+                "case_id": f"MANUAL-FIELD-{index:03d}",
+                "task_type": "manual_field_note_next_action",
+                "user_role": "operations_analyst",
+                "input": prompt,
+                "expected_issue_category": category,
+                "expected_team": team_id,
+                "expected_next_action": expected["action"],
+                "expected_citation_ids": [expected["section_id"]],
+                "should_abstain": False,
+                "noise_type": "manual_field_note",
+            }
+        )
+    return cases
 
 
 def _build_noisy_cases(tickets: list[Ticket]) -> list[dict[str, object]]:

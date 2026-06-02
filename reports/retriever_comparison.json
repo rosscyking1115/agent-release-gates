@@ -1,37 +1,37 @@
 {
-  "case_count": 296,
+  "case_count": 344,
   "notes": [
     "Hybrid, vector, and embedding-store retrieval are compared as experiments; the older two-system report is kept for continuity.",
     "All systems run over the same synthetic golden cases."
   ],
   "systems": [
     {
-      "abstention_accuracy": 0.7838,
-      "citation_coverage": 0.2,
-      "failure_count": 248,
-      "issue_category_accuracy": 0.2,
+      "abstention_accuracy": 0.814,
+      "citation_coverage": 0.1942,
+      "failure_count": 288,
+      "issue_category_accuracy": 0.1942,
       "label": "Baseline team hints",
-      "next_action_accuracy": 0.2,
-      "retrieval_hit_rate_at_3": 0.4522,
+      "next_action_accuracy": 0.1942,
+      "retrieval_hit_rate_at_3": 0.4568,
       "system_version": "baseline_team_hint_retrieval"
     },
     {
       "abstention_accuracy": 1.0,
-      "citation_coverage": 0.987,
-      "failure_count": 3,
-      "issue_category_accuracy": 0.987,
+      "citation_coverage": 0.9856,
+      "failure_count": 4,
+      "issue_category_accuracy": 0.9856,
       "label": "Improved lexical",
-      "next_action_accuracy": 0.987,
-      "retrieval_hit_rate_at_3": 0.9913,
+      "next_action_accuracy": 0.9856,
+      "retrieval_hit_rate_at_3": 0.9928,
       "system_version": "improved_lexical_retrieval"
     },
     {
       "abstention_accuracy": 1.0,
-      "citation_coverage": 1.0,
-      "failure_count": 0,
-      "issue_category_accuracy": 1.0,
+      "citation_coverage": 0.9964,
+      "failure_count": 1,
+      "issue_category_accuracy": 0.9964,
       "label": "Hybrid sparse semantic",
-      "next_action_accuracy": 1.0,
+      "next_action_accuracy": 0.9964,
       "retrieval_hit_rate_at_3": 1.0,
       "system_version": "hybrid_sparse_semantic_retrieval"
     },

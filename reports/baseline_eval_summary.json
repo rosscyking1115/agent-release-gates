@@ -147,6 +147,13 @@
       "failure_count": 2,
       "next_action_accuracy": 0.0
     },
+    "manual_field_note": {
+      "abstention_accuracy": 1.0,
+      "case_count": 48,
+      "citation_coverage": 0.1667,
+      "failure_count": 40,
+      "next_action_accuracy": 0.1667
+    },
     "manual_incident_timeline": {
       "abstention_accuracy": 1.0,
       "case_count": 1,
@@ -310,6 +317,13 @@
       "failure_count": 5,
       "next_action_accuracy": 0.1667
     },
+    "manual_field_note_next_action": {
+      "abstention_accuracy": 1.0,
+      "case_count": 48,
+      "citation_coverage": 0.1667,
+      "failure_count": 40,
+      "next_action_accuracy": 0.1667
+    },
     "manual_review_bundle_abstention": {
       "abstention_accuracy": 0.0,
       "case_count": 2,
@@ -374,7 +388,7 @@
       "next_action_accuracy": 0.0
     }
   },
-  "case_count": 296,
+  "case_count": 344,
   "dataset": "golden_cases",
   "failure_examples": [
     {
@@ -860,19 +874,19 @@
   ],
   "failure_reasons": {
     "abstention_mismatch": 64,
-    "missing_or_wrong_citation": 184,
-    "wrong_issue_category": 184,
-    "wrong_next_action": 184,
-    "wrong_team": 3
+    "missing_or_wrong_citation": 224,
+    "wrong_issue_category": 224,
+    "wrong_next_action": 224,
+    "wrong_team": 4
   },
   "metrics": {
-    "abstention_accuracy": 0.7838,
-    "abstention_rate": 0.0068,
-    "citation_coverage": 0.2,
-    "issue_category_accuracy": 0.2,
-    "next_action_accuracy": 0.2,
-    "retrieval_hit_rate_at_3": 0.4522,
-    "team_accuracy": 0.987
+    "abstention_accuracy": 0.814,
+    "abstention_rate": 0.0058,
+    "citation_coverage": 0.1942,
+    "issue_category_accuracy": 0.1942,
+    "next_action_accuracy": 0.1942,
+    "retrieval_hit_rate_at_3": 0.4568,
+    "team_accuracy": 0.9856
   },
   "notes": [
     "Baseline uses broad system/team keyword hints, not procedure-level retrieval.",

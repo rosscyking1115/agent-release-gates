@@ -73,7 +73,8 @@ def generate_public_report(project_root: Path) -> str:
             f"- Golden retrieval cases: {comparison['case_count']}",
             f"- Synthetic ticket extraction and agent cases: {agent['case_count']}",
             f"- Red-team safety cases: {security['case_count']}",
-            "- Best current retriever: Hybrid sparse semantic retrieval",
+            "- Best current retriever: "
+            f"{evaluation_history['current_summary']['best_retriever']}",
             (
                 "- Current vector experiments: local TF-IDF vector retrieval and local "
                 "embedding-store retrieval"
