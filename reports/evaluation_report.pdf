@@ -481,7 +481,7 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 13 0 R >>
 endobj
 13 0 obj
-<< /Length 2572 >>
+<< /Length 2556 >>
 stream
 BT
 /F1 10 Tf
@@ -569,9 +569,11 @@ T*
 T*
 (approval spans, plus API contract and error-case spans for local inspection. The collector) Tj
 T*
-(adapter translates this local JSONL into OTLP/HTTP JSON and stays in dry-run mode unless) Tj
+(adapter translates this local JSONL into OTLP/HTTP JSON; the Docker Compose observability) Tj
 T*
-(explicitly asked to post to a collector.) Tj
+(profile verifies that the same payloads are accepted by an OpenTelemetry Collector using) Tj
+T*
+(collector self-metrics.) Tj
 T*
 () Tj
 T*
@@ -589,8 +591,6 @@ T*
 T*
 (  adversarial cases.) Tj
 T*
-(- Structured extraction, routing, refusal behavior, approval gates, and audit traces are) Tj
-T*
 ET
 endstream
 endobj
@@ -598,12 +598,14 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 15 0 R >>
 endobj
 15 0 obj
-<< /Length 1062 >>
+<< /Length 1163 >>
 stream
 BT
 /F1 10 Tf
 14 TL
 54 738 Td
+(- Structured extraction, routing, refusal behavior, approval gates, and audit traces are) Tj
+T*
 (  evaluated as product behavior, not only as model output.) Tj
 T*
 (- The dashboard, API, Docker runtime, and CI workflow make the lab reproducible.) Tj
@@ -644,7 +646,7 @@ T*
 T*
 (- Compare the local embedding-store retriever with a provider-backed embedding model.) Tj
 T*
-(- Test the OTLP/HTTP exporter against a full OpenTelemetry Collector deployment.) Tj
+(- Extend the collector deployment with optional downstream storage or visualization.) Tj
 T*
 (- Add an optional LLM extraction path with schema repair and failure analysis.) Tj
 T*
@@ -667,10 +669,10 @@ xref
 0000008913 00000 n 
 0000011403 00000 n 
 0000011531 00000 n 
-0000014156 00000 n 
-0000014284 00000 n 
+0000014140 00000 n 
+0000014268 00000 n 
 trailer
 << /Size 16 /Root 1 0 R >>
 startxref
-15399
+15484
 %%EOF

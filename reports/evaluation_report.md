@@ -196,7 +196,7 @@ The controlled workflow separates read-only tools from side-effecting actions. T
 | OTLP payloads | 7 |
 | Batch size | 200 |
 
-The combined export includes workflow-level spans, agent tool/audit spans, case-level retriever failure spans, retriever ranking-detail spans, case-level extraction spans, case-level agent approval spans, plus API contract and error-case spans for local inspection. The collector adapter translates this local JSONL into OTLP/HTTP JSON and stays in dry-run mode unless explicitly asked to post to a collector.
+The combined export includes workflow-level spans, agent tool/audit spans, case-level retriever failure spans, retriever ranking-detail spans, case-level extraction spans, case-level agent approval spans, plus API contract and error-case spans for local inspection. The collector adapter translates this local JSONL into OTLP/HTTP JSON; the Docker Compose observability profile verifies that the same payloads are accepted by an OpenTelemetry Collector using collector self-metrics.
 
 ## What This Proves
 
@@ -217,5 +217,5 @@ The combined export includes workflow-level spans, agent tool/audit spans, case-
 
 - Add noisier, human-written ticket variants.
 - Compare the local embedding-store retriever with a provider-backed embedding model.
-- Test the OTLP/HTTP exporter against a full OpenTelemetry Collector deployment.
+- Extend the collector deployment with optional downstream storage or visualization.
 - Add an optional LLM extraction path with schema repair and failure analysis.

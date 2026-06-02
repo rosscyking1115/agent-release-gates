@@ -12,4 +12,5 @@ dist/
 build/
 *.egg-info/
 reports/collector_export_smoke.json
+reports/collector_deployment_check.json
 public/

@@ -36,5 +36,15 @@ jobs:
       - name: Smoke OTLP collector export
         run: uv run python scripts/smoke_otel_collector.py
 
+      - name: Start OpenTelemetry Collector
+        run: docker compose --profile observability up -d otel-collector
+
+      - name: Check OpenTelemetry Collector deployment
+        run: uv run python scripts/check_otel_collector_deployment.py
+
+      - name: Stop OpenTelemetry Collector
+        if: always()
+        run: docker compose --profile observability down
+
       - name: Build Docker image
         run: docker build -t internal-ai-agent-eval-lab:ci .

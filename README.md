@@ -32,7 +32,7 @@ Internal AI agents are only useful when their answers are grounded, measurable, 
 | Structured extraction | Pydantic-validated ticket extraction and routing decisions |
 | Safety testing | Red-team cases for prompt injection, leakage, weak evidence, excessive agency, access escalation, and tool misuse |
 | Agent governance | Read-only tools plus approval-gated mock side effects |
-| Observability | Trace IDs, audit events, monitoring snapshots, local span timeline, OTLP/HTTP export preview, and local collector smoke test |
+| Observability | Trace IDs, audit events, monitoring snapshots, local span timeline, OTLP/HTTP export preview, local capture smoke test, and Dockerized OpenTelemetry Collector check |
 | Deployment | Public Streamlit dashboard, GitHub Pages report site, Docker image, Docker Compose, CI workflow |
 
 ## Current Evaluation Snapshot
@@ -145,10 +145,13 @@ uv run ruff check .
 uv run pytest
 uv run python scripts/run_all_evals.py
 uv run python scripts/smoke_otel_collector.py
+docker compose --profile observability up -d otel-collector
+uv run python scripts/check_otel_collector_deployment.py
+docker compose --profile observability down
 docker build -t internal-ai-agent-eval-lab:local .
 ```
 
-CI runs linting, tests, deterministic report regeneration, OTLP collector smoke testing, and Docker build verification.
+CI runs linting, tests, deterministic report regeneration, local OTLP smoke testing, Dockerized OpenTelemetry Collector verification, and Docker build verification.
 
 ## Streamlit Cloud Deployment
 
@@ -187,5 +190,5 @@ The root `streamlit_app.py` entrypoint loads the dashboard from `app/streamlit_a
 
 - Add more hand-authored golden cases and noisier synthetic tickets.
 - Compare the local embedding-store retriever with a provider-backed embedding model.
-- Add a full OpenTelemetry Collector deployment check.
+- Extend the OpenTelemetry Collector setup with optional downstream storage or visualization.
 - Add an optional LLM extraction path with schema repair.

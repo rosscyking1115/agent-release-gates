@@ -12,6 +12,9 @@ uv run ruff check .
 uv run pytest
 uv run python scripts/run_all_evals.py
 uv run python scripts/smoke_otel_collector.py
+docker compose --profile observability up -d otel-collector
+uv run python scripts/check_otel_collector_deployment.py
+docker compose --profile observability down
 ```
 
 Expected result:
@@ -21,6 +24,7 @@ Expected result:
 - synthetic data is regenerated
 - baseline, extraction, security, controlled-agent, dataset-profile, history, observability, collector-preview, Markdown, HTML, and PDF reports are written to `reports/`
 - OTLP/HTTP payloads are posted to a temporary local capture endpoint and verified
+- the same payloads are posted to a Dockerized OpenTelemetry Collector and verified through collector self-metrics
 
 ## Dashboard
 
@@ -98,6 +102,21 @@ Expected result:
 - each OTLP/HTTP payload is posted with `Content-Type: application/json`
 - the received span count matches `reports/observability_otel_spans.jsonl`
 - `reports/collector_export_smoke.json` is written locally and ignored by git
+
+Run the Dockerized OpenTelemetry Collector deployment check:
+
+```powershell
+docker compose --profile observability up -d otel-collector
+uv run python scripts/check_otel_collector_deployment.py
+docker compose --profile observability down
+```
+
+Expected result:
+
+- the collector accepts OTLP/HTTP trace payloads on `http://localhost:4318/v1/traces`
+- `http://localhost:8888/metrics` shows accepted and exported span counters increasing by the expected span count
+- `reports/collector_deployment_check.json` is written locally and ignored by git
+- the check fails if payload counts, HTTP status codes, or collector span metrics are missing
 
 ## Container Verification
 

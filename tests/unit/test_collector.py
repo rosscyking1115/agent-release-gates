@@ -10,6 +10,9 @@ from internal_ai_agent.observability.collector import (
     otlp_trace_payloads,
     write_collector_export_preview,
 )
+from internal_ai_agent.observability.collector_deployment import (
+    summarize_collector_deployment,
+)
 from internal_ai_agent.observability.collector_smoke import run_local_collector_smoke
 
 
@@ -208,3 +211,53 @@ def test_run_local_collector_smoke_posts_to_capture_endpoint() -> None:
     assert summary["content_types"] == ["application/json"]
     assert summary["passed"] is True
     assert summary["failed_checks"] == []
+
+
+def test_summarize_collector_deployment_passes_with_metrics_output() -> None:
+    summary = summarize_collector_deployment(
+        {
+            "export_mode": "posted",
+            "collector_endpoint": "http://localhost:4318/v1/traces",
+            "span_count": 3,
+            "trace_count": 2,
+            "batch_size": 2,
+            "payload_count": 2,
+            "posted_payload_count": 2,
+            "status_codes": [200, 202],
+        },
+        collector_metrics_endpoint="http://localhost:8888/metrics",
+        receiver_accepted_span_delta=3,
+        exporter_sent_span_delta=3,
+    )
+
+    assert summary["export_mode"] == "collector_deployment_check"
+    assert summary["collector_post_mode"] == "posted"
+    assert summary["passed"] is True
+    assert summary["failed_checks"] == []
+
+
+def test_summarize_collector_deployment_flags_status_and_metric_failures() -> None:
+    summary = summarize_collector_deployment(
+        {
+            "export_mode": "posted",
+            "collector_endpoint": "http://localhost:4318/v1/traces",
+            "span_count": 3,
+            "trace_count": 2,
+            "batch_size": 2,
+            "payload_count": 2,
+            "posted_payload_count": 1,
+            "status_codes": [500],
+        },
+        collector_metrics_endpoint="http://localhost:8888/metrics",
+        receiver_accepted_span_delta=2,
+        exporter_sent_span_delta=0,
+    )
+
+    assert summary["passed"] is False
+    assert summary["failed_checks"] == [
+        "posted_payload_count_mismatch",
+        "status_code_count_mismatch",
+        "unexpected_status_code",
+        "receiver_accepted_span_delta_below_expected",
+        "exporter_sent_span_delta_below_expected",
+    ]

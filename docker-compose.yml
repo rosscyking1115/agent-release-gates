@@ -43,3 +43,16 @@ services:
       - "8510"
       - --server.headless
       - "true"
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.104.0
+    profiles:
+      - observability
+    command:
+      - --config=/etc/otelcol/config.yaml
+    ports:
+      - "4318:4318"
+      - "13133:13133"
+      - "8888:8888"
+    volumes:
+      - ./ops/otel-collector-config.yaml:/etc/otelcol/config.yaml:ro

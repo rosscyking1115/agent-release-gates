@@ -243,6 +243,22 @@ This local-only file is written by `scripts/smoke_otel_collector.py` and ignored
 | `posted_payload_count` | Number of payloads posted by the exporter. |
 | `received_request_count` | Number of requests captured by the local endpoint. |
 | `received_span_count` | Number of spans decoded from received OTLP payloads. |
+
+## `reports/collector_deployment_check.json`
+
+This local-only file is written by `scripts/check_otel_collector_deployment.py` and ignored by git. The script expects the Docker Compose `observability` profile to be running, posts the generated OTLP/HTTP payloads to a real OpenTelemetry Collector, and verifies that collector self-metrics show accepted and exported span counters increasing by the expected span count.
+
+| Field | Description |
+| --- | --- |
+| `export_mode` | Deployment-check mode, currently `collector_deployment_check`. |
+| `collector_endpoint` | OTLP/HTTP traces endpoint used during the deployment check. |
+| `payload_count` | Number of OTLP payloads prepared for export. |
+| `posted_payload_count` | Number of payloads posted to the collector. |
+| `status_codes` | HTTP status codes returned by the collector. |
+| `collector_metrics_endpoint` | Collector metrics endpoint used to verify accepted and exported spans. |
+| `receiver_accepted_span_delta` | Increase in collector receiver accepted-span counter during the check. |
+| `exporter_sent_span_delta` | Increase in collector exporter sent-span counter during the check. |
+| `passed` | Whether payload counts, status codes, and collector metric checks passed. |
 | `status_codes` | HTTP status codes returned by the local capture endpoint. |
 | `content_types` | Captured request content types. |
 | `passed` | Whether all smoke checks passed. |
