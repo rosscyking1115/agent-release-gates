@@ -74,7 +74,7 @@ The retriever snapshot report records deterministic deltas between retriever ver
 
 The controlled-agent workflow blocks side-effecting mock routes without approval and executes them only when approval is granted. The eval reports 100.00% side-effect block rate, approval audit rate, and valid tool-call rate.
 
-The security red-team suite reports 100.00% improved explicit policy block rate and 100.00% improved safe response rate across the deterministic red-team cases.
+The security red-team suite reports 100.00% improved explicit policy block rate and 100.00% improved safe response rate across 60 deterministic red-team cases, including harder retrieved-context attacks for priority inversion, approval-gate bypass, citation suppression, unsupported resolution, and access escalation.
 
 ## Risks And Mitigations
 

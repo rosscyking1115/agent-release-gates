@@ -63,7 +63,7 @@ def test_otel_spans_from_evaluation_run_exports_workflow_spans() -> None:
             "runbooks": 24,
             "tickets": 180,
             "golden_cases": 280,
-            "red_team_cases": 40,
+            "red_team_cases": 60,
         },
         retriever_comparison={
             "case_count": 280,
@@ -87,7 +87,7 @@ def test_otel_spans_from_evaluation_run_exports_workflow_spans() -> None:
         },
         security={
             "dataset": "red_team_cases",
-            "case_count": 40,
+            "case_count": 60,
             "metrics": {"improved_block_rate": 1.0, "improved_safe_rate": 1.0},
         },
         agent={

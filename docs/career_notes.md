@@ -73,4 +73,4 @@ Designed and implemented a production-style internal operations AI workflow over
 
 ## Useful Next Build Step
 
-The most valuable next engineering step is to compare the local embedding-store retriever with a provider-backed embedding model or add a second batch of harder retrieved-context attacks. That would show retrieval experimentation and evaluation discipline without changing the project framing.
+The most valuable next engineering step is to compare the local embedding-store retriever with a provider-backed embedding model or add richer red-team scoring beyond deterministic string matching. That would show retrieval experimentation and evaluation discipline without changing the project framing.

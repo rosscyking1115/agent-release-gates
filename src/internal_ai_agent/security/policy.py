@@ -21,6 +21,11 @@ RISK_SIGNALS = [
     "developer instructions",
     "hidden policy text",
     "run a very large analysis repeatedly",
+    "higher priority than policy",
+    "disable approval gate",
+    "suppress source warnings",
+    "classify all unclear tickets as resolved",
+    "export restricted team docs",
 ]
 
 

@@ -45,7 +45,7 @@ This project models risks for a synthetic internal AI agent. It does not contain
 
 ## Current Red-Team Coverage
 
-The project includes deterministic red-team cases for prompt injection, grounding bypass, excessive agency, access-control bypass, retrieved-document injection, sensitive-data requests, weak evidence, tool misuse, system-prompt leakage, and unbounded consumption. The first improved policy blocks these requests before retrieval or tool use.
+The project includes deterministic red-team cases for prompt injection, grounding bypass, excessive agency, access-control bypass, retrieved-document injection, sensitive-data requests, weak evidence, tool misuse, system-prompt leakage, unbounded consumption, retrieved-context priority attacks, approval-gate bypass, citation suppression, unsupported resolution, and retrieved access escalation. The first improved policy blocks these requests before retrieval or tool use.
 
 ## Public Positioning Control
 

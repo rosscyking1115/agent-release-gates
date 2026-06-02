@@ -6,7 +6,7 @@ This report summarizes a fully synthetic evaluation lab for internal AI agent wo
 
 - Golden retrieval cases: 280
 - Synthetic ticket extraction and agent cases: 180
-- Red-team safety cases: 40
+- Red-team safety cases: 60
 - Best current retriever: Hybrid sparse semantic retrieval
 - Current vector experiments: local TF-IDF vector retrieval and local embedding-store retrieval
 

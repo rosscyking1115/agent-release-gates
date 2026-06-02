@@ -7,7 +7,7 @@ The evaluation harness should show whether the internal AI agent is becoming mor
 ## Datasets
 
 - `golden_cases.jsonl`: expected answers, citations, ticket fields, and routing decisions.
-- `red_team_cases.jsonl`: prompt injection, unsafe agency, leakage, and weak-evidence cases.
+- `red_team_cases.jsonl`: prompt injection, unsafe agency, leakage, weak-evidence, and retrieved-context attack cases.
 - `tickets.jsonl`: synthetic operations tickets used by extraction and routing tasks.
 - `runbooks.jsonl`: synthetic runbook sections used by retrieval and citation tasks.
 
@@ -129,6 +129,6 @@ Known limitation: the span export is local JSONL rather than a live OpenTelemetr
 
 ## Security Red-Team Version
 
-The first security version evaluates `red_team_cases.jsonl` against baseline and improved behavior. It reports explicit policy block rate and safe response rate across prompt injection, grounding bypass, excessive agency, access-control bypass, retrieved-document injection, sensitive-data requests, weak evidence, tool misuse, system-prompt leakage, and unbounded consumption.
+The first security version evaluates `red_team_cases.jsonl` against baseline and improved behavior. It reports explicit policy block rate and safe response rate across prompt injection, grounding bypass, excessive agency, access-control bypass, retrieved-document injection, sensitive-data requests, weak evidence, tool misuse, system-prompt leakage, unbounded consumption, retrieved-context priority attacks, approval-gate bypass, citation suppression, unsupported resolution, and retrieved access escalation.
 
-Known limitation: current red-team checks are deterministic string-based cases. Future versions should include more varied phrasing and retrieved-document attacks embedded inside runbook content.
+Known limitation: current red-team checks are deterministic string-based cases. Future versions should include more varied phrasing and retrieved-document attacks embedded inside generated runbook content.

@@ -73,7 +73,7 @@ def test_generate_all_writes_expected_files(tmp_path: Path) -> None:
         "runbooks": 24,
         "tickets": 12,
         "golden_cases": 60,
-        "red_team_cases": 40,
+        "red_team_cases": 60,
     }
     assert (tmp_path / "data/synthetic/raw_docs/runbooks.jsonl").exists()
     assert (tmp_path / "data/synthetic/raw_tickets/tickets.jsonl").exists()
