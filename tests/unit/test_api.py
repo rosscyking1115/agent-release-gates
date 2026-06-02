@@ -1,6 +1,10 @@
+import pytest
+from pydantic import ValidationError
+
 from internal_ai_agent.api.main import (
     agent_otel_spans,
     agent_run,
+    app,
     ask,
     evaluation_report,
     evaluation_report_html,
@@ -43,8 +47,19 @@ def test_observability_otel_spans_endpoint_returns_jsonl() -> None:
     assert '"name": "retriever.case_failure"' in report
     assert '"name": "extraction.case_result"' in report
     assert '"name": "agent.approval_decision"' in report
+    assert '"name": "api.error_case"' in report
     assert '"name": "agent.run"' in report
     assert '"span_id":' in report
+
+
+def test_api_contract_rejects_invalid_requests() -> None:
+    with pytest.raises(ValidationError):
+        AskRequest(question="")
+    with pytest.raises(ValidationError):
+        ExtractRequest(text="")
+    with pytest.raises(ValidationError):
+        AgentRunRequest(question="")
+    assert "/unknown" not in {route.path for route in app.routes}
 
 
 def test_ask_endpoint_function_returns_improved_answer() -> None:

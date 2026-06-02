@@ -360,6 +360,105 @@ def otel_spans_from_extraction_cases(cases: list[dict[str, Any]]) -> list[dict[s
     return spans
 
 
+def otel_spans_from_api_contracts() -> list[dict[str, Any]]:
+    trace_label = "api_contracts"
+    trace_id = _stable_hex(trace_label, length=32)
+    root_span_id = _stable_hex(f"{trace_label}:root", length=16)
+    trace_start = BASE_TIME_UNIX_NANO + 500 * TRACE_GAP_NANO
+    endpoint_specs = [
+        ("GET", "/health", 200, "health_check", "OK"),
+        ("GET", "/reports/evaluation", 200, "markdown_report", "OK"),
+        ("GET", "/reports/evaluation.html", 200, "html_report", "OK"),
+        ("GET", "/reports/agent/otel-spans", 200, "agent_span_export", "OK"),
+        (
+            "GET",
+            "/reports/observability/otel-spans",
+            200,
+            "observability_span_export",
+            "OK",
+        ),
+        ("POST", "/ask", 200, "rag_answer", "OK"),
+        ("POST", "/extract", 200, "structured_extraction", "OK"),
+        ("POST", "/agent/run", 200, "controlled_agent_run", "OK"),
+    ]
+    error_specs = [
+        ("POST", "/ask", 422, "request_validation", "empty_question_rejected"),
+        ("POST", "/extract", 422, "request_validation", "empty_text_rejected"),
+        ("POST", "/agent/run", 422, "request_validation", "empty_question_rejected"),
+        ("GET", "/unknown", 404, "route_not_found", "unknown_route_rejected"),
+    ]
+    child_count = len(endpoint_specs) + len(error_specs)
+    trace_end = trace_start + (child_count + 1) * SPAN_GAP_NANO
+    spans = [
+        _make_span(
+            trace_id=trace_id,
+            span_id=root_span_id,
+            parent_span_id=None,
+            name="api.contract_analysis",
+            start_time_unix_nano=trace_start,
+            end_time_unix_nano=trace_end,
+            status_code="OK",
+            attributes={
+                "lab.trace_id": trace_label,
+                "lab.component": "api",
+                "api.endpoint_contract_count": len(endpoint_specs),
+                "api.error_case_count": len(error_specs),
+            },
+        )
+    ]
+    sequence = 0
+    for method, route, status_code, operation, status in endpoint_specs:
+        sequence += 1
+        span_start = trace_start + sequence * SPAN_GAP_NANO
+        spans.append(
+            _make_span(
+                trace_id=trace_id,
+                span_id=_stable_hex(f"{trace_label}:endpoint:{sequence}:{route}", length=16),
+                parent_span_id=root_span_id,
+                name="api.endpoint_contract",
+                start_time_unix_nano=span_start,
+                end_time_unix_nano=span_start + SPAN_DURATION_NANO,
+                status_code=status,
+                attributes={
+                    "lab.trace_id": trace_label,
+                    "lab.component": "api",
+                    "eval.sequence": sequence,
+                    "http.method": method,
+                    "http.route": route,
+                    "http.status_code": status_code,
+                    "api.operation": operation,
+                    "api.contract_type": "happy_path",
+                },
+            )
+        )
+    for method, route, status_code, error_type, scenario in error_specs:
+        sequence += 1
+        span_start = trace_start + sequence * SPAN_GAP_NANO
+        spans.append(
+            _make_span(
+                trace_id=trace_id,
+                span_id=_stable_hex(f"{trace_label}:error:{sequence}:{route}", length=16),
+                parent_span_id=root_span_id,
+                name="api.error_case",
+                start_time_unix_nano=span_start,
+                end_time_unix_nano=span_start + SPAN_DURATION_NANO,
+                status_code="ERROR",
+                attributes={
+                    "lab.trace_id": trace_label,
+                    "lab.component": "api",
+                    "eval.sequence": sequence,
+                    "http.method": method,
+                    "http.route": route,
+                    "http.status_code": status_code,
+                    "api.error_type": error_type,
+                    "api.scenario": scenario,
+                    "api.contract_type": "expected_error",
+                },
+            )
+        )
+    return spans
+
+
 def _root_span(
     trace: dict[str, Any],
     trace_id: str,

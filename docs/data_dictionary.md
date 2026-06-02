@@ -126,7 +126,7 @@ Each row is an OpenTelemetry-style span derived from `reports/agent_trace_exampl
 
 ## `reports/observability_otel_spans.jsonl`
 
-Each row is an OpenTelemetry-style span for the broader lab observability view. The file combines `reports/agent_otel_spans.jsonl` with one deterministic `evaluation.run` trace that describes the orchestration path for synthetic data generation, retriever comparison, extraction evaluation, security evaluation, controlled-agent evaluation, and report/API artifact export. It also includes retriever failure traces with one child span per failed case, an extraction trace with one child span per synthetic ticket, and an agent approval trace with one child span per synthetic ticket, so concrete retrieval misses, extraction checks, and approval-gate decisions can be inspected from the same timeline surface.
+Each row is an OpenTelemetry-style span for the broader lab observability view. The file combines `reports/agent_otel_spans.jsonl` with one deterministic `evaluation.run` trace that describes the orchestration path for synthetic data generation, retriever comparison, extraction evaluation, security evaluation, controlled-agent evaluation, and report/API artifact export. It also includes retriever failure traces with one child span per failed case, an extraction trace with one child span per synthetic ticket, an agent approval trace with one child span per synthetic ticket, and an API contract trace with endpoint and expected-error spans. Concrete retrieval misses, extraction checks, approval-gate decisions, and API validation boundaries can be inspected from the same timeline surface.
 
 Additional attributes may include:
 
@@ -153,4 +153,10 @@ Additional attributes may include:
 | `agent.approved_action_executed` | Whether the mock tool executed after approval was granted. |
 | `agent.approval_audited` | Whether approval outcomes appeared in the audit trail. |
 | `agent.unnecessary_tool_call` | Whether the agent called a tool unnecessarily. |
+| `http.method` | HTTP method for an API contract or error-case span. |
+| `http.route` | API route represented by the span. |
+| `http.status_code` | Expected HTTP status code for the route or error case. |
+| `api.operation` | Happy-path API operation represented by an endpoint contract span. |
+| `api.error_type` | Expected API error family, such as request validation or route not found. |
+| `api.scenario` | Named API error scenario, such as empty question rejection. |
 | `http.route.*` | Local report/API routes represented by the artifact-export span. |

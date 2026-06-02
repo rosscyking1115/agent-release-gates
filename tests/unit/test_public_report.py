@@ -51,6 +51,7 @@ def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
     assert "case-level retriever failure spans" in report
     assert "case-level extraction spans" in report
     assert "case-level agent approval spans" in report
+    assert "API contract and error-case spans" in report
     assert "fully synthetic evaluation lab" in report
 
 

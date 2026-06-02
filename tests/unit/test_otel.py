@@ -1,6 +1,7 @@
 from internal_ai_agent.observability.otel import (
     otel_spans_from_agent_approval_cases,
     otel_spans_from_agent_traces,
+    otel_spans_from_api_contracts,
     otel_spans_from_evaluation_run,
     otel_spans_from_extraction_cases,
     otel_spans_from_retriever_failures,
@@ -246,3 +247,31 @@ def test_otel_spans_from_extraction_cases_exports_case_level_spans() -> None:
     assert spans[1]["attributes"]["extraction.predicted_team"] == "trade_support"
     assert spans[2]["status"]["code"] == "ERROR"
     assert spans[2]["attributes"]["extraction.routing_team_match"] is False
+
+
+def test_otel_spans_from_api_contracts_exports_endpoint_and_error_spans() -> None:
+    spans = otel_spans_from_api_contracts()
+
+    assert len(spans) == 13
+    assert spans[0]["name"] == "api.contract_analysis"
+    assert spans[0]["status"]["code"] == "OK"
+    assert spans[0]["attributes"]["api.endpoint_contract_count"] == 8
+    assert spans[0]["attributes"]["api.error_case_count"] == 4
+    endpoint_span = next(
+        span
+        for span in spans
+        if span["name"] == "api.endpoint_contract"
+        and span["attributes"]["http.route"] == "/reports/observability/otel-spans"
+    )
+    assert endpoint_span["parent_span_id"] == spans[0]["span_id"]
+    assert endpoint_span["status"]["code"] == "OK"
+    assert endpoint_span["attributes"]["http.status_code"] == 200
+    error_span = next(
+        span
+        for span in spans
+        if span["name"] == "api.error_case"
+        and span["attributes"]["api.scenario"] == "empty_question_rejected"
+    )
+    assert error_span["status"]["code"] == "ERROR"
+    assert error_span["attributes"]["http.status_code"] == 422
+    assert error_span["attributes"]["api.contract_type"] == "expected_error"
