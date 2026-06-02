@@ -29,7 +29,7 @@ def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
     report = generate_public_report(tmp_path)
 
     assert "# Internal AI Agent Evaluation Report" in report
-    assert "Golden retrieval cases: 280" in report
+    assert "Golden retrieval cases: 288" in report
     assert "| Hybrid sparse semantic | 100.00% | 100.00% | 100.00% | 100.00% | 0 |" in report
     assert "| Local TF-IDF vector |" in report
     assert "| Local embedding store |" in report
@@ -43,7 +43,7 @@ def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
     assert "MANUAL-CONTROL-011" not in report
     assert "Top retrieved scores" in report
     assert "HUMAN-EMAIL-THREAD-004" not in report
-    assert "| Citation coverage | 20.18% | 98.62% | +78.44% |" in report
+    assert "| Citation coverage | 20.09% | 98.66% | +78.57% |" in report
     assert "MANUAL-AMBIGUOUS-024" not in report
     assert "| Safe response rate | 0.00% | 100.00% |" in report
     assert "| Weighted safe response rate | 0.00% | 100.00% |" in report

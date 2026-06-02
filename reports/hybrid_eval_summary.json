@@ -133,6 +133,20 @@
       "failure_count": 0,
       "next_action_accuracy": 1.0
     },
+    "manual_evidence_packet": {
+      "abstention_accuracy": 1.0,
+      "case_count": 6,
+      "citation_coverage": 1.0,
+      "failure_count": 0,
+      "next_action_accuracy": 1.0
+    },
+    "manual_evidence_packet_conflict": {
+      "abstention_accuracy": 1.0,
+      "case_count": 2,
+      "citation_coverage": 0.0,
+      "failure_count": 0,
+      "next_action_accuracy": 0.0
+    },
     "manual_incident_timeline": {
       "abstention_accuracy": 1.0,
       "case_count": 1,
@@ -268,6 +282,20 @@
       "failure_count": 0,
       "next_action_accuracy": 1.0
     },
+    "manual_evidence_packet_abstention": {
+      "abstention_accuracy": 1.0,
+      "case_count": 2,
+      "citation_coverage": 0.0,
+      "failure_count": 0,
+      "next_action_accuracy": 0.0
+    },
+    "manual_evidence_packet_next_action": {
+      "abstention_accuracy": 1.0,
+      "case_count": 6,
+      "citation_coverage": 1.0,
+      "failure_count": 0,
+      "next_action_accuracy": 1.0
+    },
     "retrieved_doc_injection_abstention": {
       "abstention_accuracy": 1.0,
       "case_count": 8,
@@ -318,13 +346,13 @@
       "next_action_accuracy": 0.0
     }
   },
-  "case_count": 280,
+  "case_count": 288,
   "dataset": "golden_cases",
   "failure_examples": [],
   "failure_reasons": {},
   "metrics": {
     "abstention_accuracy": 1.0,
-    "abstention_rate": 0.2214,
+    "abstention_rate": 0.2222,
     "citation_coverage": 1.0,
     "issue_category_accuracy": 1.0,
     "next_action_accuracy": 1.0,

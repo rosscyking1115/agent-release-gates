@@ -4,7 +4,7 @@
 
 This report summarizes a fully synthetic evaluation lab for internal AI agent workflows. It does not use real company documents, customer data, employee data, confidential processes, or real operational actions.
 
-- Golden retrieval cases: 280
+- Golden retrieval cases: 288
 - Synthetic ticket extraction and agent cases: 180
 - Red-team safety cases: 60
 - Best current retriever: Hybrid sparse semantic retrieval
@@ -14,8 +14,8 @@ This report summarizes a fully synthetic evaluation lab for internal AI agent wo
 
 | System | Hit rate@3 | Citation coverage | Next action accuracy | Abstention accuracy | Failures |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| Baseline team hints | 45.41% | 20.18% | 20.18% | 78.57% | 234 |
-| Improved lexical | 99.08% | 98.62% | 98.62% | 100.00% | 3 |
+| Baseline team hints | 45.54% | 20.09% | 20.09% | 78.47% | 241 |
+| Improved lexical | 99.11% | 98.66% | 98.66% | 100.00% | 3 |
 | Hybrid sparse semantic | 100.00% | 100.00% | 100.00% | 100.00% | 0 |
 | Local TF-IDF vector | 100.00% | 100.00% | 100.00% | 100.00% | 0 |
 | Local embedding store | 100.00% | 100.00% | 100.00% | 100.00% | 0 |
@@ -26,9 +26,9 @@ The retrieval experiment compares a deliberately weak baseline, a lexical retrie
 
 | Snapshot | System | Citation coverage | Failed cases | Citation delta | Failure delta | Regression | Reason |
 | --- | --- | ---: | ---: | ---: | ---: | --- | --- |
-| 001_baseline_team_hints | Baseline team hints | 20.18% | 234 |  |  | False |  |
-| 002_improved_lexical | Improved lexical | 98.62% | 3 | +78.44% | -231 | False |  |
-| 003_hybrid_sparse_semantic | Hybrid sparse semantic | 100.00% | 0 | +1.38% | -3 | False |  |
+| 001_baseline_team_hints | Baseline team hints | 20.09% | 241 |  |  | False |  |
+| 002_improved_lexical | Improved lexical | 98.66% | 3 | +78.57% | -238 | False |  |
+| 003_hybrid_sparse_semantic | Hybrid sparse semantic | 100.00% | 0 | +1.34% | -3 | False |  |
 | 004_local_tf_idf_vector | Local TF-IDF vector | 100.00% | 0 | +0.00% | +0 | False |  |
 | 005_local_embedding_store | Local embedding store | 100.00% | 0 | +0.00% | +0 | False |  |
 
@@ -36,7 +36,7 @@ The retrieval experiment compares a deliberately weak baseline, a lexical retrie
 
 | System | Failed cases | Retrieved but not cited | Abstention mismatches | Top failure reason |
 | --- | ---: | ---: | ---: | --- |
-| Baseline team hints | 234 | 55 | 60 | missing_or_wrong_citation (174) |
+| Baseline team hints | 241 | 57 | 62 | missing_or_wrong_citation (179) |
 | Improved lexical | 3 | 1 | 0 | missing_or_wrong_citation (3) |
 | Hybrid sparse semantic | 0 | 0 | 0 |  |
 | Local TF-IDF vector | 0 | 0 | 0 |  |
@@ -55,11 +55,11 @@ The retrieval experiment compares a deliberately weak baseline, a lexical retrie
 
 | Metric | Baseline | Improved lexical | Delta |
 | --- | ---: | ---: | ---: |
-| Retrieval hit rate@3 | 45.41% | 99.08% | +53.67% |
-| Citation coverage | 20.18% | 98.62% | +78.44% |
-| Issue category accuracy | 20.18% | 98.62% | +78.44% |
-| Next action accuracy | 20.18% | 98.62% | +78.44% |
-| Abstention accuracy | 78.57% | 100.00% | +21.43% |
+| Retrieval hit rate@3 | 45.54% | 99.11% | +53.57% |
+| Citation coverage | 20.09% | 98.66% | +78.57% |
+| Issue category accuracy | 20.09% | 98.66% | +78.57% |
+| Next action accuracy | 20.09% | 98.66% | +78.57% |
+| Abstention accuracy | 78.47% | 100.00% | +21.53% |
 
 ## Structured Extraction
 
@@ -134,10 +134,10 @@ The controlled workflow separates read-only tools from side-effecting actions. T
 
 | Export metric | Value |
 | --- | ---: |
-| OTel-style spans | 1112 |
+| OTel-style spans | 1131 |
 | Exported traces | 21 |
 | Root spans | 21 |
-| Child spans | 1091 |
+| Child spans | 1110 |
 | Tool spans | 40 |
 
 The combined export includes workflow-level spans, agent tool/audit spans, case-level retriever failure spans, retriever ranking-detail spans, case-level extraction spans, case-level agent approval spans, plus API contract and error-case spans for local inspection.

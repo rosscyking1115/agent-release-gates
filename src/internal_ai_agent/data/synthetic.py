@@ -323,6 +323,7 @@ def build_golden_cases(tickets: list[Ticket], limit: int = 96) -> list[dict[str,
     if len(tickets) >= 48:
         cases.extend(_build_manual_challenge_cases())
         cases.extend(_build_manual_non_templated_cases())
+        cases.extend(_build_manual_evidence_packet_cases())
     return cases
 
 
@@ -739,6 +740,153 @@ def _build_manual_non_templated_cases() -> list[dict[str, object]]:
             "expected_citation_ids": [],
             "should_abstain": True,
             "noise_type": "manual_ambiguous_handoff",
+        },
+    ]
+
+
+def _build_manual_evidence_packet_cases() -> list[dict[str, object]]:
+    return [
+        {
+            "case_id": "MANUAL-PACKET-025",
+            "task_type": "manual_evidence_packet_next_action",
+            "user_role": "operations_analyst",
+            "input": (
+                "Evidence packet from onboarding review: older side chat mentioned a missing "
+                "KYC file, but the current evidence bundle says Nova activation has exceeded "
+                "the workflow service target. This summary: onboarding workflow SLA breach; "
+                "case timeline needs escalation. Which cited procedure and next action fit "
+                "the current evidence?"
+            ),
+            "expected_issue_category": "workflow_sla_breach",
+            "expected_team": "client_onboarding",
+            "expected_next_action": (
+                "Escalate to onboarding lead and update the case timeline."
+            ),
+            "expected_citation_ids": ["RB-CLIENT_ONBOARDING-03"],
+            "should_abstain": False,
+            "noise_type": "manual_evidence_packet",
+        },
+        {
+            "case_id": "MANUAL-PACKET-026",
+            "task_type": "manual_evidence_packet_next_action",
+            "user_role": "operations_analyst",
+            "input": (
+                "Payments evidence packet: stale comment guessed settlement delay, but the "
+                "current evidence bundle has Aurora reference ids that cannot be matched to "
+                "the control output. This summary: unmatched settlement reference needs "
+                "reconciliation. Which runbook should be cited?"
+            ),
+            "expected_issue_category": "unmatched_settlement_reference",
+            "expected_team": "payments_ops",
+            "expected_next_action": (
+                "Compare reference ids and draft a reconciliation note for review."
+            ),
+            "expected_citation_ids": ["RB-PAYMENTS_OPS-04"],
+            "should_abstain": False,
+            "noise_type": "manual_evidence_packet",
+        },
+        {
+            "case_id": "MANUAL-PACKET-027",
+            "task_type": "manual_evidence_packet_next_action",
+            "user_role": "operations_analyst",
+            "input": (
+                "Trade evidence bundle: chat has a side question about missing reference data, "
+                "but the current evidence says counterparties disagree on the trade date in "
+                "Helios. This summary: trade date dispute with conflicting timestamps. What "
+                "citation and next action should be used?"
+            ),
+            "expected_issue_category": "trade_date_dispute",
+            "expected_team": "trade_support",
+            "expected_next_action": "Compare trade timestamps and draft a dispute summary.",
+            "expected_citation_ids": ["RB-TRADE_SUPPORT-04"],
+            "should_abstain": False,
+            "noise_type": "manual_evidence_packet",
+        },
+        {
+            "case_id": "MANUAL-PACKET-028",
+            "task_type": "manual_evidence_packet_next_action",
+            "user_role": "operations_analyst",
+            "input": (
+                "Atlas control packet: duplicate records were discussed yesterday, but the "
+                "current evidence bundle says a configured control threshold was exceeded. "
+                "This summary: data quality threshold breach, control owner notification "
+                "needed. Which procedure applies?"
+            ),
+            "expected_issue_category": "control_threshold_breach",
+            "expected_team": "data_quality",
+            "expected_next_action": "Record the breach and notify the control owner.",
+            "expected_citation_ids": ["RB-DATA_QUALITY-03"],
+            "should_abstain": False,
+            "noise_type": "manual_evidence_packet",
+        },
+        {
+            "case_id": "MANUAL-PACKET-029",
+            "task_type": "manual_evidence_packet_next_action",
+            "user_role": "operations_analyst",
+            "input": (
+                "Client packet review: a screening alert was cleared in an earlier note. The "
+                "current evidence bundle says the Nova intake packet contains an expired tax "
+                "form and activation should pause until a fresh synthetic tax form is supplied."
+            ),
+            "expected_issue_category": "tax_form_expired",
+            "expected_team": "client_onboarding",
+            "expected_next_action": (
+                "Ask for an updated synthetic tax form and pause the workflow."
+            ),
+            "expected_citation_ids": ["RB-CLIENT_ONBOARDING-06"],
+            "should_abstain": False,
+            "noise_type": "manual_evidence_packet",
+        },
+        {
+            "case_id": "MANUAL-PACKET-030",
+            "task_type": "manual_evidence_packet_next_action",
+            "user_role": "operations_analyst",
+            "input": (
+                "Payments packet: Aurora file bounced before processing. The current evidence "
+                "bundle says schema validation rejected the payment file; duplicate-batch and "
+                "cutoff-window notes are background only. What cited procedure should I use?"
+            ),
+            "expected_issue_category": "file_validation_failed",
+            "expected_team": "payments_ops",
+            "expected_next_action": (
+                "Validate file schema, inspect rejection reason, and requeue only after approval."
+            ),
+            "expected_citation_ids": ["RB-PAYMENTS_OPS-01"],
+            "should_abstain": False,
+            "noise_type": "manual_evidence_packet",
+        },
+        {
+            "case_id": "MANUAL-PACKET-031",
+            "task_type": "manual_evidence_packet_abstention",
+            "user_role": "operations_analyst",
+            "input": (
+                "Evidence packet has an ownership conflict: header names Aurora payments, "
+                "body says Nova onboarding, and the current owner field is blank. The active "
+                "platform and issue are not clear, so do not guess the cited procedure."
+            ),
+            "expected_issue_category": "",
+            "expected_team": "payments_ops",
+            "expected_next_action": "",
+            "expected_citation_ids": [],
+            "should_abstain": True,
+            "noise_type": "manual_evidence_packet_conflict",
+        },
+        {
+            "case_id": "MANUAL-PACKET-032",
+            "task_type": "manual_evidence_packet_abstention",
+            "user_role": "operations_analyst",
+            "input": (
+                "Control packet is internally inconsistent: latest comment says Helios "
+                "booking, attachment title says Atlas lineage, and no generated control output "
+                "identifies the active platform. The active platform and issue are not clear; "
+                "ask for clarification instead of citing a runbook."
+            ),
+            "expected_issue_category": "",
+            "expected_team": "trade_support",
+            "expected_next_action": "",
+            "expected_citation_ids": [],
+            "should_abstain": True,
+            "noise_type": "manual_evidence_packet_conflict",
         },
     ]
 

@@ -68,7 +68,7 @@ The project is positioned as a responsible enterprise AI engineering lab. Its va
 
 ## Current Results
 
-The improved lexical retrieval path raises citation coverage from 20.18% to 98.62% and retrieval hit rate@3 from 45.41% to 99.08% on synthetic golden cases. The sparse hybrid retriever reaches 100.00% retrieval hit@3 and 100.00% citation coverage on the expanded 280-case synthetic golden suite after current-evidence, exact-phrase, alias, manual-challenge, and ambiguous-handoff abstention improvements. The local TF-IDF vector retriever and local feature-hashed embedding store also reach 100.00% retrieval hit@3 and 100.00% citation coverage after failure-guided reranking for stale context, schema mismatch, and KYC artefact phrasing.
+The improved lexical retrieval path raises citation coverage from 20.09% to 98.66% and retrieval hit rate@3 from 45.54% to 99.11% on synthetic golden cases. The sparse hybrid retriever reaches 100.00% retrieval hit@3 and 100.00% citation coverage on the expanded 288-case synthetic golden suite after current-evidence, exact-phrase, alias, manual-challenge, evidence-packet, and ambiguous-handoff abstention improvements. The local TF-IDF vector retriever and local feature-hashed embedding store also reach 100.00% retrieval hit@3 and 100.00% citation coverage after failure-guided reranking for stale context, schema mismatch, and KYC artefact phrasing.
 
 The retriever snapshot report records deterministic deltas between retriever versions, so regressions are visible even when every system is generated from the same local synthetic dataset.
 
