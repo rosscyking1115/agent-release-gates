@@ -51,6 +51,7 @@ def generate_public_report(project_root: Path) -> str:
     retrievers = _read_json(reports_dir / "retriever_comparison.json")
     retriever_snapshots = _read_json(reports_dir / "retriever_metric_snapshots.json")
     evaluation_history = _read_json(reports_dir / "evaluation_history.json")
+    collector_preview = _read_json(reports_dir / "collector_export_preview.json")
     extraction = _read_json(reports_dir / "extraction_eval_summary.json")
     security = _read_json(reports_dir / "security_eval_summary.json")
     agent = _read_json(reports_dir / "agent_eval_summary.json")
@@ -136,11 +137,15 @@ def generate_public_report(project_root: Path) -> str:
             "",
             _agent_otel_summary_table(project_root),
             "",
+            _collector_export_table(collector_preview),
+            "",
             (
                 "The combined export includes workflow-level spans, agent tool/audit spans, "
                 "case-level retriever failure spans, retriever ranking-detail spans, "
                 "case-level extraction spans, case-level agent approval spans, plus API "
-                "contract and error-case spans for local inspection."
+                "contract and error-case spans for local inspection. The collector adapter "
+                "translates this local JSONL into OTLP/HTTP JSON and stays in dry-run mode "
+                "unless explicitly asked to post to a collector."
             ),
             "",
             "## What This Proves",
@@ -171,7 +176,7 @@ def generate_public_report(project_root: Path) -> str:
             "",
             "- Add noisier, human-written ticket variants.",
             "- Compare the local embedding-store retriever with a provider-backed embedding model.",
-            "- Add live collector export for the local OpenTelemetry-style spans.",
+            "- Connect the OTLP/HTTP exporter to a local collector in an integration test.",
             "- Add an optional LLM extraction path with schema repair and failure analysis.",
             "",
         ]
@@ -252,6 +257,19 @@ def _agent_otel_summary_table(project_root: Path) -> str:
         f"| Root spans | {summary['root_span_count']} |",
         f"| Child spans | {summary['child_span_count']} |",
         f"| Tool spans | {summary['tool_span_count']} |",
+    ]
+    return "\n".join(rows)
+
+
+def _collector_export_table(preview: dict[str, Any]) -> str:
+    rows = [
+        "| Collector export preview | Value |",
+        "| --- | ---: |",
+        f"| Mode | {preview['export_mode']} |",
+        f"| Endpoint | {preview['collector_endpoint']} |",
+        f"| Spans prepared | {preview['span_count']} |",
+        f"| OTLP payloads | {preview['payload_count']} |",
+        f"| Batch size | {preview['batch_size']} |",
     ]
     return "\n".join(rows)
 

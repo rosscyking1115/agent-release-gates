@@ -12,6 +12,7 @@ from internal_ai_agent.api.main import (
     evaluation_report_pdf,
     extract,
     health,
+    observability_collector_preview,
     observability_otel_spans,
 )
 from internal_ai_agent.api.schemas import AgentRunRequest, AskRequest, ExtractRequest
@@ -69,6 +70,15 @@ def test_observability_otel_spans_endpoint_returns_jsonl() -> None:
     assert '"name": "api.error_case"' in report
     assert '"name": "agent.run"' in report
     assert '"span_id":' in report
+
+
+def test_observability_collector_preview_endpoint_returns_json() -> None:
+    preview = observability_collector_preview()
+
+    assert preview["export_mode"] == "dry_run_preview"
+    assert preview["collector_endpoint"] == "http://localhost:4318/v1/traces"
+    assert preview["span_count"] > 0
+    assert preview["payload_count"] > 0
 
 
 def test_api_contract_rejects_invalid_requests() -> None:

@@ -13,6 +13,7 @@ from internal_ai_agent.evals.runner import (
 )
 from internal_ai_agent.evals.security import evaluate_security
 from internal_ai_agent.io import read_jsonl, write_jsonl
+from internal_ai_agent.observability.collector import write_collector_export_preview
 from internal_ai_agent.observability.otel import (
     otel_spans_from_agent_approval_cases,
     otel_spans_from_api_contracts,
@@ -46,6 +47,7 @@ def run_all(project_root: Path) -> dict[str, Any]:
         security=security,
         agent=agent,
     )
+    collector_export_preview = write_collector_export_preview(project_root)
     public_report_path = write_public_report(project_root)
     return {
         "dataset_counts": dataset_counts,
@@ -56,6 +58,7 @@ def run_all(project_root: Path) -> dict[str, Any]:
         "agent": agent,
         "evaluation_history": evaluation_history,
         "observability_spans_path": str(observability_spans_path),
+        "collector_export_preview": collector_export_preview,
         "public_report_path": str(public_report_path),
     }
 
@@ -167,6 +170,10 @@ def main() -> None:
     print(
         "- historical_snapshot_latest: "
         f"{summary['evaluation_history']['current_summary']['latest_milestone']}"
+    )
+    print(
+        "- collector_export_payloads: "
+        f"{summary['collector_export_preview']['payload_count']} dry-run payloads"
     )
     print(f"Public report: {summary['public_report_path']}")
 

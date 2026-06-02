@@ -57,7 +57,7 @@ Structured extraction over templated synthetic tickets currently reports 100.00%
 
 The deterministic red-team suite reports 100.00% improved safe response rate, 100.00% improved weighted safe response rate, 100.00% improved explicit policy block rate, and 0 residual risk score across prompt attacks and retrieved-context attacks.
 
-The controlled-agent eval reports 100.00% trace coverage, audit event coverage, approval audit rate, monitoring snapshot rate, valid tool-call rate, side-effect block rate, approved action execution rate, and route-tool selection accuracy. It also exports deterministic OpenTelemetry-style spans for sampled blocked and approved tool routes. The full run adds evaluation-stage spans for data generation, retrieval, extraction, security, agent evaluation, report/API artifacts, case-level retriever failures, case-level retriever ranking details, case-level extraction outcomes, case-level agent approval decisions, and API contract/error cases, and the dashboard renders those spans as a local trace timeline.
+The controlled-agent eval reports 100.00% trace coverage, audit event coverage, approval audit rate, monitoring snapshot rate, valid tool-call rate, side-effect block rate, approved action execution rate, and route-tool selection accuracy. It also exports deterministic OpenTelemetry-style spans for sampled blocked and approved tool routes. The full run adds evaluation-stage spans for data generation, retrieval, extraction, security, agent evaluation, report/API artifacts, case-level retriever failures, case-level retriever ranking details, case-level extraction outcomes, case-level agent approval decisions, and API contract/error cases, and the dashboard renders those spans as a local trace timeline. The lab also includes an optional OTLP/HTTP exporter with a deterministic dry-run preview.
 
 The retriever snapshot report records deterministic version-to-version deltas and flags regressions when citation coverage falls or failed-case count rises. The evaluation history report adds stable dated lab milestones for the same local benchmark sequence, plus a current cross-workflow quality summary.
 
@@ -69,7 +69,7 @@ The retriever snapshot report records deterministic version-to-version deltas an
 - Structured extraction is deterministic pattern matching, not LLM extraction.
 - Security checks and severity weights are deterministic controls, even after adding harder retrieved-context attacks and residual-risk scoring; they are not a full adversarial red-team harness.
 - The controlled agent is a local workflow, not a LangGraph state machine yet.
-- Telemetry export is local JSONL, not a live OpenTelemetry collector pipeline.
+- Telemetry export is local JSONL with an optional OTLP/HTTP collector adapter; live collector posting is not part of the deterministic CI path.
 - Metrics should be interpreted as engineering checks over synthetic cases, not claims about real-world production performance.
 
 ## Safety Boundaries
@@ -89,6 +89,6 @@ Side-effecting operations are mock-only and require explicit approval.
 
 - Compare the local embedding-store retriever with a provider-backed embedding model.
 - Add more non-templated tickets and provider-backed retrieval comparisons so the next weaknesses are measured before more tuning.
-- Add optional live collector export for the OpenTelemetry-style spans.
+- Add an integration test against a local OpenTelemetry collector.
 - Replace deterministic extraction with an optional LLM extraction provider plus schema repair.
 - Add a LangGraph state machine once the local workflow contract is stable.

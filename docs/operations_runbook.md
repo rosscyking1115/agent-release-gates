@@ -18,7 +18,7 @@ Expected result:
 - lint passes
 - tests pass
 - synthetic data is regenerated
-- baseline, extraction, security, controlled-agent, history, Markdown, HTML, and PDF reports are written to `reports/`
+- baseline, extraction, security, controlled-agent, history, observability, collector-preview, Markdown, HTML, and PDF reports are written to `reports/`
 
 ## Dashboard
 
@@ -56,12 +56,31 @@ http://127.0.0.1:8000/reports/evaluation
 http://127.0.0.1:8000/reports/evaluation/history
 http://127.0.0.1:8000/reports/evaluation.html
 http://127.0.0.1:8000/reports/evaluation.pdf
+http://127.0.0.1:8000/reports/observability/collector-preview
 ```
 
 Expected response:
 
 ```json
 {"status":"ok"}
+```
+
+## Collector Export
+
+The deterministic eval run writes `reports/collector_export_preview.json`. It describes
+how many OTLP/HTTP payloads would be sent to the default collector endpoint without
+making a network call.
+
+Dry-run the export:
+
+```powershell
+uv run python scripts/export_otel_collector.py
+```
+
+Post to a collector only when one is running:
+
+```powershell
+uv run python scripts/export_otel_collector.py --endpoint http://localhost:4318/v1/traces --post
 ```
 
 ## Container Verification

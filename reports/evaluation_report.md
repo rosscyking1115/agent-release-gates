@@ -144,13 +144,21 @@ The controlled workflow separates read-only tools from side-effecting actions. T
 
 | Export metric | Value |
 | --- | ---: |
-| OTel-style spans | 1133 |
+| OTel-style spans | 1134 |
 | Exported traces | 21 |
 | Root spans | 21 |
-| Child spans | 1112 |
+| Child spans | 1113 |
 | Tool spans | 40 |
 
-The combined export includes workflow-level spans, agent tool/audit spans, case-level retriever failure spans, retriever ranking-detail spans, case-level extraction spans, case-level agent approval spans, plus API contract and error-case spans for local inspection.
+| Collector export preview | Value |
+| --- | ---: |
+| Mode | dry_run_preview |
+| Endpoint | http://localhost:4318/v1/traces |
+| Spans prepared | 1134 |
+| OTLP payloads | 6 |
+| Batch size | 200 |
+
+The combined export includes workflow-level spans, agent tool/audit spans, case-level retriever failure spans, retriever ranking-detail spans, case-level extraction spans, case-level agent approval spans, plus API contract and error-case spans for local inspection. The collector adapter translates this local JSONL into OTLP/HTTP JSON and stays in dry-run mode unless explicitly asked to post to a collector.
 
 ## What This Proves
 
@@ -171,5 +179,5 @@ The combined export includes workflow-level spans, agent tool/audit spans, case-
 
 - Add noisier, human-written ticket variants.
 - Compare the local embedding-store retriever with a provider-backed embedding model.
-- Add live collector export for the local OpenTelemetry-style spans.
+- Connect the OTLP/HTTP exporter to a local collector in an integration test.
 - Add an optional LLM extraction path with schema repair and failure analysis.

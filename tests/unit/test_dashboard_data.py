@@ -11,6 +11,7 @@ from internal_ai_agent.dashboard.data import (
     failed_case_rows,
     failure_example_rows,
     failure_reason_rows,
+    load_collector_export_preview,
     load_public_report,
     load_public_report_html,
     load_public_report_pdf,
@@ -22,6 +23,24 @@ from internal_ai_agent.dashboard.data import (
     security_metric_rows,
     security_risk_breakdown_rows,
 )
+
+
+def test_load_collector_export_preview_returns_empty_when_missing(tmp_path) -> None:
+    assert load_collector_export_preview(tmp_path) == {}
+
+
+def test_load_collector_export_preview_reads_json(tmp_path) -> None:
+    reports_dir = tmp_path / "reports"
+    reports_dir.mkdir()
+    (reports_dir / "collector_export_preview.json").write_text(
+        '{"export_mode": "dry_run_preview", "span_count": 10, "payload_count": 1}\n',
+        encoding="utf-8",
+    )
+
+    preview = load_collector_export_preview(tmp_path)
+
+    assert preview["export_mode"] == "dry_run_preview"
+    assert preview["span_count"] == 10
 
 
 def test_metric_rows_formats_before_after_values() -> None:

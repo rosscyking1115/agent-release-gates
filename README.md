@@ -29,7 +29,8 @@ The current version creates a local, reproducible lab:
 - structured ticket extraction and routing
 - deterministic red-team policy checks
 - controlled agent workflow with approval-gated mock tools
-- trace IDs, audit events, monitoring snapshots, and OTel-style trace timeline
+- trace IDs, audit events, monitoring snapshots, OTel-style trace timeline, and an
+  optional OTLP/HTTP collector exporter
 - FastAPI service, Streamlit dashboard, Docker/Compose runtime, CI workflow, and operations runbook
 
 ## Tech Stack
@@ -42,7 +43,7 @@ The current version creates a local, reproducible lab:
 - ruff
 - Docker
 
-Later phases should add provider-backed embeddings, noisier evaluation data, richer spans for additional workflows, optional live telemetry export, and optional LangGraph orchestration.
+Later phases should add provider-backed embeddings, noisier evaluation data, richer spans for additional workflows, a live collector integration test, and optional LangGraph orchestration.
 
 ## Quick Start
 
@@ -94,6 +95,7 @@ The baseline evaluation writes:
 - `reports/agent_trace_examples.jsonl`
 - `reports/agent_otel_spans.jsonl`
 - `reports/observability_otel_spans.jsonl`
+- `reports/collector_export_preview.json`
 - `reports/evaluation_report.md`
 - `reports/evaluation_report.html`
 - `reports/evaluation_report.pdf`
@@ -156,7 +158,19 @@ Current controlled agent evaluation:
 
 Read-only tools can run automatically. The side-effecting `route_ticket_mock` tool is prepared but blocked until approval is granted. Each agent run returns a trace id, structured audit events, and a monitoring snapshot.
 
-The agent eval exports deterministic OpenTelemetry-style spans to `reports/agent_otel_spans.jsonl`. The full orchestration run also writes `reports/observability_otel_spans.jsonl`, combining those agent spans with an evaluation-run trace for data generation, retriever comparison, extraction, security, agent evaluation, report/API artifact export, case-level retriever failure spans, retriever ranking-detail spans, case-level extraction spans, case-level agent approval spans, and API contract/error-case spans. These are local interoperability artifacts, not a live tracing backend.
+The agent eval exports deterministic OpenTelemetry-style spans to `reports/agent_otel_spans.jsonl`. The full orchestration run also writes `reports/observability_otel_spans.jsonl`, combining those agent spans with an evaluation-run trace for data generation, retriever comparison, extraction, security, agent evaluation, report/API artifact export, case-level retriever failure spans, retriever ranking-detail spans, case-level extraction spans, case-level agent approval spans, and API contract/error-case spans. `reports/collector_export_preview.json` records the OTLP/HTTP payload count that would be sent to a collector. These are local interoperability artifacts by default; posting to a live collector is optional.
+
+Dry-run the collector export without network traffic:
+
+```powershell
+uv run python scripts/export_otel_collector.py
+```
+
+Post the same spans to an OTLP/HTTP collector:
+
+```powershell
+uv run python scripts/export_otel_collector.py --endpoint http://localhost:4318/v1/traces --post
+```
 
 ## Dashboard
 
@@ -173,6 +187,7 @@ The Streamlit dashboard presents the evaluation outcome as an inspection surface
 - trace and audit coverage metrics
 - deterministic agent trace examples for blocked and approved mock routes
 - OpenTelemetry-style observability summary, trace timeline, component rows, and span rows
+- OTLP/HTTP collector-export preview metrics
 - failed-case review tables
 
 Run it with:
@@ -192,6 +207,7 @@ http://localhost:8000/reports/evaluation.pdf
 http://localhost:8000/reports/evaluation/history
 http://localhost:8000/reports/agent/otel-spans
 http://localhost:8000/reports/observability/otel-spans
+http://localhost:8000/reports/observability/collector-preview
 ```
 
 ## Docker

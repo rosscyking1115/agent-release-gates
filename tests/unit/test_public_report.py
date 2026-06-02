@@ -11,6 +11,7 @@ from internal_ai_agent.evals.runner import (
     write_evaluation_history,
 )
 from internal_ai_agent.evals.security import evaluate_security
+from internal_ai_agent.io import write_json
 from internal_ai_agent.reporting.public_report import (
     generate_public_report,
     generate_public_report_html,
@@ -32,6 +33,16 @@ def _prepare_reports(project_root: Path) -> None:
         extraction=extraction,
         security=security,
         agent=agent,
+    )
+    write_json(
+        project_root / "reports/collector_export_preview.json",
+        {
+            "export_mode": "dry_run_preview",
+            "collector_endpoint": "http://localhost:4318/v1/traces",
+            "span_count": 42,
+            "payload_count": 1,
+            "batch_size": 200,
+        },
     )
 
 
@@ -68,6 +79,8 @@ def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
     assert "## Observability Span Export" in report
     assert "| OTel-style spans |" in report
     assert "| Child spans |" in report
+    assert "| OTLP payloads | 1 |" in report
+    assert "translates this local JSONL into OTLP/HTTP JSON" in report
     assert "case-level retriever failure spans" in report
     assert "retriever ranking-detail spans" in report
     assert "case-level extraction spans" in report
@@ -101,6 +114,7 @@ def test_generate_public_report_html_renders_tables_and_safety_boundary(tmp_path
     assert "<td>Local embedding store</td>" in html
     assert "<h2>Retriever Metric Snapshots</h2>" in html
     assert "<h2>Historical Evaluation Snapshots</h2>" in html
+    assert "<td>dry_run_preview</td>" in html
     assert "It does not use real company documents" in html
 
 

@@ -195,3 +195,22 @@ Additional attributes may include:
 | `api.error_type` | Expected API error family, such as request validation or route not found. |
 | `api.scenario` | Named API error scenario, such as empty question rejection. |
 | `http.route.*` | Local report/API routes represented by the artifact-export span. |
+
+## `reports/collector_export_preview.json`
+
+This file records the deterministic dry-run summary for exporting `reports/observability_otel_spans.jsonl` as OTLP/HTTP JSON. The evaluation runner writes this preview without making a network call; `scripts/export_otel_collector.py --post` is required to send payloads to a live collector.
+
+| Field | Description |
+| --- | --- |
+| `export_mode` | Preview mode, currently `dry_run_preview` for the deterministic eval artifact. |
+| `collector_endpoint` | OTLP/HTTP traces endpoint that would receive payloads. |
+| `service_name` | Service name attached to the OTLP resource. |
+| `service_version` | Service version attached to the OTLP resource and instrumentation scope. |
+| `source_path` | Local JSONL span source used for the export preview. |
+| `span_count` | Number of local spans prepared for export. |
+| `trace_count` | Number of unique trace ids in the local span export. |
+| `root_span_count` | Number of root spans in the local span export. |
+| `batch_size` | Maximum spans per OTLP payload. |
+| `payload_count` | Number of OTLP payloads that would be posted. |
+| `first_payload_span_count` | Number of spans in the first generated OTLP payload. |
+| `notes` | Human-readable notes clarifying dry-run behavior and POST usage. |

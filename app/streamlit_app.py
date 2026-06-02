@@ -23,6 +23,7 @@ from internal_ai_agent.dashboard.data import (
     load_agent_summary,
     load_agent_trace_examples,
     load_case_rows,
+    load_collector_export_preview,
     load_comparison,
     load_evaluation_history,
     load_extraction_summary,
@@ -64,6 +65,7 @@ def main() -> None:
     agent_summary = load_agent_summary(PROJECT_ROOT)
     agent_traces = load_agent_trace_examples(PROJECT_ROOT)
     observability_otel_spans = load_observability_otel_spans(PROJECT_ROOT)
+    collector_export_preview = load_collector_export_preview(PROJECT_ROOT)
     public_report = load_public_report(PROJECT_ROOT)
     public_report_html = load_public_report_html(PROJECT_ROOT)
     public_report_pdf = load_public_report_pdf(PROJECT_ROOT)
@@ -84,7 +86,13 @@ def main() -> None:
     _render_error_analysis()
     _render_extraction_metrics(extraction_summary, extraction_rows)
     _render_security_metrics(security_summary, security_rows)
-    _render_agent_metrics(agent_summary, agent_rows, agent_traces, observability_otel_spans)
+    _render_agent_metrics(
+        agent_summary,
+        agent_rows,
+        agent_traces,
+        observability_otel_spans,
+        collector_export_preview,
+    )
     _render_public_report(public_report, public_report_html, public_report_pdf)
     _render_case_analysis(baseline_cases, improved_cases)
 
@@ -421,6 +429,7 @@ def _render_agent_metrics(
     rows: list[dict[str, object]],
     traces: list[dict[str, object]],
     otel_spans: list[dict[str, object]],
+    collector_preview: dict[str, object],
 ) -> None:
     st.subheader("Controlled Agent And Tool Governance")
     cols = st.columns(2)
@@ -449,6 +458,24 @@ def _render_agent_metrics(
         cols[2].metric("Root spans", f"{otel_summary['root_span_count']:,}")
         cols[3].metric("Child spans", f"{otel_summary['child_span_count']:,}")
         cols[4].metric("Tool spans", f"{otel_summary['tool_span_count']:,}")
+        if collector_preview:
+            collector_cols = st.columns(4)
+            collector_cols[0].metric(
+                "Collector payloads",
+                f"{collector_preview['payload_count']:,}",
+            )
+            collector_cols[1].metric(
+                "Collector span count",
+                f"{collector_preview['span_count']:,}",
+            )
+            collector_cols[2].metric(
+                "Collector mode",
+                str(collector_preview["export_mode"]),
+            )
+            collector_cols[3].metric(
+                "Batch size",
+                f"{collector_preview['batch_size']:,}",
+            )
         component_df = pd.DataFrame(observability_component_rows(otel_spans))
         if not component_df.empty:
             st.dataframe(component_df, hide_index=True, use_container_width=True)

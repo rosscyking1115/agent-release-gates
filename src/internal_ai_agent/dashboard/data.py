@@ -111,6 +111,13 @@ def load_observability_otel_spans(project_root: Path) -> list[dict[str, Any]]:
     return load_agent_otel_spans(project_root)
 
 
+def load_collector_export_preview(project_root: Path) -> dict[str, Any]:
+    path = project_root / "reports/collector_export_preview.json"
+    if path.exists():
+        return json.loads(path.read_text(encoding="utf-8"))
+    return {}
+
+
 def load_public_report(project_root: Path) -> str:
     path = project_root / "reports/evaluation_report.md"
     return path.read_text(encoding="utf-8")

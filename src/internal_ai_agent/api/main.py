@@ -16,6 +16,8 @@ from internal_ai_agent.api.schemas import (
 )
 from internal_ai_agent.data.synthetic import build_runbooks
 from internal_ai_agent.extraction.service import extract_and_route
+from internal_ai_agent.io import read_jsonl
+from internal_ai_agent.observability.collector import collector_export_preview
 from internal_ai_agent.rag.baseline import (
     answer_with_baseline,
     answer_with_embedding_store,
@@ -78,6 +80,15 @@ def observability_otel_spans() -> str:
     return (PROJECT_ROOT / "reports/observability_otel_spans.jsonl").read_text(
         encoding="utf-8"
     )
+
+
+@app.get("/reports/observability/collector-preview", response_class=JSONResponse)
+def observability_collector_preview() -> dict[str, object]:
+    preview_path = PROJECT_ROOT / "reports/collector_export_preview.json"
+    if preview_path.exists():
+        return json.loads(preview_path.read_text(encoding="utf-8"))
+    spans = read_jsonl(PROJECT_ROOT / "reports/observability_otel_spans.jsonl")
+    return collector_export_preview(spans)
 
 
 @app.post("/ask", response_model=AskResponse)

@@ -315,10 +315,10 @@ def test_otel_spans_from_extraction_cases_exports_case_level_spans() -> None:
 def test_otel_spans_from_api_contracts_exports_endpoint_and_error_spans() -> None:
     spans = otel_spans_from_api_contracts()
 
-    assert len(spans) == 15
+    assert len(spans) == 16
     assert spans[0]["name"] == "api.contract_analysis"
     assert spans[0]["status"]["code"] == "OK"
-    assert spans[0]["attributes"]["api.endpoint_contract_count"] == 10
+    assert spans[0]["attributes"]["api.endpoint_contract_count"] == 11
     assert spans[0]["attributes"]["api.error_case_count"] == 4
     pdf_span = next(
         span
@@ -343,6 +343,14 @@ def test_otel_spans_from_api_contracts_exports_endpoint_and_error_spans() -> Non
     assert endpoint_span["parent_span_id"] == spans[0]["span_id"]
     assert endpoint_span["status"]["code"] == "OK"
     assert endpoint_span["attributes"]["http.status_code"] == 200
+    collector_span = next(
+        span
+        for span in spans
+        if span["name"] == "api.endpoint_contract"
+        and span["attributes"]["http.route"]
+        == "/reports/observability/collector-preview"
+    )
+    assert collector_span["attributes"]["api.operation"] == "collector_export_preview"
     error_span = next(
         span
         for span in spans
