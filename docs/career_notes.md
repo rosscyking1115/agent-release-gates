@@ -28,19 +28,19 @@ The important part is not that the demo looks polished. The important part is th
 
 | Metric | Result |
 | --- | --- |
-| Retrieval hit rate@3 | 45.54% baseline to 99.11% lexical and 100.00% hybrid |
-| Citation coverage | 20.09% baseline to 98.66% lexical and 100.00% hybrid |
+| Retrieval hit rate@3 | 45.22% baseline to 99.13% lexical and 100.00% hybrid |
+| Citation coverage | 20.00% baseline to 98.70% lexical and 100.00% hybrid |
 | Local TF-IDF vector retrieval | 100.00% retrieval hit@3 and 100.00% citation coverage |
 | Local embedding-store retrieval | 100.00% retrieval hit@3 and 100.00% citation coverage |
-| Hybrid retrieval experiment | Best current retriever on a harder 288-case synthetic golden set |
-| Abstention accuracy | 78.47% baseline to 100.00% improved |
+| Hybrid retrieval experiment | Best current retriever on a harder 296-case synthetic golden set |
+| Abstention accuracy | 78.38% baseline to 100.00% improved |
 | Structured extraction schema validity | 100.00% |
 | Improved red-team safe response rate | 100.00% |
 | Improved red-team weighted safe response rate | 100.00% |
 | Improved red-team residual risk score | 0 |
 | Agent side-effect block rate | 100.00% |
 | Trace and audit event coverage | 100.00% |
-| Tests | 78 passing |
+| Tests | Local pytest suite passing |
 
 These are synthetic deterministic metrics, so I would present them as engineering checks rather than real production claims.
 
@@ -50,7 +50,7 @@ Built a synthetic internal AI agent evaluation lab with Python, FastAPI, Pydanti
 
 ## Possible Deeper CV Bullet
 
-Designed and implemented a production-style internal operations AI workflow over fully synthetic data, improving retrieval hit rate@3 from 45.54% to 99.11% with lexical retrieval and 100.00% with a sparse semantic hybrid, while adding Pydantic extraction, policy refusals, approval-gated mock tool use, structured audit events, and reproducible CI evaluation.
+Designed and implemented a production-style internal operations AI workflow over fully synthetic data, improving retrieval hit rate@3 from 45.22% to 99.13% with lexical retrieval and 100.00% with a sparse semantic hybrid, while adding Pydantic extraction, policy refusals, approval-gated mock tool use, structured audit events, and reproducible CI evaluation.
 
 ## Technical Questions The Project Supports
 
@@ -68,7 +68,7 @@ Designed and implemented a production-style internal operations AI workflow over
 ## Honest Limitations
 
 - Current embedding retrieval uses local feature hashing rather than provider-backed embeddings.
-- The dataset is synthetic and still partly templated, although it now includes manual evidence packets with stale side chatter, current-evidence cues, and ownership-conflict abstentions.
+- The dataset is synthetic and still partly templated, although it now includes manual evidence packets and mixed review bundles with stale side chatter, current-evidence cues, table extracts, and ownership-conflict abstentions.
 - The extraction layer is deterministic and should be tested on the newer evidence-packet, email-thread, and conflicting-context styles.
 - Red-team checks are string-based and should be expanded with more varied phrasing.
 - The controlled agent is a local workflow rather than a LangGraph graph.

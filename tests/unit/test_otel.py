@@ -62,11 +62,11 @@ def test_otel_spans_from_evaluation_run_exports_workflow_spans() -> None:
         dataset_counts={
             "runbooks": 24,
             "tickets": 180,
-            "golden_cases": 288,
+            "golden_cases": 296,
             "red_team_cases": 60,
         },
         retriever_comparison={
-            "case_count": 288,
+            "case_count": 296,
             "systems": [
                 {
                     "label": "Baseline",

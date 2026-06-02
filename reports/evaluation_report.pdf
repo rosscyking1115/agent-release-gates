@@ -41,7 +41,7 @@ T*
 T*
 () Tj
 T*
-(- Golden retrieval cases: 288) Tj
+(- Golden retrieval cases: 296) Tj
 T*
 (- Synthetic ticket extraction and agent cases: 180) Tj
 T*
@@ -63,9 +63,9 @@ T*
 T*
 (System | Hit rate@3 | Citation coverage | Next action accuracy | Abstention accuracy | Failures) Tj
 T*
-(Baseline team hints | 45.54% | 20.09% | 20.09% | 78.47% | 241) Tj
+(Baseline team hints | 45.22% | 20.00% | 20.00% | 78.38% | 248) Tj
 T*
-(Improved lexical | 99.11% | 98.66% | 98.66% | 100.00% | 3) Tj
+(Improved lexical | 99.13% | 98.70% | 98.70% | 100.00% | 3) Tj
 T*
 (Hybrid sparse semantic | 100.00% | 100.00% | 100.00% | 100.00% | 0) Tj
 T*
@@ -97,11 +97,11 @@ T*
 T*
 (Regression | Reason) Tj
 T*
-(001_baseline_team_hints | Baseline team hints | 20.09% | 241 |  |  | False |) Tj
+(001_baseline_team_hints | Baseline team hints | 20.00% | 248 |  |  | False |) Tj
 T*
-(002_improved_lexical | Improved lexical | 98.66% | 3 | +78.57% | -238 | False |) Tj
+(002_improved_lexical | Improved lexical | 98.70% | 3 | +78.70% | -245 | False |) Tj
 T*
-(003_hybrid_sparse_semantic | Hybrid sparse semantic | 100.00% | 0 | +1.34% | -3 | False |) Tj
+(003_hybrid_sparse_semantic | Hybrid sparse semantic | 100.00% | 0 | +1.30% | -3 | False |) Tj
 T*
 (004_local_tf_idf_vector | Local TF-IDF vector | 100.00% | 0 | +0.00% | +0 | False |) Tj
 T*
@@ -119,9 +119,9 @@ T*
 T*
 (Milestone time | Milestone | Citation coverage | Failed cases | Citation delta | Failure delta) Tj
 T*
-(2026-06-02T09:00:00Z | Baseline team hints | 20.09% | 241 |  |) Tj
+(2026-06-02T09:00:00Z | Baseline team hints | 20.00% | 248 |  |) Tj
 T*
-(2026-06-02T10:00:00Z | Improved lexical | 98.66% | 3 | +78.57% | -238) Tj
+(2026-06-02T10:00:00Z | Improved lexical | 98.70% | 3 | +78.70% | -245) Tj
 T*
 ET
 endstream
@@ -136,7 +136,7 @@ BT
 /F1 10 Tf
 14 TL
 54 738 Td
-(2026-06-02T11:00:00Z | Hybrid sparse semantic | 100.00% | 0 | +1.34% | -3) Tj
+(2026-06-02T11:00:00Z | Hybrid sparse semantic | 100.00% | 0 | +1.30% | -3) Tj
 T*
 (2026-06-02T12:00:00Z | Local TF-IDF vector | 100.00% | 0 | +0.00% | +0) Tj
 T*
@@ -154,7 +154,7 @@ T*
 T*
 (System | Failed cases | Retrieved but not cited | Abstention mismatches | Top failure reason) Tj
 T*
-(Baseline team hints | 241 | 57 | 62 | missing_or_wrong_citation \(179\)) Tj
+(Baseline team hints | 248 | 58 | 64 | missing_or_wrong_citation \(184\)) Tj
 T*
 (Improved lexical | 3 | 1 | 0 | missing_or_wrong_citation \(3\)) Tj
 T*
@@ -232,13 +232,13 @@ T*
 T*
 (Metric | Baseline | Improved lexical | Delta) Tj
 T*
-(Retrieval hit rate@3 | 45.54% | 99.11% | +53.57%) Tj
+(Retrieval hit rate@3 | 45.22% | 99.13% | +53.91%) Tj
 T*
-(Citation coverage | 20.09% | 98.66% | +78.57%) Tj
+(Citation coverage | 20.00% | 98.70% | +78.70%) Tj
 T*
-(Issue category accuracy | 20.09% | 98.66% | +78.57%) Tj
+(Issue category accuracy | 20.00% | 98.70% | +78.70%) Tj
 T*
-(Next action accuracy | 20.09% | 98.66% | +78.57%) Tj
+(Next action accuracy | 20.00% | 98.70% | +78.70%) Tj
 T*
 ET
 endstream
@@ -253,7 +253,7 @@ BT
 /F1 10 Tf
 14 TL
 54 738 Td
-(Abstention accuracy | 78.47% | 100.00% | +21.53%) Tj
+(Abstention accuracy | 78.38% | 100.00% | +21.62%) Tj
 T*
 () Tj
 T*
@@ -436,13 +436,13 @@ T*
 T*
 (Export metric | Value) Tj
 T*
-(OTel-style spans | 1134) Tj
+(OTel-style spans | 1153) Tj
 T*
 (Exported traces | 21) Tj
 T*
 (Root spans | 21) Tj
 T*
-(Child spans | 1113) Tj
+(Child spans | 1132) Tj
 T*
 (Tool spans | 40) Tj
 T*
@@ -454,7 +454,7 @@ T*
 T*
 (Endpoint | http://localhost:4318/v1/traces) Tj
 T*
-(Spans prepared | 1134) Tj
+(Spans prepared | 1153) Tj
 T*
 (OTLP payloads | 6) Tj
 T*

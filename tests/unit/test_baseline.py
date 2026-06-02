@@ -281,6 +281,61 @@ def test_embedding_store_prefers_current_repair_queue_over_stale_guess() -> None
     assert answer.citations == ["RB-PAYMENTS_OPS-06"]
 
 
+def test_hybrid_retrieval_handles_manual_review_bundle_stale_reference_data() -> None:
+    from internal_ai_agent.data.synthetic import build_runbooks
+
+    runbooks = [section.__dict__ for section in build_runbooks()]
+    answer = answer_with_hybrid(
+        (
+            "Quality chat bundle: Atlas dashboard screenshot says freshness badge is red. "
+            "A side note says lineage was checked yesterday, but the current evidence bundle "
+            "says reference data feed is stale and older than the freshness window. This "
+            "summary: stale reference data; trigger synthetic refresh checklist. Which cited "
+            "procedure fits?"
+        ),
+        runbooks,
+    )
+
+    assert answer.issue_category == "stale_reference_data"
+    assert answer.citations == ["RB-DATA_QUALITY-01"]
+
+
+def test_vector_retrieval_handles_manual_review_bundle_entity_match() -> None:
+    from internal_ai_agent.data.synthetic import build_runbooks
+
+    runbooks = [section.__dict__ for section in build_runbooks()]
+    answer = answer_with_vector(
+        (
+            "Ops review bundle: Nova intake has a possible entity screening match. Older "
+            "note says missing KYC was supplied, but the current evidence bundle says the "
+            "entity match still needs second-line review with supporting evidence. Which "
+            "runbook should be cited?"
+        ),
+        runbooks,
+    )
+
+    assert answer.issue_category == "entity_match_review"
+    assert answer.citations == ["RB-CLIENT_ONBOARDING-02"]
+
+
+def test_embedding_store_abstains_on_manual_review_bundle_conflict() -> None:
+    from internal_ai_agent.data.synthetic import build_runbooks
+
+    runbooks = [section.__dict__ for section in build_runbooks()]
+    answer = answer_with_embedding_store(
+        (
+            "Review bundle conflict: current evidence panel says Nova screening alert, "
+            "attached table says Atlas late feed, and no generated control output identifies "
+            "which system owns the break. The active platform and issue are not clear; ask "
+            "for clarification instead of citing a runbook."
+        ),
+        runbooks,
+    )
+
+    assert answer.abstained is True
+    assert answer.citations == []
+
+
 def test_baseline_eval_writes_report(tmp_path: Path) -> None:
     from internal_ai_agent.data.synthetic import generate_all
 

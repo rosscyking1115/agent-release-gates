@@ -52,7 +52,7 @@ The project is useful, but it is still too deterministic in several places:
 
 - Retrieval now includes sparse hybrid, local TF-IDF vector, local feature-hashed embedding-store experiments, and current-evidence reranking, but not a provider-backed embedding model.
 - Error analysis now identifies retrieved-but-not-cited failures, deterministic retriever-version trend snapshots, and dated lab milestone history; the expanded manual challenge set drove reranking fixes for schema mismatch, stale context, KYC artefact phrasing, and ambiguous-handoff abstention.
-- Ticket and runbook data are still partly templated, even after adding noisy, human-like, human email-thread, retrieved-document-injection, and long-conflicting-context cases.
+- Ticket and runbook data are still partly templated, even after adding noisy, human-like, human email-thread, manual evidence-packet, mixed review-bundle, retrieved-document-injection, and long-conflicting-context cases.
 - Extraction is deterministic pattern matching.
 - Red-team checks include harder retrieved-context attacks, but are still string-based.
 - Agent orchestration is local code rather than a state machine.
@@ -63,7 +63,7 @@ These are acceptable for the first lab version, but they should guide the next w
 ## Next Build Priorities
 
 1. Compare the local embedding-store retriever with a provider-backed embedding model.
-2. Make the golden suite less templated with new non-generated tickets and harder retrieved-context evidence.
+2. Continue making the golden suite less templated with new non-generated tickets, mixed evidence bundles, and harder retrieved-context evidence.
 3. Add a local collector integration test for the OTLP/HTTP span exporter.
 4. Add model-assisted adversarial review for the red-team suite after the deterministic scoring contract remains stable.
 5. Add an optional LLM extraction path with schema repair once noisier tickets are in place.

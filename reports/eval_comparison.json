@@ -1,41 +1,41 @@
 {
   "baseline_system_version": "baseline_team_hint_retrieval",
-  "case_count": 288,
+  "case_count": 296,
   "improved_system_version": "improved_lexical_retrieval",
   "metrics": {
     "abstention_accuracy": {
-      "baseline": 0.7847,
-      "delta": 0.2153,
+      "baseline": 0.7838,
+      "delta": 0.2162,
       "improved": 1.0
     },
     "abstention_rate": {
-      "baseline": 0.0069,
-      "delta": 0.2153,
-      "improved": 0.2222
+      "baseline": 0.0068,
+      "delta": 0.2162,
+      "improved": 0.223
     },
     "citation_coverage": {
-      "baseline": 0.2009,
-      "delta": 0.7857,
-      "improved": 0.9866
+      "baseline": 0.2,
+      "delta": 0.787,
+      "improved": 0.987
     },
     "issue_category_accuracy": {
-      "baseline": 0.2009,
-      "delta": 0.7857,
-      "improved": 0.9866
+      "baseline": 0.2,
+      "delta": 0.787,
+      "improved": 0.987
     },
     "next_action_accuracy": {
-      "baseline": 0.2009,
-      "delta": 0.7857,
-      "improved": 0.9866
+      "baseline": 0.2,
+      "delta": 0.787,
+      "improved": 0.987
     },
     "retrieval_hit_rate_at_3": {
-      "baseline": 0.4554,
-      "delta": 0.5357,
-      "improved": 0.9911
+      "baseline": 0.4522,
+      "delta": 0.5391,
+      "improved": 0.9913
     },
     "team_accuracy": {
-      "baseline": 0.9866,
-      "delta": 0.0134,
+      "baseline": 0.987,
+      "delta": 0.013,
       "improved": 1.0
     }
   }

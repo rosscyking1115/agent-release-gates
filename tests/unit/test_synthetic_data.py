@@ -43,7 +43,7 @@ def test_full_golden_cases_include_harder_noise_types() -> None:
     cases = build_golden_cases(tickets)
     noise_types = {str(case["noise_type"]) for case in cases}
 
-    assert len(cases) == 240
+    assert len(cases) == 248
     assert "distractor_terms" in noise_types
     assert "typo_abbreviation" in noise_types
     assert "adversarial_instruction" in noise_types
@@ -63,6 +63,8 @@ def test_full_golden_cases_include_harder_noise_types() -> None:
     assert "manual_ambiguous_handoff" in noise_types
     assert "manual_evidence_packet" in noise_types
     assert "manual_evidence_packet_conflict" in noise_types
+    assert "manual_review_bundle" in noise_types
+    assert "manual_review_bundle_conflict" in noise_types
     assert "primary_signal_with_secondary_chatter" in noise_types
     assert "retrieved_doc_injection" in noise_types
     assert "long_conflicting_context" in noise_types

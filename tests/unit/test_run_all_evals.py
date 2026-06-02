@@ -19,8 +19,8 @@ def test_run_all_evals_generates_reports(tmp_path) -> None:
     summary = run_all(tmp_path)
 
     assert summary["dataset_counts"]["runbooks"] == 24
-    assert summary["comparison"]["case_count"] == 288
-    assert summary["retriever_comparison"]["case_count"] == 288
+    assert summary["comparison"]["case_count"] == 296
+    assert summary["retriever_comparison"]["case_count"] == 296
     assert len(summary["retriever_comparison"]["systems"]) == 5
     assert summary["extraction"]["metrics"]["schema_validity"] == 1.0
     assert summary["security"]["metrics"]["improved_safe_rate"] == 1.0

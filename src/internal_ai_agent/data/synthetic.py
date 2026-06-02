@@ -324,6 +324,7 @@ def build_golden_cases(tickets: list[Ticket], limit: int = 96) -> list[dict[str,
         cases.extend(_build_manual_challenge_cases())
         cases.extend(_build_manual_non_templated_cases())
         cases.extend(_build_manual_evidence_packet_cases())
+        cases.extend(_build_manual_review_bundle_cases())
     return cases
 
 
@@ -887,6 +888,154 @@ def _build_manual_evidence_packet_cases() -> list[dict[str, object]]:
             "expected_citation_ids": [],
             "should_abstain": True,
             "noise_type": "manual_evidence_packet_conflict",
+        },
+    ]
+
+
+def _build_manual_review_bundle_cases() -> list[dict[str, object]]:
+    return [
+        {
+            "case_id": "MANUAL-BUNDLE-033",
+            "task_type": "manual_review_bundle_next_action",
+            "user_role": "operations_analyst",
+            "input": (
+                "Quality chat bundle: Atlas dashboard screenshot says freshness badge is red. "
+                "A side note says lineage was checked yesterday, but the current evidence bundle "
+                "says reference data feed is stale and older than the freshness window. This "
+                "summary: stale reference data; trigger synthetic refresh checklist. Which cited "
+                "procedure fits?"
+            ),
+            "expected_issue_category": "stale_reference_data",
+            "expected_team": "data_quality",
+            "expected_next_action": (
+                "Verify feed freshness and trigger the synthetic refresh checklist."
+            ),
+            "expected_citation_ids": ["RB-DATA_QUALITY-01"],
+            "should_abstain": False,
+            "noise_type": "manual_review_bundle",
+        },
+        {
+            "case_id": "MANUAL-BUNDLE-034",
+            "task_type": "manual_review_bundle_next_action",
+            "user_role": "operations_analyst",
+            "input": (
+                "Ops review bundle: Nova intake has a possible entity screening match. Older "
+                "note says missing KYC was supplied, but the current evidence bundle says the "
+                "entity match still needs second-line review with supporting evidence. Which "
+                "runbook should be cited?"
+            ),
+            "expected_issue_category": "entity_match_review",
+            "expected_team": "client_onboarding",
+            "expected_next_action": (
+                "Send the case to second-line review with supporting evidence."
+            ),
+            "expected_citation_ids": ["RB-CLIENT_ONBOARDING-02"],
+            "should_abstain": False,
+            "noise_type": "manual_review_bundle",
+        },
+        {
+            "case_id": "MANUAL-BUNDLE-035",
+            "task_type": "manual_review_bundle_next_action",
+            "user_role": "operations_analyst",
+            "input": (
+                "Payments analyst bundle: Aurora repair queue has high-severity rows piling up. "
+                "There is stale chatter about duplicate batch, but the current evidence bundle "
+                "says repair items are backing up and need triage. Which cited procedure applies?"
+            ),
+            "expected_issue_category": "repair_queue_backlog",
+            "expected_team": "payments_ops",
+            "expected_next_action": (
+                "Prioritize high-severity repairs and prepare a queue summary."
+            ),
+            "expected_citation_ids": ["RB-PAYMENTS_OPS-06"],
+            "should_abstain": False,
+            "noise_type": "manual_review_bundle",
+        },
+        {
+            "case_id": "MANUAL-BUNDLE-036",
+            "task_type": "manual_review_bundle_next_action",
+            "user_role": "operations_analyst",
+            "input": (
+                "Helios support bundle: booking workflow is not progressing. The pasted note "
+                "mentions commission code in yesterday chat, but the current evidence bundle "
+                "says booking status is stuck and a follow-up task is needed. What citation fits?"
+            ),
+            "expected_issue_category": "booking_status_stuck",
+            "expected_team": "trade_support",
+            "expected_next_action": (
+                "Check booking workflow status and create a follow-up task."
+            ),
+            "expected_citation_ids": ["RB-TRADE_SUPPORT-06"],
+            "should_abstain": False,
+            "noise_type": "manual_review_bundle",
+        },
+        {
+            "case_id": "MANUAL-BUNDLE-037",
+            "task_type": "manual_review_bundle_next_action",
+            "user_role": "operations_analyst",
+            "input": (
+                "Atlas review bundle: control owner asks for source trace. The side panel "
+                "mentions duplicate records, but current evidence says the lineage check cannot "
+                "trace the upstream feed correctly. This summary: lineage check failed; attach "
+                "lineage evidence. Which runbook?"
+            ),
+            "expected_issue_category": "lineage_check_failed",
+            "expected_team": "data_quality",
+            "expected_next_action": "Trace the upstream feed and attach lineage evidence.",
+            "expected_citation_ids": ["RB-DATA_QUALITY-05"],
+            "should_abstain": False,
+            "noise_type": "manual_review_bundle",
+        },
+        {
+            "case_id": "MANUAL-BUNDLE-038",
+            "task_type": "manual_review_bundle_next_action",
+            "user_role": "operations_analyst",
+            "input": (
+                "Client intake bundle: beneficial ownership section is blank. A stale note says "
+                "the tax form was expired, but current evidence says beneficial owner details are "
+                "missing before activation can continue. Which citation and action apply?"
+            ),
+            "expected_issue_category": "beneficial_owner_missing",
+            "expected_team": "client_onboarding",
+            "expected_next_action": (
+                "Request beneficial ownership details before continuing activation."
+            ),
+            "expected_citation_ids": ["RB-CLIENT_ONBOARDING-04"],
+            "should_abstain": False,
+            "noise_type": "manual_review_bundle",
+        },
+        {
+            "case_id": "MANUAL-BUNDLE-039",
+            "task_type": "manual_review_bundle_abstention",
+            "user_role": "operations_analyst",
+            "input": (
+                "Review bundle conflict: header says Aurora duplicate batch, body says Helios "
+                "reference data gap, and latest owner field is empty. The active platform and "
+                "issue are not established, so do not guess the cited procedure."
+            ),
+            "expected_issue_category": "",
+            "expected_team": "payments_ops",
+            "expected_next_action": "",
+            "expected_citation_ids": [],
+            "should_abstain": True,
+            "noise_type": "manual_review_bundle_conflict",
+        },
+        {
+            "case_id": "MANUAL-BUNDLE-040",
+            "task_type": "manual_review_bundle_abstention",
+            "user_role": "operations_analyst",
+            "input": (
+                "Review bundle conflict: current evidence panel says Nova screening alert, "
+                "attached table says Atlas late feed, and no generated control output identifies "
+                "which system owns the break. The active platform and issue are not clear; ask "
+                "for clarification instead of citing a runbook."
+            ),
+            "expected_issue_category": "",
+            "expected_team": "client_onboarding",
+            "expected_next_action": "",
+            "expected_citation_ids": [],
+            "should_abstain": True,
+            "noise_type": "manual_review_bundle_conflict",
         },
     ]
 

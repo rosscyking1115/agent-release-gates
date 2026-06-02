@@ -31,7 +31,7 @@ def _span(
         "status": {"code": status},
         "attributes": {
             "lab.component": "evaluation",
-            "eval.case_count": 288,
+            "eval.case_count": 296,
             "eval.schema_valid": True,
             "eval.score": 1.0,
         },
@@ -55,7 +55,7 @@ def test_otlp_trace_payload_maps_local_spans_to_otlp_json() -> None:
     assert "parentSpanId" not in otlp_span
     assert otlp_span["kind"] == 1
     assert otlp_span["status"] == {"code": 1}
-    assert attributes["eval.case_count"] == {"intValue": "288"}
+    assert attributes["eval.case_count"] == {"intValue": "296"}
     assert attributes["eval.schema_valid"] == {"boolValue": True}
     assert attributes["eval.score"] == {"doubleValue": 1.0}
 

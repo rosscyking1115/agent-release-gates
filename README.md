@@ -67,7 +67,7 @@ Current generated seed dataset:
 | --- | ---: |
 | Runbook sections | 24 |
 | Operations tickets | 180 |
-| Golden eval cases | 288 |
+| Golden eval cases | 296 |
 | Red-team cases | 60 |
 
 The baseline evaluation writes:
@@ -108,15 +108,15 @@ Current deterministic evaluation:
 
 | Metric | Baseline | Improved lexical | Hybrid sparse semantic | Local TF-IDF vector | Local embedding store |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| Retrieval hit rate@3 | 45.54% | 99.11% | 100.00% | 100.00% | 100.00% |
-| Citation coverage | 20.09% | 98.66% | 100.00% | 100.00% | 100.00% |
-| Issue category accuracy | 20.09% | 98.66% | 100.00% | 100.00% | 100.00% |
-| Next action accuracy | 20.09% | 98.66% | 100.00% | 100.00% | 100.00% |
-| Abstention accuracy | 78.47% | 100.00% | 100.00% | 100.00% | 100.00% |
+| Retrieval hit rate@3 | 45.22% | 99.13% | 100.00% | 100.00% | 100.00% |
+| Citation coverage | 20.00% | 98.70% | 100.00% | 100.00% | 100.00% |
+| Issue category accuracy | 20.00% | 98.70% | 100.00% | 100.00% | 100.00% |
+| Next action accuracy | 20.00% | 98.70% | 100.00% | 100.00% | 100.00% |
+| Abstention accuracy | 78.38% | 100.00% | 100.00% | 100.00% | 100.00% |
 
-These are first-pass synthetic metrics across exact, paraphrased, noisy, human-like, human email-thread, manually authored chat/handoff/control-room/redacted/stale-thread cases, evidence packets, analyst scratch notes, CSV excerpts, timeline notes, control-owner notes, distractor, typo, weak-evidence, conflicting-evidence, long-conflicting-context, retrieved-document injection, and adversarial-instruction cases. Later phases should add provider-backed embedding comparison, more adversarial retrieval cases, and more non-templated human-authored evidence.
+These are first-pass synthetic metrics across exact, paraphrased, noisy, human-like, human email-thread, manually authored chat/handoff/control-room/redacted/stale-thread cases, evidence packets, mixed review bundles, analyst scratch notes, CSV excerpts, timeline notes, control-owner notes, distractor, typo, weak-evidence, conflicting-evidence, long-conflicting-context, retrieved-document injection, and adversarial-instruction cases. Later phases should add provider-backed embedding comparison, more adversarial retrieval cases, and more non-templated human-authored evidence.
 
-The hybrid retriever is intentionally local and deterministic: it combines lexical scoring with sparse semantic alias features, negated false-lead handling, phrase matching, and current-evidence reranking for forwarded-thread cases. The local TF-IDF vector retriever adds an IDF-weighted cosine index with character n-grams and alias features. The local embedding-store retriever builds stable feature-hashed dense vectors and searches them with cosine similarity. The expanded 272-case suite exposed residual manual-case final-selection failures, then the reranker was updated with stale-context penalties, schema-mismatch handling, and KYC artefact vocabulary. The 280-case suite added non-templated analyst-authored prompts and fixed an ambiguous-handoff abstention gap. The newer 288-case suite adds manually authored evidence packets with stale side chatter, current-evidence cues, and ownership-conflict abstentions. Those recovered cases are regression-tested synthetic benchmarks, not claims that messy real tickets are solved.
+The hybrid retriever is intentionally local and deterministic: it combines lexical scoring with sparse semantic alias features, negated false-lead handling, phrase matching, and current-evidence reranking for forwarded-thread cases. The local TF-IDF vector retriever adds an IDF-weighted cosine index with character n-grams and alias features. The local embedding-store retriever builds stable feature-hashed dense vectors and searches them with cosine similarity. The expanded 272-case suite exposed residual manual-case final-selection failures, then the reranker was updated with stale-context penalties, schema-mismatch handling, and KYC artefact vocabulary. The 280-case suite added non-templated analyst-authored prompts and fixed an ambiguous-handoff abstention gap. The 288-case suite added manually authored evidence packets with stale side chatter, current-evidence cues, and ownership-conflict abstentions. The current 296-case suite adds mixed manual review bundles that combine screenshot notes, chat snippets, table extracts, stale references, and conflicting ownership cues. Those recovered cases are regression-tested synthetic benchmarks, not claims that messy real tickets are solved.
 
 Current structured extraction evaluation:
 
