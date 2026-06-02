@@ -8,6 +8,8 @@ from internal_ai_agent.evals.agent import evaluate_agent
 from internal_ai_agent.evals.extraction import evaluate_extraction
 from internal_ai_agent.evals.runner import evaluate_comparison, evaluate_retriever_comparison
 from internal_ai_agent.evals.security import evaluate_security
+from internal_ai_agent.io import read_jsonl, write_jsonl
+from internal_ai_agent.observability.otel import otel_spans_from_evaluation_run
 from internal_ai_agent.reporting.public_report import write_public_report
 
 
@@ -18,6 +20,14 @@ def run_all(project_root: Path) -> dict[str, Any]:
     extraction = evaluate_extraction(project_root)
     security = evaluate_security(project_root)
     agent = evaluate_agent(project_root)
+    observability_spans_path = write_observability_spans(
+        project_root=project_root,
+        dataset_counts=dataset_counts,
+        retriever_comparison=retriever_comparison,
+        extraction=extraction,
+        security=security,
+        agent=agent,
+    )
     public_report_path = write_public_report(project_root)
     return {
         "dataset_counts": dataset_counts,
@@ -26,8 +36,31 @@ def run_all(project_root: Path) -> dict[str, Any]:
         "extraction": extraction,
         "security": security,
         "agent": agent,
+        "observability_spans_path": str(observability_spans_path),
         "public_report_path": str(public_report_path),
     }
+
+
+def write_observability_spans(
+    *,
+    project_root: Path,
+    dataset_counts: dict[str, int],
+    retriever_comparison: dict[str, Any],
+    extraction: dict[str, Any],
+    security: dict[str, Any],
+    agent: dict[str, Any],
+) -> Path:
+    agent_spans = read_jsonl(project_root / "reports/agent_otel_spans.jsonl")
+    evaluation_spans = otel_spans_from_evaluation_run(
+        dataset_counts=dataset_counts,
+        retriever_comparison=retriever_comparison,
+        extraction=extraction,
+        security=security,
+        agent=agent,
+    )
+    output_path = project_root / "reports/observability_otel_spans.jsonl"
+    write_jsonl(output_path, [*evaluation_spans, *agent_spans])
+    return output_path
 
 
 def main() -> None:

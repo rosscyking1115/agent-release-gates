@@ -23,6 +23,129 @@ def otel_spans_from_agent_traces(traces: list[dict[str, Any]]) -> list[dict[str,
     return spans
 
 
+def otel_spans_from_evaluation_run(
+    *,
+    dataset_counts: dict[str, int],
+    retriever_comparison: dict[str, Any],
+    extraction: dict[str, Any],
+    security: dict[str, Any],
+    agent: dict[str, Any],
+) -> list[dict[str, Any]]:
+    trace_id = _stable_hex("evaluation_run:observability:v1", length=32)
+    root_span_id = _stable_hex("evaluation_run:root", length=16)
+    trace_start = BASE_TIME_UNIX_NANO + 100 * TRACE_GAP_NANO
+    child_specs = [
+        (
+            "data.generate",
+            "OK",
+            {
+                "lab.component": "data",
+                "dataset.runbook_count": dataset_counts["runbooks"],
+                "dataset.ticket_count": dataset_counts["tickets"],
+                "dataset.golden_case_count": dataset_counts["golden_cases"],
+                "dataset.red_team_case_count": dataset_counts["red_team_cases"],
+            },
+        ),
+        (
+            "retriever.evaluate",
+            "OK",
+            {
+                "lab.component": "retrieval",
+                "eval.dataset": "golden_cases",
+                "eval.case_count": retriever_comparison["case_count"],
+                "retriever.system_count": len(retriever_comparison["systems"]),
+                "retriever.best_system": _best_retriever_label(retriever_comparison),
+                "retriever.max_citation_coverage": _max_metric(
+                    retriever_comparison["systems"], "citation_coverage"
+                ),
+            },
+        ),
+        (
+            "extraction.evaluate",
+            "OK",
+            {
+                "lab.component": "extraction",
+                "eval.dataset": extraction["dataset"],
+                "eval.case_count": extraction["case_count"],
+                "eval.schema_validity": extraction["metrics"]["schema_validity"],
+                "eval.routing_team_accuracy": extraction["metrics"]["routing_team_accuracy"],
+            },
+        ),
+        (
+            "security.evaluate",
+            "OK",
+            {
+                "lab.component": "security",
+                "eval.dataset": security["dataset"],
+                "eval.case_count": security["case_count"],
+                "eval.improved_block_rate": security["metrics"]["improved_block_rate"],
+                "eval.improved_safe_rate": security["metrics"]["improved_safe_rate"],
+            },
+        ),
+        (
+            "agent.evaluate",
+            "OK",
+            {
+                "lab.component": "agent",
+                "eval.dataset": agent["dataset"],
+                "eval.case_count": agent["case_count"],
+                "eval.side_effect_block_rate": agent["metrics"]["side_effect_block_rate"],
+                "eval.approval_audit_rate": agent["metrics"]["approval_audit_rate"],
+                "eval.agent_otel_span_count": agent["otel_span_count"],
+            },
+        ),
+        (
+            "api.report_export",
+            "OK",
+            {
+                "lab.component": "api",
+                "http.route.evaluation_markdown": "/reports/evaluation",
+                "http.route.evaluation_html": "/reports/evaluation.html",
+                "http.route.agent_otel_spans": "/reports/agent/otel-spans",
+                "http.route.observability_otel_spans": "/reports/observability/otel-spans",
+                "report.markdown_path": "reports/evaluation_report.md",
+                "report.html_path": "reports/evaluation_report.html",
+            },
+        ),
+    ]
+    trace_end = trace_start + (len(child_specs) + 1) * SPAN_GAP_NANO
+    spans = [
+        _make_span(
+            trace_id=trace_id,
+            span_id=root_span_id,
+            parent_span_id=None,
+            name="evaluation.run",
+            start_time_unix_nano=trace_start,
+            end_time_unix_nano=trace_end,
+            status_code="OK",
+            attributes={
+                "lab.trace_id": "evaluation_run",
+                "lab.component": "evaluation",
+                "eval.stage_count": len(child_specs),
+            },
+        )
+    ]
+    for sequence, (name, status_code, attributes) in enumerate(child_specs, start=1):
+        span_start = trace_start + sequence * SPAN_GAP_NANO
+        spans.append(
+            _make_span(
+                trace_id=trace_id,
+                span_id=_stable_hex(f"evaluation_run:{sequence}:{name}", length=16),
+                parent_span_id=root_span_id,
+                name=name,
+                start_time_unix_nano=span_start,
+                end_time_unix_nano=span_start + SPAN_DURATION_NANO,
+                status_code=status_code,
+                attributes={
+                    "lab.trace_id": "evaluation_run",
+                    "eval.sequence": sequence,
+                    **attributes,
+                },
+            )
+        )
+    return spans
+
+
 def _root_span(
     trace: dict[str, Any],
     trace_id: str,
@@ -30,16 +153,15 @@ def _root_span(
     start_time_unix_nano: int,
     end_time_unix_nano: int,
 ) -> dict[str, Any]:
-    return {
-        "trace_id": trace_id,
-        "span_id": span_id,
-        "parent_span_id": None,
-        "name": "agent.run",
-        "kind": "INTERNAL",
-        "start_time_unix_nano": start_time_unix_nano,
-        "end_time_unix_nano": end_time_unix_nano,
-        "status": {"code": "OK"},
-        "attributes": {
+    return _make_span(
+        trace_id=trace_id,
+        span_id=span_id,
+        parent_span_id=None,
+        name="agent.run",
+        start_time_unix_nano=start_time_unix_nano,
+        end_time_unix_nano=end_time_unix_nano,
+        status_code="OK",
+        attributes={
             "lab.trace_id": trace["trace_id"],
             "ticket.id": trace["ticket_id"],
             "approval.granted": trace["approval_granted"],
@@ -50,7 +172,7 @@ def _root_span(
             "agent.blocked_tool_call_count": trace["blocked_tool_call_count"],
             "agent.citation_count": trace["citation_count"],
         },
-    }
+    )
 
 
 def _event_span(
@@ -72,17 +194,52 @@ def _event_span(
     }
     for key, value in event.get("metadata", {}).items():
         attributes[f"audit.metadata.{key}"] = value
+    return _make_span(
+        trace_id=trace_id,
+        span_id=_stable_hex(f"{trace['trace_id']}:{sequence}:{event['event_type']}", length=16),
+        parent_span_id=parent_span_id,
+        name=event["event_type"],
+        start_time_unix_nano=start_time_unix_nano,
+        end_time_unix_nano=start_time_unix_nano + SPAN_DURATION_NANO,
+        status_code="OK",
+        attributes=attributes,
+    )
+
+
+def _make_span(
+    *,
+    trace_id: str,
+    span_id: str,
+    parent_span_id: str | None,
+    name: str,
+    start_time_unix_nano: int,
+    end_time_unix_nano: int,
+    status_code: str,
+    attributes: dict[str, Any],
+) -> dict[str, Any]:
     return {
         "trace_id": trace_id,
-        "span_id": _stable_hex(f"{trace['trace_id']}:{sequence}:{event['event_type']}", length=16),
+        "span_id": span_id,
         "parent_span_id": parent_span_id,
-        "name": event["event_type"],
+        "name": name,
         "kind": "INTERNAL",
         "start_time_unix_nano": start_time_unix_nano,
-        "end_time_unix_nano": start_time_unix_nano + SPAN_DURATION_NANO,
-        "status": {"code": "OK"},
+        "end_time_unix_nano": end_time_unix_nano,
+        "status": {"code": status_code},
         "attributes": attributes,
     }
+
+
+def _best_retriever_label(report: dict[str, Any]) -> str:
+    best = sorted(
+        report["systems"],
+        key=lambda system: (-system["citation_coverage"], system["failure_count"], system["label"]),
+    )[0]
+    return str(best["label"])
+
+
+def _max_metric(systems: list[dict[str, Any]], metric: str) -> float:
+    return max(float(system[metric]) for system in systems)
 
 
 def _stable_hex(value: str, *, length: int) -> str:

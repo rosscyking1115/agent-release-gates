@@ -370,7 +370,11 @@ def test_agent_otel_rows_and_summary_format_span_export() -> None:
             "start_time_unix_nano": 3,
             "end_time_unix_nano": 4,
             "status": {"code": "OK"},
-            "attributes": {"ticket.id": "TCK-1", "audit.outcome": "approval_required"},
+            "attributes": {
+                "ticket.id": "TCK-1",
+                "audit.component": "tool",
+                "audit.outcome": "approval_required",
+            },
         },
     ]
 
@@ -378,6 +382,7 @@ def test_agent_otel_rows_and_summary_format_span_export() -> None:
         "span_count": 2,
         "trace_count": 1,
         "root_span_count": 1,
+        "child_span_count": 1,
         "tool_span_count": 1,
     }
     assert agent_otel_span_rows(spans)[1] == {
@@ -385,6 +390,7 @@ def test_agent_otel_rows_and_summary_format_span_export() -> None:
         "span_id": "2" * 16,
         "parent_span_id": "1" * 16,
         "name": "route_ticket_mock",
+        "component": "",
         "ticket_id": "TCK-1",
         "outcome": "approval_required",
         "start_time_unix_nano": 3,

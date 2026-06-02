@@ -123,3 +123,17 @@ Each row is an OpenTelemetry-style span derived from `reports/agent_trace_exampl
 | `end_time_unix_nano` | Deterministic synthetic span end timestamp in Unix nanoseconds. |
 | `status` | Span status object. Governance blocks are represented through attributes, not failed span status. |
 | `attributes` | Flattened span attributes for lab trace id, ticket id, approval state, audit outcome, and tool metadata. |
+
+## `reports/observability_otel_spans.jsonl`
+
+Each row is an OpenTelemetry-style span for the broader lab observability view. The file combines `reports/agent_otel_spans.jsonl` with one deterministic `evaluation.run` trace that describes the orchestration path for synthetic data generation, retriever comparison, extraction evaluation, security evaluation, controlled-agent evaluation, and report/API artifact export.
+
+Additional attributes may include:
+
+| Field | Description |
+| --- | --- |
+| `lab.component` | Component represented by the span, such as `data`, `retrieval`, `extraction`, `security`, `agent`, `api`, or `evaluation`. |
+| `eval.sequence` | Deterministic child-span order inside the evaluation trace. |
+| `eval.case_count` | Number of cases evaluated by the component. |
+| `retriever.best_system` | Best retriever label by citation coverage and failed-case count. |
+| `http.route.*` | Local report/API routes represented by the artifact-export span. |

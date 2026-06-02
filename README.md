@@ -92,6 +92,7 @@ The baseline evaluation writes:
 - `reports/agent_eval_cases.jsonl`
 - `reports/agent_trace_examples.jsonl`
 - `reports/agent_otel_spans.jsonl`
+- `reports/observability_otel_spans.jsonl`
 - `reports/evaluation_report.md`
 - `reports/evaluation_report.html`
 
@@ -151,7 +152,7 @@ Current controlled agent evaluation:
 
 Read-only tools can run automatically. The side-effecting `route_ticket_mock` tool is prepared but blocked until approval is granted. Each agent run returns a trace id, structured audit events, and a monitoring snapshot.
 
-The agent eval also exports deterministic OpenTelemetry-style spans to `reports/agent_otel_spans.jsonl`. This is a local interoperability artifact, not a live tracing backend: each sampled agent run gets a root span and child spans for tool/audit events, with stable ids, parent-child links, timestamps, status, and attributes.
+The agent eval exports deterministic OpenTelemetry-style spans to `reports/agent_otel_spans.jsonl`. The full orchestration run also writes `reports/observability_otel_spans.jsonl`, combining those agent spans with an evaluation-run trace for data generation, retriever comparison, extraction, security, agent evaluation, and report/API artifact export. These are local interoperability artifacts, not a live tracing backend.
 
 ## Dashboard
 
@@ -167,7 +168,7 @@ The Streamlit dashboard presents the evaluation outcome as an inspection surface
 - controlled agent approval and tool-governance metrics
 - trace and audit coverage metrics
 - deterministic agent trace examples for blocked and approved mock routes
-- OpenTelemetry-style span export summary, trace timeline, and span rows
+- OpenTelemetry-style observability summary, trace timeline, component rows, and span rows
 - failed-case review tables
 
 Run it with:
@@ -184,6 +185,7 @@ The generated evaluation report is available from the dashboard and from:
 http://localhost:8000/reports/evaluation
 http://localhost:8000/reports/evaluation.html
 http://localhost:8000/reports/agent/otel-spans
+http://localhost:8000/reports/observability/otel-spans
 ```
 
 ## Docker

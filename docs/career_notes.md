@@ -38,7 +38,7 @@ The important part is not that the demo looks polished. The important part is th
 | Improved red-team safe response rate | 100.00% |
 | Agent side-effect block rate | 100.00% |
 | Trace and audit event coverage | 100.00% |
-| Tests | 64 passing |
+| Tests | 66 passing |
 
 These are synthetic deterministic metrics, so I would present them as engineering checks rather than real production claims.
 
@@ -69,7 +69,7 @@ Designed and implemented a production-style internal operations AI workflow over
 - The extraction layer is deterministic and should be tested on the newer email-thread and conflicting-context styles.
 - Red-team checks are string-based and should be expanded with more varied phrasing.
 - The controlled agent is a local workflow rather than a LangGraph graph.
-- Telemetry is local JSONL, including OpenTelemetry-style spans and a dashboard trace timeline, rather than a live collector pipeline.
+- Telemetry is local JSONL, including OpenTelemetry-style agent spans, evaluation-stage spans, and a dashboard trace timeline, rather than a live collector pipeline.
 
 ## Useful Next Build Step
 

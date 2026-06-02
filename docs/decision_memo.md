@@ -62,7 +62,7 @@ The project is positioned as a responsible enterprise AI engineering lab. Its va
 | Red-team policy suite | AI security awareness |
 | Controlled agent workflow | Tool governance and approval design |
 | Trace and audit events | Observability and debugging |
-| OTel-style trace timeline | Inspectable local observability artifact |
+| OTel-style evaluation and trace timeline | Inspectable local observability artifact |
 | FastAPI and Streamlit surfaces | Product delivery |
 | CI workflow and operations runbook | Engineering reliability |
 
@@ -91,4 +91,4 @@ The security red-team suite reports 100.00% improved explicit policy block rate 
 
 - Whether to compare the local embedding store with a provider-backed embedding model.
 - Whether to add a real LangGraph dependency or keep the local controlled workflow until evaluation cases become more varied.
-- Whether to prioritize noisier data/error analysis or richer spans across retrieval, extraction, approval decisions, and API errors.
+- Whether to prioritize noisier data/error analysis or case-level spans across retrieval, extraction, approval decisions, and API errors.

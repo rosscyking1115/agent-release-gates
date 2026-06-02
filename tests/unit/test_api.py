@@ -6,6 +6,7 @@ from internal_ai_agent.api.main import (
     evaluation_report_html,
     extract,
     health,
+    observability_otel_spans,
 )
 from internal_ai_agent.api.schemas import AgentRunRequest, AskRequest, ExtractRequest
 
@@ -31,6 +32,14 @@ def test_evaluation_report_html_endpoint_returns_html() -> None:
 def test_agent_otel_spans_endpoint_returns_jsonl() -> None:
     report = agent_otel_spans()
 
+    assert '"name": "agent.run"' in report
+    assert '"span_id":' in report
+
+
+def test_observability_otel_spans_endpoint_returns_jsonl() -> None:
+    report = observability_otel_spans()
+
+    assert '"name": "evaluation.run"' in report
     assert '"name": "agent.run"' in report
     assert '"span_id":' in report
 

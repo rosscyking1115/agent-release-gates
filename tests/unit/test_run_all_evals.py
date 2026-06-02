@@ -33,6 +33,8 @@ def test_run_all_evals_generates_reports(tmp_path) -> None:
     assert (tmp_path / "reports/embedding_eval_summary.json").exists()
     assert (tmp_path / "reports/agent_eval_summary.json").exists()
     assert (tmp_path / "reports/agent_otel_spans.jsonl").exists()
+    assert (tmp_path / "reports/observability_otel_spans.jsonl").exists()
     assert (tmp_path / "reports/evaluation_report.md").exists()
     assert (tmp_path / "reports/evaluation_report.html").exists()
+    assert Path(summary["observability_spans_path"]).name == "observability_otel_spans.jsonl"
     assert Path(summary["public_report_path"]).name == "evaluation_report.md"

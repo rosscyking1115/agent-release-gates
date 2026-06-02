@@ -19,12 +19,12 @@ from internal_ai_agent.dashboard.data import (
     failed_case_rows,
     failure_example_rows,
     failure_reason_rows,
-    load_agent_otel_spans,
     load_agent_summary,
     load_agent_trace_examples,
     load_case_rows,
     load_comparison,
     load_extraction_summary,
+    load_observability_otel_spans,
     load_public_report,
     load_public_report_html,
     load_retriever_case_rows,
@@ -32,6 +32,7 @@ from internal_ai_agent.dashboard.data import (
     load_retriever_snapshots,
     load_security_summary,
     metric_rows,
+    observability_component_rows,
     retriever_experiment_rows,
     retriever_failure_example_rows,
     retriever_failure_overview,
@@ -57,7 +58,7 @@ def main() -> None:
     security_summary = load_security_summary(PROJECT_ROOT)
     agent_summary = load_agent_summary(PROJECT_ROOT)
     agent_traces = load_agent_trace_examples(PROJECT_ROOT)
-    agent_otel_spans = load_agent_otel_spans(PROJECT_ROOT)
+    observability_otel_spans = load_observability_otel_spans(PROJECT_ROOT)
     public_report = load_public_report(PROJECT_ROOT)
     public_report_html = load_public_report_html(PROJECT_ROOT)
     rows = metric_rows(comparison)
@@ -76,7 +77,7 @@ def main() -> None:
     _render_error_analysis()
     _render_extraction_metrics(extraction_summary, extraction_rows)
     _render_security_metrics(security_summary, security_rows)
-    _render_agent_metrics(agent_summary, agent_rows, agent_traces, agent_otel_spans)
+    _render_agent_metrics(agent_summary, agent_rows, agent_traces, observability_otel_spans)
     _render_public_report(public_report, public_report_html)
     _render_case_analysis(baseline_cases, improved_cases)
 
@@ -351,11 +352,15 @@ def _render_agent_metrics(
 
     otel_summary = agent_otel_summary(otel_spans)
     if otel_summary["span_count"]:
-        cols = st.columns(4)
+        cols = st.columns(5)
         cols[0].metric("OTel-style spans", f"{otel_summary['span_count']:,}")
         cols[1].metric("Exported traces", f"{otel_summary['trace_count']:,}")
         cols[2].metric("Root spans", f"{otel_summary['root_span_count']:,}")
-        cols[3].metric("Tool spans", f"{otel_summary['tool_span_count']:,}")
+        cols[3].metric("Child spans", f"{otel_summary['child_span_count']:,}")
+        cols[4].metric("Tool spans", f"{otel_summary['tool_span_count']:,}")
+        component_df = pd.DataFrame(observability_component_rows(otel_spans))
+        if not component_df.empty:
+            st.dataframe(component_df, hide_index=True, use_container_width=True)
         _render_agent_trace_timeline(otel_spans)
         st.dataframe(
             pd.DataFrame(agent_otel_span_rows(otel_spans)),
@@ -370,7 +375,10 @@ def _render_agent_trace_timeline(otel_spans: list[dict[str, object]]) -> None:
         return
 
     timeline_df = pd.DataFrame(timeline_rows)
-    trace_labels = timeline_df["trace_label"].drop_duplicates().tolist()
+    trace_labels = sorted(
+        timeline_df["trace_label"].drop_duplicates().tolist(),
+        key=lambda label: (label != "evaluation_run", label),
+    )
     selected_trace = st.selectbox("Trace timeline", trace_labels)
     selected_df = timeline_df[timeline_df["trace_label"] == selected_trace].copy()
     selected_df = selected_df.sort_values("span_order")

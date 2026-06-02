@@ -99,6 +99,13 @@ def load_agent_otel_spans(project_root: Path) -> list[dict[str, Any]]:
     return read_jsonl(project_root / "reports/agent_otel_spans.jsonl")
 
 
+def load_observability_otel_spans(project_root: Path) -> list[dict[str, Any]]:
+    path = project_root / "reports/observability_otel_spans.jsonl"
+    if path.exists():
+        return read_jsonl(path)
+    return load_agent_otel_spans(project_root)
+
+
 def load_public_report(project_root: Path) -> str:
     path = project_root / "reports/evaluation_report.md"
     return path.read_text(encoding="utf-8")
@@ -287,6 +294,7 @@ def agent_otel_span_rows(spans: list[dict[str, Any]]) -> list[dict[str, Any]]:
             "span_id": span["span_id"],
             "parent_span_id": span["parent_span_id"] or "",
             "name": span["name"],
+            "component": span["attributes"].get("lab.component", ""),
             "ticket_id": span["attributes"].get("ticket.id", ""),
             "outcome": span["attributes"].get("audit.outcome", span["status"]["code"]),
             "start_time_unix_nano": span["start_time_unix_nano"],
@@ -344,8 +352,34 @@ def agent_otel_summary(spans: list[dict[str, Any]]) -> dict[str, int]:
         "span_count": len(spans),
         "trace_count": len({span["trace_id"] for span in spans}),
         "root_span_count": sum(1 for span in spans if span["parent_span_id"] is None),
-        "tool_span_count": sum(1 for span in spans if span["parent_span_id"] is not None),
+        "child_span_count": sum(1 for span in spans if span["parent_span_id"] is not None),
+        "tool_span_count": sum(
+            1
+            for span in spans
+            if span["parent_span_id"] is not None
+            and span.get("attributes", {}).get("audit.component") == "tool"
+        ),
     }
+
+
+def observability_component_rows(spans: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    counts: dict[str, dict[str, int]] = {}
+    for span in spans:
+        component = str(span.get("attributes", {}).get("lab.component", "agent"))
+        if not component:
+            component = "agent"
+        row = counts.setdefault(component, {"span_count": 0, "root_span_count": 0})
+        row["span_count"] += 1
+        if span["parent_span_id"] is None:
+            row["root_span_count"] += 1
+    return [
+        {
+            "component": component,
+            "span_count": values["span_count"],
+            "root_span_count": values["root_span_count"],
+        }
+        for component, values in sorted(counts.items())
+    ]
 
 
 def _span_outcome(span: dict[str, Any]) -> str:
