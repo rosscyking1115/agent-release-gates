@@ -13,7 +13,7 @@ This project provides a synthetic internal operations AI workflow for local expe
 - role-aware answer generation
 - policy refusal for risky or weak-evidence requests
 - approval-gated mock tool use
-- traceable audit events, monitoring snapshots, and OpenTelemetry-style span exports
+- traceable audit events, monitoring snapshots, OpenTelemetry-style span exports, and a local trace timeline
 
 It is not intended for real banking, real customer support, real employee operations, or real workflow automation.
 
@@ -57,7 +57,7 @@ Structured extraction over templated synthetic tickets currently reports 100.00%
 
 The deterministic red-team suite reports 100.00% improved safe response rate and 100.00% improved explicit policy block rate.
 
-The controlled-agent eval reports 100.00% trace coverage, audit event coverage, approval audit rate, monitoring snapshot rate, valid tool-call rate, side-effect block rate, approved action execution rate, and route-tool selection accuracy. It also exports deterministic OpenTelemetry-style spans for sampled blocked and approved tool routes.
+The controlled-agent eval reports 100.00% trace coverage, audit event coverage, approval audit rate, monitoring snapshot rate, valid tool-call rate, side-effect block rate, approved action execution rate, and route-tool selection accuracy. It also exports deterministic OpenTelemetry-style spans for sampled blocked and approved tool routes, and the dashboard renders those spans as a local trace timeline.
 
 The retriever snapshot report records deterministic version-to-version deltas and flags regressions when citation coverage falls or failed-case count rises.
 

@@ -16,11 +16,11 @@ Internal AI agents are only useful if they are grounded, measurable, safe, and a
 - route tickets to synthetic teams
 - refuse unsafe or weak-evidence requests
 - require approval before mock side effects
-- produce trace and audit records
+- produce trace, audit, and local span timeline records
 
 ## Strongest Technical Explanation
 
-I started with a deliberately weak baseline so improvement could be measured. The baseline used broad team/system hints and often found the right team but not the exact procedure. Then I added deterministic lexical retrieval, a local sparse semantic hybrid retriever, a local TF-IDF vector retriever, a local feature-hashed embedding store, role filtering, citations, abstention behavior, structured extraction, red-team blocking, controlled tool use, and traceable audit events.
+I started with a deliberately weak baseline so improvement could be measured. The baseline used broad team/system hints and often found the right team but not the exact procedure. Then I added deterministic lexical retrieval, a local sparse semantic hybrid retriever, a local TF-IDF vector retriever, a local feature-hashed embedding store, role filtering, citations, abstention behavior, structured extraction, red-team blocking, controlled tool use, traceable audit events, and a local span timeline.
 
 The important part is not that the demo looks polished. The important part is that each improvement has an evaluation report behind it, including retriever snapshot deltas that show where newer experiments regress.
 
@@ -38,13 +38,13 @@ The important part is not that the demo looks polished. The important part is th
 | Improved red-team safe response rate | 100.00% |
 | Agent side-effect block rate | 100.00% |
 | Trace and audit event coverage | 100.00% |
-| Tests | 59 passing |
+| Tests | 64 passing |
 
 These are synthetic deterministic metrics, so I would present them as engineering checks rather than real production claims.
 
 ## Possible CV Bullet
 
-Built a synthetic internal AI agent evaluation lab with Python, FastAPI, Pydantic, Streamlit, deterministic RAG, local TF-IDF vector retrieval, local embedding-store retrieval, structured ticket extraction, red-team policy checks, approval-gated mock tools, traceable audit events, and CI-backed evaluation reports over synthetic operations tickets and runbooks.
+Built a synthetic internal AI agent evaluation lab with Python, FastAPI, Pydantic, Streamlit, deterministic RAG, local TF-IDF vector retrieval, local embedding-store retrieval, structured ticket extraction, red-team policy checks, approval-gated mock tools, traceable audit events, local span timeline, and CI-backed evaluation reports over synthetic operations tickets and runbooks.
 
 ## Possible Deeper CV Bullet
 
@@ -69,7 +69,7 @@ Designed and implemented a production-style internal operations AI workflow over
 - The extraction layer is deterministic and should be tested on the newer email-thread and conflicting-context styles.
 - Red-team checks are string-based and should be expanded with more varied phrasing.
 - The controlled agent is a local workflow rather than a LangGraph graph.
-- Telemetry is local JSONL, including OpenTelemetry-style spans, rather than a live collector pipeline.
+- Telemetry is local JSONL, including OpenTelemetry-style spans and a dashboard trace timeline, rather than a live collector pipeline.
 
 ## Useful Next Build Step
 

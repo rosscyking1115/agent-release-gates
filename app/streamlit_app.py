@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import altair as alt
 import pandas as pd
 import streamlit as st
 
@@ -10,6 +11,7 @@ from internal_ai_agent.dashboard.data import (
     agent_metric_rows,
     agent_otel_span_rows,
     agent_otel_summary,
+    agent_otel_timeline_rows,
     agent_trace_rows,
     case_mix,
     error_analysis_rows,
@@ -354,11 +356,63 @@ def _render_agent_metrics(
         cols[1].metric("Exported traces", f"{otel_summary['trace_count']:,}")
         cols[2].metric("Root spans", f"{otel_summary['root_span_count']:,}")
         cols[3].metric("Tool spans", f"{otel_summary['tool_span_count']:,}")
+        _render_agent_trace_timeline(otel_spans)
         st.dataframe(
             pd.DataFrame(agent_otel_span_rows(otel_spans)),
             hide_index=True,
             use_container_width=True,
         )
+
+
+def _render_agent_trace_timeline(otel_spans: list[dict[str, object]]) -> None:
+    timeline_rows = agent_otel_timeline_rows(otel_spans)
+    if not timeline_rows:
+        return
+
+    timeline_df = pd.DataFrame(timeline_rows)
+    trace_labels = timeline_df["trace_label"].drop_duplicates().tolist()
+    selected_trace = st.selectbox("Trace timeline", trace_labels)
+    selected_df = timeline_df[timeline_df["trace_label"] == selected_trace].copy()
+    selected_df = selected_df.sort_values("span_order")
+    y_sort = selected_df["span_label"].tolist()
+
+    chart = (
+        alt.Chart(selected_df)
+        .mark_bar(cornerRadius=2)
+        .encode(
+            x=alt.X("start_ms:Q", title="Start (ms)"),
+            x2=alt.X2("end_ms:Q"),
+            y=alt.Y("span_label:N", sort=y_sort, title="Span"),
+            color=alt.Color("outcome:N", title="Outcome"),
+            tooltip=[
+                alt.Tooltip("trace_label:N", title="Trace"),
+                alt.Tooltip("ticket_id:N", title="Ticket"),
+                alt.Tooltip("name:N", title="Span"),
+                alt.Tooltip("outcome:N", title="Outcome"),
+                alt.Tooltip("start_ms:Q", title="Start ms"),
+                alt.Tooltip("duration_ms:Q", title="Duration ms"),
+                alt.Tooltip("span_id:N", title="Span id"),
+                alt.Tooltip("parent_span_id:N", title="Parent span id"),
+            ],
+        )
+        .properties(height=240)
+    )
+    st.altair_chart(chart, use_container_width=True)
+    st.dataframe(
+        selected_df[
+            [
+                "span_order",
+                "name",
+                "outcome",
+                "start_ms",
+                "duration_ms",
+                "span_id",
+                "parent_span_id",
+            ]
+        ],
+        hide_index=True,
+        use_container_width=True,
+    )
 
 
 def _render_public_report(report_markdown: str, report_html: str) -> None:

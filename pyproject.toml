@@ -5,6 +5,7 @@ description = "Synthetic internal AI agent evaluation lab for enterprise operati
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "altair>=6.0.0",
     "fastapi>=0.115.0",
     "pandas>=2.2.0",
     "pydantic>=2.8.0",

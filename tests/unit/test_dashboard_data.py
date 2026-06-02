@@ -2,6 +2,7 @@ from internal_ai_agent.dashboard.data import (
     agent_metric_rows,
     agent_otel_span_rows,
     agent_otel_summary,
+    agent_otel_timeline_rows,
     agent_trace_rows,
     case_mix,
     error_analysis_rows,
@@ -389,6 +390,50 @@ def test_agent_otel_rows_and_summary_format_span_export() -> None:
         "start_time_unix_nano": 3,
         "end_time_unix_nano": 4,
     }
+
+
+def test_agent_otel_timeline_rows_normalize_span_timing_by_trace() -> None:
+    spans = [
+        {
+            "trace_id": "a" * 32,
+            "span_id": "1" * 16,
+            "parent_span_id": None,
+            "name": "agent.run",
+            "start_time_unix_nano": 1_000_000,
+            "end_time_unix_nano": 9_000_000,
+            "status": {"code": "OK"},
+            "attributes": {
+                "lab.trace_id": "trace_eval_tck_1_blocked",
+                "ticket.id": "TCK-1",
+                "agent.route_tool_outcome": "approval_required",
+            },
+        },
+        {
+            "trace_id": "a" * 32,
+            "span_id": "2" * 16,
+            "parent_span_id": "1" * 16,
+            "name": "route_ticket_mock",
+            "start_time_unix_nano": 4_000_000,
+            "end_time_unix_nano": 6_500_000,
+            "status": {"code": "OK"},
+            "attributes": {
+                "lab.trace_id": "trace_eval_tck_1_blocked",
+                "ticket.id": "TCK-1",
+                "audit.outcome": "blocked_pending_approval",
+            },
+        },
+    ]
+
+    rows = agent_otel_timeline_rows(spans)
+
+    assert rows[0]["trace_label"] == "trace_eval_tck_1_blocked"
+    assert rows[0]["start_ms"] == 0.0
+    assert rows[0]["duration_ms"] == 8.0
+    assert rows[0]["outcome"] == "approval_required"
+    assert rows[1]["span_label"] == "2. route_ticket_mock"
+    assert rows[1]["start_ms"] == 3.0
+    assert rows[1]["duration_ms"] == 2.5
+    assert rows[1]["outcome"] == "blocked_pending_approval"
 
 
 def test_load_public_report_reads_markdown(tmp_path) -> None:

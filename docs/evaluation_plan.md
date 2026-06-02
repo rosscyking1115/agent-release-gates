@@ -122,9 +122,9 @@ Known limitation: this is a deterministic local workflow rather than a LangGraph
 
 ## Observability Version
 
-The first observability version adds trace ids, structured audit events, and monitoring snapshots to each controlled-agent run. It also writes deterministic OpenTelemetry-style span rows for representative blocked and approved tool routes. This makes the project easier to debug and gives the dashboard measurable operational controls rather than only answer-quality metrics.
+The first observability version adds trace ids, structured audit events, and monitoring snapshots to each controlled-agent run. It also writes deterministic OpenTelemetry-style span rows for representative blocked and approved tool routes, then normalizes those spans into a local dashboard trace timeline. This makes the project easier to debug and gives the dashboard measurable operational controls rather than only answer-quality metrics.
 
-Known limitation: the span export is local JSONL rather than a live OpenTelemetry collector pipeline. Future versions should add richer spans for retrieval, extraction, approval decisions, API errors, and a local trace timeline viewer.
+Known limitation: the span export is local JSONL rather than a live OpenTelemetry collector pipeline. Future versions should add richer spans for retrieval, extraction, approval decisions, and API errors.
 
 ## Security Red-Team Version
 

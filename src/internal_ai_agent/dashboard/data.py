@@ -296,6 +296,49 @@ def agent_otel_span_rows(spans: list[dict[str, Any]]) -> list[dict[str, Any]]:
     ]
 
 
+def agent_otel_timeline_rows(spans: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    spans_by_trace: dict[str, list[dict[str, Any]]] = {}
+    for span in spans:
+        spans_by_trace.setdefault(span["trace_id"], []).append(span)
+
+    rows: list[dict[str, Any]] = []
+    for trace_id, trace_spans in sorted(
+        spans_by_trace.items(),
+        key=lambda item: min(int(span["start_time_unix_nano"]) for span in item[1]),
+    ):
+        trace_start_ns = min(int(span["start_time_unix_nano"]) for span in trace_spans)
+        sorted_spans = sorted(
+            trace_spans,
+            key=lambda span: (int(span["start_time_unix_nano"]), span["span_id"]),
+        )
+        for span_order, span in enumerate(sorted_spans, start=1):
+            attributes = span.get("attributes", {})
+            start_ns = int(span["start_time_unix_nano"])
+            end_ns = max(int(span["end_time_unix_nano"]), start_ns)
+            name = str(span["name"])
+            trace_label = str(attributes.get("lab.trace_id", trace_id[:12]))
+            start_ms = (start_ns - trace_start_ns) / 1_000_000
+            end_ms = (end_ns - trace_start_ns) / 1_000_000
+            rows.append(
+                {
+                    "trace_id": trace_id,
+                    "trace_label": trace_label,
+                    "ticket_id": attributes.get("ticket.id", ""),
+                    "span_id": span["span_id"],
+                    "parent_span_id": span["parent_span_id"] or "",
+                    "name": name,
+                    "span_label": f"{span_order}. {name}",
+                    "span_order": span_order,
+                    "outcome": _span_outcome(span),
+                    "is_root": span["parent_span_id"] is None,
+                    "start_ms": round(start_ms, 3),
+                    "end_ms": round(end_ms, 3),
+                    "duration_ms": round(end_ms - start_ms, 3),
+                }
+            )
+    return rows
+
+
 def agent_otel_summary(spans: list[dict[str, Any]]) -> dict[str, int]:
     return {
         "span_count": len(spans),
@@ -303,6 +346,19 @@ def agent_otel_summary(spans: list[dict[str, Any]]) -> dict[str, int]:
         "root_span_count": sum(1 for span in spans if span["parent_span_id"] is None),
         "tool_span_count": sum(1 for span in spans if span["parent_span_id"] is not None),
     }
+
+
+def _span_outcome(span: dict[str, Any]) -> str:
+    attributes = span.get("attributes", {})
+    return str(
+        attributes.get(
+            "audit.outcome",
+            attributes.get(
+                "agent.route_tool_outcome",
+                span.get("status", {}).get("code", ""),
+            ),
+        )
+    )
 
 
 def load_case_rows(project_root: Path, system: str) -> list[dict[str, Any]]:

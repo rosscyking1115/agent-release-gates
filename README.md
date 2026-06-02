@@ -29,7 +29,7 @@ The current version creates a local, reproducible lab:
 - structured ticket extraction and routing
 - deterministic red-team policy checks
 - controlled agent workflow with approval-gated mock tools
-- trace IDs, audit events, and monitoring snapshots
+- trace IDs, audit events, monitoring snapshots, and OTel-style trace timeline
 - FastAPI service, Streamlit dashboard, Docker/Compose runtime, CI workflow, and operations runbook
 
 ## Tech Stack
@@ -42,7 +42,7 @@ The current version creates a local, reproducible lab:
 - ruff
 - Docker
 
-Later phases should add provider-backed embeddings, noisier evaluation data, richer red-team cases, a local trace timeline viewer, and optional LangGraph orchestration.
+Later phases should add provider-backed embeddings, noisier evaluation data, richer red-team cases, richer spans for additional workflows, and optional LangGraph orchestration.
 
 ## Quick Start
 
@@ -167,7 +167,7 @@ The Streamlit dashboard presents the evaluation outcome as an inspection surface
 - controlled agent approval and tool-governance metrics
 - trace and audit coverage metrics
 - deterministic agent trace examples for blocked and approved mock routes
-- OpenTelemetry-style span export summary and span rows
+- OpenTelemetry-style span export summary, trace timeline, and span rows
 - failed-case review tables
 
 Run it with:
