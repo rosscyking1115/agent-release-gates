@@ -13,7 +13,7 @@ This project provides a synthetic internal operations AI workflow for local expe
 - role-aware answer generation
 - policy refusal for risky or weak-evidence requests
 - approval-gated mock tool use
-- traceable audit events and monitoring snapshots
+- traceable audit events, monitoring snapshots, and OpenTelemetry-style span exports
 
 It is not intended for real banking, real customer support, real employee operations, or real workflow automation.
 
@@ -57,7 +57,7 @@ Structured extraction over templated synthetic tickets currently reports 100.00%
 
 The deterministic red-team suite reports 100.00% improved safe response rate and 100.00% improved explicit policy block rate.
 
-The controlled-agent eval reports 100.00% trace coverage, audit event coverage, approval audit rate, monitoring snapshot rate, valid tool-call rate, side-effect block rate, approved action execution rate, and route-tool selection accuracy.
+The controlled-agent eval reports 100.00% trace coverage, audit event coverage, approval audit rate, monitoring snapshot rate, valid tool-call rate, side-effect block rate, approved action execution rate, and route-tool selection accuracy. It also exports deterministic OpenTelemetry-style spans for sampled blocked and approved tool routes.
 
 The retriever snapshot report records deterministic version-to-version deltas and flags regressions when citation coverage falls or failed-case count rises.
 
@@ -69,7 +69,7 @@ The retriever snapshot report records deterministic version-to-version deltas an
 - Structured extraction is deterministic pattern matching, not LLM extraction.
 - Security checks are deterministic string-based controls, not a full adversarial red-team harness.
 - The controlled agent is a local workflow, not a LangGraph state machine yet.
-- Telemetry is represented as local structured objects, not exported OpenTelemetry traces yet.
+- Telemetry export is local JSONL, not a live OpenTelemetry collector pipeline.
 - Metrics should be interpreted as engineering checks over synthetic cases, not claims about real-world production performance.
 
 ## Safety Boundaries
@@ -90,6 +90,6 @@ Side-effecting operations are mock-only and require explicit approval.
 - Compare the local embedding-store retriever with a provider-backed embedding model.
 - Add timestamped historical evaluation snapshots after the deterministic snapshot contract remains stable.
 - Add more non-templated tickets and retrieved-context attacks after the current-evidence reranker fixed the first human-thread failure mode.
-- Add OpenTelemetry spans for retrieval, extraction, tool calls, approval decisions, and errors.
+- Add richer OpenTelemetry-style spans for retrieval, extraction, approval decisions, and errors.
 - Replace deterministic extraction with an optional LLM extraction provider plus schema repair.
 - Add a LangGraph state machine once the local workflow contract is stable.

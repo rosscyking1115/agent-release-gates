@@ -6,7 +6,9 @@ from pathlib import Path
 from typing import Any
 
 from internal_ai_agent.dashboard.data import (
+    agent_otel_summary,
     agent_trace_rows,
+    load_agent_otel_spans,
     load_agent_trace_examples,
     load_retriever_case_rows,
     retriever_failure_example_rows,
@@ -118,6 +120,10 @@ def generate_public_report(project_root: Path) -> str:
             "",
             _agent_trace_examples_table(project_root),
             "",
+            "## OpenTelemetry-Style Span Export",
+            "",
+            _agent_otel_summary_table(project_root),
+            "",
             "## What This Proves",
             "",
             "- The project can generate synthetic enterprise operations data safely.",
@@ -147,7 +153,7 @@ def generate_public_report(project_root: Path) -> str:
             "- Add noisier, human-written ticket variants.",
             "- Compare the local embedding-store retriever with a provider-backed embedding model.",
             "- Add downloadable PDF report export.",
-            "- Add OpenTelemetry-compatible trace export.",
+            "- Add a richer local trace viewer for inspecting span timelines.",
             "- Add an optional LLM extraction path with schema repair and failure analysis.",
             "",
         ]
@@ -209,6 +215,19 @@ def _agent_trace_examples_table(project_root: Path) -> str:
             "{tool_call_count} | {executed_tool_call_count} | {blocked_tool_call_count} | "
             "{audit_event_count} |".format(**trace)
         )
+    return "\n".join(rows)
+
+
+def _agent_otel_summary_table(project_root: Path) -> str:
+    summary = agent_otel_summary(load_agent_otel_spans(project_root))
+    rows = [
+        "| Export metric | Value |",
+        "| --- | ---: |",
+        f"| OTel-style spans | {summary['span_count']} |",
+        f"| Exported traces | {summary['trace_count']} |",
+        f"| Root spans | {summary['root_span_count']} |",
+        f"| Tool spans | {summary['tool_span_count']} |",
+    ]
     return "\n".join(rows)
 
 

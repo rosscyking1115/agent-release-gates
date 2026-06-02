@@ -58,6 +58,7 @@ The dashboard reads the saved report artifacts rather than recomputing metrics o
 - `reports/agent_eval_summary.json`
 - `reports/agent_eval_cases.jsonl`
 - `reports/agent_trace_examples.jsonl`
+- `reports/agent_otel_spans.jsonl`
 
 ## Baseline Version
 
@@ -115,15 +116,15 @@ Known limitation: the current extraction cases are templated. Future eval sets s
 
 The first controlled-agent version is `controlled_agent_approval_gate`. It uses deterministic read-only tools for runbook search, ticket extraction, and escalation-note drafting, then requires explicit approval before running `route_ticket_mock`.
 
-It reports trace coverage rate, audit event coverage rate, approval audit rate, monitoring snapshot rate, valid tool-call rate, approval trigger rate, side-effect block rate, approved action execution rate, route-tool selection accuracy, and unnecessary tool-call rate. It also exports deterministic trace examples for representative blocked and approved mock route runs.
+It reports trace coverage rate, audit event coverage rate, approval audit rate, monitoring snapshot rate, valid tool-call rate, approval trigger rate, side-effect block rate, approved action execution rate, route-tool selection accuracy, and unnecessary tool-call rate. It also exports deterministic trace examples and OpenTelemetry-style spans for representative blocked and approved mock route runs.
 
 Known limitation: this is a deterministic local workflow rather than a LangGraph runtime. The shape is intentionally close to a future state machine so the approval and audit contract can be tested before adding orchestration dependencies.
 
 ## Observability Version
 
-The first observability version adds trace ids, structured audit events, and monitoring snapshots to each controlled-agent run. This makes the project easier to debug and gives the dashboard measurable operational controls rather than only answer-quality metrics.
+The first observability version adds trace ids, structured audit events, and monitoring snapshots to each controlled-agent run. It also writes deterministic OpenTelemetry-style span rows for representative blocked and approved tool routes. This makes the project easier to debug and gives the dashboard measurable operational controls rather than only answer-quality metrics.
 
-Known limitation: the current telemetry is local JSON-style data. Future versions should emit OpenTelemetry traces for retrieval, extraction, tool calls, approval decisions, and API errors.
+Known limitation: the span export is local JSONL rather than a live OpenTelemetry collector pipeline. Future versions should add richer spans for retrieval, extraction, approval decisions, API errors, and a local trace timeline viewer.
 
 ## Security Red-Team Version
 

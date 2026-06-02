@@ -6,6 +6,7 @@ from typing import Any
 
 from internal_ai_agent.agent.workflow import run_controlled_agent
 from internal_ai_agent.io import read_jsonl, write_json, write_jsonl
+from internal_ai_agent.observability.otel import otel_spans_from_agent_traces
 
 
 @dataclass(frozen=True)
@@ -27,12 +28,15 @@ def evaluate_agent(project_root: Path) -> dict[str, Any]:
     tickets = read_jsonl(project_root / "data/synthetic/raw_tickets/tickets.jsonl")
     results = [_evaluate_ticket(ticket) for ticket in tickets]
     trace_examples = _trace_examples(tickets[:5])
+    otel_spans = otel_spans_from_agent_traces(trace_examples)
     report = {
         "system_version": "controlled_agent_approval_gate",
         "dataset": "synthetic_tickets",
         "case_count": len(results),
         "trace_example_count": len(trace_examples),
         "trace_examples_path": "reports/agent_trace_examples.jsonl",
+        "otel_span_count": len(otel_spans),
+        "otel_spans_path": "reports/agent_otel_spans.jsonl",
         "metrics": {
             "trace_coverage_rate": _rate(row.trace_id_present for row in results),
             "audit_event_coverage_rate": _rate(row.audit_events_present for row in results),
@@ -64,6 +68,7 @@ def evaluate_agent(project_root: Path) -> dict[str, Any]:
     write_json(project_root / "reports/agent_eval_summary.json", report)
     write_jsonl(project_root / "reports/agent_eval_cases.jsonl", (asdict(row) for row in results))
     write_jsonl(project_root / "reports/agent_trace_examples.jsonl", trace_examples)
+    write_jsonl(project_root / "reports/agent_otel_spans.jsonl", otel_spans)
     return report
 
 

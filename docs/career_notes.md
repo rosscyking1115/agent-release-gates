@@ -69,7 +69,7 @@ Designed and implemented a production-style internal operations AI workflow over
 - The extraction layer is deterministic and should be tested on the newer email-thread and conflicting-context styles.
 - Red-team checks are string-based and should be expanded with more varied phrasing.
 - The controlled agent is a local workflow rather than a LangGraph graph.
-- Telemetry is local structured data rather than OpenTelemetry export.
+- Telemetry is local JSONL, including OpenTelemetry-style spans, rather than a live collector pipeline.
 
 ## Useful Next Build Step
 

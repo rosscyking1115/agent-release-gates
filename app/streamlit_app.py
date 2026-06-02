@@ -8,6 +8,8 @@ import streamlit as st
 
 from internal_ai_agent.dashboard.data import (
     agent_metric_rows,
+    agent_otel_span_rows,
+    agent_otel_summary,
     agent_trace_rows,
     case_mix,
     error_analysis_rows,
@@ -15,6 +17,7 @@ from internal_ai_agent.dashboard.data import (
     failed_case_rows,
     failure_example_rows,
     failure_reason_rows,
+    load_agent_otel_spans,
     load_agent_summary,
     load_agent_trace_examples,
     load_case_rows,
@@ -52,6 +55,7 @@ def main() -> None:
     security_summary = load_security_summary(PROJECT_ROOT)
     agent_summary = load_agent_summary(PROJECT_ROOT)
     agent_traces = load_agent_trace_examples(PROJECT_ROOT)
+    agent_otel_spans = load_agent_otel_spans(PROJECT_ROOT)
     public_report = load_public_report(PROJECT_ROOT)
     public_report_html = load_public_report_html(PROJECT_ROOT)
     rows = metric_rows(comparison)
@@ -70,7 +74,7 @@ def main() -> None:
     _render_error_analysis()
     _render_extraction_metrics(extraction_summary, extraction_rows)
     _render_security_metrics(security_summary, security_rows)
-    _render_agent_metrics(agent_summary, agent_rows, agent_traces)
+    _render_agent_metrics(agent_summary, agent_rows, agent_traces, agent_otel_spans)
     _render_public_report(public_report, public_report_html)
     _render_case_analysis(baseline_cases, improved_cases)
 
@@ -322,6 +326,7 @@ def _render_agent_metrics(
     summary: dict[str, object],
     rows: list[dict[str, object]],
     traces: list[dict[str, object]],
+    otel_spans: list[dict[str, object]],
 ) -> None:
     st.subheader("Controlled Agent And Tool Governance")
     cols = st.columns(2)
@@ -341,6 +346,19 @@ def _render_agent_metrics(
     trace_rows = agent_trace_rows(traces)
     if trace_rows:
         st.dataframe(pd.DataFrame(trace_rows), hide_index=True, use_container_width=True)
+
+    otel_summary = agent_otel_summary(otel_spans)
+    if otel_summary["span_count"]:
+        cols = st.columns(4)
+        cols[0].metric("OTel-style spans", f"{otel_summary['span_count']:,}")
+        cols[1].metric("Exported traces", f"{otel_summary['trace_count']:,}")
+        cols[2].metric("Root spans", f"{otel_summary['root_span_count']:,}")
+        cols[3].metric("Tool spans", f"{otel_summary['tool_span_count']:,}")
+        st.dataframe(
+            pd.DataFrame(agent_otel_span_rows(otel_spans)),
+            hide_index=True,
+            use_container_width=True,
+        )
 
 
 def _render_public_report(report_markdown: str, report_html: str) -> None:

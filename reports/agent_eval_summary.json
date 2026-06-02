@@ -19,6 +19,8 @@
     "Side-effecting mock ticket routing requires explicit approval.",
     "No real operational action is taken; route_ticket_mock only returns a synthetic status."
   ],
+  "otel_span_count": 50,
+  "otel_spans_path": "reports/agent_otel_spans.jsonl",
   "system_version": "controlled_agent_approval_gate",
   "trace_example_count": 10,
   "trace_examples_path": "reports/agent_trace_examples.jsonl"

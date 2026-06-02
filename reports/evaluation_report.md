@@ -112,6 +112,15 @@ The controlled workflow separates read-only tools from side-effecting actions. T
 | trace_eval_tck-0005_blocked | TCK-0005 | False | approval_required | 4 | 3 | 1 | 4 |
 | trace_eval_tck-0005_approved | TCK-0005 | True | executed | 4 | 4 | 0 | 4 |
 
+## OpenTelemetry-Style Span Export
+
+| Export metric | Value |
+| --- | ---: |
+| OTel-style spans | 50 |
+| Exported traces | 10 |
+| Root spans | 10 |
+| Tool spans | 40 |
+
 ## What This Proves
 
 - The project can generate synthetic enterprise operations data safely.
@@ -132,5 +141,5 @@ The controlled workflow separates read-only tools from side-effecting actions. T
 - Add noisier, human-written ticket variants.
 - Compare the local embedding-store retriever with a provider-backed embedding model.
 - Add downloadable PDF report export.
-- Add OpenTelemetry-compatible trace export.
+- Add a richer local trace viewer for inspecting span timelines.
 - Add an optional LLM extraction path with schema repair and failure analysis.

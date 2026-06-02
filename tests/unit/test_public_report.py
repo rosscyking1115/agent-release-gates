@@ -45,6 +45,8 @@ def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
     assert "| Safe response rate | 0.00% | 100.00% |" in report
     assert "## Agent Trace Examples" in report
     assert "trace_eval_tck-" in report
+    assert "## OpenTelemetry-Style Span Export" in report
+    assert "| OTel-style spans |" in report
     assert "fully synthetic evaluation lab" in report
 
 

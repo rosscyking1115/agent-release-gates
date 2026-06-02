@@ -1,5 +1,7 @@
 from internal_ai_agent.dashboard.data import (
     agent_metric_rows,
+    agent_otel_span_rows,
+    agent_otel_summary,
     agent_trace_rows,
     case_mix,
     error_analysis_rows,
@@ -345,6 +347,48 @@ def test_agent_trace_rows_formats_trace_examples() -> None:
             "audit_event_count": 1,
         }
     ]
+
+
+def test_agent_otel_rows_and_summary_format_span_export() -> None:
+    spans = [
+        {
+            "trace_id": "0" * 32,
+            "span_id": "1" * 16,
+            "parent_span_id": None,
+            "name": "agent.run",
+            "start_time_unix_nano": 1,
+            "end_time_unix_nano": 2,
+            "status": {"code": "OK"},
+            "attributes": {"ticket.id": "TCK-1"},
+        },
+        {
+            "trace_id": "0" * 32,
+            "span_id": "2" * 16,
+            "parent_span_id": "1" * 16,
+            "name": "route_ticket_mock",
+            "start_time_unix_nano": 3,
+            "end_time_unix_nano": 4,
+            "status": {"code": "OK"},
+            "attributes": {"ticket.id": "TCK-1", "audit.outcome": "approval_required"},
+        },
+    ]
+
+    assert agent_otel_summary(spans) == {
+        "span_count": 2,
+        "trace_count": 1,
+        "root_span_count": 1,
+        "tool_span_count": 1,
+    }
+    assert agent_otel_span_rows(spans)[1] == {
+        "trace_id": "0" * 32,
+        "span_id": "2" * 16,
+        "parent_span_id": "1" * 16,
+        "name": "route_ticket_mock",
+        "ticket_id": "TCK-1",
+        "outcome": "approval_required",
+        "start_time_unix_nano": 3,
+        "end_time_unix_nano": 4,
+    }
 
 
 def test_load_public_report_reads_markdown(tmp_path) -> None:

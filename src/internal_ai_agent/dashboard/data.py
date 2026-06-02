@@ -95,6 +95,10 @@ def load_agent_trace_examples(project_root: Path) -> list[dict[str, Any]]:
     return read_jsonl(project_root / "reports/agent_trace_examples.jsonl")
 
 
+def load_agent_otel_spans(project_root: Path) -> list[dict[str, Any]]:
+    return read_jsonl(project_root / "reports/agent_otel_spans.jsonl")
+
+
 def load_public_report(project_root: Path) -> str:
     path = project_root / "reports/evaluation_report.md"
     return path.read_text(encoding="utf-8")
@@ -274,6 +278,31 @@ def agent_trace_rows(traces: list[dict[str, Any]]) -> list[dict[str, Any]]:
         }
         for trace in traces
     ]
+
+
+def agent_otel_span_rows(spans: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    return [
+        {
+            "trace_id": span["trace_id"],
+            "span_id": span["span_id"],
+            "parent_span_id": span["parent_span_id"] or "",
+            "name": span["name"],
+            "ticket_id": span["attributes"].get("ticket.id", ""),
+            "outcome": span["attributes"].get("audit.outcome", span["status"]["code"]),
+            "start_time_unix_nano": span["start_time_unix_nano"],
+            "end_time_unix_nano": span["end_time_unix_nano"],
+        }
+        for span in spans
+    ]
+
+
+def agent_otel_summary(spans: list[dict[str, Any]]) -> dict[str, int]:
+    return {
+        "span_count": len(spans),
+        "trace_count": len({span["trace_id"] for span in spans}),
+        "root_span_count": sum(1 for span in spans if span["parent_span_id"] is None),
+        "tool_span_count": sum(1 for span in spans if span["parent_span_id"] is not None),
+    }
 
 
 def load_case_rows(project_root: Path, system: str) -> list[dict[str, Any]]:

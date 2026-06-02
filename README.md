@@ -42,7 +42,7 @@ The current version creates a local, reproducible lab:
 - ruff
 - Docker
 
-Later phases should add provider-backed embeddings, noisier evaluation data, richer red-team cases, OpenTelemetry export, and optional LangGraph orchestration.
+Later phases should add provider-backed embeddings, noisier evaluation data, richer red-team cases, a local trace timeline viewer, and optional LangGraph orchestration.
 
 ## Quick Start
 
@@ -91,6 +91,7 @@ The baseline evaluation writes:
 - `reports/agent_eval_summary.json`
 - `reports/agent_eval_cases.jsonl`
 - `reports/agent_trace_examples.jsonl`
+- `reports/agent_otel_spans.jsonl`
 - `reports/evaluation_report.md`
 - `reports/evaluation_report.html`
 
@@ -150,6 +151,8 @@ Current controlled agent evaluation:
 
 Read-only tools can run automatically. The side-effecting `route_ticket_mock` tool is prepared but blocked until approval is granted. Each agent run returns a trace id, structured audit events, and a monitoring snapshot.
 
+The agent eval also exports deterministic OpenTelemetry-style spans to `reports/agent_otel_spans.jsonl`. This is a local interoperability artifact, not a live tracing backend: each sampled agent run gets a root span and child spans for tool/audit events, with stable ids, parent-child links, timestamps, status, and attributes.
+
 ## Dashboard
 
 The Streamlit dashboard presents the evaluation outcome as an inspection surface:
@@ -164,6 +167,7 @@ The Streamlit dashboard presents the evaluation outcome as an inspection surface
 - controlled agent approval and tool-governance metrics
 - trace and audit coverage metrics
 - deterministic agent trace examples for blocked and approved mock routes
+- OpenTelemetry-style span export summary and span rows
 - failed-case review tables
 
 Run it with:
@@ -179,6 +183,7 @@ The generated evaluation report is available from the dashboard and from:
 ```text
 http://localhost:8000/reports/evaluation
 http://localhost:8000/reports/evaluation.html
+http://localhost:8000/reports/agent/otel-spans
 ```
 
 ## Docker

@@ -47,6 +47,11 @@ def evaluation_report_html() -> str:
     return (PROJECT_ROOT / "reports/evaluation_report.html").read_text(encoding="utf-8")
 
 
+@app.get("/reports/agent/otel-spans", response_class=PlainTextResponse)
+def agent_otel_spans() -> str:
+    return (PROJECT_ROOT / "reports/agent_otel_spans.jsonl").read_text(encoding="utf-8")
+
+
 @app.post("/ask", response_model=AskResponse)
 def ask(request: AskRequest) -> AskResponse:
     runbooks = [section.__dict__ for section in build_runbooks()]

@@ -1,4 +1,5 @@
 from internal_ai_agent.api.main import (
+    agent_otel_spans,
     agent_run,
     ask,
     evaluation_report,
@@ -25,6 +26,13 @@ def test_evaluation_report_html_endpoint_returns_html() -> None:
 
     assert "<!doctype html>" in report
     assert "<h1>Internal AI Agent Evaluation Report</h1>" in report
+
+
+def test_agent_otel_spans_endpoint_returns_jsonl() -> None:
+    report = agent_otel_spans()
+
+    assert '"name": "agent.run"' in report
+    assert '"span_id":' in report
 
 
 def test_ask_endpoint_function_returns_improved_answer() -> None:

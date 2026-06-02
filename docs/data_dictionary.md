@@ -107,3 +107,19 @@ The dashboard and public report derive retriever error-analysis tables from thes
 | `tool_decisions` | Ordered tool decisions with schema validity, approval requirement, execution state, rationale, and mock output. |
 | `audit_events` | Ordered structured audit events for policy and tool actions. |
 | `monitoring` | Monitoring snapshot with tool counts, citation count, and abstention state. |
+
+## `reports/agent_otel_spans.jsonl`
+
+Each row is an OpenTelemetry-style span derived from `reports/agent_trace_examples.jsonl`. The export is deterministic and local; it is intended for inspection and adapter development rather than a live collector.
+
+| Field | Description |
+| --- | --- |
+| `trace_id` | Stable 32-character hex trace id derived from the synthetic lab trace id. |
+| `span_id` | Stable 16-character hex span id. |
+| `parent_span_id` | Parent span id for child tool/audit spans, or `null` for root agent spans. |
+| `name` | Span name, such as `agent.run`, `search_runbook`, or `route_ticket_mock`. |
+| `kind` | Span kind. Current export uses `INTERNAL`. |
+| `start_time_unix_nano` | Deterministic synthetic span start timestamp in Unix nanoseconds. |
+| `end_time_unix_nano` | Deterministic synthetic span end timestamp in Unix nanoseconds. |
+| `status` | Span status object. Governance blocks are represented through attributes, not failed span status. |
+| `attributes` | Flattened span attributes for lab trace id, ticket id, approval state, audit outcome, and tool metadata. |

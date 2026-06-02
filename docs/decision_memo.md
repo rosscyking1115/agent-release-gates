@@ -90,4 +90,4 @@ The security red-team suite reports 100.00% improved explicit policy block rate 
 
 - Whether to compare the local embedding store with a provider-backed embedding model.
 - Whether to add a real LangGraph dependency or keep the local controlled workflow until evaluation cases become more varied.
-- Whether to prioritize noisier data/error analysis or OpenTelemetry-style trace export next.
+- Whether to prioritize noisier data/error analysis or a local span timeline viewer next.
