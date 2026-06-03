@@ -97,7 +97,8 @@ def generate_public_report(project_root: Path) -> str:
             "The retrieval experiment compares a deliberately weak baseline, a lexical "
             "retriever, a local hybrid sparse semantic retriever, a TF-IDF vector "
             "retriever, and a local embedding-store retriever. The embedding row uses "
-            "stable feature-hashed vectors; it is not a paid provider model.",
+            "stable feature-hashed vectors; it is not a paid provider model. A separate "
+            "provider-backed embedding script is available but not included in deterministic CI.",
             "",
             "## Retriever Metric Snapshots",
             "",
@@ -191,7 +192,7 @@ def generate_public_report(project_root: Path) -> str:
             "## Recommended Next Work",
             "",
             "- Add noisier, human-written ticket variants.",
-            "- Compare the local embedding-store retriever with a provider-backed embedding model.",
+            "- Run and review the optional provider-backed embedding comparison.",
             "- Extend the collector deployment with optional downstream storage or visualization.",
             "- Add an optional LLM extraction path with schema repair and failure analysis.",
             "",

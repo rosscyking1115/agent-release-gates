@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import re
 from collections import Counter
+from collections.abc import Callable
 from dataclasses import dataclass
 from hashlib import blake2b
 from math import log
@@ -37,6 +38,15 @@ class BaselineAnswer:
 class LocalEmbeddingRecord:
     section: dict[str, Any]
     embedding: list[float]
+
+
+@dataclass(frozen=True)
+class ProviderEmbeddingRecord:
+    section: dict[str, Any]
+    embedding: list[float]
+
+
+EmbedTexts = Callable[[list[str]], list[list[float]]]
 
 
 SYSTEM_HINTS = {
@@ -601,6 +611,139 @@ def answer_with_embedding_store(
     )
 
 
+def build_provider_embedding_store(
+    runbooks: list[dict[str, Any]],
+    *,
+    embed_texts: EmbedTexts,
+    user_role: str,
+) -> list[ProviderEmbeddingRecord]:
+    eligible_sections = [
+        section for section in runbooks if user_role in section.get("allowed_roles", [])
+    ]
+    embeddings = embed_texts([_section_embedding_text(section) for section in eligible_sections])
+    _validate_provider_embeddings(eligible_sections, embeddings)
+    return [
+        ProviderEmbeddingRecord(section=section, embedding=embedding)
+        for section, embedding in zip(eligible_sections, embeddings, strict=True)
+    ]
+
+
+def retrieve_provider_embedding_store(
+    question: str,
+    store: list[ProviderEmbeddingRecord],
+    *,
+    embed_texts: EmbedTexts,
+    top_k: int = 3,
+) -> list[RetrievedSection]:
+    """Provider-backed embedding retrieval with the same final reranking contract.
+
+    The embedding vectors come from the supplied provider function, while evidence boosts,
+    stale-context penalties, and citation selection remain local and testable.
+    """
+
+    if not store:
+        return []
+
+    query_tokens = _tokenize(question)
+    query_embedding = embed_texts([question])[0]
+    scored: list[RetrievedSection] = []
+
+    for record in store:
+        section = record.section
+        title = str(section["title"])
+        content = str(section["content"])
+        category = title.lower().replace(" ", "_")
+
+        provider_score = _dense_cosine_similarity(query_embedding, record.embedding) * 100
+        alias_score = _alias_overlap(query_tokens, category) * 6
+        title_phrase_score = _title_phrase_score(question, category) * 2
+        team_hint_score = _team_hint_score(question, str(section["team"])) * 0.25
+        evidence_score = _current_evidence_score(question, category, str(section["team"])) * 0.75
+        negation_penalty = _negated_category_penalty(question, category)
+        stale_context_penalty = _stale_context_penalty(question, category)
+        score = (
+            provider_score
+            + alias_score
+            + title_phrase_score
+            + team_hint_score
+            + evidence_score
+            - negation_penalty
+            - stale_context_penalty
+        )
+
+        if score <= 0:
+            continue
+
+        scored.append(
+            RetrievedSection(
+                section_id=str(section["section_id"]),
+                title=title,
+                team=str(section["team"]),
+                content=content,
+                score=round(score, 4),
+                score_breakdown={
+                    "provider_embedding": round(provider_score, 4),
+                    "alias": round(alias_score, 4),
+                    "title_phrase": round(title_phrase_score, 4),
+                    "team_hint": round(team_hint_score, 4),
+                    "current_evidence": round(evidence_score, 4),
+                    "negation_penalty": round(negation_penalty, 4),
+                    "stale_context_penalty": round(stale_context_penalty, 4),
+                },
+            )
+        )
+
+    return sorted(scored, key=lambda item: (-item.score, item.section_id))[:top_k]
+
+
+def answer_with_provider_embedding_store(
+    question: str,
+    store: list[ProviderEmbeddingRecord],
+    *,
+    embed_texts: EmbedTexts,
+) -> BaselineAnswer:
+    if should_block_request(question) or _should_abstain_for_safety(question):
+        return BaselineAnswer(
+            answer=policy_refusal(),
+            issue_category=None,
+            team=None,
+            next_action=None,
+            citations=[],
+            retrieved_sections=[],
+            abstained=True,
+        )
+
+    retrieved = retrieve_provider_embedding_store(question, store, embed_texts=embed_texts)
+    if not retrieved:
+        return BaselineAnswer(
+            answer="I do not have enough synthetic runbook evidence to answer this safely.",
+            issue_category=None,
+            team=None,
+            next_action=None,
+            citations=[],
+            retrieved_sections=[],
+            abstained=True,
+        )
+
+    chosen = retrieved[0]
+    issue_category = chosen.title.lower().replace(" ", "_")
+    next_action = _extract_next_action(chosen.content)
+    answer = (
+        f"Likely issue: {chosen.title}. "
+        f"Recommended next action: {next_action} "
+        f"Citation: {chosen.section_id}."
+    )
+    return BaselineAnswer(
+        answer=answer,
+        issue_category=issue_category,
+        team=chosen.team,
+        next_action=next_action,
+        citations=[chosen.section_id],
+        retrieved_sections=retrieved,
+        abstained=False,
+    )
+
+
 def _extract_next_action(content: str) -> str:
     marker = "Recommended next action:"
     if marker not in content:
@@ -801,6 +944,16 @@ def _normalize_dense_vector(vector: list[float]) -> list[float]:
     if norm == 0:
         return vector
     return [value / norm for value in vector]
+
+
+def _validate_provider_embeddings(
+    sections: list[dict[str, Any]],
+    embeddings: list[list[float]],
+) -> None:
+    if len(embeddings) != len(sections):
+        raise ValueError("provider returned a different embedding count than requested")
+    if any(not embedding for embedding in embeddings):
+        raise ValueError("provider returned an empty embedding vector")
 
 
 def _dense_cosine_similarity(left: list[float], right: list[float]) -> float:

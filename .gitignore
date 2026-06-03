@@ -13,4 +13,7 @@ build/
 *.egg-info/
 reports/collector_export_smoke.json
 reports/collector_deployment_check.json
+reports/provider_embedding_eval_status.json
+reports/provider_embedding_eval_summary.json
+reports/provider_embedding_eval_cases.jsonl
 public/

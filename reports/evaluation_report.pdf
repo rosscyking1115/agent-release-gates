@@ -130,7 +130,7 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 7 0 R >>
 endobj
 7 0 obj
-<< /Length 2772 >>
+<< /Length 2833 >>
 stream
 BT
 /F1 10 Tf
@@ -172,7 +172,9 @@ T*
 T*
 (retriever. The embedding row uses stable feature-hashed vectors; it is not a paid provider) Tj
 T*
-(model.) Tj
+(model. A separate provider-backed embedding script is available but not included in) Tj
+T*
+(deterministic CI.) Tj
 T*
 () Tj
 T*
@@ -238,8 +240,6 @@ T*
 T*
 (Hybrid sparse semantic | 1 | 1 | 0 | missing_or_wrong_citation \(1\)) Tj
 T*
-(Local TF-IDF vector | 0 | 0 | 0 |) Tj
-T*
 ET
 endstream
 endobj
@@ -247,12 +247,14 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 9 0 R >>
 endobj
 9 0 obj
-<< /Length 3482 >>
+<< /Length 3490 >>
 stream
 BT
 /F1 10 Tf
 14 TL
 54 738 Td
+(Local TF-IDF vector | 0 | 0 | 0 |) Tj
+T*
 (Local embedding store | 0 | 0 | 0 |) Tj
 T*
 () Tj
@@ -355,8 +357,6 @@ T*
 T*
 (Metric | Score) Tj
 T*
-(Schema validity | 100.00%) Tj
-T*
 ET
 endstream
 endobj
@@ -364,12 +364,14 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 11 0 R >>
 endobj
 11 0 obj
-<< /Length 2437 >>
+<< /Length 2462 >>
 stream
 BT
 /F1 10 Tf
 14 TL
 54 738 Td
+(Schema validity | 100.00%) Tj
+T*
 (Issue category accuracy | 100.00%) Tj
 T*
 (Severity accuracy | 100.00%) Tj
@@ -472,8 +474,6 @@ T*
 T*
 (Unnecessary tool-call rate | 0.00%) Tj
 T*
-() Tj
-T*
 ET
 endstream
 endobj
@@ -481,12 +481,14 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 13 0 R >>
 endobj
 13 0 obj
-<< /Length 2556 >>
+<< /Length 2536 >>
 stream
 BT
 /F1 10 Tf
 14 TL
 54 738 Td
+() Tj
+T*
 (The controlled workflow separates read-only tools from side-effecting actions. The mock ticket) Tj
 T*
 (routing tool is prepared but blocked until approval is granted, and every run returns trace,) Tj
@@ -589,8 +591,6 @@ T*
 T*
 (- Retrieval quality can be measured across exact, paraphrased, noisy, conflicting, and) Tj
 T*
-(  adversarial cases.) Tj
-T*
 ET
 endstream
 endobj
@@ -598,12 +598,14 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 15 0 R >>
 endobj
 15 0 obj
-<< /Length 1163 >>
+<< /Length 1174 >>
 stream
 BT
 /F1 10 Tf
 14 TL
 54 738 Td
+(  adversarial cases.) Tj
+T*
 (- Structured extraction, routing, refusal behavior, approval gates, and audit traces are) Tj
 T*
 (  evaluated as product behavior, not only as model output.) Tj
@@ -644,7 +646,7 @@ T*
 T*
 (- Add noisier, human-written ticket variants.) Tj
 T*
-(- Compare the local embedding-store retriever with a provider-backed embedding model.) Tj
+(- Run and review the optional provider-backed embedding comparison.) Tj
 T*
 (- Extend the collector deployment with optional downstream storage or visualization.) Tj
 T*
@@ -663,16 +665,16 @@ xref
 0000000350 00000 n 
 0000002175 00000 n 
 0000002301 00000 n 
-0000005125 00000 n 
-0000005251 00000 n 
-0000008785 00000 n 
-0000008913 00000 n 
-0000011403 00000 n 
-0000011531 00000 n 
-0000014140 00000 n 
-0000014268 00000 n 
+0000005186 00000 n 
+0000005312 00000 n 
+0000008854 00000 n 
+0000008982 00000 n 
+0000011497 00000 n 
+0000011625 00000 n 
+0000014214 00000 n 
+0000014342 00000 n 
 trailer
 << /Size 16 /Root 1 0 R >>
 startxref
-15484
+15569
 %%EOF

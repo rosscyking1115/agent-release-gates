@@ -67,7 +67,7 @@ The retriever snapshot report records deterministic version-to-version deltas an
 
 - The current embedding-store implementation uses deterministic feature hashing, not a provider-backed embedding model or vector database.
 - Ticket text and runbook text are synthetic and still partly templated, although the golden set now includes noisy abbreviations, missing metadata, false leads, typos, human-like phrasing, human email threads, manually authored chat/meeting/screenshot/handoff/control-room/redacted/stale-thread fragments, evidence packets, mixed manual review bundles, field notes, analyst scratch notes, CSV excerpts, incident timelines, retrieved-document injection, adversarial instructions, conflicting evidence, and long conflicting context.
-- The previous manual-case share gap is cleared, but the current profile still flags that provider-backed embedding comparison is not covered.
+- The previous manual-case share gap is cleared, but the current profile still flags that provider-backed embedding comparison is not covered. An optional provider-backed evaluation script now exists, but no provider-backed result is published yet.
 - The local TF-IDF vector and local embedding-store retrievers pass the expanded synthetic golden suite. The hybrid sparse semantic retriever now has one manual field-note miss, which is kept in the report as a useful final-selection weakness rather than hidden by rewriting the benchmark.
 - Structured extraction is deterministic pattern matching, not LLM extraction.
 - Security checks and severity weights are deterministic controls, even after adding harder retrieved-context attacks and residual-risk scoring; they are not a full adversarial red-team harness.
@@ -90,7 +90,7 @@ Side-effecting operations are mock-only and require explicit approval.
 
 ## Recommended Next Improvements
 
-- Compare the local embedding-store retriever with a provider-backed embedding model.
+- Run and review the optional provider-backed embedding comparison when API access and cost are acceptable.
 - Add more non-templated tickets and provider-backed retrieval comparisons so the next weaknesses are measured before more tuning.
 - Extend the local OpenTelemetry Collector check with optional downstream storage or visualization.
 - Replace deterministic extraction with an optional LLM extraction provider plus schema repair.

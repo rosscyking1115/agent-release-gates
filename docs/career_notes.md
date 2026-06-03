@@ -68,7 +68,7 @@ Designed and implemented a production-style internal operations AI workflow over
 
 ## Honest Limitations
 
-- Current embedding retrieval uses local feature hashing rather than provider-backed embeddings.
+- Current published embedding retrieval uses local feature hashing rather than provider-backed embeddings. A provider-backed evaluation path exists, but provider-backed results should only be claimed after an actual credentialed run.
 - The dataset is synthetic and still partly templated, although it now includes manual field notes, evidence packets, and mixed review bundles with stale side chatter, current-evidence cues, table extracts, and ownership-conflict abstentions.
 - The previous manual-case share gap is cleared; the dataset profile now flags provider-backed embedding comparison as the clearest retrieval gap.
 - The extraction layer is deterministic and should be tested on the newer evidence-packet, email-thread, and conflicting-context styles.
@@ -78,4 +78,4 @@ Designed and implemented a production-style internal operations AI workflow over
 
 ## Useful Next Build Step
 
-The most valuable next engineering step is to compare the local embedding-store retriever with a provider-backed embedding model or add model-assisted adversarial review for the red-team suite. That would show retrieval experimentation and evaluation discipline without changing the project framing.
+The most valuable next engineering step is to run the optional provider-backed embedding comparison or add model-assisted adversarial review for the red-team suite. That would show retrieval experimentation and evaluation discipline without changing the project framing.

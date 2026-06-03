@@ -15,6 +15,7 @@ uv run python scripts/smoke_otel_collector.py
 docker compose --profile observability up -d otel-collector
 uv run python scripts/check_otel_collector_deployment.py
 docker compose --profile observability down
+uv run python scripts/run_provider_embedding_eval.py
 ```
 
 Expected result:
@@ -149,6 +150,34 @@ Open:
 ```text
 http://localhost:8510
 ```
+
+## Provider Embedding Evaluation
+
+The provider-backed embedding comparison is optional and dry-run-first. The default command estimates the evaluation shape without making network calls:
+
+```powershell
+uv run python scripts/run_provider_embedding_eval.py
+```
+
+Run the provider comparison only after setting a provider key:
+
+```powershell
+$env:OPENAI_API_KEY="..."
+uv run python scripts/run_provider_embedding_eval.py --run
+```
+
+Optional controls:
+
+```powershell
+uv run python scripts/run_provider_embedding_eval.py --run --model text-embedding-3-small --batch-size 64
+```
+
+Expected provider-run result:
+
+- `reports/provider_embedding_eval_summary.json` is written locally and ignored by git
+- `reports/provider_embedding_eval_cases.jsonl` is written locally and ignored by git
+- the same citation, abstention, routing, and failure-analysis checks are applied as the local retrievers
+- the report should not be described as a project result until the provider-backed run has actually completed
 
 ## Safety Checks
 

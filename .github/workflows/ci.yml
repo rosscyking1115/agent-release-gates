@@ -36,6 +36,9 @@ jobs:
       - name: Smoke OTLP collector export
         run: uv run python scripts/smoke_otel_collector.py
 
+      - name: Dry-run provider embedding eval
+        run: uv run python scripts/run_provider_embedding_eval.py
+
       - name: Start OpenTelemetry Collector
         run: docker compose --profile observability up -d otel-collector
 

@@ -80,7 +80,7 @@ Current dataset-profile highlights:
 - manual share increased to 25.58%, clearing the previous manual-share gap label
 - all public benchmark data is synthetic and reproducible
 
-The most important next retrieval step is comparing the local embedding-store retriever with a provider-backed embedding option.
+The most important next retrieval step is comparing the local embedding-store retriever with a provider-backed embedding option. The repo now includes a dry-run-first provider embedding evaluation script for that comparison, but provider-backed results are not claimed until the script is run with credentials.
 
 ## Architecture
 
@@ -148,6 +148,7 @@ uv run python scripts/smoke_otel_collector.py
 docker compose --profile observability up -d otel-collector
 uv run python scripts/check_otel_collector_deployment.py
 docker compose --profile observability down
+uv run python scripts/run_provider_embedding_eval.py
 docker build -t internal-ai-agent-eval-lab:local .
 ```
 
@@ -183,6 +184,7 @@ The root `streamlit_app.py` entrypoint loads the dashboard from `app/streamlit_a
 
 - The benchmark is synthetic and still partly templated.
 - The local embedding store uses deterministic feature hashing, not a provider-backed embedding model.
+- Provider-backed embedding evaluation is available as an optional script, but no provider-backed result is published yet.
 - Structured extraction is deterministic pattern matching, not LLM extraction.
 - The controlled agent is a local workflow, not a LangGraph state machine.
 

@@ -259,6 +259,22 @@ This local-only file is written by `scripts/check_otel_collector_deployment.py` 
 | `receiver_accepted_span_delta` | Increase in collector receiver accepted-span counter during the check. |
 | `exporter_sent_span_delta` | Increase in collector exporter sent-span counter during the check. |
 | `passed` | Whether payload counts, status codes, and collector metric checks passed. |
+
+## `reports/provider_embedding_eval_status.json`
+
+This local-only file is written by `scripts/run_provider_embedding_eval.py` and ignored by git. In dry-run mode it records the planned provider-backed embedding comparison without making network calls. When run with `--run` and `OPENAI_API_KEY`, it records completion status and points to the optional provider-backed summary and case files.
+
+| Field | Description |
+| --- | --- |
+| `status` | `dry_run`, `blocked`, or `completed`. |
+| `provider` | Provider adapter used for the optional comparison. |
+| `model` | Embedding model configured for the run. |
+| `case_count` | Golden cases planned or evaluated. |
+| `estimated_embedding_inputs` | Dry-run estimate of provider embedding inputs. |
+
+## `reports/provider_embedding_eval_summary.json`
+
+This optional local-only file is written only after `scripts/run_provider_embedding_eval.py --run` completes. It uses the same retrieval metric schema as the deterministic local retrievers, but its results are not committed by default because they depend on external provider credentials, model availability, and live API behavior.
 | `status_codes` | HTTP status codes returned by the local capture endpoint. |
 | `content_types` | Captured request content types. |
 | `passed` | Whether all smoke checks passed. |
