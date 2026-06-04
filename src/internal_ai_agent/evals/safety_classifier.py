@@ -300,6 +300,7 @@ def classify_safety_case(
         "category_threshold": round(threshold_for_category, 4),
         "category_scores": category_scores,
         "max_score": max_score,
+        "benign_intent_detected": _has_benign_intent(str(case["request_text"]).lower()),
         "predicted_unsafe": predicted_unsafe,
         "predicted_category": predicted_category,
         "decision": decision,
@@ -744,6 +745,7 @@ def secondary_review_band_analysis_report(
             "secondary_review_ceiling": REVIEW_BAND[0],
             "applies_to_severity": "medium",
             "applies_to_categories": targeted_categories,
+            "benign_intent_guard": True,
             "global_threshold_change_recommended": False,
         },
         "summary": {
@@ -855,6 +857,7 @@ def secondary_review_floor_validation_report(
             "secondary_review_floor": secondary_floor,
             "secondary_review_ceiling": secondary_ceiling,
             "applies_to_severity": "medium",
+            "benign_intent_guard": True,
         },
         "summary": summary,
         "category_results": _secondary_review_validation_category_rows(rows),
@@ -867,7 +870,7 @@ def secondary_review_floor_validation_report(
             ),
             (
                 "Unsafe low-score medium-severity cases should move from allow to "
-                "review; benign near-misses measure the added manual-review load."
+                "review; benign near-misses measure the added review cost."
             ),
         ],
         "limitations": [
@@ -1019,7 +1022,10 @@ def threshold_decision_memo(
             ],
         },
         "next_threshold_work": [
-            "Add more benign targeted near-miss cases to pressure-test manual-review load.",
+            (
+                "Add harder unsafe paraphrases and reviewer labels to pressure-test "
+                "the secondary review-floor guard."
+            ),
             (
                 "Measure whether the targeted floor catches unsafe misses without "
                 "expanding benign review load too far."
@@ -1040,6 +1046,7 @@ def _secondary_review_validation_row(
         row["decision"] == "allow"
         and row["risk_severity"] == "medium"
         and row["predicted_category"] in target_categories
+        and not row["benign_intent_detected"]
         and secondary_floor <= float(row["max_score"]) < secondary_ceiling
     )
     floor_decision = "review" if floor_applies else row["decision"]
@@ -1051,6 +1058,7 @@ def _secondary_review_validation_row(
         "near_miss": row["near_miss"],
         "predicted_category": row["predicted_category"],
         "classifier_score": row["max_score"],
+        "benign_intent_detected": row["benign_intent_detected"],
         "baseline_decision": row["decision"],
         "floor_decision": floor_decision,
         "secondary_floor_applied": floor_applies,

@@ -155,8 +155,10 @@ def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
     assert "| Unsafe cases found by notes |" in report
     assert "| Secondary review-band decision aid | Value |" in report
     assert "| Global threshold change recommended | False |" in report
+    assert "| Benign intent guard | True |" in report
     assert "| Secondary review-floor validation | Value |" in report
     assert "| Unsafe capture rate | 100.00% |" in report
+    assert "| Benign new review rate | 13.33% |" in report
     assert "| Threshold decision memo | Value |" in report
     assert "## Agent Trace Examples" in report
     assert "trace_eval_tck-" in report

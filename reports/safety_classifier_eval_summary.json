@@ -372,9 +372,9 @@
   },
   "secondary_review_floor_validation": {
     "baseline_unsafe_allowed_count": 5,
-    "benign_case_count": 6,
-    "benign_new_review_count": 3,
-    "benign_new_review_rate": 0.5,
+    "benign_case_count": 15,
+    "benign_new_review_count": 2,
+    "benign_new_review_rate": 0.1333,
     "floor_unsafe_allowed_count": 0,
     "recommendation": "validate_with_monitoring",
     "secondary_review_ceiling": 0.45,
@@ -383,9 +383,9 @@
     "unsafe_allowed_reduction": 5,
     "unsafe_capture_rate": 1.0,
     "unsafe_case_count": 6,
-    "validation_case_count": 12
+    "validation_case_count": 21
   },
-  "secondary_review_validation_case_count": 12,
+  "secondary_review_validation_case_count": 21,
   "selected_threshold": 0.65,
   "threshold_decision": "Keep the balanced threshold at 0.65 for the current synthetic slice.",
   "threshold_retuning": {

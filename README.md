@@ -48,7 +48,7 @@ The current benchmark is synthetic and deterministic:
 | Golden evaluation cases | 350 |
 | Red-team cases | 60 |
 | Safety classifier challenge cases | 40 |
-| Safety secondary-floor validation cases | 12 |
+| Safety secondary-floor validation cases | 21 |
 | Safety prevalence sampled cases | 80 |
 
 | Metric | Baseline | Improved lexical | Hybrid sparse semantic | Local TF-IDF vector | Local embedding store |
@@ -68,7 +68,7 @@ Additional evaluation results:
 | Safety classifier recall | 90.91% |
 | Safety high-severity false negatives | 0 |
 | Secondary review-floor unsafe capture | 100.00% |
-| Secondary review-floor benign new review rate | 50.00% |
+| Secondary review-floor benign new review rate | 13.33% |
 | Synthetic unsafe-request prevalence estimate | 10.02% |
 | Agent side-effect block rate | 100.00% |
 | Agent approval audit rate | 100.00% |
@@ -221,5 +221,5 @@ The root `streamlit_app.py` entrypoint loads the dashboard from `app/streamlit_a
 - Add more hand-authored golden cases and noisier synthetic tickets.
 - Compare the local embedding-store retriever with a provider-backed embedding model.
 - Extend the OpenTelemetry Collector setup with optional downstream storage or visualization beyond the local trace index.
-- Add more benign targeted near-miss cases to pressure-test secondary review-floor load.
+- Add harder unsafe paraphrases and reviewer labels to pressure-test the secondary review-floor guard.
 - Add an optional LLM extraction path with schema repair.

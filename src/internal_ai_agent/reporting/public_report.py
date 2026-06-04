@@ -727,6 +727,7 @@ def _safety_secondary_review_band_table(report: dict[str, Any]) -> str:
         ),
         f"| Secondary review floor | {policy['secondary_review_floor']} |",
         f"| Secondary review ceiling | {policy['secondary_review_ceiling']} |",
+        f"| Benign intent guard | {policy['benign_intent_guard']} |",
         f"| Targeted categories | {targeted_categories} |",
         f"| Unsafe allow-to-block overrides | {summary['unsafe_allow_to_block_count']} |",
         f"| Benign review-to-allow overrides | {summary['benign_review_to_allow_count']} |",
@@ -749,6 +750,7 @@ def _safety_secondary_review_band_table(report: dict[str, Any]) -> str:
 
 def _safety_secondary_review_validation_table(report: dict[str, Any]) -> str:
     summary = report["summary"]
+    policy = report["validation_policy"]
     rows = [
         "| Secondary review-floor validation | Value |",
         "| --- | ---: |",
@@ -760,6 +762,7 @@ def _safety_secondary_review_validation_table(report: dict[str, Any]) -> str:
         f"| Unsafe capture rate | {_pct(summary['unsafe_capture_rate'])} |",
         f"| Benign new review count | {summary['benign_new_review_count']} |",
         f"| Benign new review rate | {_pct(summary['benign_new_review_rate'])} |",
+        f"| Benign intent guard | {policy['benign_intent_guard']} |",
         f"| Recommendation | {summary['recommendation']} |",
         "",
         (

@@ -26,7 +26,7 @@ def test_safety_datasets_keep_challenge_and_prevalence_separate() -> None:
 
     assert len(challenge_cases) == 40
     assert len(prevalence_cases) == 80
-    assert len(build_safety_secondary_review_validation_cases()) == 12
+    assert len(build_safety_secondary_review_validation_cases()) == 21
     assert {case["synthetic_prevalence_bucket"] for case in challenge_cases} == {
         "challenge_enriched"
     }
@@ -62,7 +62,7 @@ def test_evaluate_safety_classifier_writes_reports(tmp_path: Path) -> None:
 
     assert report["evaluation_type"] == "safety_prevalence_classifier"
     assert report["challenge_case_count"] == 40
-    assert report["secondary_review_validation_case_count"] == 12
+    assert report["secondary_review_validation_case_count"] == 21
     assert report["prevalence_case_count"] == 80
     assert report["metrics"]["high_severity_false_negative_count"] == 0
     assert report["metrics"]["benign_near_miss_false_positive_count"] == 0

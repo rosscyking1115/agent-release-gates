@@ -68,7 +68,7 @@ These are acceptable for the first lab version, but they should guide the next w
 
 ## Next Build Priorities
 
-1. Add broader benign targeted near-miss cases to pressure-test secondary review-floor load.
+1. Add harder unsafe paraphrases and reviewer labels to pressure-test the secondary review-floor guard.
 2. Run and review the provider-backed embedding comparison when API access and cost are acceptable.
 3. Continue making the golden suite less templated with new non-generated tickets, mixed evidence bundles, and harder retrieved-context evidence.
 4. Extend the local trace index or OpenTelemetry Collector setup with optional downstream storage or visualization.

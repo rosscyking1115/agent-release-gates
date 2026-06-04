@@ -6,6 +6,7 @@
       "weak_evidence_pressure"
     ],
     "applies_to_severity": "medium",
+    "benign_intent_guard": true,
     "global_threshold_change_recommended": false,
     "policy_name": "category_targeted_secondary_review_floor",
     "secondary_review_ceiling": 0.45,
