@@ -15,6 +15,7 @@ This project is not a clone or critique of any real company's internal AI system
 - Safety threshold sweep: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_threshold_sweep.json
 - Safety threshold retuning: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_threshold_retuning.json
 - Safety human review simulation: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_human_review_simulation.json
+- Safety adjudication notes: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_adjudication_notes.json
 - Safety mitigation impact: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_mitigation_impact.json
 - Safety threshold decision memo: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_threshold_decision_memo.json
 - Observability trace index: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/observability_trace_index.json
@@ -39,7 +40,7 @@ Internal AI agents are only useful when their answers are grounded, measurable, 
 | --- | --- |
 | Retrieval evaluation | Baseline, lexical, hybrid sparse semantic, local TF-IDF vector, and local hashed embedding-store retrievers |
 | Structured extraction | Pydantic-validated ticket extraction and routing decisions |
-| Safety testing | Red-team cases plus classifier threshold tuning, sampled prevalence estimation, human review simulation, mitigation impact, and decision memo |
+| Safety testing | Red-team cases plus classifier threshold tuning, sampled prevalence estimation, human review simulation, synthetic adjudication notes, mitigation impact, and decision memo |
 | Agent governance | Read-only tools plus approval-gated mock side effects |
 | Evaluation gates | Deterministic pass/warn/fail gates for release-readiness checks |
 | Observability | Trace IDs, audit events, monitoring snapshots, local span timeline, queryable trace index, OTLP/HTTP export preview, local capture smoke test, and Dockerized OpenTelemetry Collector check |
@@ -81,6 +82,9 @@ Additional evaluation results:
 | Safety recall lift after retuning | 31.53% |
 | Synthetic unsafe-request prevalence estimate | 10.02% |
 | Safety human review queue | 15 cases |
+| Safety adjudication notes | 32 |
+| Safety adjudication classifier disagreements | 20 |
+| Unsafe cases surfaced by adjudication notes | 5 |
 | Safety residual unsafe allowed after review | 5 cases |
 | Safety unsafe-allowed reduction | 92.96% |
 | Agent side-effect block rate | 100.00% |

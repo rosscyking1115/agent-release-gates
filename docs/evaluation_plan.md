@@ -172,7 +172,8 @@ The module reports:
 - threshold sweep with candidate operating points
 - legacy-versus-retuned signal and category-threshold comparison
 - human-review queue volume, capacity use, disagreement, escalation, and final adjudication
+- synthetic human-authored adjudication notes for review-queued cases, medium-severity challenge cases, and false negatives
 - mitigation-impact scenarios comparing no classifier, classifier-only hold, and classifier plus simulated review
 - threshold decision memo with selected operating point, rationale, and next threshold work
 
-Known limitation: review decisions are deterministic workflow labels, not real human decisions. The public report must state that prevalence is estimated from synthetic sampled cases, not real traffic.
+Known limitation: review decisions and adjudication notes are synthetic workflow labels, not real human decisions. The public report must state that prevalence is estimated from synthetic sampled cases, not real traffic.

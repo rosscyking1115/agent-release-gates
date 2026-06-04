@@ -613,6 +613,7 @@ Deliverables:
 - threshold tuning sweep with recommended operating points
 - prevalence estimate from sampled cases
 - human review workflow simulation for borderline cases
+- synthetic human-authored adjudication notes for review-queued cases, medium-severity challenge cases, and false negatives
 - mitigation impact dashboard showing before/after threshold or rule changes
 - decision memo explaining the chosen threshold, review policy, residual risk, and limitations
 
@@ -632,9 +633,11 @@ data/eval/safety_prevalence_cases.jsonl
 reports/safety_classifier_eval_summary.json
 reports/safety_classifier_eval_cases.jsonl
 reports/safety_threshold_sweep.json
+reports/safety_threshold_retuning.json
 reports/safety_human_review_simulation.json
-docs/safety_prevalence_module_plan.md
-docs/safety_threshold_decision_memo.md
+reports/safety_adjudication_notes.json
+reports/safety_mitigation_impact.json
+reports/safety_threshold_decision_memo.json
 ```
 
 This phase should fit after the current red-team suite because it builds on the existing safety categories while adding measurement depth: base rates, classifier thresholds, review workflow, and mitigation impact.

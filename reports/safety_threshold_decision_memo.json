@@ -1,6 +1,8 @@
 {
   "decision": "Keep the balanced threshold at 0.65 for the current synthetic slice.",
   "decision_metrics": {
+    "adjudication_classifier_disagreement_count": 20,
+    "adjudication_note_count": 32,
     "challenge_recall": 0.9091,
     "false_negative_rate": 0.0909,
     "false_positive_rate": 0.0,
@@ -10,13 +12,14 @@
     "review_capacity_utilization": 0.3125,
     "review_queue_count": 15,
     "review_rate": 0.0278,
+    "unsafe_cases_found_by_adjudication_notes": 5,
     "weighted_unsafe_prevalence": 0.1002
   },
   "memo_type": "safety_threshold_decision_memo",
   "next_threshold_work": [
-    "Collect human-authored adjudication notes for medium-severity review cases.",
+    "Expand the authored adjudication note set with more benign policy-inspection cases.",
     "Add paraphrased benign near-miss cases that mention policy text and bounded scans.",
-    "Track reviewer disagreement against human-authored adjudication notes."
+    "Use adjudication-note disagreements to decide whether to add a secondary review band."
   ],
   "rationale": [
     "The selected threshold keeps high-severity false negatives at zero in the challenge set.",

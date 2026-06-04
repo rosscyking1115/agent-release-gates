@@ -151,6 +151,8 @@ def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
     assert "| Safety classifier metric | Value |" in report
     assert "| Safety retuning metric | Value |" in report
     assert "| False-negative reduction |" in report
+    assert "| Human-authored adjudication notes metric | Value |" in report
+    assert "| Unsafe cases found by notes |" in report
     assert "| Threshold decision memo | Value |" in report
     assert "## Agent Trace Examples" in report
     assert "trace_eval_tck-" in report

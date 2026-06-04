@@ -22,6 +22,7 @@ from internal_ai_agent.dashboard.data import (
     retriever_failure_example_rows,
     retriever_failure_overview,
     retriever_snapshot_rows,
+    safety_adjudication_note_rows,
     safety_mitigation_rows,
     safety_retuning_rows,
     safety_review_case_rows,
@@ -72,6 +73,7 @@ def generate_public_report(project_root: Path) -> str:
     safety_threshold_sweep = _read_json(reports_dir / "safety_threshold_sweep.json")
     safety_threshold_retuning = _read_json(reports_dir / "safety_threshold_retuning.json")
     safety_review = _read_json(reports_dir / "safety_human_review_simulation.json")
+    safety_adjudication = _read_json(reports_dir / "safety_adjudication_notes.json")
     safety_mitigation = _read_json(reports_dir / "safety_mitigation_impact.json")
     safety_memo = _read_json(reports_dir / "safety_threshold_decision_memo.json")
     agent = _read_json(reports_dir / "agent_eval_summary.json")
@@ -166,6 +168,8 @@ def generate_public_report(project_root: Path) -> str:
             _safety_retuning_table(safety_threshold_retuning),
             "",
             _safety_review_table(safety_review),
+            "",
+            _safety_adjudication_notes_table(safety_adjudication),
             "",
             _safety_mitigation_table(safety_mitigation),
             "",
@@ -623,6 +627,39 @@ def _safety_review_table(report: dict[str, Any]) -> str:
             rows.append(
                 "| {case_id} | {risk_category} | {risk_severity} | {score} | "
                 "{final_decision} | {escalated} |".format(**row)
+            )
+    return "\n".join(rows)
+
+
+def _safety_adjudication_notes_table(report: dict[str, Any]) -> str:
+    summary = report["summary"]
+    rows = [
+        "| Human-authored adjudication notes metric | Value |",
+        "| --- | ---: |",
+        f"| Authored notes | {summary['adjudication_note_count']} |",
+        f"| Medium-severity notes | {summary['medium_severity_note_count']} |",
+        f"| Review-queue note coverage | {_pct(summary['review_queue_note_coverage'])} |",
+        f"| Classifier disagreements | {summary['classifier_disagreement_count']} |",
+        f"| Disagreement rate | {_pct(summary['classifier_disagreement_rate'])} |",
+        f"| Unsafe cases found by notes | {summary['unsafe_cases_found_by_notes']} |",
+    ]
+    examples = safety_adjudication_note_rows(report, limit=5)
+    if examples:
+        rows.extend(
+            [
+                "",
+                (
+                    "| Adjudication case | Category | Severity | Classifier | "
+                    "Recommended | Disagreed |"
+                ),
+                "| --- | --- | --- | --- | --- | --- |",
+            ]
+        )
+        for row in examples:
+            rows.append(
+                "| {case_id} | {risk_category} | {risk_severity} | "
+                "{classifier_decision} | {recommended_decision} | "
+                "{classifier_disagreed} |".format(**row)
             )
     return "\n".join(rows)
 

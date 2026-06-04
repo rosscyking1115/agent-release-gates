@@ -25,6 +25,7 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
     safety_classifier = _read_json(reports_dir / "safety_classifier_eval_summary.json")
     safety_retuning = _read_json(reports_dir / "safety_threshold_retuning.json")
     safety_review = _read_json(reports_dir / "safety_human_review_simulation.json")
+    safety_adjudication = _read_json(reports_dir / "safety_adjudication_notes.json")
     safety_mitigation = _read_json(reports_dir / "safety_mitigation_impact.json")
 
     shutil.copyfile(reports_dir / "evaluation_report.html", public_dir / "evaluation_report.html")
@@ -46,6 +47,10 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
     shutil.copyfile(
         reports_dir / "safety_human_review_simulation.json",
         public_dir / "safety_human_review_simulation.json",
+    )
+    shutil.copyfile(
+        reports_dir / "safety_adjudication_notes.json",
+        public_dir / "safety_adjudication_notes.json",
     )
     shutil.copyfile(
         reports_dir / "safety_mitigation_impact.json",
@@ -71,6 +76,7 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
             safety_classifier=safety_classifier,
             safety_retuning=safety_retuning,
             safety_review=safety_review,
+            safety_adjudication=safety_adjudication,
             safety_mitigation=safety_mitigation,
         ),
         encoding="utf-8",
@@ -89,6 +95,7 @@ def _index_html(
     safety_classifier: dict[str, Any],
     safety_retuning: dict[str, Any],
     safety_review: dict[str, Any],
+    safety_adjudication: dict[str, Any],
     safety_mitigation: dict[str, Any],
 ) -> str:
     counts = profile["dataset_counts"]
@@ -99,6 +106,7 @@ def _index_html(
     safety_prevalence = safety_classifier["weighted_prevalence"]
     retuning_summary = safety_retuning["summary"]
     review_summary = safety_review["summary"]
+    adjudication_summary = safety_adjudication["summary"]
     mitigation_summary = safety_mitigation["summary"]
     risk_labels = "\n".join(
         f"<li>{escape(label)}</li>" for label in profile["risk_labels"]
@@ -252,6 +260,7 @@ def _index_html(
         <a class="button" href="safety_threshold_sweep.json">Safety Threshold Sweep</a>
         <a class="button" href="safety_threshold_retuning.json">Safety Retuning</a>
         <a class="button" href="safety_human_review_simulation.json">Safety Review Simulation</a>
+        <a class="button" href="safety_adjudication_notes.json">Safety Adjudication Notes</a>
         <a class="button" href="safety_mitigation_impact.json">Safety Mitigation Impact</a>
         <a class="button" href="safety_threshold_decision_memo.json">Safety Decision Memo</a>
         <a class="button" href="{repo_url}">GitHub Repo</a>
@@ -288,6 +297,11 @@ def _index_html(
         {_metric("Synthetic unsafe prevalence", _pct(safety_prevalence["unsafe_prevalence"]))}
         {_metric("High-severity FN count", safety_metrics["high_severity_false_negative_count"])}
         {_metric("Safety review queue", review_summary["queue_count"])}
+        {_metric("Adjudication notes", adjudication_summary["adjudication_note_count"])}
+        {_metric(
+            "Adjudication disagreements",
+            adjudication_summary["classifier_disagreement_count"],
+        )}
         {_metric("Review capacity use", _pct(review_summary["capacity_utilization"]))}
         {_metric(
             "Residual unsafe allowed",

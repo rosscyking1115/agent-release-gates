@@ -39,6 +39,7 @@ from internal_ai_agent.dashboard.data import (
     load_retriever_case_rows,
     load_retriever_comparison,
     load_retriever_snapshots,
+    load_safety_adjudication_notes,
     load_safety_classifier_summary,
     load_safety_human_review_simulation,
     load_safety_mitigation_impact,
@@ -53,6 +54,7 @@ from internal_ai_agent.dashboard.data import (
     retriever_failure_example_rows,
     retriever_failure_overview,
     retriever_snapshot_rows,
+    safety_adjudication_note_rows,
     safety_mitigation_rows,
     safety_retuning_rows,
     safety_review_case_rows,
@@ -87,6 +89,7 @@ def main() -> None:
     safety_threshold_sweep = load_safety_threshold_sweep(PROJECT_ROOT)
     safety_threshold_retuning = load_safety_threshold_retuning(PROJECT_ROOT)
     safety_review_simulation = load_safety_human_review_simulation(PROJECT_ROOT)
+    safety_adjudication_notes = load_safety_adjudication_notes(PROJECT_ROOT)
     safety_mitigation_impact = load_safety_mitigation_impact(PROJECT_ROOT)
     safety_threshold_memo = load_safety_threshold_decision_memo(PROJECT_ROOT)
     agent_summary = load_agent_summary(PROJECT_ROOT)
@@ -126,6 +129,7 @@ def main() -> None:
             safety_threshold_sweep,
             safety_threshold_retuning,
             safety_review_simulation,
+            safety_adjudication_notes,
             safety_mitigation_impact,
             safety_threshold_memo,
         )
@@ -563,6 +567,7 @@ def _render_safety_classifier_workflow(
     threshold_sweep: dict[str, object],
     threshold_retuning: dict[str, object],
     review_simulation: dict[str, object],
+    adjudication_notes: dict[str, object],
     mitigation_impact: dict[str, object],
     threshold_memo: dict[str, object],
 ) -> None:
@@ -570,6 +575,7 @@ def _render_safety_classifier_workflow(
     metrics = classifier["metrics"]
     prevalence = classifier["weighted_prevalence"]
     review_summary = review_simulation["summary"]
+    adjudication_summary = adjudication_notes["summary"]
     mitigation_summary = mitigation_impact["summary"]
     retuning_summary = threshold_retuning["summary"]
     cols = st.columns(5)
@@ -580,8 +586,14 @@ def _render_safety_classifier_workflow(
     cols[4].metric("Residual unsafe", mitigation_summary["final_residual_unsafe_allowed_count"])
 
     st.caption(str(threshold_memo["decision"]))
-    tab_thresholds, tab_review, tab_impact, tab_memo = st.tabs(
-        ["Thresholds", "Human review", "Mitigation impact", "Decision memo"]
+    tab_thresholds, tab_review, tab_notes, tab_impact, tab_memo = st.tabs(
+        [
+            "Thresholds",
+            "Human review",
+            "Adjudication notes",
+            "Mitigation impact",
+            "Decision memo",
+        ]
     )
     with tab_thresholds:
         retuning_cols = st.columns(4)
@@ -647,6 +659,24 @@ def _render_safety_classifier_workflow(
         review_df = pd.DataFrame(safety_review_case_rows(review_simulation))
         if not review_df.empty:
             st.dataframe(review_df, hide_index=True, use_container_width=True)
+    with tab_notes:
+        note_cols = st.columns(4)
+        note_cols[0].metric("Authored notes", adjudication_summary["adjudication_note_count"])
+        note_cols[1].metric(
+            "Medium severity notes",
+            adjudication_summary["medium_severity_note_count"],
+        )
+        note_cols[2].metric(
+            "Classifier disagreements",
+            adjudication_summary["classifier_disagreement_count"],
+        )
+        note_cols[3].metric(
+            "Unsafe found by notes",
+            adjudication_summary["unsafe_cases_found_by_notes"],
+        )
+        note_df = pd.DataFrame(safety_adjudication_note_rows(adjudication_notes))
+        if not note_df.empty:
+            st.dataframe(note_df, hide_index=True, use_container_width=True)
     with tab_impact:
         impact_df = pd.DataFrame(safety_mitigation_rows(mitigation_impact))
         if not impact_df.empty:

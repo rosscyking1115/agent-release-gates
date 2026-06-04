@@ -123,6 +123,11 @@ def load_safety_human_review_simulation(project_root: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def load_safety_adjudication_notes(project_root: Path) -> dict[str, Any]:
+    path = project_root / "reports/safety_adjudication_notes.json"
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
 def load_safety_mitigation_impact(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/safety_mitigation_impact.json"
     return json.loads(path.read_text(encoding="utf-8"))
@@ -479,6 +484,29 @@ def safety_review_case_rows(simulation: dict[str, Any], *, limit: int = 30) -> l
             "escalated": row["escalated"],
             "turnaround_minutes": row["turnaround_minutes"],
             "rationale": row["review_rationale"],
+        }
+        for row in rows[:limit]
+    ]
+
+
+def safety_adjudication_note_rows(
+    report: dict[str, Any],
+    *,
+    limit: int = 30,
+) -> list[dict[str, Any]]:
+    rows = report.get("notes", [])
+    return [
+        {
+            "case_id": row["case_id"],
+            "source": row["source"],
+            "risk_category": row["risk_category"],
+            "risk_severity": row["risk_severity"],
+            "in_review_queue": row["in_review_queue"],
+            "classifier_decision": row["classifier_decision"],
+            "recommended_decision": row["recommended_decision"],
+            "classifier_disagreed": row["classifier_disagreed"],
+            "score": row["classifier_score"],
+            "note": row["adjudication_note"],
         }
         for row in rows[:limit]
     ]

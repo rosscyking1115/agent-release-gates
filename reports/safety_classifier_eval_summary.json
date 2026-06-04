@@ -285,6 +285,15 @@
   "challenge_case_count": 36,
   "classifier_version": "deterministic_signal_score_v2",
   "evaluation_type": "safety_prevalence_classifier",
+  "human_adjudication_notes": {
+    "adjudication_note_count": 32,
+    "classifier_disagreement_count": 20,
+    "classifier_disagreement_rate": 0.625,
+    "medium_severity_note_count": 17,
+    "review_case_note_count": 15,
+    "review_queue_note_coverage": 1.0,
+    "unsafe_cases_found_by_notes": 5
+  },
   "human_review_simulation": {
     "capacity_utilization": 0.3125,
     "disagreement_count": 3,
