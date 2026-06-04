@@ -39,9 +39,9 @@
 | `expected_next_action` | Gold next action. |
 | `expected_citation_ids` | Gold citation ids that should support the answer. |
 | `should_abstain` | Whether the agent should refuse due to weak evidence. |
-| `noise_type` | Synthetic difficulty tag such as `clean_exact`, `paraphrase`, `abbreviated_ticket`, `missing_metadata`, `distractor_terms`, `typo_abbreviation`, `human_email_thread`, `manual_chat_fragment`, `manual_meeting_note`, `manual_screenshot_note`, `manual_desk_note`, `manual_conflicting_notes`, `manual_retrieved_injection`, `manual_ambiguous_note`, `manual_ops_chat_handoff`, `manual_shift_handoff`, `manual_control_room_note`, `manual_desk_paste`, `manual_redacted_fragment`, `manual_stale_thread`, `manual_conflicting_handoff`, `manual_retrieved_instruction_attack`, `manual_analyst_note`, `manual_csv_excerpt`, `manual_incident_timeline`, `manual_control_owner_note`, `manual_ambiguous_handoff`, `manual_evidence_packet`, `manual_evidence_packet_conflict`, `manual_review_bundle`, `manual_review_bundle_conflict`, `adversarial_instruction`, `weak_evidence`, `conflicting_evidence`, or `long_conflicting_context`. |
+| `noise_type` | Synthetic difficulty tag such as `clean_exact`, `paraphrase`, `abbreviated_ticket`, `missing_metadata`, `distractor_terms`, `typo_abbreviation`, `human_email_thread`, `manual_chat_fragment`, `manual_meeting_note`, `manual_screenshot_note`, `manual_desk_note`, `manual_conflicting_notes`, `manual_retrieved_injection`, `manual_ambiguous_note`, `manual_ops_chat_handoff`, `manual_shift_handoff`, `manual_control_room_note`, `manual_desk_paste`, `manual_redacted_fragment`, `manual_stale_thread`, `manual_conflicting_handoff`, `manual_retrieved_instruction_attack`, `manual_analyst_note`, `manual_csv_excerpt`, `manual_incident_timeline`, `manual_control_owner_note`, `manual_ambiguous_handoff`, `manual_evidence_packet`, `manual_evidence_packet_conflict`, `manual_review_bundle`, `manual_review_bundle_conflict`, `manual_retrieved_context_review`, `manual_retrieved_context_attack`, `manual_retrieved_context_conflict`, `adversarial_instruction`, `weak_evidence`, `conflicting_evidence`, or `long_conflicting_context`. |
 
-Golden cases include exact ticket prompts, paraphrased prompts, noisy metadata prompts, false-lead prompts, typo/abbreviation prompts, human-like prompts, human email-thread prompts, manually authored chat/meeting/screenshot/desk-note/handoff/control-room/redacted/stale-thread prompts, evidence packets with stale side chatter and current-evidence cues, mixed review bundles combining screenshot/chat/table-style evidence, analyst-authored scratch notes, CSV excerpts, incident timelines, retrieved-document injection prompts, adversarial-instruction prompts, weak-evidence prompts where abstention is expected, and long conflicting-context prompts where the safest answer is to abstain.
+Golden cases include exact ticket prompts, paraphrased prompts, noisy metadata prompts, false-lead prompts, typo/abbreviation prompts, human-like prompts, human email-thread prompts, manually authored chat/meeting/screenshot/desk-note/handoff/control-room/redacted/stale-thread prompts, evidence packets with stale side chatter and current-evidence cues, mixed review bundles combining screenshot/chat/table-style evidence, retrieved-context review packets, analyst-authored scratch notes, CSV excerpts, incident timelines, retrieved-document injection prompts, adversarial-instruction prompts, weak-evidence prompts where abstention is expected, and long conflicting-context prompts where the safest answer is to abstain.
 
 ## `data/eval/red_team_cases.jsonl`
 
@@ -211,6 +211,22 @@ Additional attributes may include:
 | `api.scenario` | Named API error scenario, such as empty question rejection. |
 | `http.route.*` | Local report/API routes represented by the artifact-export span. |
 
+## `reports/observability_trace_index.json`
+
+This file is a deterministic local query layer over `reports/observability_otel_spans.jsonl`. It keeps the raw span export available while adding trace, component, error, and predefined-query summaries for the dashboard, API, public report, and static site.
+
+| Field | Description |
+| --- | --- |
+| `index_type` | Stable artifact type, currently `local_observability_trace_index`. |
+| `span_count` | Number of spans indexed from the local OpenTelemetry-style JSONL export. |
+| `trace_count` | Number of unique trace ids represented in the index. |
+| `error_span_count` | Number of spans with non-OK status or explicit error status. |
+| `component_count` | Number of unique `lab.component` values represented in the spans. |
+| `components` | Per-component span count, root span count, and error span count. |
+| `queries` | Predefined local query counts for error spans, retriever failures, API error cases, approval decisions, and ranking cases. |
+| `error_spans` | Bounded list of error-span examples with trace, span, component, case, route, and diagnostic attributes. |
+| `traces` | Per-trace summaries with root span, components, span count, duration, first error span, and first error case id. |
+
 ## `reports/collector_export_preview.json`
 
 This file records the deterministic dry-run summary for exporting `reports/observability_otel_spans.jsonl` as OTLP/HTTP JSON. The evaluation runner writes this preview without making a network call; `scripts/export_otel_collector.py --post` is required to send payloads to a live collector.
@@ -275,7 +291,3 @@ This local-only file is written by `scripts/run_provider_embedding_eval.py` and 
 ## `reports/provider_embedding_eval_summary.json`
 
 This optional local-only file is written only after `scripts/run_provider_embedding_eval.py --run` completes. It uses the same retrieval metric schema as the deterministic local retrievers, but its results are not committed by default because they depend on external provider credentials, model availability, and live API behavior.
-| `status_codes` | HTTP status codes returned by the local capture endpoint. |
-| `content_types` | Captured request content types. |
-| `passed` | Whether all smoke checks passed. |
-| `failed_checks` | Failed smoke-check labels, empty on success. |

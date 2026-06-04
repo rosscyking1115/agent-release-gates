@@ -16,7 +16,7 @@ Internal AI agents are only useful if they are grounded, measurable, safe, and a
 - route tickets to synthetic teams
 - refuse unsafe or weak-evidence requests
 - require approval before mock side effects
-- produce trace, audit, and local span timeline records
+- produce trace, audit, local span timeline, and trace-index records
 
 ## Strongest Technical Explanation
 
@@ -47,7 +47,7 @@ These are synthetic deterministic metrics, so I would present them as engineerin
 
 ## Possible CV Bullet
 
-Built a synthetic internal AI agent evaluation lab with Python, FastAPI, Pydantic, Streamlit, deterministic RAG, local TF-IDF vector retrieval, local embedding-store retrieval, structured ticket extraction, dataset profiling, red-team policy checks, approval-gated mock tools, traceable audit events, local span timeline, OpenTelemetry Collector export checks, and CI-backed evaluation reports over synthetic operations tickets and runbooks.
+Built a synthetic internal AI agent evaluation lab with Python, FastAPI, Pydantic, Streamlit, deterministic RAG, local TF-IDF vector retrieval, local embedding-store retrieval, structured ticket extraction, dataset profiling, red-team policy checks, approval-gated mock tools, traceable audit events, local trace indexing, OpenTelemetry Collector export checks, and CI-backed evaluation reports over synthetic operations tickets and runbooks.
 
 ## Possible Deeper CV Bullet
 
@@ -74,7 +74,7 @@ Designed and implemented a production-style internal operations AI workflow over
 - The extraction layer is deterministic and should be tested on the newer evidence-packet, email-thread, and conflicting-context styles.
 - Red-team checks are string-based and should be expanded with more varied phrasing.
 - The controlled agent is a local workflow rather than a LangGraph graph.
-- Telemetry is local JSONL, including OpenTelemetry-style agent spans, evaluation-stage spans, case-level retriever failure spans, retriever ranking-detail spans, case-level extraction spans, case-level agent approval spans, API contract/error spans, a dashboard trace timeline, an optional OTLP/HTTP collector exporter, a local capture smoke test for POST-path verification, and a Dockerized OpenTelemetry Collector deployment check verified through collector self-metrics. The remaining gap is downstream storage or production observability visualization.
+- Telemetry is local JSONL, including OpenTelemetry-style agent spans, evaluation-stage spans, case-level retriever failure spans, retriever ranking-detail spans, case-level extraction spans, case-level agent approval spans, API contract/error spans, a dashboard trace timeline, a local trace index, an optional OTLP/HTTP collector exporter, a local capture smoke test for POST-path verification, and a Dockerized OpenTelemetry Collector deployment check verified through collector self-metrics. The remaining gap is downstream storage or production observability visualization.
 
 ## Useful Next Build Step
 

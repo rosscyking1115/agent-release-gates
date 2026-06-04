@@ -15,6 +15,7 @@ from internal_ai_agent.api.main import (
     health,
     observability_collector_preview,
     observability_otel_spans,
+    observability_trace_index,
 )
 from internal_ai_agent.api.schemas import AgentRunRequest, AskRequest, ExtractRequest
 
@@ -90,6 +91,16 @@ def test_observability_collector_preview_endpoint_returns_json() -> None:
     assert preview["collector_endpoint"] == "http://localhost:4318/v1/traces"
     assert preview["span_count"] > 0
     assert preview["payload_count"] > 0
+
+
+def test_observability_trace_index_endpoint_returns_json() -> None:
+    index = observability_trace_index()
+
+    assert index["index_type"] == "local_observability_trace_index"
+    assert index["trace_count"] > 0
+    assert index["span_count"] > 0
+    assert index["queries"]
+    assert any(query["query"] == "retriever_failures" for query in index["queries"])
 
 
 def test_api_contract_rejects_invalid_requests() -> None:

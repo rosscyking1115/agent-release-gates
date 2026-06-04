@@ -14,6 +14,7 @@ from internal_ai_agent.dashboard.data import (
     failure_reason_rows,
     load_collector_export_preview,
     load_dataset_profile,
+    load_observability_trace_index,
     load_public_report,
     load_public_report_html,
     load_public_report_pdf,
@@ -25,6 +26,10 @@ from internal_ai_agent.dashboard.data import (
     retriever_snapshot_rows,
     security_metric_rows,
     security_risk_breakdown_rows,
+    trace_index_component_rows,
+    trace_index_error_rows,
+    trace_index_query_rows,
+    trace_index_trace_rows,
 )
 
 
@@ -44,6 +49,20 @@ def test_load_collector_export_preview_reads_json(tmp_path) -> None:
 
     assert preview["export_mode"] == "dry_run_preview"
     assert preview["span_count"] == 10
+
+
+def test_load_observability_trace_index_reads_json(tmp_path) -> None:
+    reports_dir = tmp_path / "reports"
+    reports_dir.mkdir()
+    (reports_dir / "observability_trace_index.json").write_text(
+        '{"index_type": "local_observability_trace_index", "trace_count": 2}\n',
+        encoding="utf-8",
+    )
+
+    index = load_observability_trace_index(tmp_path)
+
+    assert index["index_type"] == "local_observability_trace_index"
+    assert index["trace_count"] == 2
 
 
 def test_load_dataset_profile_reads_json(tmp_path) -> None:
@@ -578,6 +597,33 @@ def test_agent_otel_timeline_rows_normalize_span_timing_by_trace() -> None:
     assert rows[1]["start_ms"] == 3.0
     assert rows[1]["duration_ms"] == 2.5
     assert rows[1]["outcome"] == "blocked_pending_approval"
+
+
+def test_trace_index_rows_format_index_sections() -> None:
+    index = {
+        "components": [
+            {"component": "retrieval", "span_count": 5, "error_span_count": 1}
+        ],
+        "queries": [
+            {"query": "error_spans", "description": "Errors", "span_count": 1}
+        ],
+        "error_spans": [
+            {
+                "trace_label": "retriever_failures_vector",
+                "name": "retriever.case_failure",
+                "component": "retrieval",
+            }
+        ],
+        "traces": [
+            {"trace_label": "evaluation_run", "span_count": 7},
+            {"trace_label": "retriever_failures_vector", "span_count": 2},
+        ],
+    }
+
+    assert trace_index_component_rows(index)[0]["component"] == "retrieval"
+    assert trace_index_query_rows(index)[0]["query"] == "error_spans"
+    assert trace_index_error_rows(index)[0]["name"] == "retriever.case_failure"
+    assert len(trace_index_trace_rows(index, limit=1)) == 1
 
 
 def test_load_public_report_reads_markdown(tmp_path) -> None:

@@ -23,6 +23,7 @@ from internal_ai_agent.observability.otel import (
     otel_spans_from_retriever_failures,
     otel_spans_from_retriever_rankings,
 )
+from internal_ai_agent.observability.trace_index import write_trace_index
 from internal_ai_agent.reporting.public_report import write_public_report
 
 
@@ -49,6 +50,7 @@ def run_all(project_root: Path) -> dict[str, Any]:
         security=security,
         agent=agent,
     )
+    trace_index = write_trace_index(project_root)
     collector_export_preview = write_collector_export_preview(project_root)
     public_report_path = write_public_report(project_root)
     return {
@@ -61,6 +63,7 @@ def run_all(project_root: Path) -> dict[str, Any]:
         "agent": agent,
         "evaluation_history": evaluation_history,
         "observability_spans_path": str(observability_spans_path),
+        "trace_index": trace_index,
         "collector_export_preview": collector_export_preview,
         "public_report_path": str(public_report_path),
     }
@@ -177,6 +180,11 @@ def main() -> None:
     print(
         "- collector_export_payloads: "
         f"{summary['collector_export_preview']['payload_count']} dry-run payloads"
+    )
+    print(
+        "- trace_index: "
+        f"{summary['trace_index']['trace_count']} traces, "
+        f"{summary['trace_index']['error_span_count']} error spans"
     )
     print(
         "- manual_golden_cases: "

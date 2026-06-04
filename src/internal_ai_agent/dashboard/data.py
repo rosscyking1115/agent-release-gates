@@ -123,6 +123,13 @@ def load_collector_export_preview(project_root: Path) -> dict[str, Any]:
     return {}
 
 
+def load_observability_trace_index(project_root: Path) -> dict[str, Any]:
+    path = project_root / "reports/observability_trace_index.json"
+    if path.exists():
+        return json.loads(path.read_text(encoding="utf-8"))
+    return {}
+
+
 def load_public_report(project_root: Path) -> str:
     path = project_root / "reports/evaluation_report.md"
     return path.read_text(encoding="utf-8")
@@ -484,6 +491,23 @@ def observability_component_rows(spans: list[dict[str, Any]]) -> list[dict[str, 
         }
         for component, values in sorted(counts.items())
     ]
+
+
+def trace_index_component_rows(index: dict[str, Any]) -> list[dict[str, Any]]:
+    return list(index.get("components", []))
+
+
+def trace_index_query_rows(index: dict[str, Any]) -> list[dict[str, Any]]:
+    return list(index.get("queries", []))
+
+
+def trace_index_error_rows(index: dict[str, Any]) -> list[dict[str, Any]]:
+    return list(index.get("error_spans", []))
+
+
+def trace_index_trace_rows(index: dict[str, Any], *, limit: int = 20) -> list[dict[str, Any]]:
+    rows = list(index.get("traces", []))
+    return rows[:limit]
 
 
 def _span_outcome(span: dict[str, Any]) -> str:

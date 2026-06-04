@@ -109,11 +109,15 @@ def otel_spans_from_evaluation_run(
                 "http.route.observability_collector_preview": (
                     "/reports/observability/collector-preview"
                 ),
+                "http.route.observability_trace_index": (
+                    "/reports/observability/trace-index"
+                ),
                 "report.markdown_path": "reports/evaluation_report.md",
                 "report.html_path": "reports/evaluation_report.html",
                 "report.pdf_path": "reports/evaluation_report.pdf",
                 "report.history_path": "reports/evaluation_history.json",
                 "report.collector_preview_path": "reports/collector_export_preview.json",
+                "report.trace_index_path": "reports/observability_trace_index.json",
             },
         ),
     ]
@@ -470,6 +474,13 @@ def otel_spans_from_api_contracts() -> list[dict[str, Any]]:
             "/reports/observability/collector-preview",
             200,
             "collector_export_preview",
+            "OK",
+        ),
+        (
+            "GET",
+            "/reports/observability/trace-index",
+            200,
+            "observability_trace_index",
             "OK",
         ),
         ("POST", "/ask", 200, "rag_answer", "OK"),

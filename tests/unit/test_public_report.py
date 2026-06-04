@@ -46,6 +46,33 @@ def _prepare_reports(project_root: Path) -> None:
             "batch_size": 200,
         },
     )
+    write_json(
+        project_root / "reports/observability_trace_index.json",
+        {
+            "index_type": "local_observability_trace_index",
+            "trace_count": 3,
+            "span_count": 42,
+            "error_span_count": 2,
+            "component_count": 2,
+            "queries": [
+                {
+                    "query": "retriever_failures",
+                    "description": "Retriever case-failure spans",
+                    "span_count": 2,
+                }
+            ],
+            "components": [
+                {
+                    "component": "retrieval",
+                    "span_count": 20,
+                    "root_span_count": 2,
+                    "error_span_count": 2,
+                }
+            ],
+            "error_spans": [],
+            "traces": [],
+        },
+    )
 
 
 def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
@@ -86,6 +113,8 @@ def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
     assert "## Observability Span Export" in report
     assert "| OTel-style spans |" in report
     assert "| Child spans |" in report
+    assert "| Local trace index metric | Value |" in report
+    assert "| query:retriever_failures | 2 |" in report
     assert "| OTLP payloads | 1 |" in report
     assert "translates this local JSONL into OTLP/HTTP JSON" in report
     assert "case-level retriever failure spans" in report

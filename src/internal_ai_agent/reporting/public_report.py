@@ -14,12 +14,15 @@ from internal_ai_agent.dashboard.data import (
     load_agent_trace_examples,
     load_dataset_profile,
     load_observability_otel_spans,
+    load_observability_trace_index,
     load_retriever_case_rows,
     red_team_coverage_rows,
     retriever_failure_example_rows,
     retriever_failure_overview,
     retriever_snapshot_rows,
     security_risk_breakdown_rows,
+    trace_index_component_rows,
+    trace_index_query_rows,
 )
 
 METRIC_LABELS = {
@@ -153,6 +156,8 @@ def generate_public_report(project_root: Path) -> str:
             "",
             _agent_otel_summary_table(project_root),
             "",
+            _trace_index_table(project_root),
+            "",
             _collector_export_table(collector_preview),
             "",
             (
@@ -275,6 +280,26 @@ def _agent_otel_summary_table(project_root: Path) -> str:
         f"| Child spans | {summary['child_span_count']} |",
         f"| Tool spans | {summary['tool_span_count']} |",
     ]
+    return "\n".join(rows)
+
+
+def _trace_index_table(project_root: Path) -> str:
+    trace_index = load_observability_trace_index(project_root)
+    if not trace_index:
+        return "No local trace index recorded."
+
+    rows = [
+        "| Local trace index metric | Value |",
+        "| --- | ---: |",
+        f"| Indexed traces | {trace_index['trace_count']} |",
+        f"| Indexed spans | {trace_index['span_count']} |",
+        f"| Error spans | {trace_index['error_span_count']} |",
+        f"| Components | {trace_index['component_count']} |",
+    ]
+    for row in trace_index_query_rows(trace_index):
+        rows.append(f"| query:{row['query']} | {row['span_count']} |")
+    for row in trace_index_component_rows(trace_index)[:6]:
+        rows.append(f"| component:{row['component']} | {row['span_count']} |")
     return "\n".join(rows)
 
 

@@ -182,17 +182,35 @@ The controlled workflow separates read-only tools from side-effecting actions. T
 
 | Export metric | Value |
 | --- | ---: |
-| OTel-style spans | 1305 |
+| OTel-style spans | 1306 |
 | Exported traces | 21 |
 | Root spans | 21 |
-| Child spans | 1284 |
+| Child spans | 1285 |
 | Tool spans | 40 |
+
+| Local trace index metric | Value |
+| --- | ---: |
+| Indexed traces | 21 |
+| Indexed spans | 1306 |
+| Error spans | 302 |
+| Components | 7 |
+| query:error_spans | 302 |
+| query:retriever_failures | 298 |
+| query:api_error_cases | 4 |
+| query:approval_decisions | 180 |
+| query:ranking_cases | 564 |
+| component:retrieval | 870 |
+| component:agent | 232 |
+| component:extraction | 182 |
+| component:api | 19 |
+| component:data | 1 |
+| component:evaluation | 1 |
 
 | Collector export preview | Value |
 | --- | ---: |
 | Mode | dry_run_preview |
 | Endpoint | http://localhost:4318/v1/traces |
-| Spans prepared | 1305 |
+| Spans prepared | 1306 |
 | OTLP payloads | 7 |
 | Batch size | 200 |
 

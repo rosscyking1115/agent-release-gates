@@ -19,6 +19,7 @@ from internal_ai_agent.evals.dataset_profile import write_dataset_profile
 from internal_ai_agent.extraction.service import extract_and_route
 from internal_ai_agent.io import read_jsonl
 from internal_ai_agent.observability.collector import collector_export_preview
+from internal_ai_agent.observability.trace_index import build_trace_index
 from internal_ai_agent.rag.baseline import (
     answer_with_baseline,
     answer_with_embedding_store,
@@ -98,6 +99,15 @@ def observability_collector_preview() -> dict[str, object]:
         return json.loads(preview_path.read_text(encoding="utf-8"))
     spans = read_jsonl(PROJECT_ROOT / "reports/observability_otel_spans.jsonl")
     return collector_export_preview(spans)
+
+
+@app.get("/reports/observability/trace-index", response_class=JSONResponse)
+def observability_trace_index() -> dict[str, object]:
+    index_path = PROJECT_ROOT / "reports/observability_trace_index.json"
+    if index_path.exists():
+        return json.loads(index_path.read_text(encoding="utf-8"))
+    spans = read_jsonl(PROJECT_ROOT / "reports/observability_otel_spans.jsonl")
+    return build_trace_index(spans)
 
 
 @app.post("/ask", response_model=AskResponse)

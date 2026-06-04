@@ -10,6 +10,7 @@ This project is not a clone or critique of any real company's internal AI system
 - Public site: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/
 - Full evaluation report: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/evaluation_report.html
 - Dataset profile: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/dataset_profile.json
+- Observability trace index: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/observability_trace_index.json
 
 ## What This Project Demonstrates
 
@@ -32,7 +33,7 @@ Internal AI agents are only useful when their answers are grounded, measurable, 
 | Structured extraction | Pydantic-validated ticket extraction and routing decisions |
 | Safety testing | Red-team cases for prompt injection, leakage, weak evidence, excessive agency, access escalation, and tool misuse |
 | Agent governance | Read-only tools plus approval-gated mock side effects |
-| Observability | Trace IDs, audit events, monitoring snapshots, local span timeline, OTLP/HTTP export preview, local capture smoke test, and Dockerized OpenTelemetry Collector check |
+| Observability | Trace IDs, audit events, monitoring snapshots, local span timeline, queryable trace index, OTLP/HTTP export preview, local capture smoke test, and Dockerized OpenTelemetry Collector check |
 | Deployment | Public Streamlit dashboard, GitHub Pages report site, Docker image, Docker Compose, CI workflow |
 
 ## Current Evaluation Snapshot
@@ -64,7 +65,9 @@ Additional evaluation results:
 | Improved red-team residual risk score | 0 |
 | Agent side-effect block rate | 100.00% |
 | Agent approval audit rate | 100.00% |
-| Exported OTel-style spans | 1,292 |
+| Exported OTel-style spans | 1,306 |
+| Indexed observability traces | 21 |
+| Trace-index error spans | 302 |
 
 These scores are engineering checks over synthetic data, not claims about real-world production performance.
 
@@ -192,5 +195,5 @@ The root `streamlit_app.py` entrypoint loads the dashboard from `app/streamlit_a
 
 - Add more hand-authored golden cases and noisier synthetic tickets.
 - Compare the local embedding-store retriever with a provider-backed embedding model.
-- Extend the OpenTelemetry Collector setup with optional downstream storage or visualization.
+- Extend the OpenTelemetry Collector setup with optional downstream storage or visualization beyond the local trace index.
 - Add an optional LLM extraction path with schema repair.

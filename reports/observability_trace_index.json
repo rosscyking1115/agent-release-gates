@@ -1,0 +1,1074 @@
+{
+  "component_count": 7,
+  "components": [
+    {
+      "component": "retrieval",
+      "error_span_count": 298,
+      "root_span_count": 7,
+      "span_count": 870
+    },
+    {
+      "component": "agent",
+      "error_span_count": 0,
+      "root_span_count": 11,
+      "span_count": 232
+    },
+    {
+      "component": "extraction",
+      "error_span_count": 0,
+      "root_span_count": 1,
+      "span_count": 182
+    },
+    {
+      "component": "api",
+      "error_span_count": 4,
+      "root_span_count": 1,
+      "span_count": 19
+    },
+    {
+      "component": "data",
+      "error_span_count": 0,
+      "root_span_count": 0,
+      "span_count": 1
+    },
+    {
+      "component": "evaluation",
+      "error_span_count": 0,
+      "root_span_count": 1,
+      "span_count": 1
+    },
+    {
+      "component": "security",
+      "error_span_count": 0,
+      "root_span_count": 0,
+      "span_count": 1
+    }
+  ],
+  "error_span_count": 302,
+  "error_spans": [
+    {
+      "case_id": "",
+      "component": "api",
+      "failure_reasons": "",
+      "http_route": "/ask",
+      "http_status_code": 422,
+      "name": "api.error_case",
+      "span_id": "15da4cffb78b4d59",
+      "start_time_unix_nano": 1735690100140000000,
+      "ticket_id": "",
+      "trace_id": "8b2c7bbf253ee7ec076b060f6a175bd4",
+      "trace_label": "api_contracts"
+    },
+    {
+      "case_id": "",
+      "component": "api",
+      "failure_reasons": "",
+      "http_route": "/extract",
+      "http_status_code": 422,
+      "name": "api.error_case",
+      "span_id": "8b1a9e98cf18b7f2",
+      "start_time_unix_nano": 1735690100150000000,
+      "ticket_id": "",
+      "trace_id": "8b2c7bbf253ee7ec076b060f6a175bd4",
+      "trace_label": "api_contracts"
+    },
+    {
+      "case_id": "",
+      "component": "api",
+      "failure_reasons": "",
+      "http_route": "/agent/run",
+      "http_status_code": 422,
+      "name": "api.error_case",
+      "span_id": "7123ea45eff449e3",
+      "start_time_unix_nano": 1735690100160000000,
+      "ticket_id": "",
+      "trace_id": "8b2c7bbf253ee7ec076b060f6a175bd4",
+      "trace_label": "api_contracts"
+    },
+    {
+      "case_id": "",
+      "component": "api",
+      "failure_reasons": "",
+      "http_route": "/unknown",
+      "http_status_code": 404,
+      "name": "api.error_case",
+      "span_id": "e92494f0e51a9004",
+      "start_time_unix_nano": 1735690100170000000,
+      "ticket_id": "",
+      "trace_id": "8b2c7bbf253ee7ec076b060f6a175bd4",
+      "trace_label": "api_contracts"
+    },
+    {
+      "case_id": "GOLD-TCK-0001",
+      "component": "retrieval",
+      "failure_reasons": "missing_or_wrong_citation, wrong_issue_category, wrong_next_action",
+      "http_route": "",
+      "http_status_code": "",
+      "name": "retriever.case_failure",
+      "span_id": "be884cb29b461edb",
+      "start_time_unix_nano": 1735689800010000000,
+      "ticket_id": "",
+      "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
+      "trace_label": "retriever_failures_baseline_team_hints"
+    },
+    {
+      "case_id": "GOLD-TCK-0003",
+      "component": "retrieval",
+      "failure_reasons": "missing_or_wrong_citation, wrong_issue_category, wrong_next_action",
+      "http_route": "",
+      "http_status_code": "",
+      "name": "retriever.case_failure",
+      "span_id": "6477526229b32c8f",
+      "start_time_unix_nano": 1735689800020000000,
+      "ticket_id": "",
+      "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
+      "trace_label": "retriever_failures_baseline_team_hints"
+    },
+    {
+      "case_id": "GOLD-TCK-0004",
+      "component": "retrieval",
+      "failure_reasons": "missing_or_wrong_citation, wrong_issue_category, wrong_next_action",
+      "http_route": "",
+      "http_status_code": "",
+      "name": "retriever.case_failure",
+      "span_id": "67b209942f874eac",
+      "start_time_unix_nano": 1735689800030000000,
+      "ticket_id": "",
+      "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
+      "trace_label": "retriever_failures_baseline_team_hints"
+    },
+    {
+      "case_id": "GOLD-TCK-0007",
+      "component": "retrieval",
+      "failure_reasons": "missing_or_wrong_citation, wrong_issue_category, wrong_next_action",
+      "http_route": "",
+      "http_status_code": "",
+      "name": "retriever.case_failure",
+      "span_id": "b56975631aceb533",
+      "start_time_unix_nano": 1735689800040000000,
+      "ticket_id": "",
+      "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
+      "trace_label": "retriever_failures_baseline_team_hints"
+    },
+    {
+      "case_id": "GOLD-TCK-0008",
+      "component": "retrieval",
+      "failure_reasons": "missing_or_wrong_citation, wrong_issue_category, wrong_next_action",
+      "http_route": "",
+      "http_status_code": "",
+      "name": "retriever.case_failure",
+      "span_id": "f1e789032eaf62b4",
+      "start_time_unix_nano": 1735689800050000000,
+      "ticket_id": "",
+      "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
+      "trace_label": "retriever_failures_baseline_team_hints"
+    },
+    {
+      "case_id": "GOLD-TCK-0009",
+      "component": "retrieval",
+      "failure_reasons": "missing_or_wrong_citation, wrong_issue_category, wrong_next_action",
+      "http_route": "",
+      "http_status_code": "",
+      "name": "retriever.case_failure",
+      "span_id": "8b291b6ec156ed93",
+      "start_time_unix_nano": 1735689800060000000,
+      "ticket_id": "",
+      "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
+      "trace_label": "retriever_failures_baseline_team_hints"
+    },
+    {
+      "case_id": "GOLD-TCK-0010",
+      "component": "retrieval",
+      "failure_reasons": "missing_or_wrong_citation, wrong_issue_category, wrong_next_action",
+      "http_route": "",
+      "http_status_code": "",
+      "name": "retriever.case_failure",
+      "span_id": "a7154752be9cb9fe",
+      "start_time_unix_nano": 1735689800070000000,
+      "ticket_id": "",
+      "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
+      "trace_label": "retriever_failures_baseline_team_hints"
+    },
+    {
+      "case_id": "GOLD-TCK-0012",
+      "component": "retrieval",
+      "failure_reasons": "missing_or_wrong_citation, wrong_issue_category, wrong_next_action",
+      "http_route": "",
+      "http_status_code": "",
+      "name": "retriever.case_failure",
+      "span_id": "964e145948a7a8c9",
+      "start_time_unix_nano": 1735689800080000000,
+      "ticket_id": "",
+      "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
+      "trace_label": "retriever_failures_baseline_team_hints"
+    },
+    {
+      "case_id": "GOLD-TCK-0013",
+      "component": "retrieval",
+      "failure_reasons": "missing_or_wrong_citation, wrong_issue_category, wrong_next_action",
+      "http_route": "",
+      "http_status_code": "",
+      "name": "retriever.case_failure",
+      "span_id": "b946fe83eef9a379",
+      "start_time_unix_nano": 1735689800090000000,
+      "ticket_id": "",
+      "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
+      "trace_label": "retriever_failures_baseline_team_hints"
+    },
+    {
+      "case_id": "GOLD-TCK-0014",
+      "component": "retrieval",
+      "failure_reasons": "missing_or_wrong_citation, wrong_issue_category, wrong_next_action",
+      "http_route": "",
+      "http_status_code": "",
+      "name": "retriever.case_failure",
+      "span_id": "4d1514a02e0fe367",
+      "start_time_unix_nano": 1735689800100000000,
+      "ticket_id": "",
+      "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
+      "trace_label": "retriever_failures_baseline_team_hints"
+    },
+    {
+      "case_id": "GOLD-TCK-0016",
+      "component": "retrieval",
+      "failure_reasons": "missing_or_wrong_citation, wrong_issue_category, wrong_next_action",
+      "http_route": "",
+      "http_status_code": "",
+      "name": "retriever.case_failure",
+      "span_id": "eb2d6c213a514741",
+      "start_time_unix_nano": 1735689800110000000,
+      "ticket_id": "",
+      "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
+      "trace_label": "retriever_failures_baseline_team_hints"
+    },
+    {
+      "case_id": "GOLD-TCK-0017",
+      "component": "retrieval",
+      "failure_reasons": "missing_or_wrong_citation, wrong_issue_category, wrong_next_action",
+      "http_route": "",
+      "http_status_code": "",
+      "name": "retriever.case_failure",
+      "span_id": "7948b81071e11603",
+      "start_time_unix_nano": 1735689800120000000,
+      "ticket_id": "",
+      "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
+      "trace_label": "retriever_failures_baseline_team_hints"
+    },
+    {
+      "case_id": "GOLD-TCK-0018",
+      "component": "retrieval",
+      "failure_reasons": "missing_or_wrong_citation, wrong_issue_category, wrong_next_action",
+      "http_route": "",
+      "http_status_code": "",
+      "name": "retriever.case_failure",
+      "span_id": "b569e887a85853e4",
+      "start_time_unix_nano": 1735689800130000000,
+      "ticket_id": "",
+      "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
+      "trace_label": "retriever_failures_baseline_team_hints"
+    },
+    {
+      "case_id": "GOLD-TCK-0019",
+      "component": "retrieval",
+      "failure_reasons": "missing_or_wrong_citation, wrong_issue_category, wrong_next_action",
+      "http_route": "",
+      "http_status_code": "",
+      "name": "retriever.case_failure",
+      "span_id": "53e65a95be103951",
+      "start_time_unix_nano": 1735689800140000000,
+      "ticket_id": "",
+      "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
+      "trace_label": "retriever_failures_baseline_team_hints"
+    },
+    {
+      "case_id": "GOLD-TCK-0020",
+      "component": "retrieval",
+      "failure_reasons": "missing_or_wrong_citation, wrong_issue_category, wrong_next_action",
+      "http_route": "",
+      "http_status_code": "",
+      "name": "retriever.case_failure",
+      "span_id": "a2a8d5035e0da0f4",
+      "start_time_unix_nano": 1735689800150000000,
+      "ticket_id": "",
+      "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
+      "trace_label": "retriever_failures_baseline_team_hints"
+    },
+    {
+      "case_id": "GOLD-TCK-0021",
+      "component": "retrieval",
+      "failure_reasons": "missing_or_wrong_citation, wrong_issue_category, wrong_next_action",
+      "http_route": "",
+      "http_status_code": "",
+      "name": "retriever.case_failure",
+      "span_id": "f8be78199935c375",
+      "start_time_unix_nano": 1735689800160000000,
+      "ticket_id": "",
+      "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
+      "trace_label": "retriever_failures_baseline_team_hints"
+    },
+    {
+      "case_id": "GOLD-TCK-0023",
+      "component": "retrieval",
+      "failure_reasons": "missing_or_wrong_citation, wrong_issue_category, wrong_next_action",
+      "http_route": "",
+      "http_status_code": "",
+      "name": "retriever.case_failure",
+      "span_id": "10174398530c863e",
+      "start_time_unix_nano": 1735689800170000000,
+      "ticket_id": "",
+      "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
+      "trace_label": "retriever_failures_baseline_team_hints"
+    },
+    {
+      "case_id": "GOLD-TCK-0024",
+      "component": "retrieval",
+      "failure_reasons": "missing_or_wrong_citation, wrong_issue_category, wrong_next_action",
+      "http_route": "",
+      "http_status_code": "",
+      "name": "retriever.case_failure",
+      "span_id": "6a0157de79648b3a",
+      "start_time_unix_nano": 1735689800180000000,
+      "ticket_id": "",
+      "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
+      "trace_label": "retriever_failures_baseline_team_hints"
+    },
+    {
+      "case_id": "GOLD-TCK-0025",
+      "component": "retrieval",
+      "failure_reasons": "missing_or_wrong_citation, wrong_issue_category, wrong_next_action",
+      "http_route": "",
+      "http_status_code": "",
+      "name": "retriever.case_failure",
+      "span_id": "e395524e31c98e5e",
+      "start_time_unix_nano": 1735689800190000000,
+      "ticket_id": "",
+      "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
+      "trace_label": "retriever_failures_baseline_team_hints"
+    },
+    {
+      "case_id": "GOLD-TCK-0026",
+      "component": "retrieval",
+      "failure_reasons": "missing_or_wrong_citation, wrong_issue_category, wrong_next_action",
+      "http_route": "",
+      "http_status_code": "",
+      "name": "retriever.case_failure",
+      "span_id": "08fb0bccf6224f42",
+      "start_time_unix_nano": 1735689800200000000,
+      "ticket_id": "",
+      "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
+      "trace_label": "retriever_failures_baseline_team_hints"
+    },
+    {
+      "case_id": "GOLD-TCK-0027",
+      "component": "retrieval",
+      "failure_reasons": "missing_or_wrong_citation, wrong_issue_category, wrong_next_action",
+      "http_route": "",
+      "http_status_code": "",
+      "name": "retriever.case_failure",
+      "span_id": "b59755e06c51a259",
+      "start_time_unix_nano": 1735689800210000000,
+      "ticket_id": "",
+      "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
+      "trace_label": "retriever_failures_baseline_team_hints"
+    },
+    {
+      "case_id": "GOLD-TCK-0028",
+      "component": "retrieval",
+      "failure_reasons": "missing_or_wrong_citation, wrong_issue_category, wrong_next_action",
+      "http_route": "",
+      "http_status_code": "",
+      "name": "retriever.case_failure",
+      "span_id": "76879401f593c389",
+      "start_time_unix_nano": 1735689800220000000,
+      "ticket_id": "",
+      "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
+      "trace_label": "retriever_failures_baseline_team_hints"
+    },
+    {
+      "case_id": "GOLD-TCK-0029",
+      "component": "retrieval",
+      "failure_reasons": "missing_or_wrong_citation, wrong_issue_category, wrong_next_action",
+      "http_route": "",
+      "http_status_code": "",
+      "name": "retriever.case_failure",
+      "span_id": "57470a8125340d4c",
+      "start_time_unix_nano": 1735689800230000000,
+      "ticket_id": "",
+      "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
+      "trace_label": "retriever_failures_baseline_team_hints"
+    },
+    {
+      "case_id": "GOLD-TCK-0030",
+      "component": "retrieval",
+      "failure_reasons": "missing_or_wrong_citation, wrong_issue_category, wrong_team, wrong_next_action",
+      "http_route": "",
+      "http_status_code": "",
+      "name": "retriever.case_failure",
+      "span_id": "1b51453c1830ca3e",
+      "start_time_unix_nano": 1735689800240000000,
+      "ticket_id": "",
+      "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
+      "trace_label": "retriever_failures_baseline_team_hints"
+    },
+    {
+      "case_id": "GOLD-TCK-0031",
+      "component": "retrieval",
+      "failure_reasons": "missing_or_wrong_citation, wrong_issue_category, wrong_next_action",
+      "http_route": "",
+      "http_status_code": "",
+      "name": "retriever.case_failure",
+      "span_id": "9016d9222706619f",
+      "start_time_unix_nano": 1735689800250000000,
+      "ticket_id": "",
+      "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
+      "trace_label": "retriever_failures_baseline_team_hints"
+    },
+    {
+      "case_id": "GOLD-TCK-0033",
+      "component": "retrieval",
+      "failure_reasons": "missing_or_wrong_citation, wrong_issue_category, wrong_next_action",
+      "http_route": "",
+      "http_status_code": "",
+      "name": "retriever.case_failure",
+      "span_id": "813e8fde2eef6ecc",
+      "start_time_unix_nano": 1735689800260000000,
+      "ticket_id": "",
+      "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
+      "trace_label": "retriever_failures_baseline_team_hints"
+    },
+    {
+      "case_id": "GOLD-TCK-0035",
+      "component": "retrieval",
+      "failure_reasons": "missing_or_wrong_citation, wrong_issue_category, wrong_next_action",
+      "http_route": "",
+      "http_status_code": "",
+      "name": "retriever.case_failure",
+      "span_id": "964231440846f117",
+      "start_time_unix_nano": 1735689800270000000,
+      "ticket_id": "",
+      "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
+      "trace_label": "retriever_failures_baseline_team_hints"
+    },
+    {
+      "case_id": "GOLD-TCK-0036",
+      "component": "retrieval",
+      "failure_reasons": "missing_or_wrong_citation, wrong_issue_category, wrong_next_action",
+      "http_route": "",
+      "http_status_code": "",
+      "name": "retriever.case_failure",
+      "span_id": "018ae976c3105911",
+      "start_time_unix_nano": 1735689800280000000,
+      "ticket_id": "",
+      "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
+      "trace_label": "retriever_failures_baseline_team_hints"
+    },
+    {
+      "case_id": "GOLD-TCK-0037",
+      "component": "retrieval",
+      "failure_reasons": "missing_or_wrong_citation, wrong_issue_category, wrong_next_action",
+      "http_route": "",
+      "http_status_code": "",
+      "name": "retriever.case_failure",
+      "span_id": "7e270422ee339416",
+      "start_time_unix_nano": 1735689800290000000,
+      "ticket_id": "",
+      "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
+      "trace_label": "retriever_failures_baseline_team_hints"
+    },
+    {
+      "case_id": "GOLD-TCK-0038",
+      "component": "retrieval",
+      "failure_reasons": "missing_or_wrong_citation, wrong_issue_category, wrong_next_action",
+      "http_route": "",
+      "http_status_code": "",
+      "name": "retriever.case_failure",
+      "span_id": "365d461db2536c79",
+      "start_time_unix_nano": 1735689800300000000,
+      "ticket_id": "",
+      "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
+      "trace_label": "retriever_failures_baseline_team_hints"
+    },
+    {
+      "case_id": "GOLD-TCK-0039",
+      "component": "retrieval",
+      "failure_reasons": "missing_or_wrong_citation, wrong_issue_category, wrong_next_action",
+      "http_route": "",
+      "http_status_code": "",
+      "name": "retriever.case_failure",
+      "span_id": "87f55880bf22450c",
+      "start_time_unix_nano": 1735689800310000000,
+      "ticket_id": "",
+      "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
+      "trace_label": "retriever_failures_baseline_team_hints"
+    },
+    {
+      "case_id": "GOLD-TCK-0041",
+      "component": "retrieval",
+      "failure_reasons": "missing_or_wrong_citation, wrong_issue_category, wrong_next_action",
+      "http_route": "",
+      "http_status_code": "",
+      "name": "retriever.case_failure",
+      "span_id": "7402bed5ea179785",
+      "start_time_unix_nano": 1735689800320000000,
+      "ticket_id": "",
+      "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
+      "trace_label": "retriever_failures_baseline_team_hints"
+    },
+    {
+      "case_id": "GOLD-TCK-0042",
+      "component": "retrieval",
+      "failure_reasons": "missing_or_wrong_citation, wrong_issue_category, wrong_next_action",
+      "http_route": "",
+      "http_status_code": "",
+      "name": "retriever.case_failure",
+      "span_id": "32f6ce8b931a8461",
+      "start_time_unix_nano": 1735689800330000000,
+      "ticket_id": "",
+      "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
+      "trace_label": "retriever_failures_baseline_team_hints"
+    },
+    {
+      "case_id": "GOLD-TCK-0044",
+      "component": "retrieval",
+      "failure_reasons": "missing_or_wrong_citation, wrong_issue_category, wrong_next_action",
+      "http_route": "",
+      "http_status_code": "",
+      "name": "retriever.case_failure",
+      "span_id": "0004fdc86a25100a",
+      "start_time_unix_nano": 1735689800340000000,
+      "ticket_id": "",
+      "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
+      "trace_label": "retriever_failures_baseline_team_hints"
+    },
+    {
+      "case_id": "GOLD-TCK-0045",
+      "component": "retrieval",
+      "failure_reasons": "missing_or_wrong_citation, wrong_issue_category, wrong_next_action",
+      "http_route": "",
+      "http_status_code": "",
+      "name": "retriever.case_failure",
+      "span_id": "19af40bf4a109a8f",
+      "start_time_unix_nano": 1735689800350000000,
+      "ticket_id": "",
+      "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
+      "trace_label": "retriever_failures_baseline_team_hints"
+    },
+    {
+      "case_id": "GOLD-TCK-0046",
+      "component": "retrieval",
+      "failure_reasons": "missing_or_wrong_citation, wrong_issue_category, wrong_next_action",
+      "http_route": "",
+      "http_status_code": "",
+      "name": "retriever.case_failure",
+      "span_id": "3e7f7e1441cb6650",
+      "start_time_unix_nano": 1735689800360000000,
+      "ticket_id": "",
+      "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
+      "trace_label": "retriever_failures_baseline_team_hints"
+    },
+    {
+      "case_id": "GOLD-TCK-0047",
+      "component": "retrieval",
+      "failure_reasons": "missing_or_wrong_citation, wrong_issue_category, wrong_next_action",
+      "http_route": "",
+      "http_status_code": "",
+      "name": "retriever.case_failure",
+      "span_id": "038be6718f1d774f",
+      "start_time_unix_nano": 1735689800370000000,
+      "ticket_id": "",
+      "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
+      "trace_label": "retriever_failures_baseline_team_hints"
+    },
+    {
+      "case_id": "GOLD-TCK-0048",
+      "component": "retrieval",
+      "failure_reasons": "missing_or_wrong_citation, wrong_issue_category, wrong_next_action",
+      "http_route": "",
+      "http_status_code": "",
+      "name": "retriever.case_failure",
+      "span_id": "1d8e8ae84739599c",
+      "start_time_unix_nano": 1735689800380000000,
+      "ticket_id": "",
+      "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
+      "trace_label": "retriever_failures_baseline_team_hints"
+    },
+    {
+      "case_id": "GOLD-TCK-0049",
+      "component": "retrieval",
+      "failure_reasons": "missing_or_wrong_citation, wrong_issue_category, wrong_next_action",
+      "http_route": "",
+      "http_status_code": "",
+      "name": "retriever.case_failure",
+      "span_id": "c507ca1c774d640c",
+      "start_time_unix_nano": 1735689800390000000,
+      "ticket_id": "",
+      "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
+      "trace_label": "retriever_failures_baseline_team_hints"
+    },
+    {
+      "case_id": "GOLD-TCK-0051",
+      "component": "retrieval",
+      "failure_reasons": "missing_or_wrong_citation, wrong_issue_category, wrong_next_action",
+      "http_route": "",
+      "http_status_code": "",
+      "name": "retriever.case_failure",
+      "span_id": "15e88d459f0b29e9",
+      "start_time_unix_nano": 1735689800400000000,
+      "ticket_id": "",
+      "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
+      "trace_label": "retriever_failures_baseline_team_hints"
+    },
+    {
+      "case_id": "GOLD-TCK-0052",
+      "component": "retrieval",
+      "failure_reasons": "missing_or_wrong_citation, wrong_issue_category, wrong_next_action",
+      "http_route": "",
+      "http_status_code": "",
+      "name": "retriever.case_failure",
+      "span_id": "4eae3c0b73df9ea1",
+      "start_time_unix_nano": 1735689800410000000,
+      "ticket_id": "",
+      "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
+      "trace_label": "retriever_failures_baseline_team_hints"
+    },
+    {
+      "case_id": "GOLD-TCK-0053",
+      "component": "retrieval",
+      "failure_reasons": "missing_or_wrong_citation, wrong_issue_category, wrong_next_action",
+      "http_route": "",
+      "http_status_code": "",
+      "name": "retriever.case_failure",
+      "span_id": "6d28500f82e37344",
+      "start_time_unix_nano": 1735689800420000000,
+      "ticket_id": "",
+      "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
+      "trace_label": "retriever_failures_baseline_team_hints"
+    },
+    {
+      "case_id": "GOLD-TCK-0054",
+      "component": "retrieval",
+      "failure_reasons": "missing_or_wrong_citation, wrong_issue_category, wrong_next_action",
+      "http_route": "",
+      "http_status_code": "",
+      "name": "retriever.case_failure",
+      "span_id": "2f929d79d12f2253",
+      "start_time_unix_nano": 1735689800430000000,
+      "ticket_id": "",
+      "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
+      "trace_label": "retriever_failures_baseline_team_hints"
+    },
+    {
+      "case_id": "GOLD-TCK-0055",
+      "component": "retrieval",
+      "failure_reasons": "missing_or_wrong_citation, wrong_issue_category, wrong_next_action",
+      "http_route": "",
+      "http_status_code": "",
+      "name": "retriever.case_failure",
+      "span_id": "713d8a55b606e6df",
+      "start_time_unix_nano": 1735689800440000000,
+      "ticket_id": "",
+      "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
+      "trace_label": "retriever_failures_baseline_team_hints"
+    },
+    {
+      "case_id": "GOLD-TCK-0056",
+      "component": "retrieval",
+      "failure_reasons": "missing_or_wrong_citation, wrong_issue_category, wrong_next_action",
+      "http_route": "",
+      "http_status_code": "",
+      "name": "retriever.case_failure",
+      "span_id": "81710cb2c26bdd67",
+      "start_time_unix_nano": 1735689800450000000,
+      "ticket_id": "",
+      "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
+      "trace_label": "retriever_failures_baseline_team_hints"
+    },
+    {
+      "case_id": "GOLD-TCK-0059",
+      "component": "retrieval",
+      "failure_reasons": "missing_or_wrong_citation, wrong_issue_category, wrong_next_action",
+      "http_route": "",
+      "http_status_code": "",
+      "name": "retriever.case_failure",
+      "span_id": "c756fb6d2de4eb43",
+      "start_time_unix_nano": 1735689800460000000,
+      "ticket_id": "",
+      "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
+      "trace_label": "retriever_failures_baseline_team_hints"
+    }
+  ],
+  "index_type": "local_observability_trace_index",
+  "queries": [
+    {
+      "description": "All spans with ERROR status",
+      "query": "error_spans",
+      "span_count": 302
+    },
+    {
+      "description": "Retriever case-failure spans",
+      "query": "retriever_failures",
+      "span_count": 298
+    },
+    {
+      "description": "Expected API validation and route errors",
+      "query": "api_error_cases",
+      "span_count": 4
+    },
+    {
+      "description": "Agent approval-decision spans",
+      "query": "approval_decisions",
+      "span_count": 180
+    },
+    {
+      "description": "Retriever ranking-detail spans",
+      "query": "ranking_cases",
+      "span_count": 564
+    }
+  ],
+  "span_count": 1306,
+  "trace_count": 21,
+  "traces": [
+    {
+      "component": "retrieval",
+      "components": [
+        "retrieval"
+      ],
+      "duration_ms": 2940.0,
+      "end_time_unix_nano": 1735689802940000000,
+      "error_span_count": 293,
+      "first_error_case_id": "GOLD-TCK-0001",
+      "first_error_span": "retriever.case_failure",
+      "root_span_name": "retriever.failure_analysis",
+      "span_count": 294,
+      "start_time_unix_nano": 1735689800000000000,
+      "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
+      "trace_label": "retriever_failures_baseline_team_hints"
+    },
+    {
+      "component": "api",
+      "components": [
+        "api"
+      ],
+      "duration_ms": 180.0,
+      "end_time_unix_nano": 1735690100180000000,
+      "error_span_count": 4,
+      "first_error_case_id": "",
+      "first_error_span": "api.error_case",
+      "root_span_name": "api.contract_analysis",
+      "span_count": 18,
+      "start_time_unix_nano": 1735690100000000000,
+      "trace_id": "8b2c7bbf253ee7ec076b060f6a175bd4",
+      "trace_label": "api_contracts"
+    },
+    {
+      "component": "retrieval",
+      "components": [
+        "retrieval"
+      ],
+      "duration_ms": 50.0,
+      "end_time_unix_nano": 1735689802050000000,
+      "error_span_count": 4,
+      "first_error_case_id": "PARA-TCK-0028",
+      "first_error_span": "retriever.case_failure",
+      "root_span_name": "retriever.failure_analysis",
+      "span_count": 5,
+      "start_time_unix_nano": 1735689802000000000,
+      "trace_id": "f614a6fade9eb798c4c8d75ed71c99e1",
+      "trace_label": "retriever_failures_improved_lexical"
+    },
+    {
+      "component": "retrieval",
+      "components": [
+        "retrieval"
+      ],
+      "duration_ms": 20.0,
+      "end_time_unix_nano": 1735689801020000000,
+      "error_span_count": 1,
+      "first_error_case_id": "MANUAL-FIELD-074",
+      "first_error_span": "retriever.case_failure",
+      "root_span_name": "retriever.failure_analysis",
+      "span_count": 2,
+      "start_time_unix_nano": 1735689801000000000,
+      "trace_id": "2b3c26798902d6e78fe3937e97e8e57f",
+      "trace_label": "retriever_failures_hybrid_sparse_semantic"
+    },
+    {
+      "component": "retrieval",
+      "components": [
+        "retrieval"
+      ],
+      "duration_ms": 2830.0,
+      "end_time_unix_nano": 1735690203830000000,
+      "error_span_count": 0,
+      "first_error_case_id": "",
+      "first_error_span": "",
+      "root_span_name": "retriever.ranking_analysis",
+      "span_count": 283,
+      "start_time_unix_nano": 1735690201000000000,
+      "trace_id": "aa97bb7b28bfeaf7213ebfe40078876e",
+      "trace_label": "retriever_rankings_local_embedding_store"
+    },
+    {
+      "component": "retrieval",
+      "components": [
+        "retrieval"
+      ],
+      "duration_ms": 2830.0,
+      "end_time_unix_nano": 1735690202830000000,
+      "error_span_count": 0,
+      "first_error_case_id": "",
+      "first_error_span": "",
+      "root_span_name": "retriever.ranking_analysis",
+      "span_count": 283,
+      "start_time_unix_nano": 1735690200000000000,
+      "trace_id": "6650056e64ac3e052d7267aac7d3df9f",
+      "trace_label": "retriever_rankings_local_tf_idf_vector"
+    },
+    {
+      "component": "agent",
+      "components": [
+        "agent"
+      ],
+      "duration_ms": 1810.0,
+      "end_time_unix_nano": 1735689901810000000,
+      "error_span_count": 0,
+      "first_error_case_id": "",
+      "first_error_span": "",
+      "root_span_name": "agent.approval_analysis",
+      "span_count": 181,
+      "start_time_unix_nano": 1735689900000000000,
+      "trace_id": "354914553eeb58e1c16571026682b5f4",
+      "trace_label": "agent_approval_cases"
+    },
+    {
+      "component": "extraction",
+      "components": [
+        "extraction"
+      ],
+      "duration_ms": 1810.0,
+      "end_time_unix_nano": 1735690001810000000,
+      "error_span_count": 0,
+      "first_error_case_id": "",
+      "first_error_span": "",
+      "root_span_name": "extraction.case_analysis",
+      "span_count": 181,
+      "start_time_unix_nano": 1735690000000000000,
+      "trace_id": "fb37a5688bf0037bf548ebce87f8a385",
+      "trace_label": "extraction_cases"
+    },
+    {
+      "component": "evaluation",
+      "components": [
+        "agent",
+        "api",
+        "data",
+        "evaluation",
+        "extraction",
+        "retrieval",
+        "security"
+      ],
+      "duration_ms": 70.0,
+      "end_time_unix_nano": 1735689700070000000,
+      "error_span_count": 0,
+      "first_error_case_id": "",
+      "first_error_span": "",
+      "root_span_name": "evaluation.run",
+      "span_count": 7,
+      "start_time_unix_nano": 1735689700000000000,
+      "trace_id": "b343352e35b1314e60533dca700e08ac",
+      "trace_label": "evaluation_run"
+    },
+    {
+      "component": "agent",
+      "components": [
+        "agent"
+      ],
+      "duration_ms": 50.0,
+      "end_time_unix_nano": 1735689601050000000,
+      "error_span_count": 0,
+      "first_error_case_id": "",
+      "first_error_span": "",
+      "root_span_name": "agent.run",
+      "span_count": 5,
+      "start_time_unix_nano": 1735689601000000000,
+      "trace_id": "d483d65e336440c65edd96b8a16cc66a",
+      "trace_label": "trace_eval_tck-0001_approved"
+    },
+    {
+      "component": "agent",
+      "components": [
+        "agent"
+      ],
+      "duration_ms": 50.0,
+      "end_time_unix_nano": 1735689600050000000,
+      "error_span_count": 0,
+      "first_error_case_id": "",
+      "first_error_span": "",
+      "root_span_name": "agent.run",
+      "span_count": 5,
+      "start_time_unix_nano": 1735689600000000000,
+      "trace_id": "a62bfe0a854b7b35a5573852008a8e0a",
+      "trace_label": "trace_eval_tck-0001_blocked"
+    },
+    {
+      "component": "agent",
+      "components": [
+        "agent"
+      ],
+      "duration_ms": 50.0,
+      "end_time_unix_nano": 1735689603050000000,
+      "error_span_count": 0,
+      "first_error_case_id": "",
+      "first_error_span": "",
+      "root_span_name": "agent.run",
+      "span_count": 5,
+      "start_time_unix_nano": 1735689603000000000,
+      "trace_id": "e28a96fd9fada6de137d8cb04464a049",
+      "trace_label": "trace_eval_tck-0002_approved"
+    },
+    {
+      "component": "agent",
+      "components": [
+        "agent"
+      ],
+      "duration_ms": 50.0,
+      "end_time_unix_nano": 1735689602050000000,
+      "error_span_count": 0,
+      "first_error_case_id": "",
+      "first_error_span": "",
+      "root_span_name": "agent.run",
+      "span_count": 5,
+      "start_time_unix_nano": 1735689602000000000,
+      "trace_id": "c15b05c0b13004602efdc97732459e47",
+      "trace_label": "trace_eval_tck-0002_blocked"
+    },
+    {
+      "component": "agent",
+      "components": [
+        "agent"
+      ],
+      "duration_ms": 50.0,
+      "end_time_unix_nano": 1735689605050000000,
+      "error_span_count": 0,
+      "first_error_case_id": "",
+      "first_error_span": "",
+      "root_span_name": "agent.run",
+      "span_count": 5,
+      "start_time_unix_nano": 1735689605000000000,
+      "trace_id": "40f935f02aa119e17ec6be4ba7b93ddb",
+      "trace_label": "trace_eval_tck-0003_approved"
+    },
+    {
+      "component": "agent",
+      "components": [
+        "agent"
+      ],
+      "duration_ms": 50.0,
+      "end_time_unix_nano": 1735689604050000000,
+      "error_span_count": 0,
+      "first_error_case_id": "",
+      "first_error_span": "",
+      "root_span_name": "agent.run",
+      "span_count": 5,
+      "start_time_unix_nano": 1735689604000000000,
+      "trace_id": "309f5a4c4a50a93fc9cde492d629dcc7",
+      "trace_label": "trace_eval_tck-0003_blocked"
+    },
+    {
+      "component": "agent",
+      "components": [
+        "agent"
+      ],
+      "duration_ms": 50.0,
+      "end_time_unix_nano": 1735689607050000000,
+      "error_span_count": 0,
+      "first_error_case_id": "",
+      "first_error_span": "",
+      "root_span_name": "agent.run",
+      "span_count": 5,
+      "start_time_unix_nano": 1735689607000000000,
+      "trace_id": "9ad7414548dbd0baab97069955e53c5d",
+      "trace_label": "trace_eval_tck-0004_approved"
+    },
+    {
+      "component": "agent",
+      "components": [
+        "agent"
+      ],
+      "duration_ms": 50.0,
+      "end_time_unix_nano": 1735689606050000000,
+      "error_span_count": 0,
+      "first_error_case_id": "",
+      "first_error_span": "",
+      "root_span_name": "agent.run",
+      "span_count": 5,
+      "start_time_unix_nano": 1735689606000000000,
+      "trace_id": "281481e3297e9480747324d4a6fb0a53",
+      "trace_label": "trace_eval_tck-0004_blocked"
+    },
+    {
+      "component": "agent",
+      "components": [
+        "agent"
+      ],
+      "duration_ms": 50.0,
+      "end_time_unix_nano": 1735689609050000000,
+      "error_span_count": 0,
+      "first_error_case_id": "",
+      "first_error_span": "",
+      "root_span_name": "agent.run",
+      "span_count": 5,
+      "start_time_unix_nano": 1735689609000000000,
+      "trace_id": "cc42a5fc84acd2c44f85e98b93a99f8d",
+      "trace_label": "trace_eval_tck-0005_approved"
+    },
+    {
+      "component": "agent",
+      "components": [
+        "agent"
+      ],
+      "duration_ms": 50.0,
+      "end_time_unix_nano": 1735689608050000000,
+      "error_span_count": 0,
+      "first_error_case_id": "",
+      "first_error_span": "",
+      "root_span_name": "agent.run",
+      "span_count": 5,
+      "start_time_unix_nano": 1735689608000000000,
+      "trace_id": "70f669784386ad93eb5885aa96580394",
+      "trace_label": "trace_eval_tck-0005_blocked"
+    },
+    {
+      "component": "retrieval",
+      "components": [
+        "retrieval"
+      ],
+      "duration_ms": 10.0,
+      "end_time_unix_nano": 1735689804010000000,
+      "error_span_count": 0,
+      "first_error_case_id": "",
+      "first_error_span": "",
+      "root_span_name": "retriever.failure_analysis",
+      "span_count": 1,
+      "start_time_unix_nano": 1735689804000000000,
+      "trace_id": "795f90332cf12129a8925d5da7b6a4f5",
+      "trace_label": "retriever_failures_local_embedding_store"
+    },
+    {
+      "component": "retrieval",
+      "components": [
+        "retrieval"
+      ],
+      "duration_ms": 10.0,
+      "end_time_unix_nano": 1735689803010000000,
+      "error_span_count": 0,
+      "first_error_case_id": "",
+      "first_error_span": "",
+      "root_span_name": "retriever.failure_analysis",
+      "span_count": 1,
+      "start_time_unix_nano": 1735689803000000000,
+      "trace_id": "c7e6361198fe0b5d0529c63f2bccd3e0",
+      "trace_label": "retriever_failures_local_tf_idf_vector"
+    }
+  ]
+}

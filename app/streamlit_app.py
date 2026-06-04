@@ -30,6 +30,7 @@ from internal_ai_agent.dashboard.data import (
     load_evaluation_history,
     load_extraction_summary,
     load_observability_otel_spans,
+    load_observability_trace_index,
     load_public_report,
     load_public_report_html,
     load_public_report_pdf,
@@ -46,6 +47,10 @@ from internal_ai_agent.dashboard.data import (
     retriever_snapshot_rows,
     security_metric_rows,
     security_risk_breakdown_rows,
+    trace_index_component_rows,
+    trace_index_error_rows,
+    trace_index_query_rows,
+    trace_index_trace_rows,
 )
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -68,6 +73,7 @@ def main() -> None:
     agent_summary = load_agent_summary(PROJECT_ROOT)
     agent_traces = load_agent_trace_examples(PROJECT_ROOT)
     observability_otel_spans = load_observability_otel_spans(PROJECT_ROOT)
+    observability_trace_index = load_observability_trace_index(PROJECT_ROOT)
     collector_export_preview = load_collector_export_preview(PROJECT_ROOT)
     public_report = load_public_report(PROJECT_ROOT)
     public_report_html = load_public_report_html(PROJECT_ROOT)
@@ -103,6 +109,7 @@ def main() -> None:
             agent_rows,
             agent_traces,
             observability_otel_spans,
+            observability_trace_index,
             collector_export_preview,
         )
     elif section == "Evaluation Report":
@@ -539,6 +546,7 @@ def _render_agent_metrics(
     rows: list[dict[str, object]],
     traces: list[dict[str, object]],
     otel_spans: list[dict[str, object]],
+    trace_index: dict[str, object],
     collector_preview: dict[str, object],
 ) -> None:
     st.subheader("Controlled Agent And Tool Governance")
@@ -589,12 +597,77 @@ def _render_agent_metrics(
         component_df = pd.DataFrame(observability_component_rows(otel_spans))
         if not component_df.empty:
             st.dataframe(component_df, hide_index=True, use_container_width=True)
+        _render_trace_index(trace_index)
         _render_agent_trace_timeline(otel_spans)
         st.dataframe(
             pd.DataFrame(agent_otel_span_rows(otel_spans)),
             hide_index=True,
             use_container_width=True,
         )
+
+
+def _render_trace_index(trace_index: dict[str, object]) -> None:
+    if not trace_index:
+        return
+
+    st.subheader("Local Trace Index")
+    cols = st.columns(4)
+    cols[0].metric("Indexed traces", f"{trace_index['trace_count']:,}")
+    cols[1].metric("Indexed spans", f"{trace_index['span_count']:,}")
+    cols[2].metric("Error spans", f"{trace_index['error_span_count']:,}")
+    cols[3].metric("Components", f"{trace_index['component_count']:,}")
+
+    tab_traces, tab_errors, tab_components, tab_queries = st.tabs(
+        ["Traces", "Errors", "Components", "Queries"]
+    )
+    with tab_traces:
+        trace_df = pd.DataFrame(trace_index_trace_rows(trace_index))
+        if not trace_df.empty:
+            st.dataframe(
+                trace_df[
+                    [
+                        "trace_label",
+                        "root_span_name",
+                        "component",
+                        "span_count",
+                        "error_span_count",
+                        "duration_ms",
+                        "first_error_span",
+                        "first_error_case_id",
+                    ]
+                ],
+                hide_index=True,
+                use_container_width=True,
+            )
+    with tab_errors:
+        error_df = pd.DataFrame(trace_index_error_rows(trace_index))
+        if not error_df.empty:
+            st.dataframe(
+                error_df[
+                    [
+                        "trace_label",
+                        "name",
+                        "component",
+                        "case_id",
+                        "ticket_id",
+                        "failure_reasons",
+                        "http_route",
+                        "http_status_code",
+                    ]
+                ],
+                hide_index=True,
+                use_container_width=True,
+            )
+        else:
+            st.success("No error spans indexed.")
+    with tab_components:
+        component_df = pd.DataFrame(trace_index_component_rows(trace_index))
+        if not component_df.empty:
+            st.dataframe(component_df, hide_index=True, use_container_width=True)
+    with tab_queries:
+        query_df = pd.DataFrame(trace_index_query_rows(trace_index))
+        if not query_df.empty:
+            st.dataframe(query_df, hide_index=True, use_container_width=True)
 
 
 def _render_agent_trace_timeline(otel_spans: list[dict[str, object]]) -> None:

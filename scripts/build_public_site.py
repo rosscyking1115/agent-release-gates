@@ -20,10 +20,15 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
     comparison = _read_json(reports_dir / "eval_comparison.json")
     security = _read_json(reports_dir / "security_eval_summary.json")
     collector = _read_json(reports_dir / "collector_export_preview.json")
+    trace_index = _read_json(reports_dir / "observability_trace_index.json")
 
     shutil.copyfile(reports_dir / "evaluation_report.html", public_dir / "evaluation_report.html")
     shutil.copyfile(reports_dir / "evaluation_report.pdf", public_dir / "evaluation_report.pdf")
     shutil.copyfile(reports_dir / "dataset_profile.json", public_dir / "dataset_profile.json")
+    shutil.copyfile(
+        reports_dir / "observability_trace_index.json",
+        public_dir / "observability_trace_index.json",
+    )
 
     (public_dir / "index.html").write_text(
         _index_html(
@@ -31,6 +36,7 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
             comparison=comparison,
             security=security,
             collector=collector,
+            trace_index=trace_index,
         ),
         encoding="utf-8",
     )
@@ -43,6 +49,7 @@ def _index_html(
     comparison: dict[str, Any],
     security: dict[str, Any],
     collector: dict[str, Any],
+    trace_index: dict[str, Any],
 ) -> str:
     counts = profile["dataset_counts"]
     mix = profile["golden_case_mix"]
@@ -222,6 +229,8 @@ def _index_html(
         {_metric("Improved red-team safe rate", _pct(security_metrics["improved_safe_rate"]))}
         {_metric("Collector spans", collector["span_count"])}
         {_metric("Collector payloads", collector["payload_count"])}
+        {_metric("Indexed traces", trace_index["trace_count"])}
+        {_metric("Trace error spans", trace_index["error_span_count"])}
       </div>
     </section>
 

@@ -481,7 +481,7 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 13 0 R >>
 endobj
 13 0 obj
-<< /Length 2536 >>
+<< /Length 2199 >>
 stream
 BT
 /F1 10 Tf
@@ -539,15 +539,49 @@ T*
 T*
 (Export metric | Value) Tj
 T*
-(OTel-style spans | 1305) Tj
+(OTel-style spans | 1306) Tj
 T*
 (Exported traces | 21) Tj
 T*
 (Root spans | 21) Tj
 T*
-(Child spans | 1284) Tj
+(Child spans | 1285) Tj
 T*
 (Tool spans | 40) Tj
+T*
+() Tj
+T*
+(Local trace index metric | Value) Tj
+T*
+(Indexed traces | 21) Tj
+T*
+(Indexed spans | 1306) Tj
+T*
+(Error spans | 302) Tj
+T*
+(Components | 7) Tj
+T*
+(query:error_spans | 302) Tj
+T*
+(query:retriever_failures | 298) Tj
+T*
+(query:api_error_cases | 4) Tj
+T*
+(query:approval_decisions | 180) Tj
+T*
+(query:ranking_cases | 564) Tj
+T*
+(component:retrieval | 870) Tj
+T*
+(component:agent | 232) Tj
+T*
+(component:extraction | 182) Tj
+T*
+(component:api | 19) Tj
+T*
+(component:data | 1) Tj
+T*
+(component:evaluation | 1) Tj
 T*
 () Tj
 T*
@@ -557,7 +591,20 @@ T*
 T*
 (Endpoint | http://localhost:4318/v1/traces) Tj
 T*
-(Spans prepared | 1305) Tj
+ET
+endstream
+endobj
+14 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 15 0 R >>
+endobj
+15 0 obj
+<< /Length 2031 >>
+stream
+BT
+/F1 10 Tf
+14 TL
+54 738 Td
+(Spans prepared | 1306) Tj
 T*
 (OTLP payloads | 7) Tj
 T*
@@ -591,19 +638,6 @@ T*
 T*
 (- Retrieval quality can be measured across exact, paraphrased, noisy, conflicting, and) Tj
 T*
-ET
-endstream
-endobj
-14 0 obj
-<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 15 0 R >>
-endobj
-15 0 obj
-<< /Length 1174 >>
-stream
-BT
-/F1 10 Tf
-14 TL
-54 738 Td
 (  adversarial cases.) Tj
 T*
 (- Structured extraction, routing, refusal behavior, approval gates, and audit traces are) Tj
@@ -671,10 +705,10 @@ xref
 0000008982 00000 n 
 0000011497 00000 n 
 0000011625 00000 n 
-0000014214 00000 n 
-0000014342 00000 n 
+0000013877 00000 n 
+0000014005 00000 n 
 trailer
 << /Size 16 /Root 1 0 R >>
 startxref
-15569
+16089
 %%EOF

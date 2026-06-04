@@ -24,6 +24,7 @@ The project should produce artifacts that are independently useful:
 - before/after metrics
 - API endpoints for experimentation
 - dashboard views for inspection
+- local trace index for observability inspection
 - model card, threat model, and operations runbook
 
 ## Quality Bar
@@ -57,7 +58,7 @@ The project is useful, but it is still too deterministic in several places:
 - Extraction is deterministic pattern matching.
 - Red-team checks include harder retrieved-context attacks, but are still string-based.
 - Agent orchestration is local code rather than a state machine.
-- Observability now includes local structured data, deterministic OpenTelemetry-style spans for agent traces, evaluation workflow stages, retriever failure cases, retriever ranking details, extraction cases, agent approval cases, API contract/error cases, a dashboard trace timeline, an optional OTLP/HTTP collector exporter, a local capture smoke test for the POST path, and a Dockerized OpenTelemetry Collector deployment check using collector self-metrics. It still does not include downstream span storage or production visualization beyond the local dashboard.
+- Observability now includes local structured data, deterministic OpenTelemetry-style spans for agent traces, evaluation workflow stages, retriever failure cases, retriever ranking details, extraction cases, agent approval cases, API contract/error cases, a dashboard trace timeline, a queryable trace index, an optional OTLP/HTTP collector exporter, a local capture smoke test for the POST path, and a Dockerized OpenTelemetry Collector deployment check using collector self-metrics. It still does not include downstream span storage or production visualization beyond the local dashboard and index.
 
 These are acceptable for the first lab version, but they should guide the next work.
 
@@ -65,7 +66,7 @@ These are acceptable for the first lab version, but they should guide the next w
 
 1. Run and review the provider-backed embedding comparison when API access and cost are acceptable.
 2. Continue making the golden suite less templated with new non-generated tickets, mixed evidence bundles, and harder retrieved-context evidence.
-3. Extend the OpenTelemetry Collector setup with optional downstream storage or visualization.
+3. Extend the local trace index or OpenTelemetry Collector setup with optional downstream storage or visualization.
 4. Add model-assisted adversarial review for the red-team suite after the deterministic scoring contract remains stable.
 5. Add an optional LLM extraction path with schema repair once noisier tickets are in place.
 
