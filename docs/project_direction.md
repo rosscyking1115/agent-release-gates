@@ -52,8 +52,8 @@ The project is useful, but it is still too deterministic in several places:
 
 - Retrieval now includes sparse hybrid, local TF-IDF vector, local feature-hashed embedding-store experiments, current-evidence reranking, and a dry-run-first provider embedding evaluation path. A completed provider-backed result is still not published.
 - Error analysis now identifies retrieved-but-not-cited failures, deterministic retriever-version trend snapshots, and dated lab milestone history; the expanded manual challenge set drove reranking fixes for schema mismatch, stale context, KYC artefact phrasing, and ambiguous-handoff abstention.
-- Dataset profiling now exposes manual-versus-generated share, abstention coverage, task/noise/issue/team coverage, red-team coverage, and explicit data-quality gap labels. The profile now clears the previous manual-share gap with 88 hand-authored golden cases, while still flagging that provider-backed embedding comparison is not covered.
-- Ticket and runbook data are still partly templated, even after adding noisy, human-like, human email-thread, manual evidence-packet, manual field-note, mixed review-bundle, retrieved-document-injection, and long-conflicting-context cases.
+- Dataset profiling now exposes manual-versus-generated share, abstention coverage, task/noise/issue/team coverage, red-team coverage, and explicit data-quality gap labels. The profile now clears the previous manual-share gap with 94 hand-authored golden cases, while still flagging that provider-backed embedding comparison is not covered.
+- Ticket and runbook data are still partly templated, even after adding noisy, human-like, human email-thread, manual evidence-packet, manual field-note, mixed review-bundle, retrieved-context-review, retrieved-document-injection, and long-conflicting-context cases.
 - Extraction is deterministic pattern matching.
 - Red-team checks include harder retrieved-context attacks, but are still string-based.
 - Agent orchestration is local code rather than a state machine.

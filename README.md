@@ -43,16 +43,16 @@ The current benchmark is synthetic and deterministic:
 | --- | ---: |
 | Runbook sections | 24 |
 | Synthetic operations tickets | 180 |
-| Golden evaluation cases | 344 |
+| Golden evaluation cases | 350 |
 | Red-team cases | 60 |
 
 | Metric | Baseline | Improved lexical | Hybrid sparse semantic | Local TF-IDF vector | Local embedding store |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| Retrieval hit rate@3 | 45.68% | 99.28% | 100.00% | 100.00% | 100.00% |
-| Citation coverage | 19.42% | 98.56% | 99.64% | 100.00% | 100.00% |
-| Issue category accuracy | 19.42% | 98.56% | 99.64% | 100.00% | 100.00% |
-| Next action accuracy | 19.42% | 98.56% | 99.64% | 100.00% | 100.00% |
-| Abstention accuracy | 81.40% | 100.00% | 100.00% | 100.00% | 100.00% |
+| Retrieval hit rate@3 | 45.39% | 99.29% | 100.00% | 100.00% | 100.00% |
+| Citation coverage | 19.15% | 98.58% | 99.65% | 100.00% | 100.00% |
+| Issue category accuracy | 19.15% | 98.58% | 99.65% | 100.00% | 100.00% |
+| Next action accuracy | 19.15% | 98.58% | 99.65% | 100.00% | 100.00% |
+| Abstention accuracy | 81.43% | 100.00% | 100.00% | 100.00% | 100.00% |
 
 Additional evaluation results:
 
@@ -74,10 +74,10 @@ The project includes a dataset profile because high scores on synthetic cases ar
 
 Current dataset-profile highlights:
 
-- 88 manually authored golden cases
-- 66 expected abstention cases
-- 39 noise types and 16 task types
-- manual share increased to 25.58%, clearing the previous manual-share gap label
+- 94 manually authored golden cases
+- 68 expected abstention cases
+- 42 noise types and 18 task types
+- manual share increased to 26.86%, clearing the previous manual-share gap label
 - all public benchmark data is synthetic and reproducible
 
 The most important next retrieval step is comparing the local embedding-store retriever with a provider-backed embedding option. The repo now includes a dry-run-first provider embedding evaluation script for that comparison, but provider-backed results are not claimed until the script is run with credentials.

@@ -1,31 +1,31 @@
 {
   "dataset_counts": {
-    "golden_cases": 344,
+    "golden_cases": 350,
     "red_team_cases": 60,
     "runbooks": 24,
     "tickets": 180
   },
   "golden_case_mix": {
-    "abstention_share": 0.1919,
-    "answerable_cases": 278,
-    "expected_abstentions": 66,
+    "abstention_share": 0.1943,
+    "answerable_cases": 282,
+    "expected_abstentions": 68,
     "generated_cases": 256,
     "issue_category_count": 24,
-    "manual_cases": 88,
-    "manual_share": 0.2558,
-    "noise_type_count": 39,
-    "task_type_count": 16,
-    "team_count": 4
+    "manual_cases": 94,
+    "manual_share": 0.2686,
+    "noise_type_count": 42,
+    "task_type_count": 18,
+    "team_count": 5
   },
   "golden_coverage": {
     "by_issue_category": {
       "allocation_mismatch": 3,
-      "beneficial_owner_missing": 11,
+      "beneficial_owner_missing": 12,
       "booking_status_stuck": 15,
-      "commission_code_missing": 16,
+      "commission_code_missing": 17,
       "confirmation_pending": 14,
-      "control_threshold_breach": 12,
-      "cutoff_window_missed": 38,
+      "control_threshold_breach": 13,
+      "cutoff_window_missed": 39,
       "duplicate_batch_detected": 9,
       "duplicate_record_cluster": 12,
       "entity_match_review": 10,
@@ -71,6 +71,9 @@
       "manual_meeting_note": 1,
       "manual_ops_chat_handoff": 1,
       "manual_redacted_fragment": 1,
+      "manual_retrieved_context_attack": 1,
+      "manual_retrieved_context_conflict": 1,
+      "manual_retrieved_context_review": 4,
       "manual_retrieved_injection": 1,
       "manual_retrieved_instruction_attack": 1,
       "manual_review_bundle": 6,
@@ -93,6 +96,8 @@
       "manual_evidence_packet_abstention": 2,
       "manual_evidence_packet_next_action": 6,
       "manual_field_note_next_action": 48,
+      "manual_retrieved_context_review_abstention": 2,
+      "manual_retrieved_context_review_next_action": 4,
       "manual_review_bundle_abstention": 2,
       "manual_review_bundle_next_action": 6,
       "retrieved_doc_injection_abstention": 8,
@@ -104,10 +109,11 @@
       "weak_evidence_abstention": 24
     },
     "by_team": {
-      "client_onboarding": 77,
-      "data_quality": 77,
-      "payments_ops": 105,
-      "trade_support": 85
+      "client_onboarding": 78,
+      "data_quality": 78,
+      "operations": 2,
+      "payments_ops": 106,
+      "trade_support": 86
     }
   },
   "profile_type": "synthetic_dataset_profile",
@@ -156,6 +162,10 @@
       "value": "manual_review_bundle"
     },
     {
+      "case_count": 4,
+      "value": "manual_retrieved_context_review"
+    },
+    {
       "case_count": 2,
       "value": "manual_chat_fragment"
     },
@@ -170,10 +180,6 @@
     {
       "case_count": 2,
       "value": "manual_desk_paste"
-    },
-    {
-      "case_count": 2,
-      "value": "manual_evidence_packet_conflict"
     }
   ]
 }

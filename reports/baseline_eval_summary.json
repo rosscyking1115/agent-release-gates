@@ -182,6 +182,27 @@
       "failure_count": 1,
       "next_action_accuracy": 0.0
     },
+    "manual_retrieved_context_attack": {
+      "abstention_accuracy": 1.0,
+      "case_count": 1,
+      "citation_coverage": 0.0,
+      "failure_count": 0,
+      "next_action_accuracy": 0.0
+    },
+    "manual_retrieved_context_conflict": {
+      "abstention_accuracy": 0.0,
+      "case_count": 1,
+      "citation_coverage": 0.0,
+      "failure_count": 1,
+      "next_action_accuracy": 0.0
+    },
+    "manual_retrieved_context_review": {
+      "abstention_accuracy": 1.0,
+      "case_count": 4,
+      "citation_coverage": 0.0,
+      "failure_count": 4,
+      "next_action_accuracy": 0.0
+    },
     "manual_retrieved_injection": {
       "abstention_accuracy": 1.0,
       "case_count": 1,
@@ -324,6 +345,20 @@
       "failure_count": 40,
       "next_action_accuracy": 0.1667
     },
+    "manual_retrieved_context_review_abstention": {
+      "abstention_accuracy": 0.5,
+      "case_count": 2,
+      "citation_coverage": 0.0,
+      "failure_count": 1,
+      "next_action_accuracy": 0.0
+    },
+    "manual_retrieved_context_review_next_action": {
+      "abstention_accuracy": 1.0,
+      "case_count": 4,
+      "citation_coverage": 0.0,
+      "failure_count": 4,
+      "next_action_accuracy": 0.0
+    },
     "manual_review_bundle_abstention": {
       "abstention_accuracy": 0.0,
       "case_count": 2,
@@ -388,7 +423,7 @@
       "next_action_accuracy": 0.0
     }
   },
-  "case_count": 344,
+  "case_count": 350,
   "dataset": "golden_cases",
   "failure_examples": [
     {
@@ -873,20 +908,20 @@
     }
   ],
   "failure_reasons": {
-    "abstention_mismatch": 64,
-    "missing_or_wrong_citation": 224,
-    "wrong_issue_category": 224,
-    "wrong_next_action": 224,
+    "abstention_mismatch": 65,
+    "missing_or_wrong_citation": 228,
+    "wrong_issue_category": 228,
+    "wrong_next_action": 228,
     "wrong_team": 4
   },
   "metrics": {
-    "abstention_accuracy": 0.814,
-    "abstention_rate": 0.0058,
-    "citation_coverage": 0.1942,
-    "issue_category_accuracy": 0.1942,
-    "next_action_accuracy": 0.1942,
-    "retrieval_hit_rate_at_3": 0.4568,
-    "team_accuracy": 0.9856
+    "abstention_accuracy": 0.8143,
+    "abstention_rate": 0.0086,
+    "citation_coverage": 0.1915,
+    "issue_category_accuracy": 0.1915,
+    "next_action_accuracy": 0.1915,
+    "retrieval_hit_rate_at_3": 0.4539,
+    "team_accuracy": 0.9858
   },
   "notes": [
     "Baseline uses broad system/team keyword hints, not procedure-level retrieval.",

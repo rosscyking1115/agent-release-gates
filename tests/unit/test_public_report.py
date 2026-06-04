@@ -54,20 +54,20 @@ def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
     report = generate_public_report(tmp_path)
 
     assert "# Internal AI Agent Evaluation Report" in report
-    assert "Golden retrieval cases: 344" in report
+    assert "Golden retrieval cases: 350" in report
     assert "Best current retriever: Local TF-IDF vector" in report
     assert "## Dataset Profile" in report
-    assert "| Manual golden cases | 88 |" in report
-    assert "| Manual share | 25.58% |" in report
+    assert "| Manual golden cases | 94 |" in report
+    assert "| Manual share | 26.86% |" in report
     assert "manual_case_share_below_25_percent" not in report
-    assert "| Hybrid sparse semantic | 100.00% | 99.64% | 99.64% | 100.00% | 1 |" in report
+    assert "| Hybrid sparse semantic | 100.00% | 99.65% | 99.65% | 100.00% | 1 |" in report
     assert "| Local TF-IDF vector |" in report
     assert "| Local embedding store |" in report
     assert "## Retriever Metric Snapshots" in report
     assert "004_local_tf_idf_vector" in report
     assert "citation_coverage_decreased" not in report
     assert "## Historical Evaluation Snapshots" in report
-    assert "| 2026-06-02T11:00:00Z | Hybrid sparse semantic | 99.64% | 1 | +1.08% | -3 |" in report
+    assert "| 2026-06-02T11:00:00Z | Hybrid sparse semantic | 99.65% | 1 | +1.07% | -3 |" in report
     assert "## Retriever Failure Analysis" in report
     assert "MANUAL-FIELD-074" in report
     assert "| Local embedding store | 100.00% | 100.00% | 100.00% | 100.00% | 0 |" in report
@@ -75,7 +75,7 @@ def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
     assert "MANUAL-CONTROL-011" not in report
     assert "Top retrieved scores" in report
     assert "HUMAN-EMAIL-THREAD-004" not in report
-    assert "| Citation coverage | 19.42% | 98.56% | +79.14% |" in report
+    assert "| Citation coverage | 19.15% | 98.58% | +79.43% |" in report
     assert "MANUAL-AMBIGUOUS-024" not in report
     assert "| Safe response rate | 0.00% | 100.00% |" in report
     assert "| Weighted safe response rate | 0.00% | 100.00% |" in report
@@ -133,5 +133,5 @@ def test_generate_public_report_pdf_renders_shareable_artifact(tmp_path) -> None
 
     assert pdf.startswith(b"%PDF-1.4")
     assert b"INTERNAL AI AGENT EVALUATION REPORT" in pdf
-    assert b"Golden retrieval cases: 344" in pdf
+    assert b"Golden retrieval cases: 350" in pdf
     assert b"%%EOF" in pdf

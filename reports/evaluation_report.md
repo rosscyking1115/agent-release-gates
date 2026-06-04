@@ -4,7 +4,7 @@
 
 This report summarizes a fully synthetic evaluation lab for internal AI agent workflows. It does not use real company documents, customer data, employee data, confidential processes, or real operational actions.
 
-- Golden retrieval cases: 344
+- Golden retrieval cases: 350
 - Synthetic ticket extraction and agent cases: 180
 - Red-team safety cases: 60
 - Best current retriever: Local TF-IDF vector
@@ -16,13 +16,13 @@ This report summarizes a fully synthetic evaluation lab for internal AI agent wo
 | --- | ---: |
 | Runbook sections | 24 |
 | Synthetic tickets | 180 |
-| Golden cases | 344 |
-| Manual golden cases | 88 |
-| Manual share | 25.58% |
-| Expected abstentions | 66 |
-| Abstention share | 19.19% |
-| Noise types | 39 |
-| Task types | 16 |
+| Golden cases | 350 |
+| Manual golden cases | 94 |
+| Manual share | 26.86% |
+| Expected abstentions | 68 |
+| Abstention share | 19.43% |
+| Noise types | 42 |
+| Task types | 18 |
 | Red-team cases | 60 |
 
 | Coverage sample | Cases |
@@ -51,9 +51,9 @@ This profile is generated from the same JSONL artifacts as the eval runner. It m
 
 | System | Hit rate@3 | Citation coverage | Next action accuracy | Abstention accuracy | Failures |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| Baseline team hints | 45.68% | 19.42% | 19.42% | 81.40% | 288 |
-| Improved lexical | 99.28% | 98.56% | 98.56% | 100.00% | 4 |
-| Hybrid sparse semantic | 100.00% | 99.64% | 99.64% | 100.00% | 1 |
+| Baseline team hints | 45.39% | 19.15% | 19.15% | 81.43% | 293 |
+| Improved lexical | 99.29% | 98.58% | 98.58% | 100.00% | 4 |
+| Hybrid sparse semantic | 100.00% | 99.65% | 99.65% | 100.00% | 1 |
 | Local TF-IDF vector | 100.00% | 100.00% | 100.00% | 100.00% | 0 |
 | Local embedding store | 100.00% | 100.00% | 100.00% | 100.00% | 0 |
 
@@ -63,27 +63,27 @@ The retrieval experiment compares a deliberately weak baseline, a lexical retrie
 
 | Snapshot | System | Citation coverage | Failed cases | Citation delta | Failure delta | Regression | Reason |
 | --- | --- | ---: | ---: | ---: | ---: | --- | --- |
-| 001_baseline_team_hints | Baseline team hints | 19.42% | 288 |  |  | False |  |
-| 002_improved_lexical | Improved lexical | 98.56% | 4 | +79.14% | -284 | False |  |
-| 003_hybrid_sparse_semantic | Hybrid sparse semantic | 99.64% | 1 | +1.08% | -3 | False |  |
-| 004_local_tf_idf_vector | Local TF-IDF vector | 100.00% | 0 | +0.36% | -1 | False |  |
+| 001_baseline_team_hints | Baseline team hints | 19.15% | 293 |  |  | False |  |
+| 002_improved_lexical | Improved lexical | 98.58% | 4 | +79.43% | -289 | False |  |
+| 003_hybrid_sparse_semantic | Hybrid sparse semantic | 99.65% | 1 | +1.07% | -3 | False |  |
+| 004_local_tf_idf_vector | Local TF-IDF vector | 100.00% | 0 | +0.35% | -1 | False |  |
 | 005_local_embedding_store | Local embedding store | 100.00% | 0 | +0.00% | +0 | False |  |
 
 ## Historical Evaluation Snapshots
 
 | Milestone time | Milestone | Citation coverage | Failed cases | Citation delta | Failure delta |
 | --- | --- | ---: | ---: | ---: | ---: |
-| 2026-06-02T09:00:00Z | Baseline team hints | 19.42% | 288 |  |  |
-| 2026-06-02T10:00:00Z | Improved lexical | 98.56% | 4 | +79.14% | -284 |
-| 2026-06-02T11:00:00Z | Hybrid sparse semantic | 99.64% | 1 | +1.08% | -3 |
-| 2026-06-02T12:00:00Z | Local TF-IDF vector | 100.00% | 0 | +0.36% | -1 |
+| 2026-06-02T09:00:00Z | Baseline team hints | 19.15% | 293 |  |  |
+| 2026-06-02T10:00:00Z | Improved lexical | 98.58% | 4 | +79.43% | -289 |
+| 2026-06-02T11:00:00Z | Hybrid sparse semantic | 99.65% | 1 | +1.07% | -3 |
+| 2026-06-02T12:00:00Z | Local TF-IDF vector | 100.00% | 0 | +0.35% | -1 |
 | 2026-06-02T13:00:00Z | Local embedding store | 100.00% | 0 | +0.00% | +0 |
 
 ## Retriever Failure Analysis
 
 | System | Failed cases | Retrieved but not cited | Abstention mismatches | Top failure reason |
 | --- | ---: | ---: | ---: | --- |
-| Baseline team hints | 288 | 73 | 64 | missing_or_wrong_citation (224) |
+| Baseline team hints | 293 | 74 | 65 | missing_or_wrong_citation (228) |
 | Improved lexical | 4 | 2 | 0 | missing_or_wrong_citation (4) |
 | Hybrid sparse semantic | 1 | 1 | 0 | missing_or_wrong_citation (1) |
 | Local TF-IDF vector | 0 | 0 | 0 |  |
@@ -103,11 +103,11 @@ The retrieval experiment compares a deliberately weak baseline, a lexical retrie
 
 | Metric | Baseline | Improved lexical | Delta |
 | --- | ---: | ---: | ---: |
-| Retrieval hit rate@3 | 45.68% | 99.28% | +53.60% |
-| Citation coverage | 19.42% | 98.56% | +79.14% |
-| Issue category accuracy | 19.42% | 98.56% | +79.14% |
-| Next action accuracy | 19.42% | 98.56% | +79.14% |
-| Abstention accuracy | 81.40% | 100.00% | +18.60% |
+| Retrieval hit rate@3 | 45.39% | 99.29% | +53.90% |
+| Citation coverage | 19.15% | 98.58% | +79.43% |
+| Issue category accuracy | 19.15% | 98.58% | +79.43% |
+| Next action accuracy | 19.15% | 98.58% | +79.43% |
+| Abstention accuracy | 81.43% | 100.00% | +18.57% |
 
 ## Structured Extraction
 
@@ -182,17 +182,17 @@ The controlled workflow separates read-only tools from side-effecting actions. T
 
 | Export metric | Value |
 | --- | ---: |
-| OTel-style spans | 1292 |
+| OTel-style spans | 1305 |
 | Exported traces | 21 |
 | Root spans | 21 |
-| Child spans | 1271 |
+| Child spans | 1284 |
 | Tool spans | 40 |
 
 | Collector export preview | Value |
 | --- | ---: |
 | Mode | dry_run_preview |
 | Endpoint | http://localhost:4318/v1/traces |
-| Spans prepared | 1292 |
+| Spans prepared | 1305 |
 | OTLP payloads | 7 |
 | Batch size | 200 |
 
