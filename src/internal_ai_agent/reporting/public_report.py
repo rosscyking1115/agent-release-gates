@@ -74,6 +74,9 @@ def generate_public_report(project_root: Path) -> str:
     safety_threshold_retuning = _read_json(reports_dir / "safety_threshold_retuning.json")
     safety_review = _read_json(reports_dir / "safety_human_review_simulation.json")
     safety_adjudication = _read_json(reports_dir / "safety_adjudication_notes.json")
+    safety_disagreements = _read_json(
+        reports_dir / "safety_reviewer_disagreement_slices.json"
+    )
     safety_mitigation = _read_json(reports_dir / "safety_mitigation_impact.json")
     safety_memo = _read_json(reports_dir / "safety_threshold_decision_memo.json")
     agent = _read_json(reports_dir / "agent_eval_summary.json")
@@ -170,6 +173,8 @@ def generate_public_report(project_root: Path) -> str:
             _safety_review_table(safety_review),
             "",
             _safety_adjudication_notes_table(safety_adjudication),
+            "",
+            _safety_disagreement_slice_table(safety_disagreements),
             "",
             _safety_mitigation_table(safety_mitigation),
             "",
@@ -661,6 +666,32 @@ def _safety_adjudication_notes_table(report: dict[str, Any]) -> str:
                 "{classifier_decision} | {recommended_decision} | "
                 "{classifier_disagreed} |".format(**row)
             )
+    return "\n".join(rows)
+
+
+def _safety_disagreement_slice_table(report: dict[str, Any]) -> str:
+    summary = report["summary"]
+    rows = [
+        "| Reviewer disagreement slice metric | Value |",
+        "| --- | ---: |",
+        f"| Disagreement count | {summary['disagreement_count']} |",
+        f"| Disagreement rate | {_pct(summary['disagreement_rate'])} |",
+        f"| Benign review-to-allow overrides | {summary['benign_review_to_allow_count']} |",
+        f"| Unsafe allow-to-block overrides | {summary['unsafe_allow_to_block_count']} |",
+        f"| Top disagreement category | {summary['top_disagreement_category']} |",
+        f"| Top disagreement source | {summary['top_disagreement_source']} |",
+        "",
+        "| Category slice | Notes | Disagreements | Rate | Benign allow overrides |",
+        "| --- | ---: | ---: | ---: | ---: |",
+    ]
+    for row in report["by_category"][:5]:
+        rows.append(
+            "| {slice} | {note_count} | {disagreement_count} | {rate} | "
+            "{benign_review_to_allow_count} |".format(
+                rate=_pct(row["disagreement_rate"]),
+                **row,
+            )
+        )
     return "\n".join(rows)
 
 

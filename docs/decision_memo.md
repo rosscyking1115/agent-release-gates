@@ -62,7 +62,7 @@ The project is positioned as a responsible enterprise AI engineering lab. Its va
 | Citation and abstention metrics | Grounded AI judgement |
 | Structured extraction schemas | Document intelligence and validation |
 | Red-team policy suite | AI security awareness |
-| Safety prevalence and classifier evaluation workflow | Safety thresholding, synthetic prevalence estimation, false positive / false negative trade-off measurement, human-review simulation, mitigation-impact reporting, and decision-support design |
+| Safety prevalence and classifier evaluation workflow | Safety thresholding, synthetic prevalence estimation, false positive / false negative trade-off measurement, human-review simulation, reviewer-disagreement slicing, mitigation-impact reporting, and decision-support design |
 | Controlled agent workflow | Tool governance and approval design |
 | Trace and audit events | Observability and debugging |
 | OTel-style evaluation, trace timeline, local trace index, OTLP/HTTP export preview, local collector smoke test, and Dockerized OpenTelemetry Collector check | Inspectable local observability artifact |
@@ -81,7 +81,7 @@ The controlled-agent workflow blocks side-effecting mock routes without approval
 
 The security red-team suite reports 100.00% improved explicit policy block rate, 100.00% improved safe response rate, 100.00% improved weighted safe response rate, and 0 improved residual risk score across 60 deterministic red-team cases, including harder retrieved-context attacks for priority inversion, approval-gate bypass, citation suppression, unsupported resolution, and access escalation.
 
-The safety-classifier module separates enriched challenge cases from weighted synthetic prevalence cases. After adding harder medium-severity system-prompt-leakage, weak-evidence-pressure, unbounded-consumption, and benign governance near-miss cases, the retuned classifier reports 90.91% challenge-set recall, 0.00% false positive rate, 0 high-severity false negatives, and a 10.02% weighted synthetic unsafe-request prevalence estimate. The retuning comparison reduces challenge-set false negatives from 13 to 3 while keeping benign near-miss false positives at 0. The workflow includes deterministic human-review simulation, 31 synthetic human-authored adjudication notes, mitigation-impact comparison, and a threshold decision memo so the output reads like an operating decision rather than just a model score.
+The safety-classifier module separates enriched challenge cases from weighted synthetic prevalence cases. After adding harder medium-severity system-prompt-leakage, weak-evidence-pressure, unbounded-consumption, and benign governance near-miss cases, the retuned classifier reports 90.91% challenge-set recall, 0.00% false positive rate, 0 high-severity false negatives, and a 10.02% weighted synthetic unsafe-request prevalence estimate. The retuning comparison reduces challenge-set false negatives from 13 to 3 while keeping benign near-miss false positives at 0. The workflow includes deterministic human-review simulation, 31 synthetic human-authored adjudication notes, 19 reviewer-disagreement slices, mitigation-impact comparison, and a threshold decision memo so the output reads like an operating decision rather than just a model score.
 
 ## Risks And Mitigations
 
@@ -97,6 +97,6 @@ The safety-classifier module separates enriched challenge cases from weighted sy
 ## Next Decisions
 
 - Whether to compare the local embedding store with a provider-backed embedding model.
-- Whether to deepen the Safety Prevalence & Classifier Evaluation module with reviewer-disagreement slices, benign near-miss override summaries, and secondary review-band analysis.
+- Whether to use the reviewer-disagreement slices to introduce a secondary review band or category-specific threshold changes.
 - Whether to add a real LangGraph dependency or keep the local controlled workflow until evaluation cases become more varied.
 - Whether to prioritize noisier data/error analysis or downstream trace-index and collector storage/visualization.

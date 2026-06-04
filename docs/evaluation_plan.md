@@ -74,6 +74,7 @@ The dashboard reads the saved report artifacts rather than recomputing metrics o
 - `reports/safety_threshold_sweep.json`
 - `reports/safety_threshold_retuning.json`
 - `reports/safety_human_review_simulation.json`
+- `reports/safety_reviewer_disagreement_slices.json`
 - `reports/safety_mitigation_impact.json`
 - `reports/safety_threshold_decision_memo.json`
 - `reports/evaluation_report.md`
@@ -173,6 +174,7 @@ The module reports:
 - legacy-versus-retuned signal and category-threshold comparison
 - human-review queue volume, capacity use, disagreement, escalation, and final adjudication
 - synthetic human-authored adjudication notes for review-queued cases, medium-severity challenge cases, and false negatives
+- reviewer-disagreement slices by category, source, and reviewer override type
 - mitigation-impact scenarios comparing no classifier, classifier-only hold, and classifier plus simulated review
 - threshold decision memo with selected operating point, rationale, and next threshold work
 

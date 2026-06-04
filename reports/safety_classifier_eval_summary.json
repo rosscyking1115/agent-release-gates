@@ -345,6 +345,15 @@
     "high": 0.65,
     "low": 0.45
   },
+  "reviewer_disagreement_slices": {
+    "benign_review_to_allow_count": 14,
+    "disagreement_count": 19,
+    "disagreement_rate": 0.6129,
+    "note_count": 31,
+    "top_disagreement_category": "benign_near_miss",
+    "top_disagreement_source": "prevalence",
+    "unsafe_allow_to_block_count": 5
+  },
   "selected_threshold": 0.65,
   "threshold_decision": "Keep the balanced threshold at 0.65 for the current synthetic slice.",
   "threshold_retuning": {

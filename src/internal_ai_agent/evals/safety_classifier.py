@@ -198,6 +198,7 @@ def evaluate_safety_classifier(project_root: Path) -> dict[str, Any]:
     )
     human_review = simulate_human_review_workflow(all_results)
     adjudication_notes = human_adjudication_notes_report(all_results, human_review["review_cases"])
+    disagreement_slices = reviewer_disagreement_slice_report(adjudication_notes)
     mitigation_impact = mitigation_impact_report(all_results, human_review["review_cases"])
     threshold_memo = threshold_decision_memo(
         summary=summary,
@@ -210,6 +211,7 @@ def evaluate_safety_classifier(project_root: Path) -> dict[str, Any]:
     summary["threshold_retuning"] = threshold_retuning["summary"]
     summary["human_review_simulation"] = human_review["summary"]
     summary["human_adjudication_notes"] = adjudication_notes["summary"]
+    summary["reviewer_disagreement_slices"] = disagreement_slices["summary"]
     summary["mitigation_impact"] = mitigation_impact["summary"]
     summary["threshold_decision"] = threshold_memo["decision"]
     write_json(project_root / "reports/safety_classifier_eval_summary.json", summary)
@@ -218,6 +220,10 @@ def evaluate_safety_classifier(project_root: Path) -> dict[str, Any]:
     write_json(project_root / "reports/safety_threshold_retuning.json", threshold_retuning)
     write_json(project_root / "reports/safety_human_review_simulation.json", human_review)
     write_json(project_root / "reports/safety_adjudication_notes.json", adjudication_notes)
+    write_json(
+        project_root / "reports/safety_reviewer_disagreement_slices.json",
+        disagreement_slices,
+    )
     write_json(project_root / "reports/safety_mitigation_impact.json", mitigation_impact)
     write_json(project_root / "reports/safety_threshold_decision_memo.json", threshold_memo)
     return summary
@@ -560,6 +566,96 @@ def human_adjudication_notes_report(
     }
 
 
+def reviewer_disagreement_slice_report(
+    adjudication_notes: dict[str, Any],
+) -> dict[str, Any]:
+    notes = list(adjudication_notes["notes"])
+    disagreements = [row for row in notes if row["classifier_disagreed"]]
+    benign_review_to_allow = [
+        row
+        for row in disagreements
+        if row["adjudicated_label"] == "benign"
+        and row["classifier_decision"] == "review"
+        and row["recommended_decision"] == "allow"
+    ]
+    unsafe_allow_to_block = [
+        row
+        for row in disagreements
+        if row["adjudicated_label"] == "unsafe"
+        and row["classifier_decision"] == "allow"
+        and row["recommended_decision"] == "block"
+    ]
+    return {
+        "report_type": "safety_reviewer_disagreement_slices",
+        "summary": {
+            "note_count": len(notes),
+            "disagreement_count": len(disagreements),
+            "disagreement_rate": _ratio(len(disagreements), len(notes)),
+            "benign_review_to_allow_count": len(benign_review_to_allow),
+            "unsafe_allow_to_block_count": len(unsafe_allow_to_block),
+            "top_disagreement_category": _top_disagreement_value(
+                disagreements,
+                "risk_category",
+            ),
+            "top_disagreement_source": _top_disagreement_value(disagreements, "source"),
+        },
+        "by_category": _disagreement_slice_rows(notes, "risk_category"),
+        "by_source": _disagreement_slice_rows(notes, "source"),
+        "by_recommended_decision": _disagreement_slice_rows(
+            notes,
+            "recommended_decision",
+        ),
+        "override_summary": [
+            {
+                "override_type": "benign_review_to_allow",
+                "count": len(benign_review_to_allow),
+                "interpretation": (
+                    "Benign near-misses entered review, and the synthetic reviewer "
+                    "recommended release with safe boundaries."
+                ),
+            },
+            {
+                "override_type": "unsafe_allow_to_block",
+                "count": len(unsafe_allow_to_block),
+                "interpretation": (
+                    "Unsafe cases were allowed by the classifier but blocked by "
+                    "adjudication notes."
+                ),
+            },
+        ],
+        "examples": [
+            {
+                "case_id": row["case_id"],
+                "source": row["source"],
+                "risk_category": row["risk_category"],
+                "risk_severity": row["risk_severity"],
+                "classifier_decision": row["classifier_decision"],
+                "recommended_decision": row["recommended_decision"],
+                "adjudicated_label": row["adjudicated_label"],
+                "classifier_score": row["classifier_score"],
+            }
+            for row in sorted(
+                disagreements,
+                key=lambda row: (
+                    row["source"],
+                    row["risk_category"],
+                    row["case_id"],
+                ),
+            )[:8]
+        ],
+        "notes": [
+            (
+                "Slices use synthetic adjudication notes and should guide threshold "
+                "debugging, not production reviewer staffing."
+            ),
+            (
+                "Benign review-to-allow disagreements are useful because they show "
+                "where review protects user value from overblocking."
+            ),
+        ],
+    }
+
+
 def mitigation_impact_report(
     results: list[dict[str, Any]],
     review_cases: list[dict[str, Any]],
@@ -680,11 +776,65 @@ def threshold_decision_memo(
             ],
         },
         "next_threshold_work": [
-            "Slice adjudication-note disagreements by category and source.",
-            "Add reviewer-override summaries for benign near-misses that enter the review band.",
+            "Investigate unsafe allow-to-block overrides by category before lowering thresholds.",
+            "Estimate the user-value cost of benign review-to-allow overrides.",
             "Use disagreement concentration to decide whether to add a secondary review band.",
         ],
     }
+
+
+def _disagreement_slice_rows(
+    notes: list[dict[str, Any]],
+    field: str,
+) -> list[dict[str, Any]]:
+    values = sorted({str(row[field]) for row in notes})
+    rows = []
+    for value in values:
+        slice_notes = [row for row in notes if str(row[field]) == value]
+        disagreements = [row for row in slice_notes if row["classifier_disagreed"]]
+        rows.append(
+            {
+                "slice": value,
+                "note_count": len(slice_notes),
+                "disagreement_count": len(disagreements),
+                "disagreement_rate": _ratio(len(disagreements), len(slice_notes)),
+                "benign_review_to_allow_count": sum(
+                    1
+                    for row in disagreements
+                    if row["adjudicated_label"] == "benign"
+                    and row["classifier_decision"] == "review"
+                    and row["recommended_decision"] == "allow"
+                ),
+                "unsafe_allow_to_block_count": sum(
+                    1
+                    for row in disagreements
+                    if row["adjudicated_label"] == "unsafe"
+                    and row["classifier_decision"] == "allow"
+                    and row["recommended_decision"] == "block"
+                ),
+            }
+        )
+    return sorted(
+        rows,
+        key=lambda row: (
+            -int(row["disagreement_count"]),
+            -float(row["disagreement_rate"]),
+            str(row["slice"]),
+        ),
+    )
+
+
+def _top_disagreement_value(
+    disagreements: list[dict[str, Any]],
+    field: str,
+) -> str | None:
+    counts = {
+        value: sum(1 for row in disagreements if str(row[field]) == value)
+        for value in {str(row[field]) for row in disagreements}
+    }
+    if not counts:
+        return None
+    return sorted(counts.items(), key=lambda item: (-item[1], item[0]))[0][0]
 
 
 def _metrics(results: list[dict[str, Any]]) -> dict[str, Any]:

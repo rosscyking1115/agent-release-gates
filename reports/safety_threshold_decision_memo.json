@@ -17,8 +17,8 @@
   },
   "memo_type": "safety_threshold_decision_memo",
   "next_threshold_work": [
-    "Slice adjudication-note disagreements by category and source.",
-    "Add reviewer-override summaries for benign near-misses that enter the review band.",
+    "Investigate unsafe allow-to-block overrides by category before lowering thresholds.",
+    "Estimate the user-value cost of benign review-to-allow overrides.",
     "Use disagreement concentration to decide whether to add a secondary review band."
   ],
   "rationale": [

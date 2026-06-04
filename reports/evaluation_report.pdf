@@ -4,7 +4,7 @@
 << /Type /Catalog /Pages 2 0 R >>
 endobj
 2 0 obj
-<< /Type /Pages /Kids [4 0 R 6 0 R 8 0 R 10 0 R 12 0 R 14 0 R 16 0 R 18 0 R] /Count 8 >>
+<< /Type /Pages /Kids [4 0 R 6 0 R 8 0 R 10 0 R 12 0 R 14 0 R 16 0 R 18 0 R 20 0 R] /Count 9 >>
 endobj
 3 0 obj
 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
@@ -598,7 +598,7 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 15 0 R >>
 endobj
 15 0 obj
-<< /Length 2829 >>
+<< /Length 2730 >>
 stream
 BT
 /F1 10 Tf
@@ -672,6 +672,34 @@ T*
 T*
 () Tj
 T*
+(Reviewer disagreement slice metric | Value) Tj
+T*
+(Disagreement count | 19) Tj
+T*
+(Disagreement rate | 61.29%) Tj
+T*
+(Benign review-to-allow overrides | 14) Tj
+T*
+(Unsafe allow-to-block overrides | 5) Tj
+T*
+(Top disagreement category | benign_near_miss) Tj
+T*
+(Top disagreement source | prevalence) Tj
+T*
+() Tj
+T*
+(Category slice | Notes | Disagreements | Rate | Benign allow overrides) Tj
+T*
+(benign_near_miss | 14 | 14 | 100.00% | 14) Tj
+T*
+(unbounded_consumption | 6 | 2 | 33.33% | 0) Tj
+T*
+(weak_evidence_pressure | 6 | 2 | 33.33% | 0) Tj
+T*
+(system_prompt_leakage | 5 | 1 | 20.00% | 0) Tj
+T*
+() Tj
+T*
 (Scenario | Unsafe allowed | Unsafe intercepted | Overblocks | Manual touches) Tj
 T*
 (No classifier or review | 71 | 0 | 0 | 0) Tj
@@ -680,6 +708,19 @@ T*
 T*
 (Classifier plus simulated human review | 5 | 66 | 0 | 14) Tj
 T*
+ET
+endstream
+endobj
+16 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 17 0 R >>
+endobj
+17 0 obj
+<< /Length 2480 >>
+stream
+BT
+/F1 10 Tf
+14 TL
+54 738 Td
 () Tj
 T*
 (Threshold decision memo | Value) Tj
@@ -708,19 +749,6 @@ T*
 T*
 () Tj
 T*
-ET
-endstream
-endobj
-16 0 obj
-<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 17 0 R >>
-endobj
-17 0 obj
-<< /Length 2178 >>
-stream
-BT
-/F1 10 Tf
-14 TL
-54 738 Td
 () Tj
 T*
 (Controlled Agent Workflow) Tj
@@ -797,6 +825,19 @@ T*
 T*
 (OTel-style spans | 1307) Tj
 T*
+ET
+endstream
+endobj
+18 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 19 0 R >>
+endobj
+19 0 obj
+<< /Length 2040 >>
+stream
+BT
+/F1 10 Tf
+14 TL
+54 738 Td
 (Exported traces | 21) Tj
 T*
 (Root spans | 21) Tj
@@ -825,19 +866,6 @@ T*
 T*
 (query:approval_decisions | 180) Tj
 T*
-ET
-endstream
-endobj
-18 0 obj
-<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 19 0 R >>
-endobj
-19 0 obj
-<< /Length 2383 >>
-stream
-BT
-/F1 10 Tf
-14 TL
-54 738 Td
 (query:ranking_cases | 564) Tj
 T*
 (component:retrieval | 870) Tj
@@ -914,6 +942,19 @@ T*
 T*
 (- The dataset is synthetic and templated.) Tj
 T*
+ET
+endstream
+endobj
+20 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 21 0 R >>
+endobj
+21 0 obj
+<< /Length 778 >>
+stream
+BT
+/F1 10 Tf
+14 TL
+54 738 Td
 (- Extraction is deterministic rather than LLM-backed.) Tj
 T*
 (- The vector retriever is local TF-IDF, not an embedding model or vector database.) Tj
@@ -946,29 +987,31 @@ ET
 endstream
 endobj
 xref
-0 20
+0 22
 0000000000 65535 f 
 0000000015 00000 n 
 0000000064 00000 n 
-0000000168 00000 n 
-0000000238 00000 n 
-0000000364 00000 n 
-0000002845 00000 n 
-0000002971 00000 n 
-0000005514 00000 n 
-0000005640 00000 n 
-0000009435 00000 n 
-0000009563 00000 n 
-0000011959 00000 n 
-0000012087 00000 n 
-0000014572 00000 n 
-0000014700 00000 n 
-0000017582 00000 n 
-0000017710 00000 n 
-0000019941 00000 n 
-0000020069 00000 n 
+0000000175 00000 n 
+0000000245 00000 n 
+0000000371 00000 n 
+0000002852 00000 n 
+0000002978 00000 n 
+0000005521 00000 n 
+0000005647 00000 n 
+0000009442 00000 n 
+0000009570 00000 n 
+0000011966 00000 n 
+0000012094 00000 n 
+0000014579 00000 n 
+0000014707 00000 n 
+0000017490 00000 n 
+0000017618 00000 n 
+0000020151 00000 n 
+0000020279 00000 n 
+0000022372 00000 n 
+0000022500 00000 n 
 trailer
-<< /Size 20 /Root 1 0 R >>
+<< /Size 22 /Root 1 0 R >>
 startxref
-22505
+23330
 %%EOF
