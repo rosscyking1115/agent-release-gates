@@ -52,6 +52,7 @@ The dashboard reads the saved report artifacts rather than recomputing metrics o
 - `reports/retriever_comparison.json`
 - `reports/retriever_metric_snapshots.json`
 - `reports/evaluation_history.json`
+- `reports/evaluation_gates.json`
 - `reports/eval_comparison.json`
 - `reports/dataset_profile.json`
 - `reports/baseline_eval_cases.jsonl`
@@ -119,6 +120,8 @@ The snapshot report is `retriever_metric_snapshots.json`. It records the ordered
 Each snapshot stores citation coverage, retrieval hit rate@3, next-action accuracy, abstention accuracy, failed-case count, deltas from the previous retriever, and regression flags. A regression is flagged when citation coverage decreases or failed-case count increases compared with the previous snapshot.
 
 The history report is `evaluation_history.json`. It records deterministic dated lab milestones over the same retriever versions, plus a current summary that combines the best retriever with extraction, security, and controlled-agent quality checks. The timestamps are stable milestone timestamps, not live production telemetry.
+
+The release-gate report is `evaluation_gates.json`. It converts generated metrics into deterministic pass/warn/fail checks for benchmark coverage, retrieval grounding, abstention, extraction validity, red-team safety, approval governance, trace indexing, and collector-span consistency. Non-blocking warnings are allowed for useful but optional work that is not claimed as a published result, such as the provider-backed embedding comparison.
 
 ## Structured Extraction Version
 

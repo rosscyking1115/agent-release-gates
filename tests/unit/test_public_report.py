@@ -6,6 +6,7 @@ from internal_ai_agent.data.synthetic import generate_all
 from internal_ai_agent.evals.agent import evaluate_agent
 from internal_ai_agent.evals.dataset_profile import write_dataset_profile
 from internal_ai_agent.evals.extraction import evaluate_extraction
+from internal_ai_agent.evals.gates import write_evaluation_gates
 from internal_ai_agent.evals.runner import (
     evaluate_comparison,
     evaluate_retriever_comparison,
@@ -73,6 +74,33 @@ def _prepare_reports(project_root: Path) -> None:
             "traces": [],
         },
     )
+    write_evaluation_gates(
+        project_root,
+        comparison=evaluate_comparison(project_root),
+        retriever_comparison=retriever_comparison,
+        extraction=extraction,
+        security=security,
+        agent=agent,
+        dataset_profile=write_dataset_profile(project_root),
+        trace_index={
+            "index_type": "local_observability_trace_index",
+            "trace_count": 21,
+            "span_count": 42,
+            "error_span_count": 2,
+            "component_count": 2,
+            "queries": [],
+            "components": [],
+            "error_spans": [],
+            "traces": [],
+        },
+        collector_export_preview={
+            "export_mode": "dry_run_preview",
+            "collector_endpoint": "http://localhost:4318/v1/traces",
+            "span_count": 42,
+            "payload_count": 1,
+            "batch_size": 200,
+        },
+    )
 
 
 def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
@@ -83,6 +111,15 @@ def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
     assert "# Internal AI Agent Evaluation Report" in report
     assert "Golden retrieval cases: 350" in report
     assert "Best current retriever: Local TF-IDF vector" in report
+    assert "## Evaluation Release Gates" in report
+    assert (
+        "| Overall status | Release | pass_with_warnings | summary | "
+        "12 pass / 1 warn | 0 fail |"
+    ) in report
+    assert (
+        "| Provider-backed embedding result published | Retrieval | warn | "
+        "non_blocking | not_published | optional credentialed run |"
+    ) in report
     assert "## Dataset Profile" in report
     assert "| Manual golden cases | 94 |" in report
     assert "| Manual share | 26.86% |" in report
@@ -146,6 +183,8 @@ def test_generate_public_report_html_renders_tables_and_safety_boundary(tmp_path
     assert "<h1>Internal AI Agent Evaluation Report</h1>" in html
     assert "<table>" in html
     assert "<td>Hybrid sparse semantic</td>" in html
+    assert "<h2>Evaluation Release Gates</h2>" in html
+    assert "<td>pass_with_warnings</td>" in html
     assert "<td>Local TF-IDF vector</td>" in html
     assert "<td>Local embedding store</td>" in html
     assert "<h2>Retriever Metric Snapshots</h2>" in html

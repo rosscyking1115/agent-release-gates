@@ -12,6 +12,6 @@
   "service_name": "internal-ai-agent-eval-lab",
   "service_version": "0.1.0",
   "source_path": "reports/observability_otel_spans.jsonl",
-  "span_count": 1306,
+  "span_count": 1307,
   "trace_count": 21
 }

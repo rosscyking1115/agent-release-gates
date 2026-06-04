@@ -8,6 +8,7 @@ from internal_ai_agent.api.main import (
     ask,
     dataset_profile,
     evaluation_history,
+    evaluation_release_gates,
     evaluation_report,
     evaluation_report_html,
     evaluation_report_pdf,
@@ -52,6 +53,15 @@ def test_evaluation_history_endpoint_returns_json() -> None:
     assert history["history_type"] == "deterministic_lab_milestones"
     assert history["current_summary"]["best_retriever"] == "Local TF-IDF vector"
     assert len(history["milestones"]) == 5
+
+
+def test_evaluation_release_gates_endpoint_returns_json() -> None:
+    gates = evaluation_release_gates()
+
+    assert gates["gate_set_type"] == "deterministic_evaluation_release_gates"
+    assert gates["overall_status"] in {"pass", "pass_with_warnings"}
+    assert gates["fail_count"] == 0
+    assert any(gate["gate_id"] == "retrieval.provider_embedding_result" for gate in gates["gates"])
 
 
 def test_dataset_profile_endpoint_returns_json() -> None:

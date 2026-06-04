@@ -103,6 +103,7 @@ def otel_spans_from_evaluation_run(
                 "http.route.evaluation_html": "/reports/evaluation.html",
                 "http.route.evaluation_pdf": "/reports/evaluation.pdf",
                 "http.route.evaluation_history": "/reports/evaluation/history",
+                "http.route.evaluation_gates": "/reports/evaluation/gates",
                 "http.route.dataset_profile": "/reports/dataset-profile",
                 "http.route.agent_otel_spans": "/reports/agent/otel-spans",
                 "http.route.observability_otel_spans": "/reports/observability/otel-spans",
@@ -116,6 +117,7 @@ def otel_spans_from_evaluation_run(
                 "report.html_path": "reports/evaluation_report.html",
                 "report.pdf_path": "reports/evaluation_report.pdf",
                 "report.history_path": "reports/evaluation_history.json",
+                "report.gates_path": "reports/evaluation_gates.json",
                 "report.collector_preview_path": "reports/collector_export_preview.json",
                 "report.trace_index_path": "reports/observability_trace_index.json",
             },
@@ -460,6 +462,7 @@ def otel_spans_from_api_contracts() -> list[dict[str, Any]]:
         ("GET", "/reports/evaluation.html", 200, "html_report", "OK"),
         ("GET", "/reports/evaluation.pdf", 200, "pdf_report", "OK"),
         ("GET", "/reports/evaluation/history", 200, "evaluation_history", "OK"),
+        ("GET", "/reports/evaluation/gates", 200, "evaluation_release_gates", "OK"),
         ("GET", "/reports/dataset-profile", 200, "dataset_profile", "OK"),
         ("GET", "/reports/agent/otel-spans", 200, "agent_span_export", "OK"),
         (

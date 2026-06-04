@@ -112,6 +112,20 @@ This file records deterministic dated lab milestones for evaluation history. It 
 | `current_summary` | Latest milestone, best retriever, current citation coverage, failure count, and cross-workflow quality checks. |
 | `milestones` | Ordered retrieval milestone rows with milestone timestamp, system version, citation coverage, next-action accuracy, abstention accuracy, failure count, and deltas from the previous milestone. |
 
+## `reports/evaluation_gates.json`
+
+This file records deterministic release-readiness gates derived from the generated evaluation artifacts. It is not a production certification; it is a reproducible local quality bar for deciding whether the current synthetic benchmark run is safe to publish.
+
+| Field | Description |
+| --- | --- |
+| `gate_set_type` | Stable artifact type, currently `deterministic_evaluation_release_gates`. |
+| `overall_status` | `pass`, `pass_with_warnings`, or `fail` based on blocking gate failures and non-blocking warnings. |
+| `gate_count` | Total number of gate rows evaluated. |
+| `pass_count` | Number of gates with `pass` status. |
+| `warn_count` | Number of non-blocking warnings, such as optional provider-backed comparison not yet published. |
+| `fail_count` | Number of blocking gates that missed their threshold. |
+| `gates` | Gate rows with id, area, label, status, severity, observed value, threshold, value format, and rationale. |
+
 ## Public report artifacts
 
 The report generator writes `reports/evaluation_report.md`, `reports/evaluation_report.html`, and `reports/evaluation_report.pdf` from the same deterministic Markdown source. The PDF is a dependency-free, paginated text export intended for quick sharing and review; the Markdown and HTML artifacts remain the easiest files to diff.

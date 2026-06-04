@@ -81,6 +81,13 @@ def load_evaluation_history(project_root: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def load_evaluation_gates(project_root: Path) -> dict[str, Any]:
+    path = project_root / "reports/evaluation_gates.json"
+    if path.exists():
+        return json.loads(path.read_text(encoding="utf-8"))
+    return {}
+
+
 def load_dataset_profile(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/dataset_profile.json"
     return json.loads(path.read_text(encoding="utf-8"))
@@ -246,6 +253,23 @@ def evaluation_history_rows(history: dict[str, Any]) -> list[dict[str, Any]]:
             }
         )
     return rows
+
+
+def evaluation_gate_rows(gates: dict[str, Any]) -> list[dict[str, Any]]:
+    return [
+        {
+            "area": gate["area"],
+            "label": gate["label"],
+            "status": gate["status"],
+            "severity": gate["severity"],
+            "observed": _format_gate_value(gate["observed"], gate.get("value_format", "number")),
+            "threshold": _format_gate_value(
+                gate["threshold"], gate.get("value_format", "number")
+            ),
+            "rationale": gate["rationale"],
+        }
+        for gate in gates.get("gates", [])
+    ]
 
 
 def coverage_count_rows(profile: dict[str, Any], section: str) -> list[dict[str, Any]]:
@@ -673,3 +697,9 @@ def _optional_signed_int(value: int | None) -> str:
         return ""
     sign = "+" if value >= 0 else ""
     return f"{sign}{value}"
+
+
+def _format_gate_value(value: object, value_format: str) -> object:
+    if isinstance(value, (float, int)) and value_format == "percent":
+        return _as_percent(float(value))
+    return value

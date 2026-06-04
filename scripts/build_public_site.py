@@ -21,10 +21,12 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
     security = _read_json(reports_dir / "security_eval_summary.json")
     collector = _read_json(reports_dir / "collector_export_preview.json")
     trace_index = _read_json(reports_dir / "observability_trace_index.json")
+    gates = _read_json(reports_dir / "evaluation_gates.json")
 
     shutil.copyfile(reports_dir / "evaluation_report.html", public_dir / "evaluation_report.html")
     shutil.copyfile(reports_dir / "evaluation_report.pdf", public_dir / "evaluation_report.pdf")
     shutil.copyfile(reports_dir / "dataset_profile.json", public_dir / "dataset_profile.json")
+    shutil.copyfile(reports_dir / "evaluation_gates.json", public_dir / "evaluation_gates.json")
     shutil.copyfile(
         reports_dir / "observability_trace_index.json",
         public_dir / "observability_trace_index.json",
@@ -37,6 +39,7 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
             security=security,
             collector=collector,
             trace_index=trace_index,
+            gates=gates,
         ),
         encoding="utf-8",
     )
@@ -50,6 +53,7 @@ def _index_html(
     security: dict[str, Any],
     collector: dict[str, Any],
     trace_index: dict[str, Any],
+    gates: dict[str, Any],
 ) -> str:
     counts = profile["dataset_counts"]
     mix = profile["golden_case_mix"]
@@ -202,6 +206,7 @@ def _index_html(
         <a class="button primary" href="evaluation_report.html">Open Full Report</a>
         <a class="button" href="evaluation_report.pdf">Download PDF</a>
         <a class="button" href="dataset_profile.json">Dataset Profile JSON</a>
+        <a class="button" href="evaluation_gates.json">Evaluation Gates JSON</a>
         <a class="button" href="{repo_url}">GitHub Repo</a>
       </div>
     </header>
@@ -231,6 +236,8 @@ def _index_html(
         {_metric("Collector payloads", collector["payload_count"])}
         {_metric("Indexed traces", trace_index["trace_count"])}
         {_metric("Trace error spans", trace_index["error_span_count"])}
+        {_metric("Release gate status", gates["overall_status"])}
+        {_metric("Release gate failures", gates["fail_count"])}
       </div>
     </section>
 

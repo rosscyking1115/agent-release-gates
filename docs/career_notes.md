@@ -16,6 +16,7 @@ Internal AI agents are only useful if they are grounded, measurable, safe, and a
 - route tickets to synthetic teams
 - refuse unsafe or weak-evidence requests
 - require approval before mock side effects
+- publish deterministic release gates for quality checks
 - produce trace, audit, local span timeline, and trace-index records
 
 ## Strongest Technical Explanation

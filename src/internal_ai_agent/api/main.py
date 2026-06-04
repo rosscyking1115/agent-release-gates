@@ -16,6 +16,7 @@ from internal_ai_agent.api.schemas import (
 )
 from internal_ai_agent.data.synthetic import build_runbooks
 from internal_ai_agent.evals.dataset_profile import write_dataset_profile
+from internal_ai_agent.evals.gates import evaluation_gates as build_evaluation_gates
 from internal_ai_agent.extraction.service import extract_and_route
 from internal_ai_agent.io import read_jsonl
 from internal_ai_agent.observability.collector import collector_export_preview
@@ -69,6 +70,23 @@ def evaluation_report_pdf() -> Response:
 def evaluation_history() -> dict[str, object]:
     return json.loads(
         (PROJECT_ROOT / "reports/evaluation_history.json").read_text(encoding="utf-8")
+    )
+
+
+@app.get("/reports/evaluation/gates", response_class=JSONResponse)
+def evaluation_release_gates() -> dict[str, object]:
+    gates_path = PROJECT_ROOT / "reports/evaluation_gates.json"
+    if gates_path.exists():
+        return json.loads(gates_path.read_text(encoding="utf-8"))
+    return build_evaluation_gates(
+        comparison=_read_report_json("eval_comparison.json"),
+        retriever_comparison=_read_report_json("retriever_comparison.json"),
+        extraction=_read_report_json("extraction_eval_summary.json"),
+        security=_read_report_json("security_eval_summary.json"),
+        agent=_read_report_json("agent_eval_summary.json"),
+        dataset_profile=_read_report_json("dataset_profile.json"),
+        trace_index=_read_report_json("observability_trace_index.json"),
+        collector_export_preview=_read_report_json("collector_export_preview.json"),
     )
 
 
@@ -163,3 +181,7 @@ def agent_run(request: AgentRunRequest) -> AgentRunResponse:
         trace_id=request.trace_id,
     )
     return AgentRunResponse(**result.model_dump())
+
+
+def _read_report_json(filename: str) -> dict[str, object]:
+    return json.loads((PROJECT_ROOT / "reports" / filename).read_text(encoding="utf-8"))

@@ -7,6 +7,7 @@ from internal_ai_agent.dashboard.data import (
     case_mix,
     coverage_count_rows,
     error_analysis_rows,
+    evaluation_gate_rows,
     evaluation_history_rows,
     extraction_metric_rows,
     failed_case_rows,
@@ -14,6 +15,7 @@ from internal_ai_agent.dashboard.data import (
     failure_reason_rows,
     load_collector_export_preview,
     load_dataset_profile,
+    load_evaluation_gates,
     load_observability_trace_index,
     load_public_report,
     load_public_report_html,
@@ -63,6 +65,20 @@ def test_load_observability_trace_index_reads_json(tmp_path) -> None:
 
     assert index["index_type"] == "local_observability_trace_index"
     assert index["trace_count"] == 2
+
+
+def test_load_evaluation_gates_reads_json(tmp_path) -> None:
+    reports_dir = tmp_path / "reports"
+    reports_dir.mkdir()
+    (reports_dir / "evaluation_gates.json").write_text(
+        '{"gate_set_type": "deterministic_evaluation_release_gates", "overall_status": "pass"}\n',
+        encoding="utf-8",
+    )
+
+    gates = load_evaluation_gates(tmp_path)
+
+    assert gates["gate_set_type"] == "deterministic_evaluation_release_gates"
+    assert gates["overall_status"] == "pass"
 
 
 def test_load_dataset_profile_reads_json(tmp_path) -> None:
@@ -228,6 +244,37 @@ def test_evaluation_history_rows_formats_milestone_deltas() -> None:
     assert rows[1]["citation_coverage_pct"] == "100.00%"
     assert rows[1]["citation_delta_pct"] == "+80.00%"
     assert rows[1]["failure_delta"] == "-200"
+
+
+def test_evaluation_gate_rows_formats_percent_values() -> None:
+    rows = evaluation_gate_rows(
+        {
+            "gates": [
+                {
+                    "area": "Benchmark",
+                    "label": "Manual share",
+                    "status": "pass",
+                    "severity": "blocking",
+                    "observed": 0.2686,
+                    "threshold": 0.25,
+                    "value_format": "percent",
+                    "rationale": "Manual cases reduce overfitting.",
+                }
+            ]
+        }
+    )
+
+    assert rows == [
+        {
+            "area": "Benchmark",
+            "label": "Manual share",
+            "status": "pass",
+            "severity": "blocking",
+            "observed": "26.86%",
+            "threshold": "25.00%",
+            "rationale": "Manual cases reduce overfitting.",
+        }
+    ]
 
 
 def test_failed_case_rows_flags_wrong_citation_or_abstention() -> None:

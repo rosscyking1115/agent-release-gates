@@ -40,6 +40,10 @@ def test_run_all_evals_generates_reports(tmp_path) -> None:
     assert summary["trace_index"]["index_type"] == "local_observability_trace_index"
     assert summary["trace_index"]["trace_count"] > 0
     assert summary["trace_index"]["error_span_count"] > 0
+    assert summary["evaluation_gates"]["gate_set_type"] == (
+        "deterministic_evaluation_release_gates"
+    )
+    assert summary["evaluation_gates"]["fail_count"] == 0
     assert (tmp_path / "reports/eval_comparison.json").exists()
     assert (tmp_path / "reports/dataset_profile.json").exists()
     assert (tmp_path / "reports/retriever_comparison.json").exists()
@@ -52,6 +56,7 @@ def test_run_all_evals_generates_reports(tmp_path) -> None:
     assert (tmp_path / "reports/agent_otel_spans.jsonl").exists()
     assert (tmp_path / "reports/observability_otel_spans.jsonl").exists()
     assert (tmp_path / "reports/observability_trace_index.json").exists()
+    assert (tmp_path / "reports/evaluation_gates.json").exists()
     assert (tmp_path / "reports/collector_export_preview.json").exists()
     assert (tmp_path / "reports/evaluation_report.md").exists()
     assert (tmp_path / "reports/evaluation_report.html").exists()

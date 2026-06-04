@@ -9,6 +9,7 @@ Internal AI Agent Evaluation Lab
 This project provides a synthetic internal operations AI workflow for local experimentation with:
 
 - grounded retrieval over synthetic runbooks
+- deterministic release gates for benchmark, safety, governance, and observability checks
 - structured extraction from synthetic tickets
 - role-aware answer generation
 - policy refusal for risky or weak-evidence requests
@@ -62,6 +63,8 @@ The controlled-agent eval reports 100.00% trace coverage, audit event coverage, 
 The dataset profile reports 94 manual golden cases, 68 expected abstentions, 42 noise types, 18 task types, and a 26.86% manual-case share. That profile is treated as part of the evaluation evidence because benchmark coverage affects how much trust the headline scores deserve.
 
 The retriever snapshot report records deterministic version-to-version deltas and flags regressions when citation coverage falls or failed-case count rises. The evaluation history report adds stable dated lab milestones for the same local benchmark sequence, plus a current cross-workflow quality summary.
+
+The release-gate report turns the generated metrics into pass/warn/fail checks. Current blocking gates cover benchmark size, manual-case share, local retrieval grounding, abstention, schema validity, weighted red-team safety, residual risk, approval governance, trace indexing, and collector-span consistency. The provider-backed embedding comparison remains a non-blocking warning because no credentialed provider result is published.
 
 ## Known Limitations
 

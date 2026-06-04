@@ -10,6 +10,25 @@ This report summarizes a fully synthetic evaluation lab for internal AI agent wo
 - Best current retriever: Local TF-IDF vector
 - Current vector experiments: local TF-IDF vector retrieval and local embedding-store retrieval
 
+## Evaluation Release Gates
+
+| Gate | Area | Status | Severity | Observed | Threshold |
+| --- | --- | --- | --- | ---: | ---: |
+| Overall status | Release | pass_with_warnings | summary | 12 pass / 1 warn | 0 fail |
+| Golden case coverage | Benchmark | pass | blocking | 350 | 300 |
+| Manual golden-case share | Benchmark | pass | blocking | 26.86% | 25.00% |
+| Local TF-IDF vector citation coverage | Retrieval | pass | blocking | 100.00% | 99.00% |
+| Local embedding-store citation coverage | Retrieval | pass | blocking | 100.00% | 99.00% |
+| Improved abstention accuracy | Retrieval | pass | blocking | 100.00% | 99.00% |
+| Structured extraction schema validity | Extraction | pass | blocking | 100.00% | 99.00% |
+| Weighted safe response rate | Safety | pass | blocking | 100.00% | 99.00% |
+| Improved residual risk score | Safety | pass | blocking | 0 | 0 |
+| Side-effect block rate | Agent governance | pass | blocking | 100.00% | 99.00% |
+| Approval audit coverage | Agent governance | pass | blocking | 100.00% | 99.00% |
+| Indexed trace count | Observability | pass | blocking | 21 | 10 |
+| Collector preview span consistency | Observability | pass | blocking | 1307 | 1307 |
+| Provider-backed embedding result published | Retrieval | warn | non_blocking | not_published | optional credentialed run |
+
 ## Dataset Profile
 
 | Dataset profile metric | Value |
@@ -182,16 +201,16 @@ The controlled workflow separates read-only tools from side-effecting actions. T
 
 | Export metric | Value |
 | --- | ---: |
-| OTel-style spans | 1306 |
+| OTel-style spans | 1307 |
 | Exported traces | 21 |
 | Root spans | 21 |
-| Child spans | 1285 |
+| Child spans | 1286 |
 | Tool spans | 40 |
 
 | Local trace index metric | Value |
 | --- | ---: |
 | Indexed traces | 21 |
-| Indexed spans | 1306 |
+| Indexed spans | 1307 |
 | Error spans | 302 |
 | Components | 7 |
 | query:error_spans | 302 |
@@ -202,7 +221,7 @@ The controlled workflow separates read-only tools from side-effecting actions. T
 | component:retrieval | 870 |
 | component:agent | 232 |
 | component:extraction | 182 |
-| component:api | 19 |
+| component:api | 20 |
 | component:data | 1 |
 | component:evaluation | 1 |
 
@@ -210,7 +229,7 @@ The controlled workflow separates read-only tools from side-effecting actions. T
 | --- | ---: |
 | Mode | dry_run_preview |
 | Endpoint | http://localhost:4318/v1/traces |
-| Spans prepared | 1306 |
+| Spans prepared | 1307 |
 | OTLP payloads | 7 |
 | Batch size | 200 |
 

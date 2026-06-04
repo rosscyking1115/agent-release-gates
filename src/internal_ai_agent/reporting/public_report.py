@@ -10,9 +10,11 @@ from internal_ai_agent.dashboard.data import (
     agent_otel_summary,
     agent_trace_rows,
     coverage_count_rows,
+    evaluation_gate_rows,
     evaluation_history_rows,
     load_agent_trace_examples,
     load_dataset_profile,
+    load_evaluation_gates,
     load_observability_otel_spans,
     load_observability_trace_index,
     load_retriever_case_rows,
@@ -58,6 +60,7 @@ def generate_public_report(project_root: Path) -> str:
     retriever_snapshots = _read_json(reports_dir / "retriever_metric_snapshots.json")
     evaluation_history = _read_json(reports_dir / "evaluation_history.json")
     dataset_profile = load_dataset_profile(project_root)
+    evaluation_gates = load_evaluation_gates(project_root)
     collector_preview = _read_json(reports_dir / "collector_export_preview.json")
     extraction = _read_json(reports_dir / "extraction_eval_summary.json")
     security = _read_json(reports_dir / "security_eval_summary.json")
@@ -82,6 +85,10 @@ def generate_public_report(project_root: Path) -> str:
                 "- Current vector experiments: local TF-IDF vector retrieval and local "
                 "embedding-store retrieval"
             ),
+            "",
+            "## Evaluation Release Gates",
+            "",
+            _evaluation_gate_table(evaluation_gates),
             "",
             "## Dataset Profile",
             "",
@@ -313,6 +320,28 @@ def _collector_export_table(preview: dict[str, Any]) -> str:
         f"| OTLP payloads | {preview['payload_count']} |",
         f"| Batch size | {preview['batch_size']} |",
     ]
+    return "\n".join(rows)
+
+
+def _evaluation_gate_table(gates: dict[str, Any]) -> str:
+    if not gates:
+        return "No evaluation release gates recorded."
+
+    rows = [
+        "| Gate | Area | Status | Severity | Observed | Threshold |",
+        "| --- | --- | --- | --- | ---: | ---: |",
+        (
+            f"| Overall status | Release | {gates['overall_status']} | summary | "
+            f"{gates['pass_count']} pass / {gates['warn_count']} warn | "
+            f"{gates['fail_count']} fail |"
+        ),
+    ]
+    for gate in evaluation_gate_rows(gates):
+        rows.append(
+            "| {label} | {area} | {status} | {severity} | {observed} | {threshold} |".format(
+                **gate
+            )
+        )
     return "\n".join(rows)
 
 

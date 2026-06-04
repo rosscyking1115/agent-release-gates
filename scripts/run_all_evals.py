@@ -7,6 +7,7 @@ from internal_ai_agent.data.synthetic import generate_all
 from internal_ai_agent.evals.agent import evaluate_agent
 from internal_ai_agent.evals.dataset_profile import write_dataset_profile
 from internal_ai_agent.evals.extraction import evaluate_extraction
+from internal_ai_agent.evals.gates import write_evaluation_gates
 from internal_ai_agent.evals.runner import (
     evaluate_comparison,
     evaluate_retriever_comparison,
@@ -52,6 +53,17 @@ def run_all(project_root: Path) -> dict[str, Any]:
     )
     trace_index = write_trace_index(project_root)
     collector_export_preview = write_collector_export_preview(project_root)
+    gates = write_evaluation_gates(
+        project_root,
+        comparison=comparison,
+        retriever_comparison=retriever_comparison,
+        extraction=extraction,
+        security=security,
+        agent=agent,
+        dataset_profile=dataset_profile,
+        trace_index=trace_index,
+        collector_export_preview=collector_export_preview,
+    )
     public_report_path = write_public_report(project_root)
     return {
         "dataset_counts": dataset_counts,
@@ -65,6 +77,7 @@ def run_all(project_root: Path) -> dict[str, Any]:
         "observability_spans_path": str(observability_spans_path),
         "trace_index": trace_index,
         "collector_export_preview": collector_export_preview,
+        "evaluation_gates": gates,
         "public_report_path": str(public_report_path),
     }
 
@@ -185,6 +198,13 @@ def main() -> None:
         "- trace_index: "
         f"{summary['trace_index']['trace_count']} traces, "
         f"{summary['trace_index']['error_span_count']} error spans"
+    )
+    print(
+        "- evaluation_gates: "
+        f"{summary['evaluation_gates']['overall_status']} "
+        f"({summary['evaluation_gates']['pass_count']} pass, "
+        f"{summary['evaluation_gates']['warn_count']} warn, "
+        f"{summary['evaluation_gates']['fail_count']} fail)"
     )
     print(
         "- manual_golden_cases: "

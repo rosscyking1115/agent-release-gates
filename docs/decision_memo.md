@@ -57,6 +57,7 @@ The project is positioned as a responsible enterprise AI engineering lab. Its va
 | Baseline vs improved retrieval eval | Measurement discipline |
 | Local vector and embedding-store retrieval experiments | Retrieval experimentation and error analysis |
 | Retriever metric snapshots | Regression tracking across retriever versions |
+| Evaluation release gates | Deterministic quality bars before publishing results |
 | Dataset profile and coverage gaps | Benchmark design honesty |
 | Citation and abstention metrics | Grounded AI judgement |
 | Structured extraction schemas | Document intelligence and validation |

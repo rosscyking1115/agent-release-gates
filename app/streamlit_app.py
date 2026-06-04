@@ -16,6 +16,7 @@ from internal_ai_agent.dashboard.data import (
     case_mix,
     coverage_count_rows,
     error_analysis_rows,
+    evaluation_gate_rows,
     evaluation_history_rows,
     extraction_metric_rows,
     failed_case_rows,
@@ -27,6 +28,7 @@ from internal_ai_agent.dashboard.data import (
     load_collector_export_preview,
     load_comparison,
     load_dataset_profile,
+    load_evaluation_gates,
     load_evaluation_history,
     load_extraction_summary,
     load_observability_otel_spans,
@@ -68,6 +70,7 @@ def main() -> None:
     retriever_comparison = load_retriever_comparison(PROJECT_ROOT)
     retriever_snapshots = load_retriever_snapshots(PROJECT_ROOT)
     evaluation_history = load_evaluation_history(PROJECT_ROOT)
+    evaluation_gates = load_evaluation_gates(PROJECT_ROOT)
     extraction_summary = load_extraction_summary(PROJECT_ROOT)
     security_summary = load_security_summary(PROJECT_ROOT)
     agent_summary = load_agent_summary(PROJECT_ROOT)
@@ -98,6 +101,7 @@ def main() -> None:
         _render_retriever_experiment(retriever_comparison)
         _render_retriever_snapshots(retriever_snapshots)
         _render_evaluation_history(evaluation_history)
+        _render_evaluation_gates(evaluation_gates)
         _render_retriever_error_analysis(retriever_cases)
         _render_error_analysis()
     elif section == "Safety And Extraction":
@@ -359,6 +363,22 @@ def _render_evaluation_history(history: dict[str, object]) -> None:
         "Failure delta",
     ]
     st.dataframe(display_df, hide_index=True, use_container_width=True)
+
+
+def _render_evaluation_gates(gates: dict[str, object]) -> None:
+    if not gates:
+        return
+
+    st.subheader("Evaluation Release Gates")
+    cols = st.columns(4)
+    cols[0].metric("Overall", str(gates["overall_status"]))
+    cols[1].metric("Pass", gates["pass_count"])
+    cols[2].metric("Warn", gates["warn_count"])
+    cols[3].metric("Fail", gates["fail_count"])
+
+    gate_df = pd.DataFrame(evaluation_gate_rows(gates))
+    if not gate_df.empty:
+        st.dataframe(gate_df, hide_index=True, use_container_width=True)
 
 
 def _render_retriever_error_analysis(

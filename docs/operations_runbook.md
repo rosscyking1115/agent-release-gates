@@ -23,7 +23,7 @@ Expected result:
 - lint passes
 - tests pass
 - synthetic data is regenerated
-- baseline, extraction, security, controlled-agent, dataset-profile, history, observability, local trace-index, collector-preview, Markdown, HTML, and PDF reports are written to `reports/`
+- baseline, extraction, security, controlled-agent, dataset-profile, history, release-gates, observability, local trace-index, collector-preview, Markdown, HTML, and PDF reports are written to `reports/`
 - OTLP/HTTP payloads are posted to a temporary local capture endpoint and verified
 - the same payloads are posted to a Dockerized OpenTelemetry Collector and verified through collector self-metrics
 
@@ -61,6 +61,7 @@ Check:
 http://127.0.0.1:8000/health
 http://127.0.0.1:8000/reports/evaluation
 http://127.0.0.1:8000/reports/evaluation/history
+http://127.0.0.1:8000/reports/evaluation/gates
 http://127.0.0.1:8000/reports/evaluation.html
 http://127.0.0.1:8000/reports/evaluation.pdf
 http://127.0.0.1:8000/reports/dataset-profile
