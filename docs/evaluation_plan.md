@@ -72,6 +72,7 @@ The dashboard reads the saved report artifacts rather than recomputing metrics o
 - `reports/safety_classifier_eval_summary.json`
 - `reports/safety_classifier_eval_cases.jsonl`
 - `reports/safety_threshold_sweep.json`
+- `reports/safety_threshold_retuning.json`
 - `reports/safety_human_review_simulation.json`
 - `reports/safety_mitigation_impact.json`
 - `reports/safety_threshold_decision_memo.json`
@@ -169,6 +170,7 @@ The module reports:
 - precision, recall, false positive rate, false negative rate, and weighted safety score
 - prevalence estimate for unsafe categories in the sampled synthetic stream
 - threshold sweep with candidate operating points
+- legacy-versus-retuned signal and category-threshold comparison
 - human-review queue volume, capacity use, disagreement, escalation, and final adjudication
 - mitigation-impact scenarios comparing no classifier, classifier-only hold, and classifier plus simulated review
 - threshold decision memo with selected operating point, rationale, and next threshold work

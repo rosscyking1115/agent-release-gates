@@ -43,6 +43,7 @@ from internal_ai_agent.dashboard.data import (
     load_safety_human_review_simulation,
     load_safety_mitigation_impact,
     load_safety_threshold_decision_memo,
+    load_safety_threshold_retuning,
     load_safety_threshold_sweep,
     load_security_summary,
     metric_rows,
@@ -53,6 +54,7 @@ from internal_ai_agent.dashboard.data import (
     retriever_failure_overview,
     retriever_snapshot_rows,
     safety_mitigation_rows,
+    safety_retuning_rows,
     safety_review_case_rows,
     safety_threshold_rows,
     security_metric_rows,
@@ -83,6 +85,7 @@ def main() -> None:
     security_summary = load_security_summary(PROJECT_ROOT)
     safety_classifier = load_safety_classifier_summary(PROJECT_ROOT)
     safety_threshold_sweep = load_safety_threshold_sweep(PROJECT_ROOT)
+    safety_threshold_retuning = load_safety_threshold_retuning(PROJECT_ROOT)
     safety_review_simulation = load_safety_human_review_simulation(PROJECT_ROOT)
     safety_mitigation_impact = load_safety_mitigation_impact(PROJECT_ROOT)
     safety_threshold_memo = load_safety_threshold_decision_memo(PROJECT_ROOT)
@@ -121,6 +124,7 @@ def main() -> None:
         _render_safety_classifier_workflow(
             safety_classifier,
             safety_threshold_sweep,
+            safety_threshold_retuning,
             safety_review_simulation,
             safety_mitigation_impact,
             safety_threshold_memo,
@@ -557,6 +561,7 @@ def _render_security_metrics(
 def _render_safety_classifier_workflow(
     classifier: dict[str, object],
     threshold_sweep: dict[str, object],
+    threshold_retuning: dict[str, object],
     review_simulation: dict[str, object],
     mitigation_impact: dict[str, object],
     threshold_memo: dict[str, object],
@@ -566,11 +571,12 @@ def _render_safety_classifier_workflow(
     prevalence = classifier["weighted_prevalence"]
     review_summary = review_simulation["summary"]
     mitigation_summary = mitigation_impact["summary"]
+    retuning_summary = threshold_retuning["summary"]
     cols = st.columns(5)
     cols[0].metric("Recall", f"{metrics['recall'] * 100:.2f}%")
     cols[1].metric("False positives", f"{metrics['false_positive_rate'] * 100:.2f}%")
     cols[2].metric("Unsafe prevalence", f"{prevalence['unsafe_prevalence'] * 100:.2f}%")
-    cols[3].metric("Review queue", review_summary["queue_count"])
+    cols[3].metric("FN reduction", retuning_summary["false_negative_reduction"])
     cols[4].metric("Residual unsafe", mitigation_summary["final_residual_unsafe_allowed_count"])
 
     st.caption(str(threshold_memo["decision"]))
@@ -578,6 +584,27 @@ def _render_safety_classifier_workflow(
         ["Thresholds", "Human review", "Mitigation impact", "Decision memo"]
     )
     with tab_thresholds:
+        retuning_cols = st.columns(4)
+        retuning_cols[0].metric(
+            "Legacy recall",
+            f"{retuning_summary['legacy_recall'] * 100:.2f}%",
+        )
+        retuning_cols[1].metric(
+            "Retuned recall",
+            f"{retuning_summary['tuned_recall'] * 100:.2f}%",
+        )
+        retuning_cols[2].metric(
+            "FN reduction",
+            retuning_summary["false_negative_reduction"],
+        )
+        retuning_cols[3].metric(
+            "Benign overblocks",
+            retuning_summary["benign_near_miss_false_positive_count"],
+        )
+        retuning_df = pd.DataFrame(safety_retuning_rows(threshold_retuning))
+        if not retuning_df.empty:
+            st.dataframe(retuning_df, hide_index=True, use_container_width=True)
+
         threshold_df = pd.DataFrame(safety_threshold_rows(threshold_sweep))
         if not threshold_df.empty:
             chart_df = threshold_df.set_index("threshold")[

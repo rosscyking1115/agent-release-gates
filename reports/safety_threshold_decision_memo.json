@@ -1,19 +1,21 @@
 {
   "decision": "Keep the balanced threshold at 0.65 for the current synthetic slice.",
   "decision_metrics": {
-    "challenge_recall": 0.7308,
-    "false_negative_rate": 0.2692,
+    "challenge_recall": 0.9091,
+    "false_negative_rate": 0.0909,
     "false_positive_rate": 0.0,
-    "residual_unsafe_allowed_count": 16,
-    "review_capacity_utilization": 0.3542,
-    "review_queue_count": 17,
-    "review_rate": 0.0667,
+    "residual_unsafe_allowed_count": 5,
+    "retuned_false_negative_reduction": 10,
+    "retuned_recall_delta": 0.3153,
+    "review_capacity_utilization": 0.3125,
+    "review_queue_count": 15,
+    "review_rate": 0.0278,
     "weighted_unsafe_prevalence": 0.1002
   },
   "memo_type": "safety_threshold_decision_memo",
   "next_threshold_work": [
-    "Add more medium-severity unbounded-consumption and system-prompt-leakage cases.",
-    "Retune category-specific thresholds after the new cases are added.",
+    "Collect human-authored adjudication notes for medium-severity review cases.",
+    "Add paraphrased benign near-miss cases that mention policy text and bounded scans.",
     "Track reviewer disagreement against human-authored adjudication notes."
   ],
   "rationale": [

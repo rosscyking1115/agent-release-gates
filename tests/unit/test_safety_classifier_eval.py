@@ -19,7 +19,7 @@ def test_safety_datasets_keep_challenge_and_prevalence_separate() -> None:
     challenge_cases = build_safety_challenge_cases()
     prevalence_cases = build_safety_prevalence_cases()
 
-    assert len(challenge_cases) == 30
+    assert len(challenge_cases) == 36
     assert len(prevalence_cases) == 80
     assert {case["synthetic_prevalence_bucket"] for case in challenge_cases} == {
         "challenge_enriched"
@@ -27,7 +27,7 @@ def test_safety_datasets_keep_challenge_and_prevalence_separate() -> None:
     assert {
         case["synthetic_prevalence_bucket"] for case in prevalence_cases
     } >= {"low_score", "middle_score", "high_score"}
-    assert sum(1 for case in challenge_cases if case["is_unsafe"]) == 27
+    assert sum(1 for case in challenge_cases if case["is_unsafe"]) == 33
     assert sum(1 for case in prevalence_cases if not case["is_unsafe"]) == 42
 
 
@@ -49,7 +49,7 @@ def test_evaluate_safety_classifier_writes_reports(tmp_path: Path) -> None:
     report = evaluate_safety_classifier(tmp_path)
 
     assert report["evaluation_type"] == "safety_prevalence_classifier"
-    assert report["challenge_case_count"] == 30
+    assert report["challenge_case_count"] == 36
     assert report["prevalence_case_count"] == 80
     assert report["metrics"]["high_severity_false_negative_count"] == 0
     assert report["metrics"]["benign_near_miss_false_positive_count"] == 0
@@ -60,6 +60,7 @@ def test_evaluate_safety_classifier_writes_reports(tmp_path: Path) -> None:
     assert report["weighted_decision_mix"]["review"] > 0
     assert report["human_review_simulation"]["queue_count"] > 0
     assert report["mitigation_impact"]["unsafe_allowed_reduction"] > 0
+    assert report["threshold_retuning"]["false_negative_reduction"] > 0
     assert report["threshold_decision"].startswith("Keep the balanced threshold")
     assert (tmp_path / "config/safety_taxonomy.yaml").exists()
     assert (tmp_path / "data/eval/safety_challenge_cases.jsonl").exists()
@@ -67,6 +68,7 @@ def test_evaluate_safety_classifier_writes_reports(tmp_path: Path) -> None:
     assert (tmp_path / "reports/safety_classifier_eval_summary.json").exists()
     assert (tmp_path / "reports/safety_classifier_eval_cases.jsonl").exists()
     assert (tmp_path / "reports/safety_threshold_sweep.json").exists()
+    assert (tmp_path / "reports/safety_threshold_retuning.json").exists()
     assert (tmp_path / "reports/safety_human_review_simulation.json").exists()
     assert (tmp_path / "reports/safety_mitigation_impact.json").exists()
     assert (tmp_path / "reports/safety_threshold_decision_memo.json").exists()

@@ -113,6 +113,11 @@ def load_safety_threshold_sweep(project_root: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def load_safety_threshold_retuning(project_root: Path) -> dict[str, Any]:
+    path = project_root / "reports/safety_threshold_retuning.json"
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
 def load_safety_human_review_simulation(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/safety_human_review_simulation.json"
     return json.loads(path.read_text(encoding="utf-8"))
@@ -439,6 +444,22 @@ def safety_threshold_rows(sweep: dict[str, Any]) -> list[dict[str, Any]]:
             ],
         }
         for row in sweep.get("candidates", [])
+    ]
+
+
+def safety_retuning_rows(report: dict[str, Any]) -> list[dict[str, Any]]:
+    return [
+        {
+            "risk_category": row["risk_category"],
+            "legacy_recall_pct": _as_percent(row["legacy_recall"]),
+            "tuned_recall_pct": _as_percent(row["tuned_recall"]),
+            "recall_delta_pct": _as_signed_percent(row["recall_delta"]),
+            "legacy_false_negative_count": row["legacy_false_negative_count"],
+            "tuned_false_negative_count": row["tuned_false_negative_count"],
+            "false_negative_reduction": row["false_negative_reduction"],
+            "false_positive_delta": row["false_positive_delta"],
+        }
+        for row in report.get("category_comparison", [])
     ]
 
 

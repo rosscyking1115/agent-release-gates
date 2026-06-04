@@ -1,0 +1,168 @@
+{
+  "category_comparison": [
+    {
+      "false_negative_reduction": 0,
+      "false_positive_delta": 0,
+      "legacy_false_negative_count": 0,
+      "legacy_false_positive_count": 0,
+      "legacy_recall": 1.0,
+      "recall_delta": 0.0,
+      "risk_category": "approval_bypass",
+      "tuned_false_negative_count": 0,
+      "tuned_false_positive_count": 0,
+      "tuned_recall": 1.0
+    },
+    {
+      "false_negative_reduction": 0,
+      "false_positive_delta": 0,
+      "legacy_false_negative_count": 0,
+      "legacy_false_positive_count": 0,
+      "legacy_recall": 0.0,
+      "recall_delta": 0.0,
+      "risk_category": "benign_near_miss",
+      "tuned_false_negative_count": 0,
+      "tuned_false_positive_count": 0,
+      "tuned_recall": 0.0
+    },
+    {
+      "false_negative_reduction": 0,
+      "false_positive_delta": 0,
+      "legacy_false_negative_count": 0,
+      "legacy_false_positive_count": 0,
+      "legacy_recall": 1.0,
+      "recall_delta": 0.0,
+      "risk_category": "prompt_injection",
+      "tuned_false_negative_count": 0,
+      "tuned_false_positive_count": 0,
+      "tuned_recall": 1.0
+    },
+    {
+      "false_negative_reduction": 0,
+      "false_positive_delta": 0,
+      "legacy_false_negative_count": 0,
+      "legacy_false_positive_count": 0,
+      "legacy_recall": 1.0,
+      "recall_delta": 0.0,
+      "risk_category": "retrieved_context_attack",
+      "tuned_false_negative_count": 0,
+      "tuned_false_positive_count": 0,
+      "tuned_recall": 1.0
+    },
+    {
+      "false_negative_reduction": 0,
+      "false_positive_delta": 0,
+      "legacy_false_negative_count": 0,
+      "legacy_false_positive_count": 0,
+      "legacy_recall": 1.0,
+      "recall_delta": 0.0,
+      "risk_category": "sensitive_data_request",
+      "tuned_false_negative_count": 0,
+      "tuned_false_positive_count": 0,
+      "tuned_recall": 1.0
+    },
+    {
+      "false_negative_reduction": 3,
+      "false_positive_delta": 0,
+      "legacy_false_negative_count": 4,
+      "legacy_false_positive_count": 0,
+      "legacy_recall": 0.0,
+      "recall_delta": 0.8,
+      "risk_category": "system_prompt_leakage",
+      "tuned_false_negative_count": 1,
+      "tuned_false_positive_count": 0,
+      "tuned_recall": 0.8
+    },
+    {
+      "false_negative_reduction": 0,
+      "false_positive_delta": 0,
+      "legacy_false_negative_count": 0,
+      "legacy_false_positive_count": 0,
+      "legacy_recall": 1.0,
+      "recall_delta": 0.0,
+      "risk_category": "tool_misuse",
+      "tuned_false_negative_count": 0,
+      "tuned_false_positive_count": 0,
+      "tuned_recall": 1.0
+    },
+    {
+      "false_negative_reduction": 4,
+      "false_positive_delta": 0,
+      "legacy_false_negative_count": 5,
+      "legacy_false_positive_count": 0,
+      "legacy_recall": 0.0,
+      "recall_delta": 0.8,
+      "risk_category": "unbounded_consumption",
+      "tuned_false_negative_count": 1,
+      "tuned_false_positive_count": 0,
+      "tuned_recall": 0.8
+    },
+    {
+      "false_negative_reduction": 0,
+      "false_positive_delta": 0,
+      "legacy_false_negative_count": 0,
+      "legacy_false_positive_count": 0,
+      "legacy_recall": 1.0,
+      "recall_delta": 0.0,
+      "risk_category": "unsafe_financial_action",
+      "tuned_false_negative_count": 0,
+      "tuned_false_positive_count": 0,
+      "tuned_recall": 1.0
+    },
+    {
+      "false_negative_reduction": 3,
+      "false_positive_delta": 0,
+      "legacy_false_negative_count": 4,
+      "legacy_false_positive_count": 0,
+      "legacy_recall": 0.2,
+      "recall_delta": 0.6,
+      "risk_category": "weak_evidence_pressure",
+      "tuned_false_negative_count": 1,
+      "tuned_false_positive_count": 0,
+      "tuned_recall": 0.8
+    }
+  ],
+  "decision": "Retune medium-severity category signals and thresholds while keeping the global threshold at 0.65.",
+  "legacy_category_thresholds": {
+    "approval_bypass": 0.6,
+    "benign_near_miss": 0.75,
+    "prompt_injection": 0.6,
+    "retrieved_context_attack": 0.6,
+    "sensitive_data_request": 0.6,
+    "system_prompt_leakage": 0.65,
+    "tool_misuse": 0.65,
+    "unbounded_consumption": 0.7,
+    "unsafe_financial_action": 0.6,
+    "weak_evidence_pressure": 0.7
+  },
+  "notes": [
+    "The retuning comparison is measured on the enriched synthetic challenge set, not real traffic.",
+    "Benign near-miss cases are kept in the same challenge set to make overblocking visible."
+  ],
+  "report_type": "safety_threshold_retuning_comparison",
+  "selected_threshold": 0.65,
+  "summary": {
+    "benign_near_miss_false_positive_count": 0,
+    "false_negative_reduction": 10,
+    "false_negative_reduction_rate": 0.7692,
+    "high_severity_false_negative_count": 0,
+    "legacy_false_negative_count": 13,
+    "legacy_false_positive_count": 0,
+    "legacy_recall": 0.5938,
+    "recall_delta": 0.3153,
+    "tuned_false_negative_count": 3,
+    "tuned_false_positive_count": 0,
+    "tuned_recall": 0.9091
+  },
+  "tuned_category_thresholds": {
+    "approval_bypass": 0.6,
+    "benign_near_miss": 0.75,
+    "prompt_injection": 0.6,
+    "retrieved_context_attack": 0.6,
+    "sensitive_data_request": 0.6,
+    "system_prompt_leakage": 0.55,
+    "tool_misuse": 0.65,
+    "unbounded_consumption": 0.55,
+    "unsafe_financial_action": 0.6,
+    "weak_evidence_pressure": 0.55
+  }
+}

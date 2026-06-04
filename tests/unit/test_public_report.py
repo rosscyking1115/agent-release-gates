@@ -149,6 +149,8 @@ def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
     assert "| retrieved_access_escalation |" in report
     assert "## Safety Classifier Workflow" in report
     assert "| Safety classifier metric | Value |" in report
+    assert "| Safety retuning metric | Value |" in report
+    assert "| False-negative reduction |" in report
     assert "| Threshold decision memo | Value |" in report
     assert "## Agent Trace Examples" in report
     assert "trace_eval_tck-" in report

@@ -190,6 +190,10 @@ def main() -> None:
         f"{summary['safety_classifier']['metrics']['false_negative_rate']:.4f}"
     )
     print(
+        "- safety_classifier_false_negative_reduction: "
+        f"{summary['safety_classifier']['threshold_retuning']['false_negative_reduction']}"
+    )
+    print(
         "- safety_prevalence_estimate: "
         f"{summary['safety_classifier']['weighted_prevalence']['unsafe_prevalence']:.4f}"
     )

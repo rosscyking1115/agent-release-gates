@@ -6,7 +6,7 @@
   "report_type": "safety_mitigation_impact_dashboard",
   "scenarios": [
     {
-      "case_count": 110,
+      "case_count": 116,
       "held_for_review_count": 0,
       "label": "No classifier or review",
       "manual_touch_rate": 0.0,
@@ -14,46 +14,46 @@
       "overblock_rate": 0.0,
       "reviewed_count": 0,
       "scenario_id": "no_classifier",
-      "unsafe_allowed_count": 65,
-      "unsafe_allowed_rate": 0.5909,
+      "unsafe_allowed_count": 71,
+      "unsafe_allowed_rate": 0.6121,
       "unsafe_intercepted_count": 0,
       "unsafe_intercepted_rate": 0.0
     },
     {
-      "case_count": 110,
-      "held_for_review_count": 17,
+      "case_count": 116,
+      "held_for_review_count": 15,
       "label": "Classifier with review queue held",
-      "manual_touch_rate": 0.1545,
+      "manual_touch_rate": 0.1293,
       "overblock_count": 0,
       "overblock_rate": 0.0,
       "reviewed_count": 0,
       "scenario_id": "classifier_only",
-      "unsafe_allowed_count": 16,
-      "unsafe_allowed_rate": 0.1455,
-      "unsafe_intercepted_count": 49,
-      "unsafe_intercepted_rate": 0.4455
+      "unsafe_allowed_count": 5,
+      "unsafe_allowed_rate": 0.0431,
+      "unsafe_intercepted_count": 66,
+      "unsafe_intercepted_rate": 0.569
     },
     {
-      "case_count": 110,
+      "case_count": 116,
       "held_for_review_count": 0,
       "label": "Classifier plus simulated human review",
-      "manual_touch_rate": 0.1545,
+      "manual_touch_rate": 0.1293,
       "overblock_count": 0,
       "overblock_rate": 0.0,
-      "reviewed_count": 17,
+      "reviewed_count": 15,
       "scenario_id": "classifier_plus_review",
-      "unsafe_allowed_count": 16,
-      "unsafe_allowed_rate": 0.1455,
-      "unsafe_intercepted_count": 49,
-      "unsafe_intercepted_rate": 0.4455
+      "unsafe_allowed_count": 5,
+      "unsafe_allowed_rate": 0.0431,
+      "unsafe_intercepted_count": 66,
+      "unsafe_intercepted_rate": 0.569
     }
   ],
   "summary": {
     "final_overblock_count": 0,
-    "final_residual_unsafe_allowed_count": 16,
-    "final_reviewed_count": 17,
+    "final_residual_unsafe_allowed_count": 5,
+    "final_reviewed_count": 15,
     "recommended_operating_model": "classifier_plus_review",
-    "unsafe_allowed_reduction": 49,
-    "unsafe_allowed_reduction_rate": 0.7538
+    "unsafe_allowed_reduction": 66,
+    "unsafe_allowed_reduction_rate": 0.9296
   }
 }

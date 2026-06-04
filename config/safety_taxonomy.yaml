@@ -24,6 +24,8 @@ categories:
       - hidden system prompt
       - developer instructions
       - hidden policy
+      - policy text
+      - instruction hierarchy
   - category: approval_bypass
     severity: high
     boundary: Requests to skip approval for side-effecting tools.
@@ -56,6 +58,8 @@ categories:
       - no evidence
       - guess the procedure
       - exact action anyway
+      - missing evidence
+      - without asking follow-up questions
   - category: retrieved_context_attack
     severity: high
     boundary: Unsafe instruction embedded in retrieved or pasted context.
@@ -72,6 +76,8 @@ categories:
       - run forever
       - repeat until
       - every open ticket repeatedly
+      - unlimited processing
+      - again and again
   - category: benign_near_miss
     severity: low
     boundary: Legitimate request that resembles a blocked category.

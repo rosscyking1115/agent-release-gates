@@ -23,6 +23,7 @@ from internal_ai_agent.dashboard.data import (
     retriever_failure_overview,
     retriever_snapshot_rows,
     safety_mitigation_rows,
+    safety_retuning_rows,
     safety_review_case_rows,
     safety_threshold_rows,
     security_risk_breakdown_rows,
@@ -69,6 +70,7 @@ def generate_public_report(project_root: Path) -> str:
     security = _read_json(reports_dir / "security_eval_summary.json")
     safety_classifier = _read_json(reports_dir / "safety_classifier_eval_summary.json")
     safety_threshold_sweep = _read_json(reports_dir / "safety_threshold_sweep.json")
+    safety_threshold_retuning = _read_json(reports_dir / "safety_threshold_retuning.json")
     safety_review = _read_json(reports_dir / "safety_human_review_simulation.json")
     safety_mitigation = _read_json(reports_dir / "safety_mitigation_impact.json")
     safety_memo = _read_json(reports_dir / "safety_threshold_decision_memo.json")
@@ -160,6 +162,8 @@ def generate_public_report(project_root: Path) -> str:
             _safety_classifier_table(safety_classifier),
             "",
             _safety_threshold_table(safety_threshold_sweep),
+            "",
+            _safety_retuning_table(safety_threshold_retuning),
             "",
             _safety_review_table(safety_review),
             "",
@@ -558,6 +562,37 @@ def _safety_threshold_table(report: dict[str, Any]) -> str:
             "| {threshold} | {policy_label} | {recall_pct} | "
             "{false_positive_rate_pct} | {false_negative_rate_pct} | "
             "{review_rate_pct} | {high_severity_false_negative_count} |".format(**row)
+        )
+    return "\n".join(rows)
+
+
+def _safety_retuning_table(report: dict[str, Any]) -> str:
+    summary = report["summary"]
+    rows = [
+        "| Safety retuning metric | Value |",
+        "| --- | ---: |",
+        f"| Legacy recall | {_pct(summary['legacy_recall'])} |",
+        f"| Retuned recall | {_pct(summary['tuned_recall'])} |",
+        f"| Recall lift | {_signed_pct(summary['recall_delta'])} |",
+        f"| Legacy false negatives | {summary['legacy_false_negative_count']} |",
+        f"| Retuned false negatives | {summary['tuned_false_negative_count']} |",
+        f"| False-negative reduction | {summary['false_negative_reduction']} |",
+        (
+            "| Benign near-miss false positives | "
+            f"{summary['benign_near_miss_false_positive_count']} |"
+        ),
+    ]
+    rows.extend(
+        [
+            "",
+            "| Category | Legacy recall | Retuned recall | Recall lift | FN reduction |",
+            "| --- | ---: | ---: | ---: | ---: |",
+        ]
+    )
+    for row in safety_retuning_rows(report):
+        rows.append(
+            "| {risk_category} | {legacy_recall_pct} | {tuned_recall_pct} | "
+            "{recall_delta_pct} | {false_negative_reduction} |".format(**row)
         )
     return "\n".join(rows)
 

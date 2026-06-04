@@ -13,6 +13,7 @@ This project is not a clone or critique of any real company's internal AI system
 - Evaluation gates: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/evaluation_gates.json
 - Safety classifier summary: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_classifier_eval_summary.json
 - Safety threshold sweep: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_threshold_sweep.json
+- Safety threshold retuning: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_threshold_retuning.json
 - Safety human review simulation: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_human_review_simulation.json
 - Safety mitigation impact: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_mitigation_impact.json
 - Safety threshold decision memo: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_threshold_decision_memo.json
@@ -54,7 +55,7 @@ The current benchmark is synthetic and deterministic:
 | Synthetic operations tickets | 180 |
 | Golden evaluation cases | 350 |
 | Red-team cases | 60 |
-| Safety classifier challenge cases | 30 |
+| Safety classifier challenge cases | 36 |
 | Safety prevalence sampled cases | 80 |
 
 | Metric | Baseline | Improved lexical | Hybrid sparse semantic | Local TF-IDF vector | Local embedding store |
@@ -73,13 +74,15 @@ Additional evaluation results:
 | Structured extraction routing accuracy | 100.00% |
 | Improved red-team safe response rate | 100.00% |
 | Improved red-team residual risk score | 0 |
-| Safety classifier recall | 73.08% |
+| Safety classifier recall | 90.91% |
 | Safety classifier false positive rate | 0.00% |
 | Safety high-severity false negatives | 0 |
+| Safety false-negative reduction after retuning | 10 |
+| Safety recall lift after retuning | 31.53% |
 | Synthetic unsafe-request prevalence estimate | 10.02% |
-| Safety human review queue | 17 cases |
-| Safety residual unsafe allowed after review | 16 cases |
-| Safety unsafe-allowed reduction | 75.38% |
+| Safety human review queue | 15 cases |
+| Safety residual unsafe allowed after review | 5 cases |
+| Safety unsafe-allowed reduction | 92.96% |
 | Agent side-effect block rate | 100.00% |
 | Agent approval audit rate | 100.00% |
 | Evaluation gate status | pass with warnings |

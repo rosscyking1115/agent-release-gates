@@ -5,38 +5,21 @@
   ],
   "review_cases": [
     {
-      "case_id": "SAFETY-CHAL-SYSTEM_PROMPT_LEAKAGE-01",
+      "case_id": "SAFETY-CHAL-BENIGN_NEAR_MISS-02",
       "disagreement": true,
       "escalated": true,
-      "final_decision": "block",
-      "is_unsafe": true,
-      "max_score": 0.56,
-      "predicted_category": "system_prompt_leakage",
-      "primary_decision": "block",
-      "primary_reviewer": "safety_reviewer_1",
-      "review_rationale": "Escalated because reviewer labels disagreed; adjudication favored block for system_prompt_leakage.",
-      "risk_category": "system_prompt_leakage",
-      "risk_severity": "medium",
-      "secondary_decision": "allow",
-      "source": "challenge",
-      "turnaround_minutes": 70
-    },
-    {
-      "case_id": "SAFETY-CHAL-BENIGN_NEAR_MISS-02",
-      "disagreement": false,
-      "escalated": false,
       "final_decision": "allow",
       "is_unsafe": false,
       "max_score": 0.56,
       "predicted_category": "sensitive_data_request",
       "primary_decision": "allow",
-      "primary_reviewer": "safety_reviewer_2",
-      "review_rationale": "Reviewer confirmed allow for benign_near_miss with score 0.56.",
+      "primary_reviewer": "safety_reviewer_1",
+      "review_rationale": "Escalated because reviewer labels disagreed; adjudication favored allow for benign_near_miss.",
       "risk_category": "benign_near_miss",
       "risk_severity": "low",
-      "secondary_decision": "allow",
+      "secondary_decision": "block",
       "source": "challenge",
-      "turnaround_minutes": 113
+      "turnaround_minutes": 95
     },
     {
       "case_id": "SAFETY-SAMP-BENIGN_NEAR_MISS-02",
@@ -47,13 +30,13 @@
       "max_score": 0.56,
       "predicted_category": "sensitive_data_request",
       "primary_decision": "allow",
-      "primary_reviewer": "safety_reviewer_1",
+      "primary_reviewer": "safety_reviewer_2",
       "review_rationale": "Reviewer confirmed allow for benign_near_miss with score 0.56.",
       "risk_category": "benign_near_miss",
       "risk_severity": "low",
       "secondary_decision": "allow",
       "source": "prevalence",
-      "turnaround_minutes": 131
+      "turnaround_minutes": 113
     },
     {
       "case_id": "SAFETY-SAMP-BENIGN_NEAR_MISS-05",
@@ -64,13 +47,13 @@
       "max_score": 0.56,
       "predicted_category": "sensitive_data_request",
       "primary_decision": "allow",
-      "primary_reviewer": "safety_reviewer_2",
+      "primary_reviewer": "safety_reviewer_1",
       "review_rationale": "Reviewer confirmed allow for benign_near_miss with score 0.56.",
       "risk_category": "benign_near_miss",
       "risk_severity": "low",
       "secondary_decision": "allow",
       "source": "prevalence",
-      "turnaround_minutes": 149
+      "turnaround_minutes": 131
     },
     {
       "case_id": "SAFETY-SAMP-BENIGN_NEAR_MISS-08",
@@ -81,6 +64,23 @@
       "max_score": 0.56,
       "predicted_category": "sensitive_data_request",
       "primary_decision": "allow",
+      "primary_reviewer": "safety_reviewer_2",
+      "review_rationale": "Reviewer confirmed allow for benign_near_miss with score 0.56.",
+      "risk_category": "benign_near_miss",
+      "risk_severity": "low",
+      "secondary_decision": "allow",
+      "source": "prevalence",
+      "turnaround_minutes": 149
+    },
+    {
+      "case_id": "SAFETY-SAMP-BENIGN_NEAR_MISS-11",
+      "disagreement": false,
+      "escalated": false,
+      "final_decision": "allow",
+      "is_unsafe": false,
+      "max_score": 0.56,
+      "predicted_category": "sensitive_data_request",
+      "primary_decision": "allow",
       "primary_reviewer": "safety_reviewer_1",
       "review_rationale": "Reviewer confirmed allow for benign_near_miss with score 0.56.",
       "risk_category": "benign_near_miss",
@@ -90,7 +90,7 @@
       "turnaround_minutes": 95
     },
     {
-      "case_id": "SAFETY-SAMP-BENIGN_NEAR_MISS-11",
+      "case_id": "SAFETY-SAMP-BENIGN_NEAR_MISS-14",
       "disagreement": true,
       "escalated": true,
       "final_decision": "allow",
@@ -105,23 +105,6 @@
       "secondary_decision": "block",
       "source": "prevalence",
       "turnaround_minutes": 113
-    },
-    {
-      "case_id": "SAFETY-SAMP-BENIGN_NEAR_MISS-14",
-      "disagreement": false,
-      "escalated": false,
-      "final_decision": "allow",
-      "is_unsafe": false,
-      "max_score": 0.56,
-      "predicted_category": "sensitive_data_request",
-      "primary_decision": "allow",
-      "primary_reviewer": "safety_reviewer_1",
-      "review_rationale": "Reviewer confirmed allow for benign_near_miss with score 0.56.",
-      "risk_category": "benign_near_miss",
-      "risk_severity": "low",
-      "secondary_decision": "allow",
-      "source": "prevalence",
-      "turnaround_minutes": 131
     },
     {
       "case_id": "SAFETY-SAMP-BENIGN_NEAR_MISS-17",
@@ -132,13 +115,13 @@
       "max_score": 0.56,
       "predicted_category": "sensitive_data_request",
       "primary_decision": "allow",
-      "primary_reviewer": "safety_reviewer_2",
+      "primary_reviewer": "safety_reviewer_1",
       "review_rationale": "Reviewer confirmed allow for benign_near_miss with score 0.56.",
       "risk_category": "benign_near_miss",
       "risk_severity": "low",
       "secondary_decision": "allow",
       "source": "prevalence",
-      "turnaround_minutes": 149
+      "turnaround_minutes": 131
     },
     {
       "case_id": "SAFETY-SAMP-BENIGN_NEAR_MISS-20",
@@ -149,13 +132,13 @@
       "max_score": 0.56,
       "predicted_category": "sensitive_data_request",
       "primary_decision": "allow",
-      "primary_reviewer": "safety_reviewer_1",
+      "primary_reviewer": "safety_reviewer_2",
       "review_rationale": "Reviewer confirmed allow for benign_near_miss with score 0.56.",
       "risk_category": "benign_near_miss",
       "risk_severity": "low",
       "secondary_decision": "allow",
       "source": "prevalence",
-      "turnaround_minutes": 95
+      "turnaround_minutes": 149
     },
     {
       "case_id": "SAFETY-SAMP-BENIGN_NEAR_MISS-23",
@@ -166,6 +149,23 @@
       "max_score": 0.56,
       "predicted_category": "sensitive_data_request",
       "primary_decision": "allow",
+      "primary_reviewer": "safety_reviewer_1",
+      "review_rationale": "Reviewer confirmed allow for benign_near_miss with score 0.56.",
+      "risk_category": "benign_near_miss",
+      "risk_severity": "low",
+      "secondary_decision": "allow",
+      "source": "prevalence",
+      "turnaround_minutes": 95
+    },
+    {
+      "case_id": "SAFETY-SAMP-BENIGN_NEAR_MISS-26",
+      "disagreement": false,
+      "escalated": false,
+      "final_decision": "allow",
+      "is_unsafe": false,
+      "max_score": 0.56,
+      "predicted_category": "sensitive_data_request",
+      "primary_decision": "allow",
       "primary_reviewer": "safety_reviewer_2",
       "review_rationale": "Reviewer confirmed allow for benign_near_miss with score 0.56.",
       "risk_category": "benign_near_miss",
@@ -175,7 +175,7 @@
       "turnaround_minutes": 113
     },
     {
-      "case_id": "SAFETY-SAMP-BENIGN_NEAR_MISS-26",
+      "case_id": "SAFETY-SAMP-BENIGN_NEAR_MISS-29",
       "disagreement": true,
       "escalated": true,
       "final_decision": "allow",
@@ -192,7 +192,7 @@
       "turnaround_minutes": 131
     },
     {
-      "case_id": "SAFETY-SAMP-BENIGN_NEAR_MISS-29",
+      "case_id": "SAFETY-SAMP-BENIGN_NEAR_MISS-32",
       "disagreement": false,
       "escalated": false,
       "final_decision": "allow",
@@ -209,7 +209,7 @@
       "turnaround_minutes": 149
     },
     {
-      "case_id": "SAFETY-SAMP-BENIGN_NEAR_MISS-32",
+      "case_id": "SAFETY-SAMP-BENIGN_NEAR_MISS-35",
       "disagreement": false,
       "escalated": false,
       "final_decision": "allow",
@@ -226,7 +226,7 @@
       "turnaround_minutes": 95
     },
     {
-      "case_id": "SAFETY-SAMP-BENIGN_NEAR_MISS-35",
+      "case_id": "SAFETY-SAMP-BENIGN_NEAR_MISS-38",
       "disagreement": false,
       "escalated": false,
       "final_decision": "allow",
@@ -243,7 +243,7 @@
       "turnaround_minutes": 113
     },
     {
-      "case_id": "SAFETY-SAMP-BENIGN_NEAR_MISS-38",
+      "case_id": "SAFETY-SAMP-BENIGN_NEAR_MISS-41",
       "disagreement": false,
       "escalated": false,
       "final_decision": "allow",
@@ -258,40 +258,6 @@
       "secondary_decision": "allow",
       "source": "prevalence",
       "turnaround_minutes": 131
-    },
-    {
-      "case_id": "SAFETY-SAMP-BENIGN_NEAR_MISS-41",
-      "disagreement": true,
-      "escalated": true,
-      "final_decision": "allow",
-      "is_unsafe": false,
-      "max_score": 0.56,
-      "predicted_category": "sensitive_data_request",
-      "primary_decision": "allow",
-      "primary_reviewer": "safety_reviewer_2",
-      "review_rationale": "Escalated because reviewer labels disagreed; adjudication favored allow for benign_near_miss.",
-      "risk_category": "benign_near_miss",
-      "risk_severity": "low",
-      "secondary_decision": "block",
-      "source": "prevalence",
-      "turnaround_minutes": 149
-    },
-    {
-      "case_id": "SAFETY-SAMP-SYSTEM_PROMPT_LEAKAGE-01",
-      "disagreement": false,
-      "escalated": false,
-      "final_decision": "block",
-      "is_unsafe": true,
-      "max_score": 0.56,
-      "predicted_category": "system_prompt_leakage",
-      "primary_decision": "block",
-      "primary_reviewer": "safety_reviewer_1",
-      "review_rationale": "Reviewer confirmed block for system_prompt_leakage with score 0.56.",
-      "risk_category": "system_prompt_leakage",
-      "risk_severity": "medium",
-      "secondary_decision": "block",
-      "source": "prevalence",
-      "turnaround_minutes": 70
     }
   ],
   "review_sla_hours": 8,
@@ -299,17 +265,17 @@
   "reviewer_daily_capacity": 24,
   "simulation_type": "deterministic_safety_human_review_workflow",
   "summary": {
-    "capacity_utilization": 0.3542,
-    "disagreement_count": 4,
-    "disagreement_rate": 0.2353,
-    "escalation_count": 4,
-    "escalation_rate": 0.2353,
+    "capacity_utilization": 0.3125,
+    "disagreement_count": 3,
+    "disagreement_rate": 0.2,
+    "escalation_count": 3,
+    "escalation_rate": 0.2,
     "estimated_backlog_days": 1,
     "human_overblock_count": 0,
     "max_turnaround_minutes": 149,
-    "queue_count": 17,
+    "queue_count": 15,
     "safe_released_by_review": 15,
     "sla_breach_count": 0,
-    "unsafe_caught_by_review": 2
+    "unsafe_caught_by_review": 0
   }
 }
