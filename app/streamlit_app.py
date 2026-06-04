@@ -39,6 +39,11 @@ from internal_ai_agent.dashboard.data import (
     load_retriever_case_rows,
     load_retriever_comparison,
     load_retriever_snapshots,
+    load_safety_classifier_summary,
+    load_safety_human_review_simulation,
+    load_safety_mitigation_impact,
+    load_safety_threshold_decision_memo,
+    load_safety_threshold_sweep,
     load_security_summary,
     metric_rows,
     observability_component_rows,
@@ -47,6 +52,9 @@ from internal_ai_agent.dashboard.data import (
     retriever_failure_example_rows,
     retriever_failure_overview,
     retriever_snapshot_rows,
+    safety_mitigation_rows,
+    safety_review_case_rows,
+    safety_threshold_rows,
     security_metric_rows,
     security_risk_breakdown_rows,
     trace_index_component_rows,
@@ -73,6 +81,11 @@ def main() -> None:
     evaluation_gates = load_evaluation_gates(PROJECT_ROOT)
     extraction_summary = load_extraction_summary(PROJECT_ROOT)
     security_summary = load_security_summary(PROJECT_ROOT)
+    safety_classifier = load_safety_classifier_summary(PROJECT_ROOT)
+    safety_threshold_sweep = load_safety_threshold_sweep(PROJECT_ROOT)
+    safety_review_simulation = load_safety_human_review_simulation(PROJECT_ROOT)
+    safety_mitigation_impact = load_safety_mitigation_impact(PROJECT_ROOT)
+    safety_threshold_memo = load_safety_threshold_decision_memo(PROJECT_ROOT)
     agent_summary = load_agent_summary(PROJECT_ROOT)
     agent_traces = load_agent_trace_examples(PROJECT_ROOT)
     observability_otel_spans = load_observability_otel_spans(PROJECT_ROOT)
@@ -105,6 +118,13 @@ def main() -> None:
         _render_retriever_error_analysis(retriever_cases)
         _render_error_analysis()
     elif section == "Safety And Extraction":
+        _render_safety_classifier_workflow(
+            safety_classifier,
+            safety_threshold_sweep,
+            safety_review_simulation,
+            safety_mitigation_impact,
+            safety_threshold_memo,
+        )
         _render_extraction_metrics(extraction_summary, extraction_rows)
         _render_security_metrics(security_summary, security_rows)
     elif section == "Agent Observability":
@@ -532,6 +552,89 @@ def _render_security_metrics(
         _render_security_breakdown(security_risk_breakdown_rows(summary, "by_attack_channel"))
     with tab_severity:
         _render_security_breakdown(security_risk_breakdown_rows(summary, "by_risk_severity"))
+
+
+def _render_safety_classifier_workflow(
+    classifier: dict[str, object],
+    threshold_sweep: dict[str, object],
+    review_simulation: dict[str, object],
+    mitigation_impact: dict[str, object],
+    threshold_memo: dict[str, object],
+) -> None:
+    st.subheader("Safety Prevalence And Classifier Workflow")
+    metrics = classifier["metrics"]
+    prevalence = classifier["weighted_prevalence"]
+    review_summary = review_simulation["summary"]
+    mitigation_summary = mitigation_impact["summary"]
+    cols = st.columns(5)
+    cols[0].metric("Recall", f"{metrics['recall'] * 100:.2f}%")
+    cols[1].metric("False positives", f"{metrics['false_positive_rate'] * 100:.2f}%")
+    cols[2].metric("Unsafe prevalence", f"{prevalence['unsafe_prevalence'] * 100:.2f}%")
+    cols[3].metric("Review queue", review_summary["queue_count"])
+    cols[4].metric("Residual unsafe", mitigation_summary["final_residual_unsafe_allowed_count"])
+
+    st.caption(str(threshold_memo["decision"]))
+    tab_thresholds, tab_review, tab_impact, tab_memo = st.tabs(
+        ["Thresholds", "Human review", "Mitigation impact", "Decision memo"]
+    )
+    with tab_thresholds:
+        threshold_df = pd.DataFrame(safety_threshold_rows(threshold_sweep))
+        if not threshold_df.empty:
+            chart_df = threshold_df.set_index("threshold")[
+                ["recall", "false_positive_rate", "false_negative_rate", "review_rate"]
+            ]
+            st.line_chart(chart_df, height=260)
+            display_df = threshold_df[
+                [
+                    "threshold",
+                    "policy_label",
+                    "precision_pct",
+                    "recall_pct",
+                    "false_positive_rate_pct",
+                    "false_negative_rate_pct",
+                    "review_rate_pct",
+                    "high_severity_false_negative_count",
+                ]
+            ]
+            display_df.columns = [
+                "Threshold",
+                "Policy",
+                "Precision",
+                "Recall",
+                "False positive",
+                "False negative",
+                "Review",
+                "High severity FN",
+            ]
+            st.dataframe(display_df, hide_index=True, use_container_width=True)
+    with tab_review:
+        review_cols = st.columns(5)
+        review_cols[0].metric(
+            "Capacity utilization",
+            f"{review_summary['capacity_utilization'] * 100:.2f}%",
+        )
+        review_cols[1].metric("Disagreements", review_summary["disagreement_count"])
+        review_cols[2].metric("Escalations", review_summary["escalation_count"])
+        review_cols[3].metric("Unsafe caught", review_summary["unsafe_caught_by_review"])
+        review_cols[4].metric("SLA breaches", review_summary["sla_breach_count"])
+        review_df = pd.DataFrame(safety_review_case_rows(review_simulation))
+        if not review_df.empty:
+            st.dataframe(review_df, hide_index=True, use_container_width=True)
+    with tab_impact:
+        impact_df = pd.DataFrame(safety_mitigation_rows(mitigation_impact))
+        if not impact_df.empty:
+            chart_df = impact_df.set_index("scenario")[
+                ["unsafe_allowed", "unsafe_intercepted", "overblocks", "manual_touches"]
+            ]
+            st.bar_chart(chart_df, height=280)
+            st.dataframe(impact_df, hide_index=True, use_container_width=True)
+    with tab_memo:
+        st.markdown("**Rationale**")
+        for item in threshold_memo["rationale"]:
+            st.write(f"- {item}")
+        st.markdown("**Next Threshold Work**")
+        for item in threshold_memo["next_threshold_work"]:
+            st.write(f"- {item}")
 
 
 def _render_security_breakdown(rows: list[dict[str, object]]) -> None:

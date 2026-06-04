@@ -22,6 +22,9 @@ from internal_ai_agent.dashboard.data import (
     retriever_failure_example_rows,
     retriever_failure_overview,
     retriever_snapshot_rows,
+    safety_mitigation_rows,
+    safety_review_case_rows,
+    safety_threshold_rows,
     security_risk_breakdown_rows,
     trace_index_component_rows,
     trace_index_query_rows,
@@ -64,6 +67,11 @@ def generate_public_report(project_root: Path) -> str:
     collector_preview = _read_json(reports_dir / "collector_export_preview.json")
     extraction = _read_json(reports_dir / "extraction_eval_summary.json")
     security = _read_json(reports_dir / "security_eval_summary.json")
+    safety_classifier = _read_json(reports_dir / "safety_classifier_eval_summary.json")
+    safety_threshold_sweep = _read_json(reports_dir / "safety_threshold_sweep.json")
+    safety_review = _read_json(reports_dir / "safety_human_review_simulation.json")
+    safety_mitigation = _read_json(reports_dir / "safety_mitigation_impact.json")
+    safety_memo = _read_json(reports_dir / "safety_threshold_decision_memo.json")
     agent = _read_json(reports_dir / "agent_eval_summary.json")
 
     markdown = "\n".join(
@@ -146,6 +154,18 @@ def generate_public_report(project_root: Path) -> str:
             "remaining unsafe severity-weighted case total.",
             "",
             _security_breakdown_table(security),
+            "",
+            "## Safety Classifier Workflow",
+            "",
+            _safety_classifier_table(safety_classifier),
+            "",
+            _safety_threshold_table(safety_threshold_sweep),
+            "",
+            _safety_review_table(safety_review),
+            "",
+            _safety_mitigation_table(safety_mitigation),
+            "",
+            _safety_decision_memo_table(safety_memo),
             "",
             "## Controlled Agent Workflow",
             "",
@@ -497,6 +517,104 @@ def _security_breakdown_table(report: dict[str, Any]) -> str:
             "| {group} | {case_count} | {max_risk_severity} | {safe_rate_pct} | "
             "{weighted_safe_rate_pct} | {residual_risk_score} |".format(**row)
         )
+    return "\n".join(rows)
+
+
+def _safety_classifier_table(report: dict[str, Any]) -> str:
+    metrics = report["metrics"]
+    prevalence = report["weighted_prevalence"]
+    review = report["human_review_simulation"]
+    mitigation = report["mitigation_impact"]
+    rows = [
+        "| Safety classifier metric | Value |",
+        "| --- | ---: |",
+        f"| Challenge cases | {report['challenge_case_count']} |",
+        f"| Sampled prevalence cases | {report['prevalence_case_count']} |",
+        f"| Selected threshold | {report['selected_threshold']} |",
+        f"| Recall | {_pct(metrics['recall'])} |",
+        f"| False positive rate | {_pct(metrics['false_positive_rate'])} |",
+        f"| False negative rate | {_pct(metrics['false_negative_rate'])} |",
+        f"| High-severity false negatives | {metrics['high_severity_false_negative_count']} |",
+        f"| Synthetic unsafe prevalence | {_pct(prevalence['unsafe_prevalence'])} |",
+        f"| Review queue cases | {review['queue_count']} |",
+        (
+            "| Residual unsafe allowed after review | "
+            f"{mitigation['final_residual_unsafe_allowed_count']} |"
+        ),
+    ]
+    return "\n".join(rows)
+
+
+def _safety_threshold_table(report: dict[str, Any]) -> str:
+    rows = [
+        (
+            "| Threshold | Policy | Recall | False positive | False negative | "
+            "Review | High severity FN |"
+        ),
+        "| ---: | --- | ---: | ---: | ---: | ---: | ---: |",
+    ]
+    for row in safety_threshold_rows(report):
+        rows.append(
+            "| {threshold} | {policy_label} | {recall_pct} | "
+            "{false_positive_rate_pct} | {false_negative_rate_pct} | "
+            "{review_rate_pct} | {high_severity_false_negative_count} |".format(**row)
+        )
+    return "\n".join(rows)
+
+
+def _safety_review_table(report: dict[str, Any]) -> str:
+    summary = report["summary"]
+    rows = [
+        "| Human review simulation metric | Value |",
+        "| --- | ---: |",
+        f"| Queue cases | {summary['queue_count']} |",
+        f"| Capacity utilization | {_pct(summary['capacity_utilization'])} |",
+        f"| Disagreement rate | {_pct(summary['disagreement_rate'])} |",
+        f"| Escalation rate | {_pct(summary['escalation_rate'])} |",
+        f"| Unsafe caught by review | {summary['unsafe_caught_by_review']} |",
+        f"| Human overblocks | {summary['human_overblock_count']} |",
+        f"| SLA breaches | {summary['sla_breach_count']} |",
+    ]
+    examples = safety_review_case_rows(report, limit=5)
+    if examples:
+        rows.extend(
+            [
+                "",
+                "| Review case | Category | Severity | Score | Final decision | Escalated |",
+                "| --- | --- | --- | ---: | --- | --- |",
+            ]
+        )
+        for row in examples:
+            rows.append(
+                "| {case_id} | {risk_category} | {risk_severity} | {score} | "
+                "{final_decision} | {escalated} |".format(**row)
+            )
+    return "\n".join(rows)
+
+
+def _safety_mitigation_table(report: dict[str, Any]) -> str:
+    rows = [
+        "| Scenario | Unsafe allowed | Unsafe intercepted | Overblocks | Manual touches |",
+        "| --- | ---: | ---: | ---: | ---: |",
+    ]
+    for row in safety_mitigation_rows(report):
+        rows.append(
+            "| {scenario} | {unsafe_allowed} | {unsafe_intercepted} | "
+            "{overblocks} | {manual_touches} |".format(**row)
+        )
+    return "\n".join(rows)
+
+
+def _safety_decision_memo_table(report: dict[str, Any]) -> str:
+    rows = [
+        "| Threshold decision memo | Value |",
+        "| --- | --- |",
+        f"| Decision | {report['decision']} |",
+        f"| Selected threshold | {report['selected_threshold']} |",
+        f"| Review band | {report['review_band']['low']} to {report['review_band']['high']} |",
+    ]
+    for index, item in enumerate(report["rationale"], start=1):
+        rows.append(f"| Rationale {index} | {item} |")
     return "\n".join(rows)
 
 

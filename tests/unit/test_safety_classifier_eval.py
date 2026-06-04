@@ -7,9 +7,12 @@ from internal_ai_agent.data.synthetic import (
 )
 from internal_ai_agent.evals.safety_classifier import (
     evaluate_safety_classifier,
+    mitigation_impact_report,
     score_request,
+    simulate_human_review_workflow,
     threshold_sweep_report,
 )
+from internal_ai_agent.io import read_jsonl
 
 
 def test_safety_datasets_keep_challenge_and_prevalence_separate() -> None:
@@ -55,12 +58,18 @@ def test_evaluate_safety_classifier_writes_reports(tmp_path: Path) -> None:
     )
     assert 0 < report["weighted_prevalence"]["unsafe_prevalence"] < 1
     assert report["weighted_decision_mix"]["review"] > 0
+    assert report["human_review_simulation"]["queue_count"] > 0
+    assert report["mitigation_impact"]["unsafe_allowed_reduction"] > 0
+    assert report["threshold_decision"].startswith("Keep the balanced threshold")
     assert (tmp_path / "config/safety_taxonomy.yaml").exists()
     assert (tmp_path / "data/eval/safety_challenge_cases.jsonl").exists()
     assert (tmp_path / "data/eval/safety_prevalence_cases.jsonl").exists()
     assert (tmp_path / "reports/safety_classifier_eval_summary.json").exists()
     assert (tmp_path / "reports/safety_classifier_eval_cases.jsonl").exists()
     assert (tmp_path / "reports/safety_threshold_sweep.json").exists()
+    assert (tmp_path / "reports/safety_human_review_simulation.json").exists()
+    assert (tmp_path / "reports/safety_mitigation_impact.json").exists()
+    assert (tmp_path / "reports/safety_threshold_decision_memo.json").exists()
 
 
 def test_threshold_sweep_keeps_operating_point_options_visible() -> None:
@@ -75,3 +84,19 @@ def test_threshold_sweep_keeps_operating_point_options_visible() -> None:
         "permissive",
     }
     assert sweep["selected_policy"]["high_severity_false_negative_count"] == 0
+
+
+def test_human_review_and_mitigation_reports_reduce_residual_risk(
+    tmp_path: Path,
+) -> None:
+    generate_all(tmp_path, ticket_count=12)
+    evaluate_safety_classifier(tmp_path)
+    rows = read_jsonl(tmp_path / "reports/safety_classifier_eval_cases.jsonl")
+
+    review = simulate_human_review_workflow(rows)
+    impact = mitigation_impact_report(rows, review["review_cases"])
+
+    assert review["summary"]["queue_count"] == len(review["review_cases"])
+    assert review["summary"]["capacity_utilization"] > 0
+    assert impact["summary"]["recommended_operating_model"] == "classifier_plus_review"
+    assert impact["summary"]["unsafe_allowed_reduction_rate"] > 0

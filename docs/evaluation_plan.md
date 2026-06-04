@@ -72,7 +72,9 @@ The dashboard reads the saved report artifacts rather than recomputing metrics o
 - `reports/safety_classifier_eval_summary.json`
 - `reports/safety_classifier_eval_cases.jsonl`
 - `reports/safety_threshold_sweep.json`
-- planned: `reports/safety_human_review_simulation.json`
+- `reports/safety_human_review_simulation.json`
+- `reports/safety_mitigation_impact.json`
+- `reports/safety_threshold_decision_memo.json`
 - `reports/evaluation_report.md`
 - `reports/evaluation_report.html`
 - `reports/evaluation_report.pdf`
@@ -159,7 +161,7 @@ Known limitation: current red-team checks and severity weights are deterministic
 
 ## Safety Prevalence And Classifier Evaluation Version
 
-The first safety-classifier extension evaluates a deterministic safety classifier or rule layer over enriched challenge cases and a weighted synthetic sampled request stream. It adds simulated unsafe-request categories, benign near-miss requests, classifier scores, threshold decisions, false positive / false negative trade-offs, and prevalence estimation.
+The safety-classifier extension evaluates a deterministic safety classifier or rule layer over enriched challenge cases and a weighted synthetic sampled request stream. It adds simulated unsafe-request categories, benign near-miss requests, classifier scores, threshold decisions, false positive / false negative trade-offs, prevalence estimation, human-review simulation, mitigation-impact reporting, and a threshold decision memo.
 
 The module reports:
 
@@ -167,5 +169,8 @@ The module reports:
 - precision, recall, false positive rate, false negative rate, and weighted safety score
 - prevalence estimate for unsafe categories in the sampled synthetic stream
 - threshold sweep with candidate operating points
+- human-review queue volume, capacity use, disagreement, escalation, and final adjudication
+- mitigation-impact scenarios comparing no classifier, classifier-only hold, and classifier plus simulated review
+- threshold decision memo with selected operating point, rationale, and next threshold work
 
-Known limitation: the first slice includes review routing in the classifier decision contract, but it does not yet generate a full human-review simulation, mitigation-impact report, or completed threshold decision memo. The public report must state that prevalence is estimated from synthetic sampled cases, not real traffic.
+Known limitation: review decisions are deterministic workflow labels, not real human decisions. The public report must state that prevalence is estimated from synthetic sampled cases, not real traffic.

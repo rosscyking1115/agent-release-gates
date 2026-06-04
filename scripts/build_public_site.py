@@ -23,6 +23,8 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
     trace_index = _read_json(reports_dir / "observability_trace_index.json")
     gates = _read_json(reports_dir / "evaluation_gates.json")
     safety_classifier = _read_json(reports_dir / "safety_classifier_eval_summary.json")
+    safety_review = _read_json(reports_dir / "safety_human_review_simulation.json")
+    safety_mitigation = _read_json(reports_dir / "safety_mitigation_impact.json")
 
     shutil.copyfile(reports_dir / "evaluation_report.html", public_dir / "evaluation_report.html")
     shutil.copyfile(reports_dir / "evaluation_report.pdf", public_dir / "evaluation_report.pdf")
@@ -35,6 +37,18 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
     shutil.copyfile(
         reports_dir / "safety_threshold_sweep.json",
         public_dir / "safety_threshold_sweep.json",
+    )
+    shutil.copyfile(
+        reports_dir / "safety_human_review_simulation.json",
+        public_dir / "safety_human_review_simulation.json",
+    )
+    shutil.copyfile(
+        reports_dir / "safety_mitigation_impact.json",
+        public_dir / "safety_mitigation_impact.json",
+    )
+    shutil.copyfile(
+        reports_dir / "safety_threshold_decision_memo.json",
+        public_dir / "safety_threshold_decision_memo.json",
     )
     shutil.copyfile(
         reports_dir / "observability_trace_index.json",
@@ -50,6 +64,8 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
             trace_index=trace_index,
             gates=gates,
             safety_classifier=safety_classifier,
+            safety_review=safety_review,
+            safety_mitigation=safety_mitigation,
         ),
         encoding="utf-8",
     )
@@ -65,6 +81,8 @@ def _index_html(
     trace_index: dict[str, Any],
     gates: dict[str, Any],
     safety_classifier: dict[str, Any],
+    safety_review: dict[str, Any],
+    safety_mitigation: dict[str, Any],
 ) -> str:
     counts = profile["dataset_counts"]
     mix = profile["golden_case_mix"]
@@ -72,6 +90,8 @@ def _index_html(
     security_metrics = security["metrics"]
     safety_metrics = safety_classifier["metrics"]
     safety_prevalence = safety_classifier["weighted_prevalence"]
+    review_summary = safety_review["summary"]
+    mitigation_summary = safety_mitigation["summary"]
     risk_labels = "\n".join(
         f"<li>{escape(label)}</li>" for label in profile["risk_labels"]
     )
@@ -222,6 +242,9 @@ def _index_html(
         <a class="button" href="evaluation_gates.json">Evaluation Gates JSON</a>
         <a class="button" href="safety_classifier_eval_summary.json">Safety Classifier JSON</a>
         <a class="button" href="safety_threshold_sweep.json">Safety Threshold Sweep</a>
+        <a class="button" href="safety_human_review_simulation.json">Safety Review Simulation</a>
+        <a class="button" href="safety_mitigation_impact.json">Safety Mitigation Impact</a>
+        <a class="button" href="safety_threshold_decision_memo.json">Safety Decision Memo</a>
         <a class="button" href="{repo_url}">GitHub Repo</a>
       </div>
     </header>
@@ -253,6 +276,13 @@ def _index_html(
         {_metric("Safety overblock rate", _pct(safety_metrics["false_positive_rate"]))}
         {_metric("Synthetic unsafe prevalence", _pct(safety_prevalence["unsafe_prevalence"]))}
         {_metric("High-severity FN count", safety_metrics["high_severity_false_negative_count"])}
+        {_metric("Safety review queue", review_summary["queue_count"])}
+        {_metric("Review capacity use", _pct(review_summary["capacity_utilization"]))}
+        {_metric(
+            "Residual unsafe allowed",
+            mitigation_summary["final_residual_unsafe_allowed_count"],
+        )}
+        {_metric("Unsafe reduction", _pct(mitigation_summary["unsafe_allowed_reduction_rate"]))}
         {_metric("Collector spans", collector["span_count"])}
         {_metric("Collector payloads", collector["payload_count"])}
         {_metric("Indexed traces", trace_index["trace_count"])}

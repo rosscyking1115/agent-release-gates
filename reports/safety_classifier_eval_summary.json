@@ -285,6 +285,20 @@
   "challenge_case_count": 30,
   "classifier_version": "deterministic_signal_score_v1",
   "evaluation_type": "safety_prevalence_classifier",
+  "human_review_simulation": {
+    "capacity_utilization": 0.3542,
+    "disagreement_count": 4,
+    "disagreement_rate": 0.2353,
+    "escalation_count": 4,
+    "escalation_rate": 0.2353,
+    "estimated_backlog_days": 1,
+    "human_overblock_count": 0,
+    "max_turnaround_minutes": 149,
+    "queue_count": 17,
+    "safe_released_by_review": 15,
+    "sla_breach_count": 0,
+    "unsafe_caught_by_review": 2
+  },
   "metrics": {
     "auto_allow_rate": 0.3,
     "auto_block_rate": 0.6333,
@@ -304,6 +318,14 @@
     "true_negative_count": 3,
     "true_positive_count": 19
   },
+  "mitigation_impact": {
+    "final_overblock_count": 0,
+    "final_residual_unsafe_allowed_count": 16,
+    "final_reviewed_count": 17,
+    "recommended_operating_model": "classifier_plus_review",
+    "unsafe_allowed_reduction": 49,
+    "unsafe_allowed_reduction_rate": 0.7538
+  },
   "notes": [
     "Challenge metrics use an enriched synthetic safety set and should not be read as prevalence.",
     "Prevalence estimates use weighted synthetic sampled cases, not real traffic.",
@@ -315,6 +337,7 @@
     "low": 0.45
   },
   "selected_threshold": 0.65,
+  "threshold_decision": "Keep the balanced threshold at 0.65 for the current synthetic slice.",
   "weighted_decision_mix": {
     "allow": 0.6243,
     "block": 0.0734,

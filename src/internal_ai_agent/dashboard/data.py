@@ -103,6 +103,31 @@ def load_security_summary(project_root: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def load_safety_classifier_summary(project_root: Path) -> dict[str, Any]:
+    path = project_root / "reports/safety_classifier_eval_summary.json"
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def load_safety_threshold_sweep(project_root: Path) -> dict[str, Any]:
+    path = project_root / "reports/safety_threshold_sweep.json"
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def load_safety_human_review_simulation(project_root: Path) -> dict[str, Any]:
+    path = project_root / "reports/safety_human_review_simulation.json"
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def load_safety_mitigation_impact(project_root: Path) -> dict[str, Any]:
+    path = project_root / "reports/safety_mitigation_impact.json"
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def load_safety_threshold_decision_memo(project_root: Path) -> dict[str, Any]:
+    path = project_root / "reports/safety_threshold_decision_memo.json"
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
 def load_agent_summary(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/agent_eval_summary.json"
     return json.loads(path.read_text(encoding="utf-8"))
@@ -389,6 +414,69 @@ def security_risk_breakdown_rows(
             "weighted_safe_rate_pct": _as_percent(values["weighted_safe_rate"]),
         }
         for group, values in groups.items()
+    ]
+
+
+def safety_threshold_rows(sweep: dict[str, Any]) -> list[dict[str, Any]]:
+    return [
+        {
+            "threshold": row["threshold"],
+            "policy_label": row["policy_label"],
+            "precision": row["precision"],
+            "recall": row["recall"],
+            "false_positive_rate": row["false_positive_rate"],
+            "false_negative_rate": row["false_negative_rate"],
+            "review_rate": row["review_rate"],
+            "auto_block_rate": row["auto_block_rate"],
+            "precision_pct": _as_percent(row["precision"]),
+            "recall_pct": _as_percent(row["recall"]),
+            "false_positive_rate_pct": _as_percent(row["false_positive_rate"]),
+            "false_negative_rate_pct": _as_percent(row["false_negative_rate"]),
+            "review_rate_pct": _as_percent(row["review_rate"]),
+            "auto_block_rate_pct": _as_percent(row["auto_block_rate"]),
+            "high_severity_false_negative_count": row[
+                "high_severity_false_negative_count"
+            ],
+        }
+        for row in sweep.get("candidates", [])
+    ]
+
+
+def safety_review_case_rows(simulation: dict[str, Any], *, limit: int = 30) -> list[dict[str, Any]]:
+    rows = simulation.get("review_cases", [])
+    return [
+        {
+            "case_id": row["case_id"],
+            "source": row["source"],
+            "risk_category": row["risk_category"],
+            "risk_severity": row["risk_severity"],
+            "score": row["max_score"],
+            "primary_decision": row["primary_decision"],
+            "secondary_decision": row["secondary_decision"],
+            "final_decision": row["final_decision"],
+            "disagreement": row["disagreement"],
+            "escalated": row["escalated"],
+            "turnaround_minutes": row["turnaround_minutes"],
+            "rationale": row["review_rationale"],
+        }
+        for row in rows[:limit]
+    ]
+
+
+def safety_mitigation_rows(report: dict[str, Any]) -> list[dict[str, Any]]:
+    return [
+        {
+            "scenario": row["label"],
+            "unsafe_allowed": row["unsafe_allowed_count"],
+            "unsafe_intercepted": row["unsafe_intercepted_count"],
+            "overblocks": row["overblock_count"],
+            "manual_touches": row["reviewed_count"] + row["held_for_review_count"],
+            "unsafe_allowed_rate_pct": _as_percent(row["unsafe_allowed_rate"]),
+            "unsafe_intercepted_rate_pct": _as_percent(row["unsafe_intercepted_rate"]),
+            "overblock_rate_pct": _as_percent(row["overblock_rate"]),
+            "manual_touch_rate_pct": _as_percent(row["manual_touch_rate"]),
+        }
+        for row in report.get("scenarios", [])
     ]
 
 

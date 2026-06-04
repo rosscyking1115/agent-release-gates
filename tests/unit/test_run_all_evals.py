@@ -33,6 +33,8 @@ def test_run_all_evals_generates_reports(tmp_path) -> None:
     assert summary["security"]["case_count"] == 60
     assert summary["safety_classifier"]["metrics"]["high_severity_false_negative_count"] == 0
     assert summary["safety_classifier"]["weighted_decision_mix"]["review"] > 0
+    assert summary["safety_classifier"]["human_review_simulation"]["queue_count"] > 0
+    assert summary["safety_classifier"]["mitigation_impact"]["unsafe_allowed_reduction"] > 0
     assert summary["agent"]["metrics"]["side_effect_block_rate"] == 1.0
     assert summary["evaluation_history"]["current_summary"]["best_retriever"] == (
         "Local TF-IDF vector"
@@ -64,6 +66,9 @@ def test_run_all_evals_generates_reports(tmp_path) -> None:
     assert (tmp_path / "reports/safety_classifier_eval_summary.json").exists()
     assert (tmp_path / "reports/safety_classifier_eval_cases.jsonl").exists()
     assert (tmp_path / "reports/safety_threshold_sweep.json").exists()
+    assert (tmp_path / "reports/safety_human_review_simulation.json").exists()
+    assert (tmp_path / "reports/safety_mitigation_impact.json").exists()
+    assert (tmp_path / "reports/safety_threshold_decision_memo.json").exists()
     assert (tmp_path / "reports/collector_export_preview.json").exists()
     assert (tmp_path / "reports/evaluation_report.md").exists()
     assert (tmp_path / "reports/evaluation_report.html").exists()

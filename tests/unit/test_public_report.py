@@ -12,6 +12,7 @@ from internal_ai_agent.evals.runner import (
     evaluate_retriever_comparison,
     write_evaluation_history,
 )
+from internal_ai_agent.evals.safety_classifier import evaluate_safety_classifier
 from internal_ai_agent.evals.security import evaluate_security
 from internal_ai_agent.io import write_json
 from internal_ai_agent.reporting.public_report import (
@@ -29,6 +30,7 @@ def _prepare_reports(project_root: Path) -> None:
     retriever_comparison = evaluate_retriever_comparison(project_root)
     extraction = evaluate_extraction(project_root)
     security = evaluate_security(project_root)
+    evaluate_safety_classifier(project_root)
     agent = evaluate_agent(project_root)
     write_evaluation_history(
         project_root,
@@ -145,6 +147,9 @@ def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
     assert "| Weighted safe response rate | 0.00% | 100.00% |" in report
     assert "| Residual risk score |" in report
     assert "| retrieved_access_escalation |" in report
+    assert "## Safety Classifier Workflow" in report
+    assert "| Safety classifier metric | Value |" in report
+    assert "| Threshold decision memo | Value |" in report
     assert "## Agent Trace Examples" in report
     assert "trace_eval_tck-" in report
     assert "## Observability Span Export" in report
@@ -190,6 +195,7 @@ def test_generate_public_report_html_renders_tables_and_safety_boundary(tmp_path
     assert "<h2>Retriever Metric Snapshots</h2>" in html
     assert "<h2>Historical Evaluation Snapshots</h2>" in html
     assert "<h2>Dataset Profile</h2>" in html
+    assert "<h2>Safety Classifier Workflow</h2>" in html
     assert "<td>dry_run_preview</td>" in html
     assert "It does not use real company documents" in html
 

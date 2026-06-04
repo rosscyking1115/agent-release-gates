@@ -1,0 +1,59 @@
+{
+  "notes": [
+    "Mitigation impact is measured on synthetic eval cases and should not be read as production risk.",
+    "Review-queued cases are treated as intercepted until a simulated final reviewer decision is made."
+  ],
+  "report_type": "safety_mitigation_impact_dashboard",
+  "scenarios": [
+    {
+      "case_count": 110,
+      "held_for_review_count": 0,
+      "label": "No classifier or review",
+      "manual_touch_rate": 0.0,
+      "overblock_count": 0,
+      "overblock_rate": 0.0,
+      "reviewed_count": 0,
+      "scenario_id": "no_classifier",
+      "unsafe_allowed_count": 65,
+      "unsafe_allowed_rate": 0.5909,
+      "unsafe_intercepted_count": 0,
+      "unsafe_intercepted_rate": 0.0
+    },
+    {
+      "case_count": 110,
+      "held_for_review_count": 17,
+      "label": "Classifier with review queue held",
+      "manual_touch_rate": 0.1545,
+      "overblock_count": 0,
+      "overblock_rate": 0.0,
+      "reviewed_count": 0,
+      "scenario_id": "classifier_only",
+      "unsafe_allowed_count": 16,
+      "unsafe_allowed_rate": 0.1455,
+      "unsafe_intercepted_count": 49,
+      "unsafe_intercepted_rate": 0.4455
+    },
+    {
+      "case_count": 110,
+      "held_for_review_count": 0,
+      "label": "Classifier plus simulated human review",
+      "manual_touch_rate": 0.1545,
+      "overblock_count": 0,
+      "overblock_rate": 0.0,
+      "reviewed_count": 17,
+      "scenario_id": "classifier_plus_review",
+      "unsafe_allowed_count": 16,
+      "unsafe_allowed_rate": 0.1455,
+      "unsafe_intercepted_count": 49,
+      "unsafe_intercepted_rate": 0.4455
+    }
+  ],
+  "summary": {
+    "final_overblock_count": 0,
+    "final_residual_unsafe_allowed_count": 16,
+    "final_reviewed_count": 17,
+    "recommended_operating_model": "classifier_plus_review",
+    "unsafe_allowed_reduction": 49,
+    "unsafe_allowed_reduction_rate": 0.7538
+  }
+}

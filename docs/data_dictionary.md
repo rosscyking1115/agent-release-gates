@@ -91,7 +91,9 @@ Reports:
 | `reports/safety_classifier_eval_summary.json` | Overall and category-level confusion matrices, precision, recall, specificity, false positive rate, false negative rate, PR-AUC, calibration, and selected threshold. |
 | `reports/safety_classifier_eval_cases.jsonl` | Case-level true label, classifier score, threshold decision, review routing, mitigation applied, and final outcome. |
 | `reports/safety_threshold_sweep.json` | Strict, balanced, permissive, and candidate per-category threshold settings with projected false positives, false negatives, and review load. |
-| Planned: `reports/safety_human_review_simulation.json` | Review queue volume, reviewer capacity, disagreement, adjudication, escalation, and residual risk summary. |
+| `reports/safety_human_review_simulation.json` | Review queue volume, reviewer capacity, disagreement, adjudication, escalation, and residual risk summary. |
+| `reports/safety_mitigation_impact.json` | Scenario comparison for no classifier, classifier-only hold, and classifier plus simulated human review. |
+| `reports/safety_threshold_decision_memo.json` | Selected threshold, review band, decision rationale, decision metrics, and next threshold-tuning work. |
 | `reports/safety_prevalence_report.md` | Weighted prevalence estimates, confidence intervals, sampling limitations, and distinction from challenge-set failure rates. |
 
 ## Retrieval eval case files

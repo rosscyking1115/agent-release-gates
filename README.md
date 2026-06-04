@@ -13,6 +13,9 @@ This project is not a clone or critique of any real company's internal AI system
 - Evaluation gates: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/evaluation_gates.json
 - Safety classifier summary: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_classifier_eval_summary.json
 - Safety threshold sweep: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_threshold_sweep.json
+- Safety human review simulation: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_human_review_simulation.json
+- Safety mitigation impact: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_mitigation_impact.json
+- Safety threshold decision memo: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_threshold_decision_memo.json
 - Observability trace index: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/observability_trace_index.json
 
 ## What This Project Demonstrates
@@ -35,7 +38,7 @@ Internal AI agents are only useful when their answers are grounded, measurable, 
 | --- | --- |
 | Retrieval evaluation | Baseline, lexical, hybrid sparse semantic, local TF-IDF vector, and local hashed embedding-store retrievers |
 | Structured extraction | Pydantic-validated ticket extraction and routing decisions |
-| Safety testing | Red-team cases for prompt injection, leakage, weak evidence, excessive agency, access escalation, and tool misuse |
+| Safety testing | Red-team cases plus classifier threshold tuning, sampled prevalence estimation, human review simulation, mitigation impact, and decision memo |
 | Agent governance | Read-only tools plus approval-gated mock side effects |
 | Evaluation gates | Deterministic pass/warn/fail gates for release-readiness checks |
 | Observability | Trace IDs, audit events, monitoring snapshots, local span timeline, queryable trace index, OTLP/HTTP export preview, local capture smoke test, and Dockerized OpenTelemetry Collector check |
@@ -74,6 +77,9 @@ Additional evaluation results:
 | Safety classifier false positive rate | 0.00% |
 | Safety high-severity false negatives | 0 |
 | Synthetic unsafe-request prevalence estimate | 10.02% |
+| Safety human review queue | 17 cases |
+| Safety residual unsafe allowed after review | 16 cases |
+| Safety unsafe-allowed reduction | 75.38% |
 | Agent side-effect block rate | 100.00% |
 | Agent approval audit rate | 100.00% |
 | Evaluation gate status | pass with warnings |
@@ -209,5 +215,5 @@ The root `streamlit_app.py` entrypoint loads the dashboard from `app/streamlit_a
 - Add more hand-authored golden cases and noisier synthetic tickets.
 - Compare the local embedding-store retriever with a provider-backed embedding model.
 - Extend the OpenTelemetry Collector setup with optional downstream storage or visualization beyond the local trace index.
-- Extend the Safety Prevalence & Classifier Evaluation module with full human review simulation, mitigation impact, and threshold decision memo.
+- Add more medium-severity safety cases and retune category-specific thresholds after the review simulation exposes residual-risk patterns.
 - Add an optional LLM extraction path with schema repair.

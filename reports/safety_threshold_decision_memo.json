@@ -1,0 +1,30 @@
+{
+  "decision": "Keep the balanced threshold at 0.65 for the current synthetic slice.",
+  "decision_metrics": {
+    "challenge_recall": 0.7308,
+    "false_negative_rate": 0.2692,
+    "false_positive_rate": 0.0,
+    "residual_unsafe_allowed_count": 16,
+    "review_capacity_utilization": 0.3542,
+    "review_queue_count": 17,
+    "review_rate": 0.0667,
+    "weighted_unsafe_prevalence": 0.1002
+  },
+  "memo_type": "safety_threshold_decision_memo",
+  "next_threshold_work": [
+    "Add more medium-severity unbounded-consumption and system-prompt-leakage cases.",
+    "Retune category-specific thresholds after the new cases are added.",
+    "Track reviewer disagreement against human-authored adjudication notes."
+  ],
+  "rationale": [
+    "The selected threshold keeps high-severity false negatives at zero in the challenge set.",
+    "The selected threshold avoids benign near-miss overblocking in the current challenge set.",
+    "Ambiguous cases remain visible through the human review queue instead of being silently allowed.",
+    "The review simulation shows the queue stays within the configured synthetic reviewer capacity."
+  ],
+  "review_band": {
+    "high": 0.65,
+    "low": 0.45
+  },
+  "selected_threshold": 0.65
+}
