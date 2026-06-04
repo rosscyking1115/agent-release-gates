@@ -78,6 +78,8 @@ The plan is based on current official / primary sources and widely used ecosyste
 - pgvector: https://github.com/pgvector/pgvector
 - PostgreSQL row-level security: https://www.postgresql.org/docs/17/ddl-rowsecurity.html
 - OpenTelemetry GenAI semantic conventions: https://opentelemetry.io/docs/specs/semconv/gen-ai/
+- OpenAI moderation category and score contract: https://platform.openai.com/docs/guides/moderation
+- scikit-learn classification metrics and threshold curves: https://scikit-learn.org/stable/modules/model_evaluation.html
 - Ragas evaluation metrics: https://docs.ragas.io/
 - LlamaIndex evaluation docs: https://developers.llamaindex.ai/python/framework/module_guides/evaluating/
 - promptfoo red-teaming and evaluation: https://www.promptfoo.dev/docs/intro/
@@ -326,6 +328,11 @@ Track both AI quality and operational usefulness.
 - cross-user retrieval leakage rate
 - excessive-agency blocked rate
 - unbounded-cost blocked rate
+- safety classifier precision / recall
+- false positive and false negative rate by unsafe-request category
+- estimated unsafe-request prevalence in sampled traffic
+- human-review queue precision and escalation burden
+- mitigation lift after threshold or rule changes
 
 ### Operations UX
 
@@ -590,6 +597,47 @@ OWASP LLM Top 10 items to explicitly map:
 - vector and embedding weaknesses
 - misinformation
 - unbounded consumption
+
+### Phase 7A - Safety Prevalence And Classifier Evaluation
+
+Goal:
+
+Extend the red-team suite from deterministic safe/unsafe outcomes into a measurable safety classifier lab. The module should help a builder understand how moderation rules behave under realistic base rates, threshold choices, and human-review capacity.
+
+Deliverables:
+
+- simulated harmful and unsafe request taxonomy
+- synthetic sampled request stream with known labels and prevalence settings
+- deterministic rule/classifier score contract
+- confusion matrix and per-category precision, recall, false positive rate, and false negative rate
+- threshold tuning sweep with recommended operating points
+- prevalence estimate from sampled cases
+- human review workflow simulation for borderline cases
+- mitigation impact dashboard showing before/after threshold or rule changes
+- decision memo explaining the chosen threshold, review policy, residual risk, and limitations
+
+Acceptance criteria:
+
+- Unsafe categories are synthetic and policy-oriented, not a list of operational exploit instructions.
+- The dashboard shows the trade-off between catching unsafe requests and over-blocking benign requests.
+- Human review is modeled as a queue with capacity, reviewer outcomes, and escalation burden.
+- The module reports category-level results instead of only one aggregate safety score.
+- Release gates include at least one blocking check for high-severity false negatives and one non-blocking warning for unresolved review load.
+- Public docs make clear that prevalence is estimated from synthetic sampled cases, not real user traffic.
+
+Suggested artifacts:
+
+```text
+data/eval/safety_prevalence_cases.jsonl
+reports/safety_classifier_eval_summary.json
+reports/safety_classifier_eval_cases.jsonl
+reports/safety_threshold_sweep.json
+reports/safety_human_review_simulation.json
+docs/safety_prevalence_module_plan.md
+docs/safety_threshold_decision_memo.md
+```
+
+This phase should fit after the current red-team suite because it builds on the existing safety categories while adding measurement depth: base rates, classifier thresholds, review workflow, and mitigation impact.
 
 ### Phase 8 - Observability And Monitoring
 

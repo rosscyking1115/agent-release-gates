@@ -20,6 +20,7 @@ The project should produce artifacts that are independently useful:
 - synthetic operations datasets
 - golden evaluation cases
 - red-team cases
+- safety prevalence and classifier-evaluation cases
 - repeatable eval scripts
 - before/after metrics
 - deterministic release gates
@@ -56,6 +57,7 @@ The project is useful, but it is still too deterministic in several places:
 - Error analysis now identifies retrieved-but-not-cited failures, deterministic retriever-version trend snapshots, and dated lab milestone history; the expanded manual challenge set drove reranking fixes for schema mismatch, stale context, KYC artefact phrasing, and ambiguous-handoff abstention.
 - Dataset profiling now exposes manual-versus-generated share, abstention coverage, task/noise/issue/team coverage, red-team coverage, and explicit data-quality gap labels. The profile now clears the previous manual-share gap with 94 hand-authored golden cases, while still flagging that provider-backed embedding comparison is not covered.
 - Release gates now convert the generated artifacts into deterministic pass/warn/fail checks for benchmark coverage, retrieval grounding, safety, approval governance, and observability consistency.
+- Safety evaluation currently measures deterministic red-team pass/fail behavior, but it does not yet estimate unsafe-request prevalence, tune classifier thresholds, or model false positive / false negative trade-offs under a human-review workflow.
 - Ticket and runbook data are still partly templated, even after adding noisy, human-like, human email-thread, manual evidence-packet, manual field-note, mixed review-bundle, retrieved-context-review, retrieved-document-injection, and long-conflicting-context cases.
 - Extraction is deterministic pattern matching.
 - Red-team checks include harder retrieved-context attacks, but are still string-based.
@@ -66,11 +68,12 @@ These are acceptable for the first lab version, but they should guide the next w
 
 ## Next Build Priorities
 
-1. Run and review the provider-backed embedding comparison when API access and cost are acceptable.
-2. Continue making the golden suite less templated with new non-generated tickets, mixed evidence bundles, and harder retrieved-context evidence.
-3. Extend the local trace index or OpenTelemetry Collector setup with optional downstream storage or visualization.
-4. Add model-assisted adversarial review for the red-team suite after the deterministic scoring contract remains stable.
-5. Add an optional LLM extraction path with schema repair once noisier tickets are in place.
+1. Add a Safety Prevalence & Classifier Evaluation module with synthetic harmful-request categories, classifier/rule scoring, threshold tuning, prevalence estimation, human-review simulation, and mitigation-impact reporting.
+2. Run and review the provider-backed embedding comparison when API access and cost are acceptable.
+3. Continue making the golden suite less templated with new non-generated tickets, mixed evidence bundles, and harder retrieved-context evidence.
+4. Extend the local trace index or OpenTelemetry Collector setup with optional downstream storage or visualization.
+5. Add model-assisted adversarial review for the red-team suite after the deterministic scoring contract remains stable.
+6. Add an optional LLM extraction path with schema repair once noisier tickets are in place.
 
 ## Secondary Use
 

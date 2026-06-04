@@ -8,6 +8,7 @@ The evaluation harness should show whether the internal AI agent is becoming mor
 
 - `golden_cases.jsonl`: expected answers, citations, ticket fields, and routing decisions.
 - `red_team_cases.jsonl`: prompt injection, unsafe agency, leakage, weak-evidence, and retrieved-context attack cases.
+- `safety_prevalence_cases.jsonl`: planned sampled request stream for safety classifier and prevalence evaluation.
 - `tickets.jsonl`: synthetic operations tickets used by extraction and routing tasks.
 - `runbooks.jsonl`: synthetic runbook sections used by retrieval and citation tasks.
 
@@ -20,6 +21,8 @@ The evaluation harness should show whether the internal AI agent is becoming mor
 - field-level extraction accuracy
 - routing accuracy
 - prompt-injection block rate
+- safety classifier precision, recall, false positive rate, and false negative rate
+- estimated unsafe-request prevalence and human-review load
 
 ## Deterministic Checks
 
@@ -65,6 +68,10 @@ The dashboard reads the saved report artifacts rather than recomputing metrics o
 - `reports/observability_otel_spans.jsonl`
 - `reports/observability_trace_index.json`
 - `reports/collector_export_preview.json`
+- planned: `reports/safety_classifier_eval_summary.json`
+- planned: `reports/safety_classifier_eval_cases.jsonl`
+- planned: `reports/safety_threshold_sweep.json`
+- planned: `reports/safety_human_review_simulation.json`
 - `reports/evaluation_report.md`
 - `reports/evaluation_report.html`
 - `reports/evaluation_report.pdf`
@@ -148,3 +155,18 @@ Known limitation: the Dockerized collector check verifies receiver acceptance an
 The security version evaluates `red_team_cases.jsonl` against baseline and improved behavior. It reports explicit policy block rate, safe response rate, weighted safe response rate, residual risk score, and breakdowns by risk type, attack channel, and severity band across prompt injection, grounding bypass, excessive agency, access-control bypass, retrieved-document injection, sensitive-data requests, weak evidence, tool misuse, system-prompt leakage, unbounded consumption, retrieved-context priority attacks, approval-gate bypass, citation suppression, unsupported resolution, and retrieved access escalation.
 
 Known limitation: current red-team checks and severity weights are deterministic. Future versions should include more varied phrasing, retrieved-document attacks embedded inside generated runbook content, and model-assisted adversarial review.
+
+## Planned Safety Prevalence And Classifier Evaluation Version
+
+The next safety extension should evaluate a deterministic safety classifier or rule layer over a synthetic sampled request stream. It should add simulated unsafe-request categories, benign near-miss requests, classifier scores, threshold decisions, false positive / false negative trade-offs, prevalence estimation, and a human-review workflow for borderline cases.
+
+The module should report:
+
+- confusion matrix by category and severity
+- precision, recall, false positive rate, false negative rate, and weighted safety score
+- prevalence estimate for unsafe categories in the sampled synthetic stream
+- threshold sweep with candidate operating points
+- human-review queue volume, reviewer catch rate, escalation burden, and unresolved residual risk
+- mitigation impact before and after threshold or rule changes
+
+The decision memo should explain why a threshold was chosen, what risk it prioritizes, what benign traffic it over-blocks, what unsafe cases still escape, and what must go to human review. The public report must state that prevalence is estimated from synthetic sampled cases, not real traffic.

@@ -72,6 +72,28 @@ Security evaluation writes `reports/security_eval_summary.json` and `reports/sec
 | `by_attack_channel` | Improved-policy breakdown by prompt or retrieved-document channel. |
 | `by_risk_severity` | Improved-policy breakdown by deterministic severity band. |
 
+## Planned safety prevalence and classifier files
+
+The planned Safety Prevalence & Classifier Evaluation module should keep enriched challenge cases separate from sampled synthetic prevalence cases.
+
+Planned inputs:
+
+| File | Description |
+| --- | --- |
+| `config/safety_taxonomy.yaml` | Category definitions, severity, allowed/disallowed boundary, deterministic rule flags, and benign near-neighbor notes. |
+| `data/eval/safety_challenge_cases.jsonl` | Enriched harmful, unsafe, adversarial, and benign-control cases used for classifier robustness checks. |
+| `data/eval/safety_prevalence_cases.jsonl` | Weighted sampled synthetic request stream used for prevalence estimation. |
+
+Planned reports:
+
+| File | Description |
+| --- | --- |
+| `reports/safety_classifier_eval_summary.json` | Overall and category-level confusion matrices, precision, recall, specificity, false positive rate, false negative rate, PR-AUC, calibration, and selected threshold. |
+| `reports/safety_classifier_eval_cases.jsonl` | Case-level true label, classifier score, threshold decision, review routing, mitigation applied, and final outcome. |
+| `reports/safety_threshold_sweep.json` | Strict, balanced, permissive, and candidate per-category threshold settings with projected false positives, false negatives, and review load. |
+| `reports/safety_human_review_simulation.json` | Review queue volume, reviewer capacity, disagreement, adjudication, escalation, and residual risk summary. |
+| `reports/safety_prevalence_report.md` | Weighted prevalence estimates, confidence intervals, sampling limitations, and distinction from challenge-set failure rates. |
+
 ## Retrieval eval case files
 
 Retrieval case result files include `baseline_eval_cases.jsonl`, `improved_eval_cases.jsonl`, `hybrid_eval_cases.jsonl`, `vector_eval_cases.jsonl`, and `embedding_eval_cases.jsonl`.

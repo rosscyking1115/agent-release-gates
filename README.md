@@ -201,4 +201,5 @@ The root `streamlit_app.py` entrypoint loads the dashboard from `app/streamlit_a
 - Add more hand-authored golden cases and noisier synthetic tickets.
 - Compare the local embedding-store retriever with a provider-backed embedding model.
 - Extend the OpenTelemetry Collector setup with optional downstream storage or visualization beyond the local trace index.
+- Add a Safety Prevalence & Classifier Evaluation module for synthetic unsafe-request prevalence, classifier threshold tuning, false positive / false negative trade-offs, human review simulation, and mitigation impact.
 - Add an optional LLM extraction path with schema repair.

@@ -62,6 +62,7 @@ The project is positioned as a responsible enterprise AI engineering lab. Its va
 | Citation and abstention metrics | Grounded AI judgement |
 | Structured extraction schemas | Document intelligence and validation |
 | Red-team policy suite | AI security awareness |
+| Planned safety prevalence and classifier evaluation module | Safety thresholding, prevalence estimation, human review workflow, and decision-support design |
 | Controlled agent workflow | Tool governance and approval design |
 | Trace and audit events | Observability and debugging |
 | OTel-style evaluation, trace timeline, local trace index, OTLP/HTTP export preview, local collector smoke test, and Dockerized OpenTelemetry Collector check | Inspectable local observability artifact |
@@ -94,5 +95,6 @@ The security red-team suite reports 100.00% improved explicit policy block rate,
 ## Next Decisions
 
 - Whether to compare the local embedding store with a provider-backed embedding model.
+- Whether to prioritize the Safety Prevalence & Classifier Evaluation module next, using separate challenge and sampled-prevalence datasets so false positive / false negative trade-offs, review load, and threshold choices are visible.
 - Whether to add a real LangGraph dependency or keep the local controlled workflow until evaluation cases become more varied.
 - Whether to prioritize noisier data/error analysis or downstream trace-index and collector storage/visualization.
