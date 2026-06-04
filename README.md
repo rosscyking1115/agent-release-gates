@@ -7,19 +7,9 @@ This project is not a clone or critique of any real company's internal AI system
 ## Live Project
 
 - Interactive dashboard: https://agent-evaluation-lab.streamlit.app/
-- Public site: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/
+- Public project page: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/
 - Full evaluation report: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/evaluation_report.html
-- Dataset profile: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/dataset_profile.json
-- Evaluation gates: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/evaluation_gates.json
-- Safety classifier summary: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_classifier_eval_summary.json
-- Safety threshold sweep: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_threshold_sweep.json
-- Safety threshold retuning: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_threshold_retuning.json
-- Safety human review simulation: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_human_review_simulation.json
-- Safety adjudication notes: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_adjudication_notes.json
-- Safety reviewer disagreement slices: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_reviewer_disagreement_slices.json
-- Safety mitigation impact: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_mitigation_impact.json
-- Safety threshold decision memo: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_threshold_decision_memo.json
-- Observability trace index: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/observability_trace_index.json
+- PDF report: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/evaluation_report.pdf
 
 ## What This Project Demonstrates
 
@@ -73,30 +63,15 @@ Additional evaluation results:
 | Evaluation | Result |
 | --- | ---: |
 | Structured extraction schema validity | 100.00% |
-| Structured extraction routing accuracy | 100.00% |
 | Improved red-team safe response rate | 100.00% |
-| Improved red-team residual risk score | 0 |
 | Safety classifier recall | 90.91% |
-| Safety classifier false positive rate | 0.00% |
 | Safety high-severity false negatives | 0 |
-| Safety false-negative reduction after retuning | 10 |
-| Safety recall lift after retuning | 31.53% |
 | Synthetic unsafe-request prevalence estimate | 10.02% |
-| Safety human review queue | 14 cases |
-| Safety adjudication notes | 31 |
-| Safety adjudication classifier disagreements | 19 |
-| Safety benign review-to-allow overrides | 14 |
-| Safety unsafe allow-to-block overrides | 5 |
-| Unsafe cases surfaced by adjudication notes | 5 |
-| Safety residual unsafe allowed after review | 5 cases |
-| Safety unsafe-allowed reduction | 92.96% |
 | Agent side-effect block rate | 100.00% |
 | Agent approval audit rate | 100.00% |
 | Evaluation gate status | pass with warnings |
 | Evaluation gate failures | 0 |
-| Exported OTel-style spans | 1,307 |
 | Indexed observability traces | 21 |
-| Trace-index error spans | 302 |
 
 These scores are engineering checks over synthetic data, not claims about real-world production performance.
 
@@ -185,6 +160,22 @@ docker build -t internal-ai-agent-eval-lab:local .
 ```
 
 CI runs linting, tests, deterministic report regeneration, local OTLP smoke testing, Dockerized OpenTelemetry Collector verification, and Docker build verification.
+
+## Technical Artifacts
+
+The public project page keeps the main experience focused on the dashboard and evaluation report. These JSON artifacts remain available for technical review:
+
+- Dataset profile: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/dataset_profile.json
+- Evaluation gates: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/evaluation_gates.json
+- Safety classifier summary: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_classifier_eval_summary.json
+- Safety threshold sweep: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_threshold_sweep.json
+- Safety threshold retuning: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_threshold_retuning.json
+- Safety human review simulation: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_human_review_simulation.json
+- Safety adjudication notes: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_adjudication_notes.json
+- Safety reviewer disagreement slices: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_reviewer_disagreement_slices.json
+- Safety mitigation impact: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_mitigation_impact.json
+- Safety threshold decision memo: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_threshold_decision_memo.json
+- Observability trace index: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/observability_trace_index.json
 
 ## Streamlit Cloud Deployment
 

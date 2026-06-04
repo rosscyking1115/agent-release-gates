@@ -115,14 +115,32 @@ def _index_html(
     safety_prevalence = safety_classifier["weighted_prevalence"]
     retuning_summary = safety_retuning["summary"]
     review_summary = safety_review["summary"]
-    adjudication_summary = safety_adjudication["summary"]
-    disagreement_summary = safety_disagreements["summary"]
     mitigation_summary = safety_mitigation["summary"]
     risk_labels = "\n".join(
         f"<li>{escape(label)}</li>" for label in profile["risk_labels"]
     )
     recommendations = "\n".join(
         f"<li>{escape(item)}</li>" for item in profile["recommended_next_data_work"]
+    )
+    artifact_links = [
+        ("Dataset profile", "dataset_profile.json"),
+        ("Evaluation gates", "evaluation_gates.json"),
+        ("Safety classifier summary", "safety_classifier_eval_summary.json"),
+        ("Safety threshold sweep", "safety_threshold_sweep.json"),
+        ("Safety threshold retuning", "safety_threshold_retuning.json"),
+        ("Safety human review simulation", "safety_human_review_simulation.json"),
+        ("Safety adjudication notes", "safety_adjudication_notes.json"),
+        (
+            "Safety reviewer disagreement slices",
+            "safety_reviewer_disagreement_slices.json",
+        ),
+        ("Safety mitigation impact", "safety_mitigation_impact.json"),
+        ("Safety threshold decision memo", "safety_threshold_decision_memo.json"),
+        ("Observability trace index", "observability_trace_index.json"),
+    ]
+    artifacts = "\n".join(
+        f'<li><a href="{href}">{escape(label)}</a></li>'
+        for label, href in artifact_links
     )
     repo_url = "https://github.com/rosscyking1115/internal-ai-agent-eval-lab"
     streamlit_url = "https://agent-evaluation-lab.streamlit.app/"
@@ -231,6 +249,20 @@ def _index_html(
       padding-left: 20px;
       color: var(--muted);
     }}
+    .artifact-list {{
+      columns: 2;
+      column-gap: 36px;
+      max-width: 900px;
+    }}
+    .artifact-list li {{
+      break-inside: avoid;
+      margin-bottom: 8px;
+    }}
+    @media (max-width: 720px) {{
+      .artifact-list {{
+        columns: 1;
+      }}
+    }}
     code {{
       background: #edf2f7;
       border-radius: 4px;
@@ -264,16 +296,6 @@ def _index_html(
         <a class="button primary" href="{streamlit_url}">Open Interactive Dashboard</a>
         <a class="button primary" href="evaluation_report.html">Open Full Report</a>
         <a class="button" href="evaluation_report.pdf">Download PDF</a>
-        <a class="button" href="dataset_profile.json">Dataset Profile JSON</a>
-        <a class="button" href="evaluation_gates.json">Evaluation Gates JSON</a>
-        <a class="button" href="safety_classifier_eval_summary.json">Safety Classifier JSON</a>
-        <a class="button" href="safety_threshold_sweep.json">Safety Threshold Sweep</a>
-        <a class="button" href="safety_threshold_retuning.json">Safety Retuning</a>
-        <a class="button" href="safety_human_review_simulation.json">Safety Review Simulation</a>
-        <a class="button" href="safety_adjudication_notes.json">Safety Adjudication Notes</a>
-        <a class="button" href="safety_reviewer_disagreement_slices.json">Disagreement Slices</a>
-        <a class="button" href="safety_mitigation_impact.json">Safety Mitigation Impact</a>
-        <a class="button" href="safety_threshold_decision_memo.json">Safety Decision Memo</a>
         <a class="button" href="{repo_url}">GitHub Repo</a>
       </div>
     </header>
@@ -302,35 +324,12 @@ def _index_html(
         {_metric("Improved abstention accuracy", _pct(metrics["abstention_accuracy"]["improved"]))}
         {_metric("Improved red-team safe rate", _pct(security_metrics["improved_safe_rate"]))}
         {_metric("Safety classifier recall", _pct(safety_metrics["recall"]))}
-        {_metric("Safety overblock rate", _pct(safety_metrics["false_positive_rate"]))}
-        {_metric("Safety FN reduction", retuning_summary["false_negative_reduction"])}
         {_metric("Retuned recall lift", _pct(retuning_summary["recall_delta"]))}
         {_metric("Synthetic unsafe prevalence", _pct(safety_prevalence["unsafe_prevalence"]))}
         {_metric("High-severity FN count", safety_metrics["high_severity_false_negative_count"])}
         {_metric("Safety review queue", review_summary["queue_count"])}
-        {_metric("Adjudication notes", adjudication_summary["adjudication_note_count"])}
-        {_metric(
-            "Adjudication disagreements",
-            adjudication_summary["classifier_disagreement_count"],
-        )}
-        {_metric(
-            "Benign review overrides",
-            disagreement_summary["benign_review_to_allow_count"],
-        )}
-        {_metric(
-            "Unsafe allow overrides",
-            disagreement_summary["unsafe_allow_to_block_count"],
-        )}
-        {_metric("Review capacity use", _pct(review_summary["capacity_utilization"]))}
-        {_metric(
-            "Residual unsafe allowed",
-            mitigation_summary["final_residual_unsafe_allowed_count"],
-        )}
         {_metric("Unsafe reduction", _pct(mitigation_summary["unsafe_allowed_reduction_rate"]))}
-        {_metric("Collector spans", collector["span_count"])}
-        {_metric("Collector payloads", collector["payload_count"])}
         {_metric("Indexed traces", trace_index["trace_count"])}
-        {_metric("Trace error spans", trace_index["error_span_count"])}
         {_metric("Release gate status", gates["overall_status"])}
         {_metric("Release gate failures", gates["fail_count"])}
       </div>
@@ -364,6 +363,15 @@ def _index_html(
         Then open <code>http://localhost:8510</code> for the dashboard and
         <code>http://localhost:8000/health</code> for the API.
       </p>
+    </section>
+
+    <section class="section">
+      <h2>Technical Artifact Index</h2>
+      <p>
+        These JSON artifacts are published for technical reviewers who want to
+        inspect the generated metrics and safety workflow details.
+      </p>
+      <ul class="artifact-list">{artifacts}</ul>
     </section>
   </main>
 </body>
