@@ -43,6 +43,12 @@ def test_run_all_evals_generates_reports(tmp_path) -> None:
     ] == summary["safety_classifier"]["human_adjudication_notes"][
         "classifier_disagreement_count"
     ]
+    assert summary["safety_classifier"]["secondary_review_band_analysis"][
+        "secondary_review_floor_recommended"
+    ]
+    assert summary["safety_classifier"]["secondary_review_band_analysis"][
+        "global_threshold_change_recommended"
+    ] is False
     assert summary["safety_classifier"]["mitigation_impact"]["unsafe_allowed_reduction"] > 0
     assert summary["safety_classifier"]["threshold_retuning"]["false_negative_reduction"] > 0
     assert summary["agent"]["metrics"]["side_effect_block_rate"] == 1.0
@@ -80,6 +86,7 @@ def test_run_all_evals_generates_reports(tmp_path) -> None:
     assert (tmp_path / "reports/safety_human_review_simulation.json").exists()
     assert (tmp_path / "reports/safety_adjudication_notes.json").exists()
     assert (tmp_path / "reports/safety_reviewer_disagreement_slices.json").exists()
+    assert (tmp_path / "reports/safety_secondary_review_band_analysis.json").exists()
     assert (tmp_path / "reports/safety_mitigation_impact.json").exists()
     assert (tmp_path / "reports/safety_threshold_decision_memo.json").exists()
     assert (tmp_path / "reports/collector_export_preview.json").exists()

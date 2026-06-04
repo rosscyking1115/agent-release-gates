@@ -31,7 +31,7 @@ Internal AI agents are only useful when their answers are grounded, measurable, 
 | --- | --- |
 | Retrieval evaluation | Baseline, lexical, hybrid sparse semantic, local TF-IDF vector, and local hashed embedding-store retrievers |
 | Structured extraction | Pydantic-validated ticket extraction and routing decisions |
-| Safety testing | Red-team cases plus classifier threshold tuning, sampled prevalence estimation, human review simulation, synthetic adjudication notes, reviewer-disagreement slices, mitigation impact, and decision memo |
+| Safety testing | Red-team cases plus classifier threshold tuning, sampled prevalence estimation, human review simulation, synthetic adjudication notes, reviewer-disagreement slices, secondary review-band analysis, mitigation impact, and decision memo |
 | Agent governance | Read-only tools plus approval-gated mock side effects |
 | Evaluation gates | Deterministic pass/warn/fail gates for release-readiness checks |
 | Observability | Trace IDs, audit events, monitoring snapshots, local span timeline, queryable trace index, OTLP/HTTP export preview, local capture smoke test, and Dockerized OpenTelemetry Collector check |
@@ -173,6 +173,7 @@ The public project page keeps the main experience focused on the dashboard and e
 - Safety human review simulation: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_human_review_simulation.json
 - Safety adjudication notes: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_adjudication_notes.json
 - Safety reviewer disagreement slices: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_reviewer_disagreement_slices.json
+- Safety secondary review-band analysis: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_secondary_review_band_analysis.json
 - Safety mitigation impact: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_mitigation_impact.json
 - Safety threshold decision memo: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_threshold_decision_memo.json
 - Observability trace index: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/observability_trace_index.json
@@ -216,5 +217,5 @@ The root `streamlit_app.py` entrypoint loads the dashboard from `app/streamlit_a
 - Add more hand-authored golden cases and noisier synthetic tickets.
 - Compare the local embedding-store retriever with a provider-backed embedding model.
 - Extend the OpenTelemetry Collector setup with optional downstream storage or visualization beyond the local trace index.
-- Use reviewer-disagreement slices to decide whether the safety module needs a secondary review band.
+- Test the recommended secondary review floor on new ambiguous medium-severity safety cases.
 - Add an optional LLM extraction path with schema repair.

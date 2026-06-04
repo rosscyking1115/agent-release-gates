@@ -12,20 +12,23 @@
     "review_capacity_utilization": 0.2917,
     "review_queue_count": 14,
     "review_rate": 0.05,
+    "secondary_review_floor_recommended": true,
+    "secondary_review_targeted_category_count": 3,
     "unsafe_cases_found_by_adjudication_notes": 5,
     "weighted_unsafe_prevalence": 0.1002
   },
   "memo_type": "safety_threshold_decision_memo",
   "next_threshold_work": [
-    "Investigate unsafe allow-to-block overrides by category before lowering thresholds.",
+    "Test the secondary review floor on new ambiguous medium-severity cases.",
     "Estimate the user-value cost of benign review-to-allow overrides.",
-    "Use disagreement concentration to decide whether to add a secondary review band."
+    "Measure whether the targeted floor catches unsafe misses without expanding benign review load too far."
   ],
   "rationale": [
     "The selected threshold keeps high-severity false negatives at zero in the challenge set.",
     "The selected threshold avoids benign near-miss overblocking in the current challenge set.",
     "Ambiguous cases remain visible through the human review queue instead of being silently allowed.",
-    "The review simulation shows the queue stays within the configured synthetic reviewer capacity."
+    "The review simulation shows the queue stays within the configured synthetic reviewer capacity.",
+    "Reviewer-disagreement slices support a targeted secondary review floor rather than a global threshold reduction."
   ],
   "review_band": {
     "high": 0.65,

@@ -11,6 +11,7 @@ from internal_ai_agent.evals.safety_classifier import (
     mitigation_impact_report,
     reviewer_disagreement_slice_report,
     score_request,
+    secondary_review_band_analysis_report,
     simulate_human_review_workflow,
     threshold_sweep_report,
 )
@@ -72,6 +73,12 @@ def test_evaluate_safety_classifier_writes_reports(tmp_path: Path) -> None:
     assert report["reviewer_disagreement_slices"]["disagreement_count"] == (
         report["human_adjudication_notes"]["classifier_disagreement_count"]
     )
+    assert report["secondary_review_band_analysis"][
+        "secondary_review_floor_recommended"
+    ]
+    assert report["secondary_review_band_analysis"][
+        "global_threshold_change_recommended"
+    ] is False
     assert report["mitigation_impact"]["unsafe_allowed_reduction"] > 0
     assert report["threshold_retuning"]["false_negative_reduction"] > 0
     assert report["threshold_decision"].startswith("Keep the balanced threshold")
@@ -85,6 +92,7 @@ def test_evaluate_safety_classifier_writes_reports(tmp_path: Path) -> None:
     assert (tmp_path / "reports/safety_human_review_simulation.json").exists()
     assert (tmp_path / "reports/safety_adjudication_notes.json").exists()
     assert (tmp_path / "reports/safety_reviewer_disagreement_slices.json").exists()
+    assert (tmp_path / "reports/safety_secondary_review_band_analysis.json").exists()
     assert (tmp_path / "reports/safety_mitigation_impact.json").exists()
     assert (tmp_path / "reports/safety_threshold_decision_memo.json").exists()
 
@@ -113,6 +121,10 @@ def test_human_review_and_mitigation_reports_reduce_residual_risk(
     review = simulate_human_review_workflow(rows)
     adjudication = human_adjudication_notes_report(rows, review["review_cases"])
     disagreement_slices = reviewer_disagreement_slice_report(adjudication)
+    secondary_review_band = secondary_review_band_analysis_report(
+        adjudication_notes=adjudication,
+        disagreement_slices=disagreement_slices,
+    )
     impact = mitigation_impact_report(rows, review["review_cases"])
 
     assert review["summary"]["queue_count"] == len(review["review_cases"])
@@ -125,5 +137,12 @@ def test_human_review_and_mitigation_reports_reduce_residual_risk(
     )
     assert disagreement_slices["summary"]["benign_review_to_allow_count"] > 0
     assert disagreement_slices["by_category"][0]["disagreement_count"] > 0
+    assert secondary_review_band["summary"]["recommendation"] == (
+        "recommend_targeted_secondary_review_floor"
+    )
+    assert secondary_review_band["summary"]["targeted_category_count"] > 0
+    assert secondary_review_band["candidate_policy"][
+        "global_threshold_change_recommended"
+    ] is False
     assert impact["summary"]["recommended_operating_model"] == "classifier_plus_review"
     assert impact["summary"]["unsafe_allowed_reduction_rate"] > 0

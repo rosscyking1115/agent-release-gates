@@ -75,6 +75,7 @@ The dashboard reads the saved report artifacts rather than recomputing metrics o
 - `reports/safety_threshold_retuning.json`
 - `reports/safety_human_review_simulation.json`
 - `reports/safety_reviewer_disagreement_slices.json`
+- `reports/safety_secondary_review_band_analysis.json`
 - `reports/safety_mitigation_impact.json`
 - `reports/safety_threshold_decision_memo.json`
 - `reports/evaluation_report.md`
@@ -163,7 +164,7 @@ Known limitation: current red-team checks and severity weights are deterministic
 
 ## Safety Prevalence And Classifier Evaluation Version
 
-The safety-classifier extension evaluates a deterministic safety classifier or rule layer over enriched challenge cases and a weighted synthetic sampled request stream. It adds simulated unsafe-request categories, benign near-miss requests, classifier scores, threshold decisions, false positive / false negative trade-offs, prevalence estimation, human-review simulation, mitigation-impact reporting, and a threshold decision memo.
+The safety-classifier extension evaluates a deterministic safety classifier or rule layer over enriched challenge cases and a weighted synthetic sampled request stream. It adds simulated unsafe-request categories, benign near-miss requests, classifier scores, threshold decisions, false positive / false negative trade-offs, prevalence estimation, human-review simulation, secondary review-band analysis, mitigation-impact reporting, and a threshold decision memo.
 
 The module reports:
 
@@ -175,6 +176,7 @@ The module reports:
 - human-review queue volume, capacity use, disagreement, escalation, and final adjudication
 - synthetic human-authored adjudication notes for review-queued cases, medium-severity challenge cases, and false negatives
 - reviewer-disagreement slices by category, source, and reviewer override type
+- secondary review-band decision aid for targeted medium-severity review floors
 - mitigation-impact scenarios comparing no classifier, classifier-only hold, and classifier plus simulated review
 - threshold decision memo with selected operating point, rationale, and next threshold work
 

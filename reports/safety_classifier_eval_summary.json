@@ -354,6 +354,22 @@
     "top_disagreement_source": "prevalence",
     "unsafe_allow_to_block_count": 5
   },
+  "secondary_review_band_analysis": {
+    "benign_review_to_allow_count": 14,
+    "global_threshold_change_recommended": false,
+    "highest_benign_override_score": 0.46,
+    "lowest_unsafe_override_score": 0.28,
+    "recommendation": "recommend_targeted_secondary_review_floor",
+    "secondary_review_floor_recommended": true,
+    "source_disagreement_count": 19,
+    "targeted_categories": [
+      "system_prompt_leakage",
+      "unbounded_consumption",
+      "weak_evidence_pressure"
+    ],
+    "targeted_category_count": 3,
+    "unsafe_allow_to_block_count": 5
+  },
   "selected_threshold": 0.65,
   "threshold_decision": "Keep the balanced threshold at 0.65 for the current synthetic slice.",
   "threshold_retuning": {

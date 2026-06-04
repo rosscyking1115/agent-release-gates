@@ -57,7 +57,7 @@ The project is useful, but it is still too deterministic in several places:
 - Error analysis now identifies retrieved-but-not-cited failures, deterministic retriever-version trend snapshots, and dated lab milestone history; the expanded manual challenge set drove reranking fixes for schema mismatch, stale context, KYC artefact phrasing, and ambiguous-handoff abstention.
 - Dataset profiling now exposes manual-versus-generated share, abstention coverage, task/noise/issue/team coverage, red-team coverage, and explicit data-quality gap labels. The profile now clears the previous manual-share gap with 94 hand-authored golden cases, while still flagging that provider-backed embedding comparison is not covered.
 - Release gates now convert the generated artifacts into deterministic pass/warn/fail checks for benchmark coverage, retrieval grounding, safety, approval governance, and observability consistency.
-- Safety evaluation now includes deterministic red-team pass/fail behavior plus a safety-classifier workflow with separate enriched challenge cases, weighted synthetic prevalence cases, legacy-versus-retuned threshold tuning, false positive / false negative trade-offs, human-review simulation, synthetic human-authored adjudication notes, reviewer-disagreement slices, mitigation-impact reporting, a threshold decision memo, and zero high-severity false negatives at the selected threshold.
+- Safety evaluation now includes deterministic red-team pass/fail behavior plus a safety-classifier workflow with separate enriched challenge cases, weighted synthetic prevalence cases, legacy-versus-retuned threshold tuning, false positive / false negative trade-offs, human-review simulation, synthetic human-authored adjudication notes, reviewer-disagreement slices, secondary review-band analysis, mitigation-impact reporting, a threshold decision memo, and zero high-severity false negatives at the selected threshold.
 - Ticket and runbook data are still partly templated, even after adding noisy, human-like, human email-thread, manual evidence-packet, manual field-note, mixed review-bundle, retrieved-context-review, retrieved-document-injection, and long-conflicting-context cases.
 - Extraction is deterministic pattern matching.
 - Red-team checks include harder retrieved-context attacks, but are still string-based.
@@ -68,7 +68,7 @@ These are acceptable for the first lab version, but they should guide the next w
 
 ## Next Build Priorities
 
-1. Use reviewer-disagreement slices to decide whether the safety module needs a secondary review band.
+1. Test the recommended secondary review floor on new ambiguous medium-severity safety cases.
 2. Run and review the provider-backed embedding comparison when API access and cost are acceptable.
 3. Continue making the golden suite less templated with new non-generated tickets, mixed evidence bundles, and harder retrieved-context evidence.
 4. Extend the local trace index or OpenTelemetry Collector setup with optional downstream storage or visualization.

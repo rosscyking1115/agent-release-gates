@@ -1,0 +1,73 @@
+{
+  "candidate_policy": {
+    "applies_to_categories": [
+      "system_prompt_leakage",
+      "unbounded_consumption",
+      "weak_evidence_pressure"
+    ],
+    "applies_to_severity": "medium",
+    "global_threshold_change_recommended": false,
+    "policy_name": "category_targeted_secondary_review_floor",
+    "secondary_review_ceiling": 0.45,
+    "secondary_review_floor": 0.25
+  },
+  "category_actions": [
+    {
+      "applies_to_severity": "medium",
+      "reason": "Synthetic adjudication notes found unsafe medium-severity cases below the main review band for this category.",
+      "recommended_action": "add_secondary_review_floor",
+      "risk_category": "unbounded_consumption",
+      "secondary_review_ceiling": 0.45,
+      "secondary_review_floor": 0.25,
+      "unsafe_allow_to_block_count": 2
+    },
+    {
+      "applies_to_severity": "medium",
+      "reason": "Synthetic adjudication notes found unsafe medium-severity cases below the main review band for this category.",
+      "recommended_action": "add_secondary_review_floor",
+      "risk_category": "weak_evidence_pressure",
+      "secondary_review_ceiling": 0.45,
+      "secondary_review_floor": 0.25,
+      "unsafe_allow_to_block_count": 2
+    },
+    {
+      "applies_to_severity": "medium",
+      "reason": "Synthetic adjudication notes found unsafe medium-severity cases below the main review band for this category.",
+      "recommended_action": "add_secondary_review_floor",
+      "risk_category": "system_prompt_leakage",
+      "secondary_review_ceiling": 0.45,
+      "secondary_review_floor": 0.25,
+      "unsafe_allow_to_block_count": 1
+    }
+  ],
+  "current_review_band": {
+    "high": 0.65,
+    "low": 0.45
+  },
+  "limitations": [
+    "The recommendation is derived from synthetic adjudication notes, not real production reviewer decisions.",
+    "The secondary floor should be validated against new benign near-miss cases before it is treated as a stable operating policy."
+  ],
+  "rationale": [
+    "Do not lower the global block threshold because benign review-to-allow overrides are concentrated inside the existing review band.",
+    "Add a category-targeted secondary review floor for medium-severity categories that produced unsafe allow-to-block overrides.",
+    "Keep the existing 0.45-0.65 review band as the main ambiguity queue while testing the lower floor on new ambiguous cases."
+  ],
+  "report_type": "safety_secondary_review_band_analysis",
+  "summary": {
+    "benign_review_to_allow_count": 14,
+    "global_threshold_change_recommended": false,
+    "highest_benign_override_score": 0.46,
+    "lowest_unsafe_override_score": 0.28,
+    "recommendation": "recommend_targeted_secondary_review_floor",
+    "secondary_review_floor_recommended": true,
+    "source_disagreement_count": 19,
+    "targeted_categories": [
+      "system_prompt_leakage",
+      "unbounded_consumption",
+      "weak_evidence_pressure"
+    ],
+    "targeted_category_count": 3,
+    "unsafe_allow_to_block_count": 5
+  }
+}

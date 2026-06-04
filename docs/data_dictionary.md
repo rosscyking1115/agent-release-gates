@@ -95,6 +95,7 @@ Reports:
 | `reports/safety_human_review_simulation.json` | Review queue volume, reviewer capacity, disagreement, adjudication, escalation, and residual risk summary. |
 | `reports/safety_adjudication_notes.json` | Synthetic human-authored adjudication notes for review-queued cases, medium-severity challenge cases, and false-negative cases, including reviewer rationale and classifier-disagreement flags. |
 | `reports/safety_reviewer_disagreement_slices.json` | Reviewer-disagreement slices by category, source, and recommended decision, including benign review-to-allow overrides and unsafe allow-to-block overrides. |
+| `reports/safety_secondary_review_band_analysis.json` | Decision aid that uses reviewer-disagreement slices to recommend a targeted secondary review floor for selected medium-severity categories while avoiding a global threshold change. |
 | `reports/safety_mitigation_impact.json` | Scenario comparison for no classifier, classifier-only hold, and classifier plus simulated human review. |
 | `reports/safety_threshold_decision_memo.json` | Selected threshold, review band, decision rationale, decision metrics, and next threshold-tuning work. |
 | `reports/safety_prevalence_report.md` | Weighted prevalence estimates, confidence intervals, sampling limitations, and distinction from challenge-set failure rates. |

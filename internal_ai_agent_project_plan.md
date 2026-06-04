@@ -615,6 +615,7 @@ Deliverables:
 - human review workflow simulation for borderline cases
 - synthetic human-authored adjudication notes for review-queued cases, medium-severity challenge cases, and false negatives
 - reviewer-disagreement slices by category, source, and reviewer override type
+- secondary review-band analysis for targeted medium-severity review floors
 - mitigation impact dashboard showing before/after threshold or rule changes
 - decision memo explaining the chosen threshold, review policy, residual risk, and limitations
 
@@ -638,6 +639,7 @@ reports/safety_threshold_retuning.json
 reports/safety_human_review_simulation.json
 reports/safety_adjudication_notes.json
 reports/safety_reviewer_disagreement_slices.json
+reports/safety_secondary_review_band_analysis.json
 reports/safety_mitigation_impact.json
 reports/safety_threshold_decision_memo.json
 ```

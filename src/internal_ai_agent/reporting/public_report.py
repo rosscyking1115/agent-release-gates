@@ -77,6 +77,9 @@ def generate_public_report(project_root: Path) -> str:
     safety_disagreements = _read_json(
         reports_dir / "safety_reviewer_disagreement_slices.json"
     )
+    safety_secondary_review_band = _read_json(
+        reports_dir / "safety_secondary_review_band_analysis.json"
+    )
     safety_mitigation = _read_json(reports_dir / "safety_mitigation_impact.json")
     safety_memo = _read_json(reports_dir / "safety_threshold_decision_memo.json")
     agent = _read_json(reports_dir / "agent_eval_summary.json")
@@ -175,6 +178,8 @@ def generate_public_report(project_root: Path) -> str:
             _safety_adjudication_notes_table(safety_adjudication),
             "",
             _safety_disagreement_slice_table(safety_disagreements),
+            "",
+            _safety_secondary_review_band_table(safety_secondary_review_band),
             "",
             _safety_mitigation_table(safety_mitigation),
             "",
@@ -692,6 +697,44 @@ def _safety_disagreement_slice_table(report: dict[str, Any]) -> str:
                 **row,
             )
         )
+    return "\n".join(rows)
+
+
+def _safety_secondary_review_band_table(report: dict[str, Any]) -> str:
+    summary = report["summary"]
+    policy = report["candidate_policy"]
+    targeted_categories = ", ".join(summary["targeted_categories"]) or "None"
+    rows = [
+        "| Secondary review-band decision aid | Value |",
+        "| --- | --- |",
+        f"| Recommendation | {summary['recommendation']} |",
+        (
+            "| Global threshold change recommended | "
+            f"{summary['global_threshold_change_recommended']} |"
+        ),
+        (
+            "| Secondary review floor recommended | "
+            f"{summary['secondary_review_floor_recommended']} |"
+        ),
+        f"| Secondary review floor | {policy['secondary_review_floor']} |",
+        f"| Secondary review ceiling | {policy['secondary_review_ceiling']} |",
+        f"| Targeted categories | {targeted_categories} |",
+        f"| Unsafe allow-to-block overrides | {summary['unsafe_allow_to_block_count']} |",
+        f"| Benign review-to-allow overrides | {summary['benign_review_to_allow_count']} |",
+    ]
+    if report["category_actions"]:
+        rows.extend(
+            [
+                "",
+                "| Category | Unsafe overrides | Recommended action |",
+                "| --- | ---: | --- |",
+            ]
+        )
+        for row in report["category_actions"]:
+            rows.append(
+                "| {risk_category} | {unsafe_allow_to_block_count} | "
+                "{recommended_action} |".format(**row)
+            )
     return "\n".join(rows)
 
 

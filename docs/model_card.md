@@ -70,7 +70,7 @@ The retriever snapshot report records deterministic version-to-version deltas an
 
 The release-gate report turns the generated metrics into pass/warn/fail checks. Current blocking gates cover benchmark size, manual-case share, local retrieval grounding, abstention, schema validity, weighted red-team safety, residual risk, approval governance, trace indexing, and collector-span consistency. The provider-backed embedding comparison remains a non-blocking warning because no credentialed provider result is published.
 
-Safety extension status: the Safety Prevalence & Classifier Evaluation module separately evaluates enriched synthetic challenge cases and sampled synthetic prevalence cases. It reports classifier/rule false positives, false negatives, threshold trade-offs, category-level performance, weighted synthetic prevalence, legacy-versus-retuned threshold comparison, simulated human review, synthetic adjudication notes, reviewer-disagreement slices, mitigation impact, and a threshold decision memo. It should not claim real production prevalence because no real traffic is used.
+Safety extension status: the Safety Prevalence & Classifier Evaluation module separately evaluates enriched synthetic challenge cases and sampled synthetic prevalence cases. It reports classifier/rule false positives, false negatives, threshold trade-offs, category-level performance, weighted synthetic prevalence, legacy-versus-retuned threshold comparison, simulated human review, synthetic adjudication notes, reviewer-disagreement slices, secondary review-band analysis, mitigation impact, and a threshold decision memo. It should not claim real production prevalence because no real traffic is used.
 
 ## Known Limitations
 
@@ -80,7 +80,7 @@ Safety extension status: the Safety Prevalence & Classifier Evaluation module se
 - The local TF-IDF vector and local embedding-store retrievers pass the expanded synthetic golden suite. The hybrid sparse semantic retriever now has one manual field-note miss, which is kept in the report as a useful final-selection weakness rather than hidden by rewriting the benchmark.
 - Structured extraction is deterministic pattern matching, not LLM extraction.
 - Security checks and severity weights are deterministic controls, even after adding harder retrieved-context attacks and residual-risk scoring; they are not a full adversarial red-team harness.
-- Safety evaluation includes sampled prevalence estimation, classifier threshold tuning, human-review queue simulation, reviewer-disagreement slicing, mitigation-impact reporting, and a completed threshold decision memo. Reviewer behavior is still deterministic and synthetic.
+- Safety evaluation includes sampled prevalence estimation, classifier threshold tuning, human-review queue simulation, reviewer-disagreement slicing, secondary review-band analysis, mitigation-impact reporting, and a completed threshold decision memo. Reviewer behavior is still deterministic and synthetic.
 - The controlled agent is a local workflow, not a LangGraph state machine yet.
 - Telemetry export is local JSONL with a deterministic trace index and optional OTLP/HTTP collector adapter; CI verifies posting against a local capture endpoint and a Dockerized OpenTelemetry Collector metrics-verified deployment, but not downstream storage or production visualization.
 - Metrics should be interpreted as engineering checks over synthetic cases, not claims about real-world production performance.
@@ -102,7 +102,7 @@ Side-effecting operations are mock-only and require explicit approval.
 
 - Run and review the optional provider-backed embedding comparison when API access and cost are acceptable.
 - Add more non-templated tickets and provider-backed retrieval comparisons so the next weaknesses are measured before more tuning.
-- Use reviewer-disagreement slices to decide whether the safety module needs a secondary review band.
+- Test the recommended secondary review floor on new ambiguous medium-severity safety cases.
 - Extend the local trace index or OpenTelemetry Collector setup with optional downstream storage or visualization.
 - Replace deterministic extraction with an optional LLM extraction provider plus schema repair.
 - Add a LangGraph state machine once the local workflow contract is stable.

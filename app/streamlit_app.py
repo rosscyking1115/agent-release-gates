@@ -43,6 +43,7 @@ from internal_ai_agent.dashboard.data import (
     load_safety_classifier_summary,
     load_safety_human_review_simulation,
     load_safety_mitigation_impact,
+    load_safety_secondary_review_band_analysis,
     load_safety_threshold_decision_memo,
     load_safety_threshold_retuning,
     load_safety_threshold_sweep,
@@ -90,6 +91,7 @@ def main() -> None:
     safety_threshold_retuning = load_safety_threshold_retuning(PROJECT_ROOT)
     safety_review_simulation = load_safety_human_review_simulation(PROJECT_ROOT)
     safety_adjudication_notes = load_safety_adjudication_notes(PROJECT_ROOT)
+    safety_secondary_review_band = load_safety_secondary_review_band_analysis(PROJECT_ROOT)
     safety_mitigation_impact = load_safety_mitigation_impact(PROJECT_ROOT)
     safety_threshold_memo = load_safety_threshold_decision_memo(PROJECT_ROOT)
     agent_summary = load_agent_summary(PROJECT_ROOT)
@@ -137,6 +139,7 @@ def main() -> None:
             safety_threshold_retuning,
             safety_review_simulation,
             safety_adjudication_notes,
+            safety_secondary_review_band,
             safety_mitigation_impact,
             safety_threshold_memo,
         )
@@ -610,6 +613,7 @@ def _render_safety_classifier_workflow(
     threshold_retuning: dict[str, object],
     review_simulation: dict[str, object],
     adjudication_notes: dict[str, object],
+    secondary_review_band: dict[str, object],
     mitigation_impact: dict[str, object],
     threshold_memo: dict[str, object],
 ) -> None:
@@ -618,21 +622,27 @@ def _render_safety_classifier_workflow(
     prevalence = classifier["weighted_prevalence"]
     review_summary = review_simulation["summary"]
     adjudication_summary = adjudication_notes["summary"]
-    mitigation_summary = mitigation_impact["summary"]
+    secondary_summary = secondary_review_band["summary"]
     retuning_summary = threshold_retuning["summary"]
     cols = st.columns(5)
     cols[0].metric("Recall", f"{metrics['recall'] * 100:.2f}%")
     cols[1].metric("False positives", f"{metrics['false_positive_rate'] * 100:.2f}%")
     cols[2].metric("Unsafe prevalence", f"{prevalence['unsafe_prevalence'] * 100:.2f}%")
     cols[3].metric("FN reduction", retuning_summary["false_negative_reduction"])
-    cols[4].metric("Residual unsafe", mitigation_summary["final_residual_unsafe_allowed_count"])
+    cols[4].metric(
+        "Review floor",
+        "recommended"
+        if secondary_summary["secondary_review_floor_recommended"]
+        else "not needed",
+    )
 
     st.caption(str(threshold_memo["decision"]))
-    tab_thresholds, tab_review, tab_notes, tab_impact, tab_memo = st.tabs(
+    tab_thresholds, tab_review, tab_notes, tab_review_band, tab_impact, tab_memo = st.tabs(
         [
             "Thresholds",
             "Human review",
             "Adjudication notes",
+            "Review band",
             "Mitigation impact",
             "Decision memo",
         ]
@@ -719,6 +729,43 @@ def _render_safety_classifier_workflow(
         note_df = pd.DataFrame(safety_adjudication_note_rows(adjudication_notes))
         if not note_df.empty:
             st.dataframe(note_df, hide_index=True, use_container_width=True)
+    with tab_review_band:
+        policy = secondary_review_band["candidate_policy"]
+        band_cols = st.columns(4)
+        band_cols[0].metric(
+            "Recommendation",
+            "Targeted floor"
+            if secondary_summary["secondary_review_floor_recommended"]
+            else "Keep current band",
+        )
+        band_cols[1].metric(
+            "Target categories",
+            secondary_summary["targeted_category_count"],
+        )
+        band_cols[2].metric(
+            "Unsafe overrides",
+            secondary_summary["unsafe_allow_to_block_count"],
+        )
+        band_cols[3].metric(
+            "Benign overrides",
+            secondary_summary["benign_review_to_allow_count"],
+        )
+        st.write(
+            "Decision: "
+            + str(secondary_summary["recommendation"]).replace("_", " ")
+        )
+        st.write(
+            "Targeted categories: "
+            + ", ".join(str(item) for item in secondary_summary["targeted_categories"])
+        )
+        st.write(
+            "Candidate floor: "
+            f"{policy['secondary_review_floor']} to {policy['secondary_review_ceiling']} "
+            "for medium-severity cases in the targeted categories."
+        )
+        category_actions = pd.DataFrame(secondary_review_band["category_actions"])
+        if not category_actions.empty:
+            st.dataframe(category_actions, hide_index=True, use_container_width=True)
     with tab_impact:
         impact_df = pd.DataFrame(safety_mitigation_rows(mitigation_impact))
         if not impact_df.empty:
