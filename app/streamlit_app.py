@@ -110,7 +110,14 @@ def main() -> None:
 
     section = _render_sidebar()
     if section == "Overview":
-        _render_summary(comparison, rows, improved_cases)
+        _render_summary(
+            comparison,
+            rows,
+            improved_cases,
+            safety_classifier,
+            agent_summary,
+            evaluation_gates,
+        )
         _render_dataset_profile_summary(dataset_profile)
         _render_metric_comparison(rows)
         _render_retriever_experiment(retriever_comparison)
@@ -156,6 +163,27 @@ def _render_app_header() -> None:
         "Synthetic evaluation dashboard for grounded retrieval, structured extraction, "
         "safety controls, approval-gated tools, and observability."
     )
+    link_cols = st.columns(4)
+    link_cols[0].link_button(
+        "Project page",
+        "https://rosscyking1115.github.io/internal-ai-agent-eval-lab/",
+        use_container_width=True,
+    )
+    link_cols[1].link_button(
+        "Full report",
+        "https://rosscyking1115.github.io/internal-ai-agent-eval-lab/evaluation_report.html",
+        use_container_width=True,
+    )
+    link_cols[2].link_button(
+        "PDF report",
+        "https://rosscyking1115.github.io/internal-ai-agent-eval-lab/evaluation_report.pdf",
+        use_container_width=True,
+    )
+    link_cols[3].link_button(
+        "GitHub repo",
+        "https://github.com/rosscyking1115/internal-ai-agent-eval-lab",
+        use_container_width=True,
+    )
     st.info(
         "All runbooks, tickets, teams, procedures, and metrics are synthetic. "
         "This project does not reproduce or assess any real company's internal AI system.",
@@ -178,7 +206,7 @@ def _render_sidebar() -> str:
     )
     st.sidebar.markdown("---")
     st.sidebar.link_button(
-        "Public project site",
+        "Project page",
         "https://rosscyking1115.github.io/internal-ai-agent-eval-lab/",
         use_container_width=True,
     )
@@ -195,18 +223,32 @@ def _render_summary(
     comparison: dict[str, object],
     rows: list[dict[str, object]],
     improved_cases: list[dict[str, object]],
+    safety_classifier: dict[str, object],
+    agent_summary: dict[str, object],
+    evaluation_gates: dict[str, object],
 ) -> None:
     mix = case_mix(improved_cases)
     cols = st.columns(4)
-    cols[0].metric("Eval cases", comparison["case_count"])
-    cols[1].metric("Answerable", mix["answerable_cases"])
-    cols[2].metric("Expected abstentions", mix["expected_abstentions"])
-    cols[3].metric("Improved failures", mix["failed_cases"])
+    metrics = comparison["metrics"]  # type: ignore[index]
+    safety_metrics = safety_classifier["metrics"]  # type: ignore[index]
+    agent_metrics = agent_summary["metrics"]  # type: ignore[index]
+    citation_coverage = metrics["citation_coverage"]["improved"]  # type: ignore[index]
+    safety_recall = safety_metrics["recall"]  # type: ignore[index]
+    side_effect_block_rate = agent_metrics["side_effect_block_rate"]  # type: ignore[index]
+    cols[0].metric("Golden cases", comparison["case_count"])
+    cols[1].metric("Citation coverage", _format_pct(float(citation_coverage)))
+    cols[2].metric("Safety recall", _format_pct(float(safety_recall)))
+    cols[3].metric("Side-effect block", _format_pct(float(side_effect_block_rate)))
 
     st.caption(
         "Synthetic operations eval across exact, paraphrased, and weak-evidence cases. "
         "All data is generated and contains no real company, customer, or employee information."
     )
+    gate_cols = st.columns(4)
+    gate_cols[0].metric("Expected abstentions", mix["expected_abstentions"])
+    gate_cols[1].metric("Improved failures", mix["failed_cases"])
+    gate_cols[2].metric("Gate status", evaluation_gates["overall_status"])
+    gate_cols[3].metric("Gate failures", evaluation_gates["fail_count"])
     headline = [
         row
         for row in rows
@@ -968,6 +1010,10 @@ def _render_failures(cases: list[dict[str, object]]) -> None:
 def _load_eval_summary(filename: str) -> dict[str, object]:
     path = PROJECT_ROOT / "reports" / filename
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _format_pct(value: float) -> str:
+    return f"{value * 100:.2f}%"
 
 
 if __name__ == "__main__":
