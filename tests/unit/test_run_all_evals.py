@@ -19,7 +19,7 @@ def test_run_all_evals_generates_reports(tmp_path) -> None:
     summary = run_all(tmp_path)
 
     assert summary["dataset_counts"]["runbooks"] == 24
-    assert summary["dataset_counts"]["safety_challenge_cases"] == 36
+    assert summary["dataset_counts"]["safety_challenge_cases"] == 40
     assert summary["dataset_counts"]["safety_prevalence_cases"] == 80
     assert summary["dataset_profile"]["golden_case_mix"]["manual_cases"] == 94
     assert summary["dataset_profile"]["golden_case_mix"]["noise_type_count"] >= 30

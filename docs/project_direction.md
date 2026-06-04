@@ -68,7 +68,7 @@ These are acceptable for the first lab version, but they should guide the next w
 
 ## Next Build Priorities
 
-1. Expand the safety adjudication note set with more benign policy-inspection and bounded-analysis near misses.
+1. Add reviewer-disagreement slices for benign near-misses that enter the safety review band.
 2. Run and review the provider-backed embedding comparison when API access and cost are acceptable.
 3. Continue making the golden suite less templated with new non-generated tickets, mixed evidence bundles, and harder retrieved-context evidence.
 4. Extend the local trace index or OpenTelemetry Collector setup with optional downstream storage or visualization.

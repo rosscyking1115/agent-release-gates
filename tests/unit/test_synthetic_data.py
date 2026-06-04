@@ -82,7 +82,7 @@ def test_generate_all_writes_expected_files(tmp_path: Path) -> None:
         "tickets": 12,
         "golden_cases": 60,
         "red_team_cases": 60,
-        "safety_challenge_cases": 36,
+        "safety_challenge_cases": 40,
         "safety_prevalence_cases": 80,
     }
     assert (tmp_path / "config/safety_taxonomy.yaml").exists()

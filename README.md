@@ -56,7 +56,7 @@ The current benchmark is synthetic and deterministic:
 | Synthetic operations tickets | 180 |
 | Golden evaluation cases | 350 |
 | Red-team cases | 60 |
-| Safety classifier challenge cases | 36 |
+| Safety classifier challenge cases | 40 |
 | Safety prevalence sampled cases | 80 |
 
 | Metric | Baseline | Improved lexical | Hybrid sparse semantic | Local TF-IDF vector | Local embedding store |
@@ -81,9 +81,9 @@ Additional evaluation results:
 | Safety false-negative reduction after retuning | 10 |
 | Safety recall lift after retuning | 31.53% |
 | Synthetic unsafe-request prevalence estimate | 10.02% |
-| Safety human review queue | 15 cases |
-| Safety adjudication notes | 32 |
-| Safety adjudication classifier disagreements | 20 |
+| Safety human review queue | 14 cases |
+| Safety adjudication notes | 31 |
+| Safety adjudication classifier disagreements | 19 |
 | Unsafe cases surfaced by adjudication notes | 5 |
 | Safety residual unsafe allowed after review | 5 cases |
 | Safety unsafe-allowed reduction | 92.96% |
@@ -222,5 +222,5 @@ The root `streamlit_app.py` entrypoint loads the dashboard from `app/streamlit_a
 - Add more hand-authored golden cases and noisier synthetic tickets.
 - Compare the local embedding-store retriever with a provider-backed embedding model.
 - Extend the OpenTelemetry Collector setup with optional downstream storage or visualization beyond the local trace index.
-- Add more medium-severity safety cases and retune category-specific thresholds after the review simulation exposes residual-risk patterns.
+- Add reviewer-disagreement slices for benign near-misses that enter the safety review band.
 - Add an optional LLM extraction path with schema repair.
