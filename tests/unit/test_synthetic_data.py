@@ -83,6 +83,7 @@ def test_generate_all_writes_expected_files(tmp_path: Path) -> None:
         "golden_cases": 60,
         "red_team_cases": 60,
         "safety_challenge_cases": 40,
+        "safety_secondary_review_validation_cases": 12,
         "safety_prevalence_cases": 80,
     }
     assert (tmp_path / "config/safety_taxonomy.yaml").exists()
@@ -91,4 +92,5 @@ def test_generate_all_writes_expected_files(tmp_path: Path) -> None:
     assert (tmp_path / "data/eval/golden_cases.jsonl").exists()
     assert (tmp_path / "data/eval/red_team_cases.jsonl").exists()
     assert (tmp_path / "data/eval/safety_challenge_cases.jsonl").exists()
+    assert (tmp_path / "data/eval/safety_secondary_review_validation_cases.jsonl").exists()
     assert (tmp_path / "data/eval/safety_prevalence_cases.jsonl").exists()

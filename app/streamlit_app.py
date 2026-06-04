@@ -44,6 +44,7 @@ from internal_ai_agent.dashboard.data import (
     load_safety_human_review_simulation,
     load_safety_mitigation_impact,
     load_safety_secondary_review_band_analysis,
+    load_safety_secondary_review_floor_validation,
     load_safety_threshold_decision_memo,
     load_safety_threshold_retuning,
     load_safety_threshold_sweep,
@@ -92,6 +93,9 @@ def main() -> None:
     safety_review_simulation = load_safety_human_review_simulation(PROJECT_ROOT)
     safety_adjudication_notes = load_safety_adjudication_notes(PROJECT_ROOT)
     safety_secondary_review_band = load_safety_secondary_review_band_analysis(PROJECT_ROOT)
+    safety_secondary_review_validation = load_safety_secondary_review_floor_validation(
+        PROJECT_ROOT
+    )
     safety_mitigation_impact = load_safety_mitigation_impact(PROJECT_ROOT)
     safety_threshold_memo = load_safety_threshold_decision_memo(PROJECT_ROOT)
     agent_summary = load_agent_summary(PROJECT_ROOT)
@@ -140,6 +144,7 @@ def main() -> None:
             safety_review_simulation,
             safety_adjudication_notes,
             safety_secondary_review_band,
+            safety_secondary_review_validation,
             safety_mitigation_impact,
             safety_threshold_memo,
         )
@@ -614,6 +619,7 @@ def _render_safety_classifier_workflow(
     review_simulation: dict[str, object],
     adjudication_notes: dict[str, object],
     secondary_review_band: dict[str, object],
+    secondary_review_validation: dict[str, object],
     mitigation_impact: dict[str, object],
     threshold_memo: dict[str, object],
 ) -> None:
@@ -623,6 +629,7 @@ def _render_safety_classifier_workflow(
     review_summary = review_simulation["summary"]
     adjudication_summary = adjudication_notes["summary"]
     secondary_summary = secondary_review_band["summary"]
+    validation_summary = secondary_review_validation["summary"]
     retuning_summary = threshold_retuning["summary"]
     cols = st.columns(5)
     cols[0].metric("Recall", f"{metrics['recall'] * 100:.2f}%")
@@ -766,6 +773,28 @@ def _render_safety_classifier_workflow(
         category_actions = pd.DataFrame(secondary_review_band["category_actions"])
         if not category_actions.empty:
             st.dataframe(category_actions, hide_index=True, use_container_width=True)
+        st.markdown("**Validation Slice**")
+        validation_cols = st.columns(4)
+        validation_cols[0].metric(
+            "Unsafe capture",
+            f"{validation_summary['unsafe_capture_rate'] * 100:.2f}%",
+        )
+        validation_cols[1].metric(
+            "Unsafe allowed",
+            validation_summary["floor_unsafe_allowed_count"],
+            delta=-validation_summary["unsafe_allowed_reduction"],
+        )
+        validation_cols[2].metric(
+            "Benign new review",
+            validation_summary["benign_new_review_count"],
+        )
+        validation_cols[3].metric(
+            "Validation result",
+            str(validation_summary["recommendation"]).replace("_", " "),
+        )
+        validation_cases = pd.DataFrame(secondary_review_validation["cases"])
+        if not validation_cases.empty:
+            st.dataframe(validation_cases, hide_index=True, use_container_width=True)
     with tab_impact:
         impact_df = pd.DataFrame(safety_mitigation_rows(mitigation_impact))
         if not impact_df.empty:

@@ -608,6 +608,7 @@ Deliverables:
 
 - simulated harmful and unsafe request taxonomy
 - synthetic sampled request stream with known labels and prevalence settings
+- secondary review-floor validation slice for ambiguous targeted categories
 - deterministic rule/classifier score contract
 - confusion matrix and per-category precision, recall, false positive rate, and false negative rate
 - threshold tuning sweep with recommended operating points
@@ -616,6 +617,7 @@ Deliverables:
 - synthetic human-authored adjudication notes for review-queued cases, medium-severity challenge cases, and false negatives
 - reviewer-disagreement slices by category, source, and reviewer override type
 - secondary review-band analysis for targeted medium-severity review floors
+- validation report for unsafe capture and benign review-load trade-offs
 - mitigation impact dashboard showing before/after threshold or rule changes
 - decision memo explaining the chosen threshold, review policy, residual risk, and limitations
 
@@ -632,6 +634,7 @@ Suggested artifacts:
 
 ```text
 data/eval/safety_prevalence_cases.jsonl
+data/eval/safety_secondary_review_validation_cases.jsonl
 reports/safety_classifier_eval_summary.json
 reports/safety_classifier_eval_cases.jsonl
 reports/safety_threshold_sweep.json
@@ -640,6 +643,7 @@ reports/safety_human_review_simulation.json
 reports/safety_adjudication_notes.json
 reports/safety_reviewer_disagreement_slices.json
 reports/safety_secondary_review_band_analysis.json
+reports/safety_secondary_review_floor_validation.json
 reports/safety_mitigation_impact.json
 reports/safety_threshold_decision_memo.json
 ```

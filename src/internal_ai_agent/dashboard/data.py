@@ -133,6 +133,11 @@ def load_safety_secondary_review_band_analysis(project_root: Path) -> dict[str, 
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def load_safety_secondary_review_floor_validation(project_root: Path) -> dict[str, Any]:
+    path = project_root / "reports/safety_secondary_review_floor_validation.json"
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
 def load_safety_mitigation_impact(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/safety_mitigation_impact.json"
     return json.loads(path.read_text(encoding="utf-8"))

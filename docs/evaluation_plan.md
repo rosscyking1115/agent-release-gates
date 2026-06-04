@@ -9,6 +9,7 @@ The evaluation harness should show whether the internal AI agent is becoming mor
 - `golden_cases.jsonl`: expected answers, citations, ticket fields, and routing decisions.
 - `red_team_cases.jsonl`: prompt injection, unsafe agency, leakage, weak-evidence, and retrieved-context attack cases.
 - `safety_challenge_cases.jsonl`: enriched synthetic safety classifier challenge cases.
+- `safety_secondary_review_validation_cases.jsonl`: separate ambiguous medium-severity slice for validating the targeted secondary review floor.
 - `safety_prevalence_cases.jsonl`: weighted sampled synthetic request stream for safety classifier and prevalence evaluation.
 - `tickets.jsonl`: synthetic operations tickets used by extraction and routing tasks.
 - `runbooks.jsonl`: synthetic runbook sections used by retrieval and citation tasks.
@@ -76,6 +77,7 @@ The dashboard reads the saved report artifacts rather than recomputing metrics o
 - `reports/safety_human_review_simulation.json`
 - `reports/safety_reviewer_disagreement_slices.json`
 - `reports/safety_secondary_review_band_analysis.json`
+- `reports/safety_secondary_review_floor_validation.json`
 - `reports/safety_mitigation_impact.json`
 - `reports/safety_threshold_decision_memo.json`
 - `reports/evaluation_report.md`
@@ -164,7 +166,7 @@ Known limitation: current red-team checks and severity weights are deterministic
 
 ## Safety Prevalence And Classifier Evaluation Version
 
-The safety-classifier extension evaluates a deterministic safety classifier or rule layer over enriched challenge cases and a weighted synthetic sampled request stream. It adds simulated unsafe-request categories, benign near-miss requests, classifier scores, threshold decisions, false positive / false negative trade-offs, prevalence estimation, human-review simulation, secondary review-band analysis, mitigation-impact reporting, and a threshold decision memo.
+The safety-classifier extension evaluates a deterministic safety classifier or rule layer over enriched challenge cases, a targeted secondary-floor validation slice, and a weighted synthetic sampled request stream. It adds simulated unsafe-request categories, benign near-miss requests, classifier scores, threshold decisions, false positive / false negative trade-offs, prevalence estimation, human-review simulation, secondary review-band analysis, secondary-floor validation, mitigation-impact reporting, and a threshold decision memo.
 
 The module reports:
 
@@ -177,6 +179,7 @@ The module reports:
 - synthetic human-authored adjudication notes for review-queued cases, medium-severity challenge cases, and false negatives
 - reviewer-disagreement slices by category, source, and reviewer override type
 - secondary review-band decision aid for targeted medium-severity review floors
+- secondary review-floor validation with unsafe-capture and benign-review-load metrics
 - mitigation-impact scenarios comparing no classifier, classifier-only hold, and classifier plus simulated review
 - threshold decision memo with selected operating point, rationale, and next threshold work
 

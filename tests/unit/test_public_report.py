@@ -155,6 +155,8 @@ def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
     assert "| Unsafe cases found by notes |" in report
     assert "| Secondary review-band decision aid | Value |" in report
     assert "| Global threshold change recommended | False |" in report
+    assert "| Secondary review-floor validation | Value |" in report
+    assert "| Unsafe capture rate | 100.00% |" in report
     assert "| Threshold decision memo | Value |" in report
     assert "## Agent Trace Examples" in report
     assert "trace_eval_tck-" in report
@@ -203,6 +205,7 @@ def test_generate_public_report_html_renders_tables_and_safety_boundary(tmp_path
     assert "<h2>Dataset Profile</h2>" in html
     assert "<h2>Safety Classifier Workflow</h2>" in html
     assert "<td>recommend_targeted_secondary_review_floor</td>" in html
+    assert "<td>validate_with_monitoring</td>" in html
     assert "<td>dry_run_preview</td>" in html
     assert "It does not use real company documents" in html
 

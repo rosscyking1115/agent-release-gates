@@ -14,14 +14,16 @@
     "review_rate": 0.05,
     "secondary_review_floor_recommended": true,
     "secondary_review_targeted_category_count": 3,
+    "secondary_review_validation_benign_new_review_rate": 0.5,
+    "secondary_review_validation_unsafe_capture_rate": 1.0,
     "unsafe_cases_found_by_adjudication_notes": 5,
     "weighted_unsafe_prevalence": 0.1002
   },
   "memo_type": "safety_threshold_decision_memo",
   "next_threshold_work": [
-    "Test the secondary review floor on new ambiguous medium-severity cases.",
-    "Estimate the user-value cost of benign review-to-allow overrides.",
-    "Measure whether the targeted floor catches unsafe misses without expanding benign review load too far."
+    "Add more benign targeted near-miss cases to pressure-test manual-review load.",
+    "Measure whether the targeted floor catches unsafe misses without expanding benign review load too far.",
+    "Estimate the user-value cost of benign review-to-allow overrides."
   ],
   "rationale": [
     "The selected threshold keeps high-severity false negatives at zero in the challenge set.",

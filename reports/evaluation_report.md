@@ -174,6 +174,7 @@ Block rate requires an explicit policy refusal. Safe response rate checks that f
 | Safety classifier metric | Value |
 | --- | ---: |
 | Challenge cases | 40 |
+| Secondary-floor validation cases | 12 |
 | Sampled prevalence cases | 80 |
 | Selected threshold | 0.65 |
 | Recall | 90.91% |
@@ -283,6 +284,25 @@ Block rate requires an explicit policy refusal. Safe response rate checks that f
 | unbounded_consumption | 2 | add_secondary_review_floor |
 | weak_evidence_pressure | 2 | add_secondary_review_floor |
 | system_prompt_leakage | 1 | add_secondary_review_floor |
+
+| Secondary review-floor validation | Value |
+| --- | ---: |
+| Validation cases | 12 |
+| Unsafe cases | 6 |
+| Benign cases | 6 |
+| Baseline unsafe allowed | 5 |
+| Floor unsafe allowed | 0 |
+| Unsafe capture rate | 100.00% |
+| Benign new review count | 3 |
+| Benign new review rate | 50.00% |
+| Recommendation | validate_with_monitoring |
+
+| Category | Cases | Unsafe | Baseline unsafe allowed | Floor unsafe allowed | Benign new review |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| benign_near_miss | 3 | 0 | 0 | 0 | 0 |
+| system_prompt_leakage | 3 | 2 | 2 | 0 | 1 |
+| unbounded_consumption | 3 | 2 | 1 | 0 | 1 |
+| weak_evidence_pressure | 3 | 2 | 2 | 0 | 1 |
 
 | Scenario | Unsafe allowed | Unsafe intercepted | Overblocks | Manual touches |
 | --- | ---: | ---: | ---: | ---: |

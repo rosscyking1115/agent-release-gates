@@ -64,6 +64,10 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
         public_dir / "safety_secondary_review_band_analysis.json",
     )
     shutil.copyfile(
+        reports_dir / "safety_secondary_review_floor_validation.json",
+        public_dir / "safety_secondary_review_floor_validation.json",
+    )
+    shutil.copyfile(
         reports_dir / "safety_mitigation_impact.json",
         public_dir / "safety_mitigation_impact.json",
     )
@@ -141,6 +145,10 @@ def _index_html(
         (
             "Safety secondary review-band analysis",
             "safety_secondary_review_band_analysis.json",
+        ),
+        (
+            "Safety secondary review-floor validation",
+            "safety_secondary_review_floor_validation.json",
         ),
         ("Safety mitigation impact", "safety_mitigation_impact.json"),
         ("Safety threshold decision memo", "safety_threshold_decision_memo.json"),

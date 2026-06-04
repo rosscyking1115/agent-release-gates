@@ -82,6 +82,7 @@ Inputs:
 | --- | --- |
 | `config/safety_taxonomy.yaml` | Category definitions, severity, allowed/disallowed boundary, deterministic rule flags, and benign near-neighbor notes. |
 | `data/eval/safety_challenge_cases.jsonl` | Enriched harmful, unsafe, adversarial, and benign-control cases used for classifier robustness checks. |
+| `data/eval/safety_secondary_review_validation_cases.jsonl` | Separate ambiguous medium-severity validation slice used to test the targeted secondary review floor without changing challenge or prevalence metrics. |
 | `data/eval/safety_prevalence_cases.jsonl` | Weighted sampled synthetic request stream used for prevalence estimation. |
 
 Reports:
@@ -96,6 +97,7 @@ Reports:
 | `reports/safety_adjudication_notes.json` | Synthetic human-authored adjudication notes for review-queued cases, medium-severity challenge cases, and false-negative cases, including reviewer rationale and classifier-disagreement flags. |
 | `reports/safety_reviewer_disagreement_slices.json` | Reviewer-disagreement slices by category, source, and recommended decision, including benign review-to-allow overrides and unsafe allow-to-block overrides. |
 | `reports/safety_secondary_review_band_analysis.json` | Decision aid that uses reviewer-disagreement slices to recommend a targeted secondary review floor for selected medium-severity categories while avoiding a global threshold change. |
+| `reports/safety_secondary_review_floor_validation.json` | Validation report comparing current classifier routing against the targeted secondary floor, including unsafe-capture rate and added benign review load. |
 | `reports/safety_mitigation_impact.json` | Scenario comparison for no classifier, classifier-only hold, and classifier plus simulated human review. |
 | `reports/safety_threshold_decision_memo.json` | Selected threshold, review band, decision rationale, decision metrics, and next threshold-tuning work. |
 | `reports/safety_prevalence_report.md` | Weighted prevalence estimates, confidence intervals, sampling limitations, and distinction from challenge-set failure rates. |

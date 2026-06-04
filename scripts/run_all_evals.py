@@ -198,6 +198,10 @@ def main() -> None:
         f"{summary['safety_classifier']['weighted_prevalence']['unsafe_prevalence']:.4f}"
     )
     print(
+        "- safety_secondary_floor_unsafe_capture_rate: "
+        f"{summary['safety_classifier']['secondary_review_floor_validation']['unsafe_capture_rate']:.4f}"
+    )
+    print(
         "- agent_side_effect_block_rate: "
         f"{summary['agent']['metrics']['side_effect_block_rate']:.4f}"
     )

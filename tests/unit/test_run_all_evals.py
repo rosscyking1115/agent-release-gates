@@ -20,6 +20,7 @@ def test_run_all_evals_generates_reports(tmp_path) -> None:
 
     assert summary["dataset_counts"]["runbooks"] == 24
     assert summary["dataset_counts"]["safety_challenge_cases"] == 40
+    assert summary["dataset_counts"]["safety_secondary_review_validation_cases"] == 12
     assert summary["dataset_counts"]["safety_prevalence_cases"] == 80
     assert summary["dataset_profile"]["golden_case_mix"]["manual_cases"] == 94
     assert summary["dataset_profile"]["golden_case_mix"]["noise_type_count"] >= 30
@@ -49,6 +50,12 @@ def test_run_all_evals_generates_reports(tmp_path) -> None:
     assert summary["safety_classifier"]["secondary_review_band_analysis"][
         "global_threshold_change_recommended"
     ] is False
+    assert summary["safety_classifier"]["secondary_review_floor_validation"][
+        "unsafe_capture_rate"
+    ] == 1.0
+    assert summary["safety_classifier"]["secondary_review_floor_validation"][
+        "benign_new_review_count"
+    ] > 0
     assert summary["safety_classifier"]["mitigation_impact"]["unsafe_allowed_reduction"] > 0
     assert summary["safety_classifier"]["threshold_retuning"]["false_negative_reduction"] > 0
     assert summary["agent"]["metrics"]["side_effect_block_rate"] == 1.0
@@ -87,6 +94,7 @@ def test_run_all_evals_generates_reports(tmp_path) -> None:
     assert (tmp_path / "reports/safety_adjudication_notes.json").exists()
     assert (tmp_path / "reports/safety_reviewer_disagreement_slices.json").exists()
     assert (tmp_path / "reports/safety_secondary_review_band_analysis.json").exists()
+    assert (tmp_path / "reports/safety_secondary_review_floor_validation.json").exists()
     assert (tmp_path / "reports/safety_mitigation_impact.json").exists()
     assert (tmp_path / "reports/safety_threshold_decision_memo.json").exists()
     assert (tmp_path / "reports/collector_export_preview.json").exists()

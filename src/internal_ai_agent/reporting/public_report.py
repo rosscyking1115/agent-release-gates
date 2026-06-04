@@ -80,6 +80,9 @@ def generate_public_report(project_root: Path) -> str:
     safety_secondary_review_band = _read_json(
         reports_dir / "safety_secondary_review_band_analysis.json"
     )
+    safety_secondary_review_validation = _read_json(
+        reports_dir / "safety_secondary_review_floor_validation.json"
+    )
     safety_mitigation = _read_json(reports_dir / "safety_mitigation_impact.json")
     safety_memo = _read_json(reports_dir / "safety_threshold_decision_memo.json")
     agent = _read_json(reports_dir / "agent_eval_summary.json")
@@ -180,6 +183,8 @@ def generate_public_report(project_root: Path) -> str:
             _safety_disagreement_slice_table(safety_disagreements),
             "",
             _safety_secondary_review_band_table(safety_secondary_review_band),
+            "",
+            _safety_secondary_review_validation_table(safety_secondary_review_validation),
             "",
             _safety_mitigation_table(safety_mitigation),
             "",
@@ -547,6 +552,10 @@ def _safety_classifier_table(report: dict[str, Any]) -> str:
         "| Safety classifier metric | Value |",
         "| --- | ---: |",
         f"| Challenge cases | {report['challenge_case_count']} |",
+        (
+            "| Secondary-floor validation cases | "
+            f"{report['secondary_review_validation_case_count']} |"
+        ),
         f"| Sampled prevalence cases | {report['prevalence_case_count']} |",
         f"| Selected threshold | {report['selected_threshold']} |",
         f"| Recall | {_pct(metrics['recall'])} |",
@@ -735,6 +744,36 @@ def _safety_secondary_review_band_table(report: dict[str, Any]) -> str:
                 "| {risk_category} | {unsafe_allow_to_block_count} | "
                 "{recommended_action} |".format(**row)
             )
+    return "\n".join(rows)
+
+
+def _safety_secondary_review_validation_table(report: dict[str, Any]) -> str:
+    summary = report["summary"]
+    rows = [
+        "| Secondary review-floor validation | Value |",
+        "| --- | ---: |",
+        f"| Validation cases | {summary['validation_case_count']} |",
+        f"| Unsafe cases | {summary['unsafe_case_count']} |",
+        f"| Benign cases | {summary['benign_case_count']} |",
+        f"| Baseline unsafe allowed | {summary['baseline_unsafe_allowed_count']} |",
+        f"| Floor unsafe allowed | {summary['floor_unsafe_allowed_count']} |",
+        f"| Unsafe capture rate | {_pct(summary['unsafe_capture_rate'])} |",
+        f"| Benign new review count | {summary['benign_new_review_count']} |",
+        f"| Benign new review rate | {_pct(summary['benign_new_review_rate'])} |",
+        f"| Recommendation | {summary['recommendation']} |",
+        "",
+        (
+            "| Category | Cases | Unsafe | Baseline unsafe allowed | "
+            "Floor unsafe allowed | Benign new review |"
+        ),
+        "| --- | ---: | ---: | ---: | ---: | ---: |",
+    ]
+    for row in report["category_results"]:
+        rows.append(
+            "| {risk_category} | {case_count} | {unsafe_case_count} | "
+            "{baseline_unsafe_allowed_count} | {floor_unsafe_allowed_count} | "
+            "{benign_new_review_count} |".format(**row)
+        )
     return "\n".join(rows)
 
 
