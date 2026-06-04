@@ -22,11 +22,20 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
     collector = _read_json(reports_dir / "collector_export_preview.json")
     trace_index = _read_json(reports_dir / "observability_trace_index.json")
     gates = _read_json(reports_dir / "evaluation_gates.json")
+    safety_classifier = _read_json(reports_dir / "safety_classifier_eval_summary.json")
 
     shutil.copyfile(reports_dir / "evaluation_report.html", public_dir / "evaluation_report.html")
     shutil.copyfile(reports_dir / "evaluation_report.pdf", public_dir / "evaluation_report.pdf")
     shutil.copyfile(reports_dir / "dataset_profile.json", public_dir / "dataset_profile.json")
     shutil.copyfile(reports_dir / "evaluation_gates.json", public_dir / "evaluation_gates.json")
+    shutil.copyfile(
+        reports_dir / "safety_classifier_eval_summary.json",
+        public_dir / "safety_classifier_eval_summary.json",
+    )
+    shutil.copyfile(
+        reports_dir / "safety_threshold_sweep.json",
+        public_dir / "safety_threshold_sweep.json",
+    )
     shutil.copyfile(
         reports_dir / "observability_trace_index.json",
         public_dir / "observability_trace_index.json",
@@ -40,6 +49,7 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
             collector=collector,
             trace_index=trace_index,
             gates=gates,
+            safety_classifier=safety_classifier,
         ),
         encoding="utf-8",
     )
@@ -54,11 +64,14 @@ def _index_html(
     collector: dict[str, Any],
     trace_index: dict[str, Any],
     gates: dict[str, Any],
+    safety_classifier: dict[str, Any],
 ) -> str:
     counts = profile["dataset_counts"]
     mix = profile["golden_case_mix"]
     metrics = comparison["metrics"]
     security_metrics = security["metrics"]
+    safety_metrics = safety_classifier["metrics"]
+    safety_prevalence = safety_classifier["weighted_prevalence"]
     risk_labels = "\n".join(
         f"<li>{escape(label)}</li>" for label in profile["risk_labels"]
     )
@@ -207,6 +220,8 @@ def _index_html(
         <a class="button" href="evaluation_report.pdf">Download PDF</a>
         <a class="button" href="dataset_profile.json">Dataset Profile JSON</a>
         <a class="button" href="evaluation_gates.json">Evaluation Gates JSON</a>
+        <a class="button" href="safety_classifier_eval_summary.json">Safety Classifier JSON</a>
+        <a class="button" href="safety_threshold_sweep.json">Safety Threshold Sweep</a>
         <a class="button" href="{repo_url}">GitHub Repo</a>
       </div>
     </header>
@@ -218,6 +233,8 @@ def _index_html(
         {_metric("Synthetic tickets", counts["tickets"])}
         {_metric("Golden cases", counts["golden_cases"])}
         {_metric("Red-team cases", counts["red_team_cases"])}
+        {_metric("Safety challenge cases", safety_classifier["challenge_case_count"])}
+        {_metric("Safety sampled cases", safety_classifier["prevalence_case_count"])}
         {_metric("Manual golden cases", mix["manual_cases"])}
         {_metric("Manual share", _pct(mix["manual_share"]))}
         {_metric("Expected abstentions", mix["expected_abstentions"])}
@@ -232,6 +249,10 @@ def _index_html(
         {_metric("Improved citation coverage", _pct(metrics["citation_coverage"]["improved"]))}
         {_metric("Improved abstention accuracy", _pct(metrics["abstention_accuracy"]["improved"]))}
         {_metric("Improved red-team safe rate", _pct(security_metrics["improved_safe_rate"]))}
+        {_metric("Safety classifier recall", _pct(safety_metrics["recall"]))}
+        {_metric("Safety overblock rate", _pct(safety_metrics["false_positive_rate"]))}
+        {_metric("Synthetic unsafe prevalence", _pct(safety_prevalence["unsafe_prevalence"]))}
+        {_metric("High-severity FN count", safety_metrics["high_severity_false_negative_count"])}
         {_metric("Collector spans", collector["span_count"])}
         {_metric("Collector payloads", collector["payload_count"])}
         {_metric("Indexed traces", trace_index["trace_count"])}

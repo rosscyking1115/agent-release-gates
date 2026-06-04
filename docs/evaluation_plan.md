@@ -8,7 +8,8 @@ The evaluation harness should show whether the internal AI agent is becoming mor
 
 - `golden_cases.jsonl`: expected answers, citations, ticket fields, and routing decisions.
 - `red_team_cases.jsonl`: prompt injection, unsafe agency, leakage, weak-evidence, and retrieved-context attack cases.
-- `safety_prevalence_cases.jsonl`: planned sampled request stream for safety classifier and prevalence evaluation.
+- `safety_challenge_cases.jsonl`: enriched synthetic safety classifier challenge cases.
+- `safety_prevalence_cases.jsonl`: weighted sampled synthetic request stream for safety classifier and prevalence evaluation.
 - `tickets.jsonl`: synthetic operations tickets used by extraction and routing tasks.
 - `runbooks.jsonl`: synthetic runbook sections used by retrieval and citation tasks.
 
@@ -68,9 +69,9 @@ The dashboard reads the saved report artifacts rather than recomputing metrics o
 - `reports/observability_otel_spans.jsonl`
 - `reports/observability_trace_index.json`
 - `reports/collector_export_preview.json`
-- planned: `reports/safety_classifier_eval_summary.json`
-- planned: `reports/safety_classifier_eval_cases.jsonl`
-- planned: `reports/safety_threshold_sweep.json`
+- `reports/safety_classifier_eval_summary.json`
+- `reports/safety_classifier_eval_cases.jsonl`
+- `reports/safety_threshold_sweep.json`
 - planned: `reports/safety_human_review_simulation.json`
 - `reports/evaluation_report.md`
 - `reports/evaluation_report.html`
@@ -156,17 +157,15 @@ The security version evaluates `red_team_cases.jsonl` against baseline and impro
 
 Known limitation: current red-team checks and severity weights are deterministic. Future versions should include more varied phrasing, retrieved-document attacks embedded inside generated runbook content, and model-assisted adversarial review.
 
-## Planned Safety Prevalence And Classifier Evaluation Version
+## Safety Prevalence And Classifier Evaluation Version
 
-The next safety extension should evaluate a deterministic safety classifier or rule layer over a synthetic sampled request stream. It should add simulated unsafe-request categories, benign near-miss requests, classifier scores, threshold decisions, false positive / false negative trade-offs, prevalence estimation, and a human-review workflow for borderline cases.
+The first safety-classifier extension evaluates a deterministic safety classifier or rule layer over enriched challenge cases and a weighted synthetic sampled request stream. It adds simulated unsafe-request categories, benign near-miss requests, classifier scores, threshold decisions, false positive / false negative trade-offs, and prevalence estimation.
 
-The module should report:
+The module reports:
 
 - confusion matrix by category and severity
 - precision, recall, false positive rate, false negative rate, and weighted safety score
 - prevalence estimate for unsafe categories in the sampled synthetic stream
 - threshold sweep with candidate operating points
-- human-review queue volume, reviewer catch rate, escalation burden, and unresolved residual risk
-- mitigation impact before and after threshold or rule changes
 
-The decision memo should explain why a threshold was chosen, what risk it prioritizes, what benign traffic it over-blocks, what unsafe cases still escape, and what must go to human review. The public report must state that prevalence is estimated from synthetic sampled cases, not real traffic.
+Known limitation: the first slice includes review routing in the classifier decision contract, but it does not yet generate a full human-review simulation, mitigation-impact report, or completed threshold decision memo. The public report must state that prevalence is estimated from synthetic sampled cases, not real traffic.

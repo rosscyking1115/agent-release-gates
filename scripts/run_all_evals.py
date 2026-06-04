@@ -13,6 +13,7 @@ from internal_ai_agent.evals.runner import (
     evaluate_retriever_comparison,
     write_evaluation_history,
 )
+from internal_ai_agent.evals.safety_classifier import evaluate_safety_classifier
 from internal_ai_agent.evals.security import evaluate_security
 from internal_ai_agent.io import read_jsonl, write_jsonl
 from internal_ai_agent.observability.collector import write_collector_export_preview
@@ -35,6 +36,7 @@ def run_all(project_root: Path) -> dict[str, Any]:
     retriever_comparison = evaluate_retriever_comparison(project_root)
     extraction = evaluate_extraction(project_root)
     security = evaluate_security(project_root)
+    safety_classifier = evaluate_safety_classifier(project_root)
     agent = evaluate_agent(project_root)
     evaluation_history = write_evaluation_history(
         project_root,
@@ -72,6 +74,7 @@ def run_all(project_root: Path) -> dict[str, Any]:
         "retriever_comparison": retriever_comparison,
         "extraction": extraction,
         "security": security,
+        "safety_classifier": safety_classifier,
         "agent": agent,
         "evaluation_history": evaluation_history,
         "observability_spans_path": str(observability_spans_path),
@@ -181,6 +184,14 @@ def main() -> None:
     print(
         "- security_improved_residual_risk_score: "
         f"{summary['security']['metrics']['improved_residual_risk_score']}"
+    )
+    print(
+        "- safety_classifier_false_negative_rate: "
+        f"{summary['safety_classifier']['metrics']['false_negative_rate']:.4f}"
+    )
+    print(
+        "- safety_prevalence_estimate: "
+        f"{summary['safety_classifier']['weighted_prevalence']['unsafe_prevalence']:.4f}"
     )
     print(
         "- agent_side_effect_block_rate: "

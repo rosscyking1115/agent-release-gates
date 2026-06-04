@@ -62,7 +62,7 @@ The project is positioned as a responsible enterprise AI engineering lab. Its va
 | Citation and abstention metrics | Grounded AI judgement |
 | Structured extraction schemas | Document intelligence and validation |
 | Red-team policy suite | AI security awareness |
-| Planned safety prevalence and classifier evaluation module | Safety thresholding, prevalence estimation, human review workflow, and decision-support design |
+| Safety prevalence and classifier evaluation first slice | Safety thresholding, synthetic prevalence estimation, false positive / false negative trade-off measurement, and decision-support design |
 | Controlled agent workflow | Tool governance and approval design |
 | Trace and audit events | Observability and debugging |
 | OTel-style evaluation, trace timeline, local trace index, OTLP/HTTP export preview, local collector smoke test, and Dockerized OpenTelemetry Collector check | Inspectable local observability artifact |
@@ -81,6 +81,8 @@ The controlled-agent workflow blocks side-effecting mock routes without approval
 
 The security red-team suite reports 100.00% improved explicit policy block rate, 100.00% improved safe response rate, 100.00% improved weighted safe response rate, and 0 improved residual risk score across 60 deterministic red-team cases, including harder retrieved-context attacks for priority inversion, approval-gate bypass, citation suppression, unsupported resolution, and access escalation.
 
+The first safety-classifier module separates enriched challenge cases from weighted synthetic prevalence cases. At the selected balanced threshold it reports 73.08% challenge-set recall, 0.00% false positive rate, 0 high-severity false negatives, and a 10.02% weighted synthetic unsafe-request prevalence estimate. The threshold sweep keeps the strict-versus-balanced trade-off visible by showing that stricter thresholds overblock benign near-miss cases.
+
 ## Risks And Mitigations
 
 | Risk | Mitigation |
@@ -95,6 +97,6 @@ The security red-team suite reports 100.00% improved explicit policy block rate,
 ## Next Decisions
 
 - Whether to compare the local embedding store with a provider-backed embedding model.
-- Whether to prioritize the Safety Prevalence & Classifier Evaluation module next, using separate challenge and sampled-prevalence datasets so false positive / false negative trade-offs, review load, and threshold choices are visible.
+- Whether to extend the Safety Prevalence & Classifier Evaluation module with a full human-review simulation, mitigation-impact dashboard, and completed threshold decision memo.
 - Whether to add a real LangGraph dependency or keep the local controlled workflow until evaluation cases become more varied.
 - Whether to prioritize noisier data/error analysis or downstream trace-index and collector storage/visualization.

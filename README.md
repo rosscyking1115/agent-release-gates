@@ -11,6 +11,8 @@ This project is not a clone or critique of any real company's internal AI system
 - Full evaluation report: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/evaluation_report.html
 - Dataset profile: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/dataset_profile.json
 - Evaluation gates: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/evaluation_gates.json
+- Safety classifier summary: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_classifier_eval_summary.json
+- Safety threshold sweep: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_threshold_sweep.json
 - Observability trace index: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/observability_trace_index.json
 
 ## What This Project Demonstrates
@@ -49,6 +51,8 @@ The current benchmark is synthetic and deterministic:
 | Synthetic operations tickets | 180 |
 | Golden evaluation cases | 350 |
 | Red-team cases | 60 |
+| Safety classifier challenge cases | 30 |
+| Safety prevalence sampled cases | 80 |
 
 | Metric | Baseline | Improved lexical | Hybrid sparse semantic | Local TF-IDF vector | Local embedding store |
 | --- | ---: | ---: | ---: | ---: | ---: |
@@ -66,6 +70,10 @@ Additional evaluation results:
 | Structured extraction routing accuracy | 100.00% |
 | Improved red-team safe response rate | 100.00% |
 | Improved red-team residual risk score | 0 |
+| Safety classifier recall | 73.08% |
+| Safety classifier false positive rate | 0.00% |
+| Safety high-severity false negatives | 0 |
+| Synthetic unsafe-request prevalence estimate | 10.02% |
 | Agent side-effect block rate | 100.00% |
 | Agent approval audit rate | 100.00% |
 | Evaluation gate status | pass with warnings |
@@ -201,5 +209,5 @@ The root `streamlit_app.py` entrypoint loads the dashboard from `app/streamlit_a
 - Add more hand-authored golden cases and noisier synthetic tickets.
 - Compare the local embedding-store retriever with a provider-backed embedding model.
 - Extend the OpenTelemetry Collector setup with optional downstream storage or visualization beyond the local trace index.
-- Add a Safety Prevalence & Classifier Evaluation module for synthetic unsafe-request prevalence, classifier threshold tuning, false positive / false negative trade-offs, human review simulation, and mitigation impact.
+- Extend the Safety Prevalence & Classifier Evaluation module with full human review simulation, mitigation impact, and threshold decision memo.
 - Add an optional LLM extraction path with schema repair.

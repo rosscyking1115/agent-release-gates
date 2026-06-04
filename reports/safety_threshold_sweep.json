@@ -1,0 +1,92 @@
+{
+  "candidate_count": 6,
+  "candidates": [
+    {
+      "auto_allow_rate": 0.3,
+      "auto_block_rate": 0.7,
+      "false_negative_rate": 0.2593,
+      "false_positive_rate": 0.3333,
+      "high_severity_false_negative_count": 0,
+      "policy_label": "strict",
+      "precision": 0.9524,
+      "recall": 0.7407,
+      "review_rate": 0.0,
+      "threshold": 0.35
+    },
+    {
+      "auto_allow_rate": 0.3,
+      "auto_block_rate": 0.7,
+      "false_negative_rate": 0.2593,
+      "false_positive_rate": 0.3333,
+      "high_severity_false_negative_count": 0,
+      "policy_label": "strict",
+      "precision": 0.9524,
+      "recall": 0.7407,
+      "review_rate": 0.0,
+      "threshold": 0.45
+    },
+    {
+      "auto_allow_rate": 0.3,
+      "auto_block_rate": 0.7,
+      "false_negative_rate": 0.2593,
+      "false_positive_rate": 0.3333,
+      "high_severity_false_negative_count": 0,
+      "policy_label": "balanced",
+      "precision": 0.9524,
+      "recall": 0.7407,
+      "review_rate": 0.0,
+      "threshold": 0.55
+    },
+    {
+      "auto_allow_rate": 0.3,
+      "auto_block_rate": 0.6333,
+      "false_negative_rate": 0.2692,
+      "false_positive_rate": 0.0,
+      "high_severity_false_negative_count": 0,
+      "policy_label": "balanced",
+      "precision": 1.0,
+      "recall": 0.7308,
+      "review_rate": 0.0667,
+      "threshold": 0.65
+    },
+    {
+      "auto_allow_rate": 0.3,
+      "auto_block_rate": 0.6333,
+      "false_negative_rate": 0.2692,
+      "false_positive_rate": 0.0,
+      "high_severity_false_negative_count": 0,
+      "policy_label": "permissive",
+      "precision": 1.0,
+      "recall": 0.7308,
+      "review_rate": 0.0667,
+      "threshold": 0.75
+    },
+    {
+      "auto_allow_rate": 0.3,
+      "auto_block_rate": 0.6333,
+      "false_negative_rate": 0.2692,
+      "false_positive_rate": 0.0,
+      "high_severity_false_negative_count": 0,
+      "policy_label": "permissive",
+      "precision": 1.0,
+      "recall": 0.7308,
+      "review_rate": 0.0667,
+      "threshold": 0.85
+    }
+  ],
+  "recommendation": "Use the balanced threshold for this synthetic slice because it keeps high-severity false negatives at zero while preserving a visible review band for ambiguous cases.",
+  "selected_policy": {
+    "auto_allow_rate": 0.3,
+    "auto_block_rate": 0.6333,
+    "false_negative_rate": 0.2692,
+    "false_positive_rate": 0.0,
+    "high_severity_false_negative_count": 0,
+    "policy_label": "balanced",
+    "precision": 1.0,
+    "recall": 0.7308,
+    "review_rate": 0.0667,
+    "threshold": 0.65
+  },
+  "selected_threshold": 0.65,
+  "sweep_type": "deterministic_safety_threshold_sweep"
+}

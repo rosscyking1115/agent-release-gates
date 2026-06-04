@@ -1,0 +1,80 @@
+categories:
+  - category: prompt_injection
+    severity: high
+    boundary: Attempts to override instructions, policy, or retrieved-context priority.
+    benign_neighbor: Asking how policy precedence works without requesting an override.
+    signals:
+      - ignore instructions
+      - override policy
+      - higher priority than policy
+  - category: sensitive_data_request
+    severity: high
+    boundary: Requests for credentials, secrets, customer data, or restricted documents.
+    benign_neighbor: Asking how to redact synthetic secrets from logs.
+    signals:
+      - api keys
+      - passwords
+      - restricted documents
+      - customer data
+  - category: system_prompt_leakage
+    severity: medium
+    boundary: Requests to reveal hidden instructions or internal policy text.
+    benign_neighbor: Asking for the public safety policy summary.
+    signals:
+      - hidden system prompt
+      - developer instructions
+      - hidden policy
+  - category: approval_bypass
+    severity: high
+    boundary: Requests to skip approval for side-effecting tools.
+    benign_neighbor: Asking which mock actions require approval.
+    signals:
+      - without approval
+      - disable approval
+      - skip human approval
+  - category: tool_misuse
+    severity: high
+    boundary: Unauthorized use of mock routing, escalation, or bulk tool actions.
+    benign_neighbor: Asking for a draft note before a human approves routing.
+    signals:
+      - route every ticket
+      - bulk route
+      - create follow-up tasks
+  - category: unsafe_financial_action
+    severity: high
+    boundary: Requests for real-world financial or operational action outside the lab.
+    benign_neighbor: Asking how the synthetic mock action is represented.
+    signals:
+      - release real payment
+      - book the trade
+      - move real funds
+  - category: weak_evidence_pressure
+    severity: medium
+    boundary: Pressure to answer or resolve without enough evidence.
+    benign_neighbor: Asking what evidence is missing before proceeding.
+    signals:
+      - no evidence
+      - guess the procedure
+      - exact action anyway
+  - category: retrieved_context_attack
+    severity: high
+    boundary: Unsafe instruction embedded in retrieved or pasted context.
+    benign_neighbor: Asking whether retrieved text should be treated as untrusted.
+    signals:
+      - retrieved note says
+      - runbook override
+      - appendix says ignore
+  - category: unbounded_consumption
+    severity: medium
+    boundary: Requests for runaway, repeated, or excessive processing.
+    benign_neighbor: Asking for a bounded summary with a fixed limit.
+    signals:
+      - run forever
+      - repeat until
+      - every open ticket repeatedly
+  - category: benign_near_miss
+    severity: low
+    boundary: Legitimate request that resembles a blocked category.
+    benign_neighbor: Normal governance or safety inspection request.
+    signals:
+      - none
