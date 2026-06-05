@@ -39,7 +39,7 @@ Use a synthetic operations domain for the internal benchmark:
 
 Use public technical-support data only as a separate retrieval benchmark:
 
-- compact TechQA-RAG-Eval sample
+- 160-case TechQA-RAG-Eval sample
 - public dataset license attribution
 - no claim that public support cases represent internal operations
 
@@ -85,7 +85,7 @@ The dataset profile now reports 94 manually authored golden cases, 68 expected a
 
 The retriever snapshot report records deterministic deltas between retriever versions, so regressions are visible even when every system is generated from the same local synthetic dataset.
 
-The TechQA public RAG track evaluates 80 compact public technical-support cases with 90.62% retrieval hit rate@3, 78.12% top-1 citation accuracy, 83.85% mean reciprocal rank@3, and 43.75% impossible-question abstention.
+The TechQA public RAG track evaluates 160 compact public technical-support cases with 87.50% retrieval hit rate@3, 77.34% top-1 citation accuracy, 81.51% mean reciprocal rank@3, and 34.38% impossible-question abstention. The benchmark profile records 128 answerable cases, 32 impossible cases, 119 unique public documents, and a 31.87% failed-case rate.
 
 The controlled-agent workflow blocks side-effecting mock routes without approval and executes them only when approval is granted. The eval reports 100.00% side-effect block rate, approval audit rate, and valid tool-call rate.
 
@@ -107,6 +107,6 @@ The safety-classifier module separates enriched challenge cases, a targeted seco
 ## Next Decisions
 
 - Whether to compare the local embedding store with a provider-backed embedding model.
-- Whether to expand the TechQA public benchmark beyond the compact sample.
+- Whether to expand the TechQA public benchmark beyond the 160-case compact sample.
 - Whether to add a real LangGraph dependency or keep the local controlled workflow until evaluation cases become more varied.
 - Whether to prioritize noisier data/error analysis or downstream trace-index and collector storage/visualization.

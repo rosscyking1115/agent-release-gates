@@ -16,7 +16,7 @@ This project is not a clone or critique of any real company's internal AI system
 Internal AI agents are only useful when their answers are grounded, measurable, access-aware, safe, and auditable. This lab treats the agent as an operational system rather than a generic chatbot:
 
 - retrieves synthetic runbook evidence and answers with citations
-- validates the retrieval harness on a compact public TechQA-RAG-Eval sample
+- validates the retrieval harness on a 160-case public TechQA-RAG-Eval sample
 - extracts structured fields from synthetic operations tickets
 - routes tickets to synthetic owner teams
 - refuses unsafe, weak-evidence, or policy-bypassing requests
@@ -31,7 +31,7 @@ Internal AI agents are only useful when their answers are grounded, measurable, 
 | Area | Implementation |
 | --- | --- |
 | Retrieval evaluation | Baseline, lexical, hybrid sparse semantic, local TF-IDF vector, and local hashed embedding-store retrievers |
-| External benchmark | Compact NVIDIA TechQA-RAG-Eval public technical-support RAG sample |
+| External benchmark | 160-case NVIDIA TechQA-RAG-Eval public technical-support RAG sample |
 | Structured extraction | Pydantic-validated ticket extraction and routing decisions |
 | Safety testing | Red-team cases plus classifier threshold tuning, sampled prevalence estimation, human review simulation, synthetic adjudication notes, reviewer-disagreement slices, secondary review-band analysis, secondary-floor validation, operating recommendation, mitigation impact, and decision memo |
 | Agent governance | Read-only tools plus approval-gated mock side effects |
@@ -91,7 +91,7 @@ External public RAG benchmark:
 
 | Dataset | Cases | Retrieval hit rate@3 | Top-1 citation | Impossible-question abstention |
 | --- | ---: | ---: | ---: | ---: |
-| NVIDIA TechQA-RAG-Eval sample | 80 | 90.62% | 78.12% | 43.75% |
+| NVIDIA TechQA-RAG-Eval sample | 160 | 87.50% | 77.34% | 34.38% |
 
 The TechQA track is public technical-support data under Apache-2.0. It is used as an external validation layer for retrieval and abstention behavior, not as a replacement for the controlled synthetic internal-operations benchmark.
 
@@ -147,12 +147,14 @@ uv sync
 uv run python scripts/run_all_evals.py
 ```
 
-The repo includes a compact TechQA sample for the public benchmark. To refresh it from the upstream public dataset, download `train.json` from `nvidia/TechQA-RAG-Eval` into `data/public/techqa_train.json`, then run:
+The repo includes a 160-case TechQA sample for the public benchmark. To refresh it from the upstream public dataset, download `train.json` from `nvidia/TechQA-RAG-Eval` into `data/public/techqa_train.json`, then run:
 
 ```powershell
 uv run python scripts/prepare_techqa_public_benchmark.py
 uv run python scripts/run_techqa_public_eval.py
 ```
+
+Use `--limit` on the preparation script to intentionally change the tracked sample size.
 
 Run the interactive dashboard:
 
@@ -196,6 +198,7 @@ The public project page keeps the main experience focused on the dashboard and e
 - Dataset profile: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/dataset_profile.json
 - Evaluation gates: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/evaluation_gates.json
 - TechQA public RAG summary: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/techqa_public_rag_summary.json
+- TechQA public benchmark profile: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/techqa_public_benchmark_profile.json
 - Safety classifier summary: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_classifier_eval_summary.json
 - Safety threshold sweep: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_threshold_sweep.json
 - Safety threshold retuning: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_threshold_retuning.json
@@ -238,7 +241,7 @@ The root `streamlit_app.py` entrypoint loads the dashboard from `app/streamlit_a
 ## Current Limitations
 
 - The benchmark is synthetic and still partly templated.
-- The TechQA public benchmark currently uses a compact sample, not the full upstream dataset.
+- The TechQA public benchmark currently uses a 160-case compact sample, not the full upstream dataset.
 - The local embedding store uses deterministic feature hashing, not a provider-backed embedding model.
 - Provider-backed embedding evaluation is available as an optional script, but no provider-backed result is published yet.
 - Structured extraction is deterministic pattern matching, not LLM extraction.
@@ -247,7 +250,7 @@ The root `streamlit_app.py` entrypoint loads the dashboard from `app/streamlit_a
 ## Useful Follow-Up Work
 
 - Add more hand-authored golden cases and noisier synthetic tickets.
-- Expand the TechQA public benchmark sample and compare the same retrievers on the larger dataset.
+- Expand the TechQA public benchmark beyond the 160-case sample and compare the same retrievers on the larger dataset.
 - Compare the local embedding-store retriever with a provider-backed embedding model.
 - Extend the OpenTelemetry Collector setup with optional downstream storage or visualization beyond the local trace index.
 - Add an optional LLM extraction path with schema repair.

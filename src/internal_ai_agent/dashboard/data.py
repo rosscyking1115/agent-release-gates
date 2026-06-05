@@ -85,6 +85,7 @@ def load_techqa_public_summary(project_root: Path) -> dict[str, Any]:
         "benchmark_track": "external_public_rag",
         "status": "not_configured",
         "case_count": 0,
+        "benchmark_profile": {"sample_case_count": 0},
         "metrics": {},
         "notes": [],
     }

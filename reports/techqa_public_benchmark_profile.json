@@ -1,0 +1,32 @@
+{
+  "coverage_notes": [
+    "The TechQA track is external public technical-support data and is reported separately from the synthetic internal-operations benchmark.",
+    "The tracked sample is deterministic so CI, Streamlit, and GitHub Pages can reproduce the public-data metrics without downloading the upstream dataset.",
+    "Provider-backed embedding comparison remains optional and is not claimed until a credentialed run publishes a separate result."
+  ],
+  "report_type": "techqa_public_benchmark_profile",
+  "summary": {
+    "answerable_case_count": 128,
+    "answerable_context_coverage": 1.0,
+    "average_contexts_per_case": 0.8,
+    "benchmark_track": "external_public_rag",
+    "dataset": "nvidia/TechQA-RAG-Eval",
+    "failed_case_count": 51,
+    "failure_rate": 0.3187,
+    "impossible_abstention_rate": 0.3438,
+    "impossible_case_count": 32,
+    "impossible_case_share": 0.2,
+    "license": "Apache-2.0",
+    "provider_backed_embedding_result_published": false,
+    "retrieval_hit_rate_at_3": 0.875,
+    "sample_case_count": 160,
+    "sample_path": "data/public/techqa_rag_eval_sample.jsonl",
+    "sample_scope": "tracked_compact_public_sample",
+    "sample_selection_policy": "first_answerable_plus_first_impossible_20pct",
+    "source_url": "https://huggingface.co/datasets/nvidia/TechQA-RAG-Eval",
+    "status": "evaluated",
+    "top1_citation_accuracy": 0.7734,
+    "tracked_sample_default_limit": 160,
+    "unique_document_count": 119
+  }
+}

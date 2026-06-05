@@ -252,7 +252,10 @@ def generate_public_report(project_root: Path) -> str:
             "- Extraction is deterministic rather than LLM-backed.",
             "- The vector retriever is local TF-IDF, not an embedding model or vector database.",
             "- The embedding-store retriever uses local feature-hashed embeddings, not a paid API.",
-            "- The TechQA public track is a compact external sample, not the full dataset.",
+            (
+                "- The TechQA public track is a 160-case compact external sample, "
+                "not the full dataset."
+            ),
             (
                 "- Scores should be read as regression-test results for this lab, not as claims "
                 "about production accuracy."
@@ -262,7 +265,10 @@ def generate_public_report(project_root: Path) -> str:
             "",
             "- Add noisier, human-written ticket variants.",
             "- Run and review the optional provider-backed embedding comparison.",
-            "- Expand the TechQA public benchmark sample and compare against provider embeddings.",
+            (
+                "- Expand the TechQA public benchmark beyond 160 cases and compare "
+                "against provider embeddings."
+            ),
             "- Extend the collector deployment with optional downstream storage or visualization.",
             "- Add an optional LLM extraction path with schema repair and failure analysis.",
             "",
@@ -324,15 +330,25 @@ def _techqa_public_table(report: dict[str, Any]) -> str:
     if report.get("status") != "evaluated":
         return "TechQA public benchmark is not configured."
     metrics = report["metrics"]
+    profile = report.get("benchmark_profile", {})
     rows = [
         "| TechQA public RAG metric | Value |",
         "| --- | ---: |",
         f"| Dataset | {report['dataset']} |",
         f"| License | {report['license']} |",
         f"| Cases | {report['case_count']} |",
+        f"| Sample scope | {profile.get('sample_scope', 'tracked_compact_public_sample')} |",
         f"| Answerable cases | {report['answerable_case_count']} |",
         f"| Impossible cases | {report['impossible_case_count']} |",
+        (
+            "| Impossible-case share | "
+            f"{_pct(profile.get('impossible_case_share', 0.0))} |"
+        ),
         f"| Indexed public documents | {report['document_count']} |",
+        (
+            "| Answerable context coverage | "
+            f"{_pct(profile.get('answerable_context_coverage', 0.0))} |"
+        ),
         f"| Retrieval hit rate@3 | {_pct(metrics['retrieval_hit_rate_at_3'])} |",
         f"| Top-1 citation accuracy | {_pct(metrics['top1_citation_accuracy'])} |",
         f"| Mean reciprocal rank@3 | {_pct(metrics['mean_reciprocal_rank_at_3'])} |",
@@ -344,6 +360,11 @@ def _techqa_public_table(report: dict[str, Any]) -> str:
         (
             "| Answerable false abstention | "
             f"{_pct(metrics['answerable_false_abstention_rate'])} |"
+        ),
+        f"| Failed cases | {profile.get('failed_case_count', 0)} |",
+        (
+            "| Provider-backed embedding result published | "
+            f"{profile.get('provider_backed_embedding_result_published', False)} |"
         ),
     ]
     return "\n".join(rows)

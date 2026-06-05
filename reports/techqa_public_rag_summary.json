@@ -1,28 +1,85 @@
 {
   "abstention_score_threshold": 15.0,
-  "answerable_case_count": 64,
+  "answerable_case_count": 128,
+  "benchmark_profile": {
+    "answerable_case_count": 128,
+    "answerable_context_coverage": 1.0,
+    "average_contexts_per_case": 0.8,
+    "benchmark_track": "external_public_rag",
+    "dataset": "nvidia/TechQA-RAG-Eval",
+    "failed_case_count": 51,
+    "failure_rate": 0.3187,
+    "impossible_abstention_rate": 0.3438,
+    "impossible_case_count": 32,
+    "impossible_case_share": 0.2,
+    "license": "Apache-2.0",
+    "provider_backed_embedding_result_published": false,
+    "retrieval_hit_rate_at_3": 0.875,
+    "sample_case_count": 160,
+    "sample_path": "data/public/techqa_rag_eval_sample.jsonl",
+    "sample_scope": "tracked_compact_public_sample",
+    "sample_selection_policy": "first_answerable_plus_first_impossible_20pct",
+    "source_url": "https://huggingface.co/datasets/nvidia/TechQA-RAG-Eval",
+    "status": "evaluated",
+    "top1_citation_accuracy": 0.7734,
+    "tracked_sample_default_limit": 160,
+    "unique_document_count": 119
+  },
   "benchmark_track": "external_public_rag",
-  "case_count": 80,
+  "case_count": 160,
   "dataset": "nvidia/TechQA-RAG-Eval",
-  "document_count": 59,
+  "document_count": 119,
   "failure_examples": [
+    {
+      "case_id": "TRAIN_Q015",
+      "expected_citation_ids": [
+        "swg21998452.txt"
+      ],
+      "expected_rank": 3,
+      "failure_reasons": [
+        "expected_document_retrieved_but_not_top1"
+      ],
+      "is_impossible": false,
+      "retrieved_citation_ids": [
+        "swg22010832.txt",
+        "swg22011696.txt",
+        "swg21998452.txt"
+      ],
+      "top_score": 321.142
+    },
     {
       "case_id": "TRAIN_Q016",
       "expected_citation_ids": [
         "swg21469413.txt"
       ],
+      "expected_rank": null,
+      "failure_reasons": [
+        "expected_document_not_retrieved_at_3"
+      ],
+      "is_impossible": false,
+      "retrieved_citation_ids": [
+        "swg21067352.txt",
+        "swg21902654.txt",
+        "swg22009818.txt"
+      ],
+      "top_score": 71.1317
+    },
+    {
+      "case_id": "TRAIN_Q017",
+      "expected_citation_ids": [
+        "swg27019359.txt"
+      ],
       "expected_rank": 2,
       "failure_reasons": [
-        "false_abstention_answerable_question",
         "expected_document_retrieved_but_not_top1"
       ],
       "is_impossible": false,
       "retrieved_citation_ids": [
-        "swg22009818.txt",
-        "swg21469413.txt",
-        "swg21636533.txt"
+        "swg21695094.txt",
+        "swg27019359.txt",
+        "swg21426787.txt"
       ],
-      "top_score": 7.7193
+      "top_score": 21.5374
     },
     {
       "case_id": "TRAIN_Q020",
@@ -37,26 +94,26 @@
       "retrieved_citation_ids": [
         "swg21263677.txt",
         "swg24035040.txt",
-        "swg21998655.txt"
+        "swg21993043.txt"
       ],
-      "top_score": 69.2089
+      "top_score": 68.7803
     },
     {
       "case_id": "TRAIN_Q024",
       "expected_citation_ids": [
         "swg21592093.txt"
       ],
-      "expected_rank": 3,
+      "expected_rank": null,
       "failure_reasons": [
-        "expected_document_retrieved_but_not_top1"
+        "expected_document_not_retrieved_at_3"
       ],
       "is_impossible": false,
       "retrieved_citation_ids": [
+        "swg21507587.txt",
         "swg21966637.txt",
-        "swg22001418.txt",
-        "swg21592093.txt"
+        "swg22001418.txt"
       ],
-      "top_score": 43.6749
+      "top_score": 44.1336
     },
     {
       "case_id": "TRAIN_Q029",
@@ -70,10 +127,10 @@
       "is_impossible": false,
       "retrieved_citation_ids": [
         "swg21515420.txt",
-        "swg21636093.txt",
-        "swg21469413.txt"
+        "swg21249798.txt",
+        "swg21636093.txt"
       ],
-      "top_score": 45.1068
+      "top_score": 43.2497
     },
     {
       "case_id": "TRAIN_Q033",
@@ -91,7 +148,7 @@
         "swg1PI37248.txt",
         "swg21611699.txt"
       ],
-      "top_score": 7.0147
+      "top_score": 6.4425
     },
     {
       "case_id": "TRAIN_Q038",
@@ -107,9 +164,9 @@
       "retrieved_citation_ids": [
         "swg21966637.txt",
         "swg21998655.txt",
-        "swg21592093.txt"
+        "swg21983129.txt"
       ],
-      "top_score": 6.6404
+      "top_score": 6.469
     },
     {
       "case_id": "TRAIN_Q039",
@@ -122,11 +179,11 @@
       ],
       "is_impossible": false,
       "retrieved_citation_ids": [
+        "swg21249798.txt",
         "swg21636093.txt",
-        "swg21515420.txt",
-        "swg22012345.txt"
+        "swg24041394.txt"
       ],
-      "top_score": 33.309
+      "top_score": 36.1334
     },
     {
       "case_id": "TRAIN_Q043",
@@ -143,58 +200,24 @@
         "swg21657023.txt",
         "swg24043263.txt"
       ],
-      "top_score": 43.1495
-    },
-    {
-      "case_id": "TRAIN_Q044",
-      "expected_citation_ids": [
-        "swg21592093.txt"
-      ],
-      "expected_rank": 2,
-      "failure_reasons": [
-        "expected_document_retrieved_but_not_top1"
-      ],
-      "is_impossible": false,
-      "retrieved_citation_ids": [
-        "swg21966637.txt",
-        "swg21592093.txt",
-        "swg22001418.txt"
-      ],
-      "top_score": 36.453
-    },
-    {
-      "case_id": "TRAIN_Q045",
-      "expected_citation_ids": [
-        "swg21598974.txt"
-      ],
-      "expected_rank": 2,
-      "failure_reasons": [
-        "expected_document_retrieved_but_not_top1"
-      ],
-      "is_impossible": false,
-      "retrieved_citation_ids": [
-        "swg21502037.txt",
-        "swg21598974.txt",
-        "swg21576245.txt"
-      ],
-      "top_score": 23.5638
+      "top_score": 44.415
     }
   ],
   "failure_reasons": {
-    "expected_document_not_retrieved_at_3": 6,
-    "expected_document_retrieved_but_not_top1": 8,
-    "failed_to_abstain_impossible_question": 9,
-    "false_abstention_answerable_question": 5
+    "expected_document_not_retrieved_at_3": 16,
+    "expected_document_retrieved_but_not_top1": 13,
+    "failed_to_abstain_impossible_question": 21,
+    "false_abstention_answerable_question": 7
   },
-  "impossible_case_count": 16,
+  "impossible_case_count": 32,
   "license": "Apache-2.0",
   "metrics": {
     "abstention_accuracy": 0.825,
-    "answerable_false_abstention_rate": 0.0781,
-    "impossible_abstention_rate": 0.4375,
-    "mean_reciprocal_rank_at_3": 0.8385,
-    "retrieval_hit_rate_at_3": 0.9062,
-    "top1_citation_accuracy": 0.7812
+    "answerable_false_abstention_rate": 0.0547,
+    "impossible_abstention_rate": 0.3438,
+    "mean_reciprocal_rank_at_3": 0.8151,
+    "retrieval_hit_rate_at_3": 0.875,
+    "top1_citation_accuracy": 0.7734
   },
   "notes": [
     "This is an external public-data benchmark track. It does not replace the controlled synthetic internal-operations benchmark.",

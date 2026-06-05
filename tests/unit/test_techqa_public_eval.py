@@ -44,16 +44,26 @@ def test_techqa_public_eval_scores_public_rag_sample(tmp_path: Path) -> None:
     assert report["case_count"] == 2
     assert report["answerable_case_count"] == 1
     assert report["impossible_case_count"] == 1
+    assert report["benchmark_profile"]["sample_case_count"] == 2
+    assert report["benchmark_profile"]["unique_document_count"] == 1
+    assert report["benchmark_profile"]["provider_backed_embedding_result_published"] is False
     assert report["metrics"]["retrieval_hit_rate_at_3"] == 1.0
     assert report["metrics"]["top1_citation_accuracy"] == 1.0
     assert report["metrics"]["impossible_abstention_rate"] == 1.0
     assert (tmp_path / "reports/techqa_public_rag_summary.json").exists()
+    assert (tmp_path / "reports/techqa_public_benchmark_profile.json").exists()
     assert (tmp_path / "reports/techqa_public_rag_cases.jsonl").exists()
 
     persisted = json.loads(
         (tmp_path / "reports/techqa_public_rag_summary.json").read_text(encoding="utf-8")
     )
     assert persisted["license"] == "Apache-2.0"
+    profile = json.loads(
+        (tmp_path / "reports/techqa_public_benchmark_profile.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert profile["summary"]["sample_scope"] == "tracked_compact_public_sample"
 
 
 def test_techqa_public_eval_writes_not_configured_report(tmp_path: Path) -> None:
@@ -61,4 +71,6 @@ def test_techqa_public_eval_writes_not_configured_report(tmp_path: Path) -> None
 
     assert report["status"] == "not_configured"
     assert report["case_count"] == 0
+    assert report["benchmark_profile"]["sample_case_count"] == 0
     assert (tmp_path / "reports/techqa_public_rag_summary.json").exists()
+    assert (tmp_path / "reports/techqa_public_benchmark_profile.json").exists()

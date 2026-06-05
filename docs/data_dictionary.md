@@ -102,6 +102,9 @@ Reports:
 | `reports/safety_mitigation_impact.json` | Scenario comparison for no classifier, classifier-only hold, and classifier plus simulated human review. |
 | `reports/safety_threshold_decision_memo.json` | Selected threshold, review band, decision rationale, decision metrics, and next threshold-tuning work. |
 | `reports/safety_prevalence_report.md` | Weighted prevalence estimates, confidence intervals, sampling limitations, and distinction from challenge-set failure rates. |
+| `reports/techqa_public_rag_summary.json` | External public TechQA-RAG-Eval retrieval and abstention summary over the tracked public sample. |
+| `reports/techqa_public_benchmark_profile.json` | Public benchmark transparency profile with sample size, answerable/impossible mix, unique document count, context coverage, failure rate, and provider-result status. |
+| `reports/techqa_public_rag_cases.jsonl` | Case-level TechQA retrieval results, expected/retrieved citations, abstention decision, and failure reasons. |
 
 ## Retrieval eval case files
 

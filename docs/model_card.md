@@ -9,7 +9,7 @@ Internal AI Agent Evaluation Lab
 This project provides a synthetic internal operations AI workflow for local experimentation with:
 
 - grounded retrieval over synthetic runbooks
-- external public technical-support retrieval evaluation using a compact TechQA-RAG-Eval sample
+- external public technical-support retrieval evaluation using a 160-case TechQA-RAG-Eval sample
 - deterministic release gates for benchmark, safety, governance, and observability checks
 - structured extraction from synthetic tickets
 - role-aware answer generation
@@ -69,7 +69,7 @@ The dataset profile reports 94 manual golden cases, 68 expected abstentions, 42 
 
 The retriever snapshot report records deterministic version-to-version deltas and flags regressions when citation coverage falls or failed-case count rises. The evaluation history report adds stable dated lab milestones for the same local benchmark sequence, plus a current cross-workflow quality summary.
 
-The external TechQA public RAG track evaluates 80 compact public technical-support cases with 90.62% retrieval hit rate@3, 78.12% top-1 citation accuracy, 83.85% mean reciprocal rank@3, and 43.75% impossible-question abstention. This validates retrieval behavior on public data but should not be confused with the synthetic internal-operations benchmark.
+The external TechQA public RAG track evaluates 160 compact public technical-support cases with 87.50% retrieval hit rate@3, 77.34% top-1 citation accuracy, 81.51% mean reciprocal rank@3, and 34.38% impossible-question abstention. The companion benchmark profile reports 128 answerable cases, 32 impossible cases, 119 unique public documents, and a 31.87% failed-case rate. This validates retrieval behavior on public data but should not be confused with the synthetic internal-operations benchmark.
 
 The release-gate report turns the generated metrics into pass/warn/fail checks. Current blocking gates cover benchmark size, manual-case share, local retrieval grounding, abstention, schema validity, weighted red-team safety, residual risk, approval governance, trace indexing, and collector-span consistency. The provider-backed embedding comparison remains a non-blocking warning because no credentialed provider result is published.
 
@@ -79,7 +79,7 @@ Safety extension status: the Safety Prevalence & Classifier Evaluation module se
 
 - The current embedding-store implementation uses deterministic feature hashing, not a provider-backed embedding model or vector database.
 - Ticket text and runbook text are synthetic and still partly templated, although the golden set now includes noisy abbreviations, missing metadata, false leads, typos, human-like phrasing, human email threads, manually authored chat/meeting/screenshot/handoff/control-room/redacted/stale-thread fragments, evidence packets, mixed manual review bundles, field notes, retrieved-context review packets, analyst scratch notes, CSV excerpts, incident timelines, retrieved-document injection, adversarial instructions, conflicting evidence, and long conflicting context.
-- The TechQA public track currently uses a compact sample rather than the full upstream public dataset.
+- The TechQA public track currently uses a 160-case compact sample rather than the full upstream public dataset.
 - The previous manual-case share gap is cleared, but the current profile still flags that provider-backed embedding comparison is not covered. An optional provider-backed evaluation script now exists, but no provider-backed result is published yet.
 - The local TF-IDF vector and local embedding-store retrievers pass the expanded synthetic golden suite. The hybrid sparse semantic retriever now has one manual field-note miss, which is kept in the report as a useful final-selection weakness rather than hidden by rewriting the benchmark.
 - Structured extraction is deterministic pattern matching, not LLM extraction.
@@ -105,7 +105,7 @@ Side-effecting operations are mock-only and require explicit approval.
 ## Recommended Next Improvements
 
 - Run and review the optional provider-backed embedding comparison when API access and cost are acceptable.
-- Expand the TechQA public benchmark sample and compare local retrieval with provider-backed embeddings.
+- Expand the TechQA public benchmark beyond the 160-case sample and compare local retrieval with provider-backed embeddings.
 - Add more non-templated tickets and provider-backed retrieval comparisons so the next weaknesses are measured before more tuning.
 - Extend the local trace index or OpenTelemetry Collector setup with optional downstream storage or visualization.
 - Replace deterministic extraction with an optional LLM extraction provider plus schema repair.

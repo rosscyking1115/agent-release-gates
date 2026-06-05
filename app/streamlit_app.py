@@ -384,7 +384,8 @@ def _render_techqa_public_benchmark(summary: dict[str, object]) -> None:
         return
 
     metrics = summary["metrics"]  # type: ignore[index]
-    cols = st.columns(4)
+    profile = summary.get("benchmark_profile", {})
+    cols = st.columns(5)
     cols[0].metric("TechQA cases", summary["case_count"])
     cols[1].metric("Answerable cases", summary["answerable_case_count"])  # type: ignore[index]
     cols[2].metric(
@@ -395,6 +396,10 @@ def _render_techqa_public_benchmark(summary: dict[str, object]) -> None:
         "Impossible abstention",
         _format_pct(float(metrics["impossible_abstention_rate"])),  # type: ignore[index]
     )
+    cols[4].metric(
+        "Public docs",
+        profile.get("unique_document_count", summary.get("document_count", 0)),  # type: ignore[union-attr]
+    )
     st.caption(
         "External validation over NVIDIA TechQA-RAG-Eval technical-support questions. "
         "This complements, but does not replace, the controlled synthetic internal benchmark."
@@ -404,6 +409,26 @@ def _render_techqa_public_benchmark(summary: dict[str, object]) -> None:
         display_df = table_df[["label", "value_pct"]]
         display_df.columns = ["Metric", "Value"]
         st.dataframe(display_df, hide_index=True, use_container_width=True)
+    if profile:
+        profile_df = pd.DataFrame(
+            [
+                {
+                    "Sample cases": profile.get("sample_case_count", 0),
+                    "Impossible share": _format_pct(
+                        float(profile.get("impossible_case_share", 0.0))
+                    ),
+                    "Context coverage": _format_pct(
+                        float(profile.get("answerable_context_coverage", 0.0))
+                    ),
+                    "Failed cases": profile.get("failed_case_count", 0),
+                    "Provider result": profile.get(
+                        "provider_backed_embedding_result_published",
+                        False,
+                    ),
+                }
+            ]
+        )
+        st.dataframe(profile_df, hide_index=True, use_container_width=True)
 
 
 def _render_retriever_snapshots(snapshot_report: dict[str, object]) -> None:

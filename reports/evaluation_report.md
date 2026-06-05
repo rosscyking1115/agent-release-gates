@@ -94,16 +94,21 @@ The retrieval experiment compares a deliberately weak baseline, a lexical retrie
 | --- | ---: |
 | Dataset | nvidia/TechQA-RAG-Eval |
 | License | Apache-2.0 |
-| Cases | 80 |
-| Answerable cases | 64 |
-| Impossible cases | 16 |
-| Indexed public documents | 59 |
-| Retrieval hit rate@3 | 90.62% |
-| Top-1 citation accuracy | 78.12% |
-| Mean reciprocal rank@3 | 83.85% |
+| Cases | 160 |
+| Sample scope | tracked_compact_public_sample |
+| Answerable cases | 128 |
+| Impossible cases | 32 |
+| Impossible-case share | 20.00% |
+| Indexed public documents | 119 |
+| Answerable context coverage | 100.00% |
+| Retrieval hit rate@3 | 87.50% |
+| Top-1 citation accuracy | 77.34% |
+| Mean reciprocal rank@3 | 81.51% |
 | Abstention accuracy | 82.50% |
-| Impossible-question abstention | 43.75% |
-| Answerable false abstention | 7.81% |
+| Impossible-question abstention | 34.38% |
+| Answerable false abstention | 5.47% |
+| Failed cases | 51 |
+| Provider-backed embedding result published | False |
 
 ## Historical Evaluation Snapshots
 
@@ -467,13 +472,13 @@ The combined export includes workflow-level spans, agent tool/audit spans, case-
 - Extraction is deterministic rather than LLM-backed.
 - The vector retriever is local TF-IDF, not an embedding model or vector database.
 - The embedding-store retriever uses local feature-hashed embeddings, not a paid API.
-- The TechQA public track is a compact external sample, not the full dataset.
+- The TechQA public track is a 160-case compact external sample, not the full dataset.
 - Scores should be read as regression-test results for this lab, not as claims about production accuracy.
 
 ## Recommended Next Work
 
 - Add noisier, human-written ticket variants.
 - Run and review the optional provider-backed embedding comparison.
-- Expand the TechQA public benchmark sample and compare against provider embeddings.
+- Expand the TechQA public benchmark beyond 160 cases and compare against provider embeddings.
 - Extend the collector deployment with optional downstream storage or visualization.
 - Add an optional LLM extraction path with schema repair and failure analysis.

@@ -14,6 +14,8 @@ TECHQA_SAMPLE_PATH = Path("data/public/techqa_rag_eval_sample.jsonl")
 TECHQA_RAW_PATH = Path("data/public/techqa_train.json")
 TECHQA_SUMMARY_PATH = Path("reports/techqa_public_rag_summary.json")
 TECHQA_CASES_PATH = Path("reports/techqa_public_rag_cases.jsonl")
+TECHQA_PROFILE_PATH = Path("reports/techqa_public_benchmark_profile.json")
+TECHQA_DEFAULT_SAMPLE_LIMIT = 160
 ABSTENTION_SCORE_THRESHOLD = 15.0
 
 
@@ -49,12 +51,19 @@ class TechQACaseResult:
 def evaluate_techqa_public(project_root: Path) -> dict[str, Any]:
     cases = load_techqa_cases(project_root)
     if not cases:
+        profile = _benchmark_profile(
+            cases=[],
+            results=[],
+            metrics={},
+            status="not_configured",
+        )
         report = {
             "dataset": "nvidia/TechQA-RAG-Eval",
             "benchmark_track": "external_public_rag",
             "status": "not_configured",
             "case_count": 0,
             "metrics": {},
+            "benchmark_profile": profile["summary"],
             "notes": [
                 (
                     "Add data/public/techqa_rag_eval_sample.jsonl or run "
@@ -64,12 +73,19 @@ def evaluate_techqa_public(project_root: Path) -> dict[str, Any]:
             ],
         }
         write_json(project_root / TECHQA_SUMMARY_PATH, report)
+        write_json(project_root / TECHQA_PROFILE_PATH, profile)
         write_jsonl(project_root / TECHQA_CASES_PATH, [])
         return report
 
     documents = _documents_from_cases(cases)
     results = [_evaluate_case(case, documents) for case in cases]
     metrics = _summarize(results)
+    profile = _benchmark_profile(
+        cases=cases,
+        results=results,
+        metrics=metrics,
+        status="evaluated",
+    )
     report = {
         "dataset": "nvidia/TechQA-RAG-Eval",
         "benchmark_track": "external_public_rag",
@@ -83,6 +99,7 @@ def evaluate_techqa_public(project_root: Path) -> dict[str, Any]:
         "document_count": len(documents),
         "abstention_score_threshold": ABSTENTION_SCORE_THRESHOLD,
         "metrics": metrics,
+        "benchmark_profile": profile["summary"],
         "failure_reasons": _failure_reason_counts(results),
         "failure_examples": _failure_examples(results),
         "notes": [
@@ -98,6 +115,7 @@ def evaluate_techqa_public(project_root: Path) -> dict[str, Any]:
         ],
     }
     write_json(project_root / TECHQA_SUMMARY_PATH, report)
+    write_json(project_root / TECHQA_PROFILE_PATH, profile)
     write_jsonl(project_root / TECHQA_CASES_PATH, (asdict(row) for row in results))
     return report
 
@@ -105,7 +123,7 @@ def evaluate_techqa_public(project_root: Path) -> dict[str, Any]:
 def write_techqa_sample(
     project_root: Path,
     *,
-    limit: int = 80,
+    limit: int = TECHQA_DEFAULT_SAMPLE_LIMIT,
     max_context_chars: int = 2400,
 ) -> Path:
     raw_path = project_root / TECHQA_RAW_PATH
@@ -139,13 +157,79 @@ def load_techqa_cases(project_root: Path) -> list[dict[str, Any]]:
 def _select_sample_cases(
     raw_cases: list[dict[str, Any]],
     *,
-    limit: int = 80,
+    limit: int = TECHQA_DEFAULT_SAMPLE_LIMIT,
 ) -> list[dict[str, Any]]:
     answerable = [row for row in raw_cases if not bool(row.get("is_impossible", False))]
     impossible = [row for row in raw_cases if bool(row.get("is_impossible", False))]
     impossible_target = max(1, limit // 5)
     answerable_target = max(1, limit - impossible_target)
     return [*answerable[:answerable_target], *impossible[:impossible_target]]
+
+
+def _benchmark_profile(
+    *,
+    cases: list[dict[str, Any]],
+    results: list[TechQACaseResult],
+    metrics: dict[str, float],
+    status: str,
+) -> dict[str, Any]:
+    answerable_cases = [case for case in cases if not bool(case.get("is_impossible"))]
+    impossible_cases = [case for case in cases if bool(case.get("is_impossible"))]
+    context_counts = [len(case.get("contexts", [])) for case in cases]
+    unique_documents = {
+        str(context["filename"])
+        for case in cases
+        for context in case.get("contexts", [])
+    }
+    failed_cases = [row for row in results if row.failure_reasons]
+    summary = {
+        "status": status,
+        "dataset": "nvidia/TechQA-RAG-Eval",
+        "benchmark_track": "external_public_rag",
+        "license": "Apache-2.0",
+        "source_url": "https://huggingface.co/datasets/nvidia/TechQA-RAG-Eval",
+        "sample_path": str(TECHQA_SAMPLE_PATH).replace("\\", "/"),
+        "sample_case_count": len(cases),
+        "answerable_case_count": len(answerable_cases),
+        "impossible_case_count": len(impossible_cases),
+        "impossible_case_share": _rate(case.get("is_impossible", False) for case in cases),
+        "unique_document_count": len(unique_documents),
+        "average_contexts_per_case": round(sum(context_counts) / len(context_counts), 4)
+        if context_counts
+        else 0.0,
+        "answerable_context_coverage": _rate(
+            bool(case.get("contexts")) for case in answerable_cases
+        ),
+        "tracked_sample_default_limit": TECHQA_DEFAULT_SAMPLE_LIMIT,
+        "sample_selection_policy": "first_answerable_plus_first_impossible_20pct",
+        "sample_scope": "tracked_compact_public_sample",
+        "provider_backed_embedding_result_published": False,
+        "failed_case_count": len(failed_cases),
+        "failure_rate": _rate(bool(row.failure_reasons) for row in results),
+    }
+    if metrics:
+        summary["retrieval_hit_rate_at_3"] = metrics["retrieval_hit_rate_at_3"]
+        summary["top1_citation_accuracy"] = metrics["top1_citation_accuracy"]
+        summary["impossible_abstention_rate"] = metrics["impossible_abstention_rate"]
+    return {
+        "report_type": "techqa_public_benchmark_profile",
+        "summary": summary,
+        "coverage_notes": [
+            (
+                "The TechQA track is external public technical-support data and is "
+                "reported separately from the synthetic internal-operations benchmark."
+            ),
+            (
+                "The tracked sample is deterministic so CI, Streamlit, and GitHub "
+                "Pages can reproduce the public-data metrics without downloading "
+                "the upstream dataset."
+            ),
+            (
+                "Provider-backed embedding comparison remains optional and is not "
+                "claimed until a credentialed run publishes a separate result."
+            ),
+        ],
+    }
 
 
 def _compact_case(row: dict[str, Any], *, max_context_chars: int) -> dict[str, Any]:

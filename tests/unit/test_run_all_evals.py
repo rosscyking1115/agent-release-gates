@@ -28,6 +28,7 @@ def test_run_all_evals_generates_reports(tmp_path) -> None:
     assert summary["retriever_comparison"]["case_count"] == 350
     assert len(summary["retriever_comparison"]["systems"]) == 5
     assert summary["techqa_public"]["status"] == "not_configured"
+    assert summary["techqa_public"]["benchmark_profile"]["sample_case_count"] == 0
     assert summary["extraction"]["metrics"]["schema_validity"] == 1.0
     assert summary["security"]["metrics"]["improved_safe_rate"] == 1.0
     assert summary["security"]["metrics"]["improved_weighted_safe_rate"] == 1.0
@@ -102,6 +103,7 @@ def test_run_all_evals_generates_reports(tmp_path) -> None:
     assert (tmp_path / "reports/dataset_profile.json").exists()
     assert (tmp_path / "reports/retriever_comparison.json").exists()
     assert (tmp_path / "reports/techqa_public_rag_summary.json").exists()
+    assert (tmp_path / "reports/techqa_public_benchmark_profile.json").exists()
     assert (tmp_path / "reports/techqa_public_rag_cases.jsonl").exists()
     assert (tmp_path / "reports/retriever_metric_snapshots.json").exists()
     assert (tmp_path / "reports/evaluation_history.json").exists()

@@ -23,6 +23,9 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
     trace_index = _read_json(reports_dir / "observability_trace_index.json")
     gates = _read_json(reports_dir / "evaluation_gates.json")
     techqa_public = _read_optional_json(reports_dir / "techqa_public_rag_summary.json")
+    techqa_profile = _read_optional_json(
+        reports_dir / "techqa_public_benchmark_profile.json"
+    )
     safety_classifier = _read_json(reports_dir / "safety_classifier_eval_summary.json")
     safety_retuning = _read_json(reports_dir / "safety_threshold_retuning.json")
     safety_review = _read_json(reports_dir / "safety_human_review_simulation.json")
@@ -92,6 +95,11 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
             reports_dir / "techqa_public_rag_summary.json",
             public_dir / "techqa_public_rag_summary.json",
         )
+    if (reports_dir / "techqa_public_benchmark_profile.json").exists():
+        shutil.copyfile(
+            reports_dir / "techqa_public_benchmark_profile.json",
+            public_dir / "techqa_public_benchmark_profile.json",
+        )
 
     (public_dir / "index.html").write_text(
         _index_html(
@@ -102,6 +110,7 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
             trace_index=trace_index,
             gates=gates,
             techqa_public=techqa_public,
+            techqa_profile=techqa_profile,
             safety_classifier=safety_classifier,
             safety_retuning=safety_retuning,
             safety_review=safety_review,
@@ -124,6 +133,7 @@ def _index_html(
     trace_index: dict[str, Any],
     gates: dict[str, Any],
     techqa_public: dict[str, Any],
+    techqa_profile: dict[str, Any],
     safety_classifier: dict[str, Any],
     safety_retuning: dict[str, Any],
     safety_review: dict[str, Any],
@@ -155,6 +165,7 @@ def _index_html(
         ("Dataset profile", "dataset_profile.json"),
         ("Evaluation gates", "evaluation_gates.json"),
         ("TechQA public RAG summary", "techqa_public_rag_summary.json"),
+        ("TechQA public benchmark profile", "techqa_public_benchmark_profile.json"),
         ("Safety classifier summary", "safety_classifier_eval_summary.json"),
         ("Safety threshold sweep", "safety_threshold_sweep.json"),
         ("Safety threshold retuning", "safety_threshold_retuning.json"),
@@ -376,6 +387,7 @@ def _index_html(
         {_metric("Indexed traces", trace_index["trace_count"])}
         {_metric("Release gate status", gates["overall_status"])}
         {_metric("Release gate failures", gates["fail_count"])}
+        {_metric("TechQA public cases", _techqa_profile_value(techqa_profile, "sample_case_count"))}
         {_metric("TechQA public RAG@3", _techqa_metric(techqa_public, "retrieval_hit_rate_at_3"))}
       </div>
     </section>
@@ -453,6 +465,13 @@ def _techqa_metric(report: dict[str, Any], metric: str) -> str:
     if report.get("status") != "evaluated":
         return "Not configured"
     return _pct(float(report.get("metrics", {}).get(metric, 0.0)))
+
+
+def _techqa_profile_value(report: dict[str, Any], key: str) -> object:
+    summary = report.get("summary", {})
+    if not summary or summary.get("status") != "evaluated":
+        return "Not configured"
+    return summary.get(key, "Not configured")
 
 
 if __name__ == "__main__":
