@@ -762,6 +762,12 @@ def _safety_secondary_review_validation_table(report: dict[str, Any]) -> str:
         f"| Unsafe capture rate | {_pct(summary['unsafe_capture_rate'])} |",
         f"| Benign new review count | {summary['benign_new_review_count']} |",
         f"| Benign new review rate | {_pct(summary['benign_new_review_rate'])} |",
+        f"| Reviewer label coverage | {_pct(summary['reviewer_label_coverage'])} |",
+        (
+            "| Reviewer label disagreements | "
+            f"{summary['reviewer_label_disagreement_count']} |"
+        ),
+        f"| Floor reviewer precision | {_pct(summary['floor_reviewer_precision'])} |",
         f"| Benign intent guard | {policy['benign_intent_guard']} |",
         f"| Recommendation | {summary['recommendation']} |",
         "",

@@ -4,7 +4,7 @@
 << /Type /Catalog /Pages 2 0 R >>
 endobj
 2 0 obj
-<< /Type /Pages /Kids [4 0 R 6 0 R 8 0 R 10 0 R 12 0 R 14 0 R 16 0 R 18 0 R 20 0 R] /Count 9 >>
+<< /Type /Pages /Kids [4 0 R 6 0 R 8 0 R 10 0 R 12 0 R 14 0 R 16 0 R 18 0 R 20 0 R 22 0 R] /Count 10 >>
 endobj
 3 0 obj
 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
@@ -519,7 +519,7 @@ T*
 T*
 (Challenge cases | 40) Tj
 T*
-(Secondary-floor validation cases | 21) Tj
+(Secondary-floor validation cases | 27) Tj
 T*
 (Sampled prevalence cases | 80) Tj
 T*
@@ -715,7 +715,7 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 17 0 R >>
 endobj
 17 0 obj
-<< /Length 2481 >>
+<< /Length 2552 >>
 stream
 BT
 /F1 10 Tf
@@ -749,13 +749,13 @@ T*
 T*
 (Secondary review-floor validation | Value) Tj
 T*
-(Validation cases | 21) Tj
+(Validation cases | 27) Tj
 T*
-(Unsafe cases | 6) Tj
+(Unsafe cases | 12) Tj
 T*
 (Benign cases | 15) Tj
 T*
-(Baseline unsafe allowed | 5) Tj
+(Baseline unsafe allowed | 11) Tj
 T*
 (Floor unsafe allowed | 0) Tj
 T*
@@ -764,6 +764,12 @@ T*
 (Benign new review count | 2) Tj
 T*
 (Benign new review rate | 13.33%) Tj
+T*
+(Reviewer label coverage | 100.00%) Tj
+T*
+(Reviewer label disagreements | 2) Tj
+T*
+(Floor reviewer precision | 84.62%) Tj
 T*
 (Benign intent guard | True) Tj
 T*
@@ -775,11 +781,11 @@ T*
 T*
 (benign_near_miss | 3 | 0 | 0 | 0 | 0) Tj
 T*
-(system_prompt_leakage | 6 | 2 | 2 | 0 | 1) Tj
+(system_prompt_leakage | 8 | 4 | 4 | 0 | 1) Tj
 T*
-(unbounded_consumption | 6 | 2 | 1 | 0 | 1) Tj
+(unbounded_consumption | 8 | 4 | 3 | 0 | 1) Tj
 T*
-(weak_evidence_pressure | 6 | 2 | 2 | 0 | 0) Tj
+(weak_evidence_pressure | 8 | 4 | 4 | 0 | 0) Tj
 T*
 () Tj
 T*
@@ -819,12 +825,6 @@ T*
 T*
 (Rationale 5 | Reviewer-disagreement slices support a targeted secondary review floor rather than) Tj
 T*
-(a global threshold reduction.) Tj
-T*
-() Tj
-T*
-() Tj
-T*
 ET
 endstream
 endobj
@@ -832,12 +832,18 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 19 0 R >>
 endobj
 19 0 obj
-<< /Length 2203 >>
+<< /Length 2152 >>
 stream
 BT
 /F1 10 Tf
 14 TL
 54 738 Td
+(a global threshold reduction.) Tj
+T*
+() Tj
+T*
+() Tj
+T*
 (Controlled Agent Workflow) Tj
 T*
 () Tj
@@ -936,12 +942,6 @@ T*
 T*
 (query:retriever_failures | 298) Tj
 T*
-(query:api_error_cases | 4) Tj
-T*
-(query:approval_decisions | 180) Tj
-T*
-(query:ranking_cases | 564) Tj
-T*
 ET
 endstream
 endobj
@@ -949,12 +949,18 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 21 0 R >>
 endobj
 21 0 obj
-<< /Length 2349 >>
+<< /Length 2276 >>
 stream
 BT
 /F1 10 Tf
 14 TL
 54 738 Td
+(query:api_error_cases | 4) Tj
+T*
+(query:approval_decisions | 180) Tj
+T*
+(query:ranking_cases | 564) Tj
+T*
 (component:retrieval | 870) Tj
 T*
 (component:agent | 232) Tj
@@ -1053,6 +1059,19 @@ T*
 T*
 (- Run and review the optional provider-backed embedding comparison.) Tj
 T*
+ET
+endstream
+endobj
+22 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 23 0 R >>
+endobj
+23 0 obj
+<< /Length 211 >>
+stream
+BT
+/F1 10 Tf
+14 TL
+54 738 Td
 (- Extend the collector deployment with optional downstream storage or visualization.) Tj
 T*
 (- Add an optional LLM extraction path with schema repair and failure analysis.) Tj
@@ -1061,31 +1080,33 @@ ET
 endstream
 endobj
 xref
-0 22
+0 24
 0000000000 65535 f 
 0000000015 00000 n 
 0000000064 00000 n 
-0000000175 00000 n 
-0000000245 00000 n 
-0000000371 00000 n 
-0000002852 00000 n 
-0000002978 00000 n 
-0000005521 00000 n 
-0000005647 00000 n 
-0000009442 00000 n 
-0000009570 00000 n 
-0000011966 00000 n 
-0000012094 00000 n 
-0000014564 00000 n 
-0000014692 00000 n 
-0000017447 00000 n 
-0000017575 00000 n 
-0000020109 00000 n 
-0000020237 00000 n 
-0000022493 00000 n 
-0000022621 00000 n 
+0000000183 00000 n 
+0000000253 00000 n 
+0000000379 00000 n 
+0000002860 00000 n 
+0000002986 00000 n 
+0000005529 00000 n 
+0000005655 00000 n 
+0000009450 00000 n 
+0000009578 00000 n 
+0000011974 00000 n 
+0000012102 00000 n 
+0000014572 00000 n 
+0000014700 00000 n 
+0000017455 00000 n 
+0000017583 00000 n 
+0000020188 00000 n 
+0000020316 00000 n 
+0000022521 00000 n 
+0000022649 00000 n 
+0000024978 00000 n 
+0000025106 00000 n 
 trailer
-<< /Size 22 /Root 1 0 R >>
+<< /Size 24 /Root 1 0 R >>
 startxref
-25023
+25369
 %%EOF

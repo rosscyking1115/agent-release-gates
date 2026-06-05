@@ -174,7 +174,7 @@ Block rate requires an explicit policy refusal. Safe response rate checks that f
 | Safety classifier metric | Value |
 | --- | ---: |
 | Challenge cases | 40 |
-| Secondary-floor validation cases | 21 |
+| Secondary-floor validation cases | 27 |
 | Sampled prevalence cases | 80 |
 | Selected threshold | 0.65 |
 | Recall | 90.91% |
@@ -288,23 +288,26 @@ Block rate requires an explicit policy refusal. Safe response rate checks that f
 
 | Secondary review-floor validation | Value |
 | --- | ---: |
-| Validation cases | 21 |
-| Unsafe cases | 6 |
+| Validation cases | 27 |
+| Unsafe cases | 12 |
 | Benign cases | 15 |
-| Baseline unsafe allowed | 5 |
+| Baseline unsafe allowed | 11 |
 | Floor unsafe allowed | 0 |
 | Unsafe capture rate | 100.00% |
 | Benign new review count | 2 |
 | Benign new review rate | 13.33% |
+| Reviewer label coverage | 100.00% |
+| Reviewer label disagreements | 2 |
+| Floor reviewer precision | 84.62% |
 | Benign intent guard | True |
 | Recommendation | validate_with_monitoring |
 
 | Category | Cases | Unsafe | Baseline unsafe allowed | Floor unsafe allowed | Benign new review |
 | --- | ---: | ---: | ---: | ---: | ---: |
 | benign_near_miss | 3 | 0 | 0 | 0 | 0 |
-| system_prompt_leakage | 6 | 2 | 2 | 0 | 1 |
-| unbounded_consumption | 6 | 2 | 1 | 0 | 1 |
-| weak_evidence_pressure | 6 | 2 | 2 | 0 | 0 |
+| system_prompt_leakage | 8 | 4 | 4 | 0 | 1 |
+| unbounded_consumption | 8 | 4 | 3 | 0 | 1 |
+| weak_evidence_pressure | 8 | 4 | 4 | 0 | 0 |
 
 | Scenario | Unsafe allowed | Unsafe intercepted | Overblocks | Manual touches |
 | --- | ---: | ---: | ---: | ---: |

@@ -26,7 +26,7 @@ def test_safety_datasets_keep_challenge_and_prevalence_separate() -> None:
 
     assert len(challenge_cases) == 40
     assert len(prevalence_cases) == 80
-    assert len(build_safety_secondary_review_validation_cases()) == 21
+    assert len(build_safety_secondary_review_validation_cases()) == 27
     assert {case["synthetic_prevalence_bucket"] for case in challenge_cases} == {
         "challenge_enriched"
     }
@@ -62,7 +62,7 @@ def test_evaluate_safety_classifier_writes_reports(tmp_path: Path) -> None:
 
     assert report["evaluation_type"] == "safety_prevalence_classifier"
     assert report["challenge_case_count"] == 40
-    assert report["secondary_review_validation_case_count"] == 21
+    assert report["secondary_review_validation_case_count"] == 27
     assert report["prevalence_case_count"] == 80
     assert report["metrics"]["high_severity_false_negative_count"] == 0
     assert report["metrics"]["benign_near_miss_false_positive_count"] == 0
@@ -159,5 +159,9 @@ def test_human_review_and_mitigation_reports_reduce_residual_risk(
     assert validation["summary"]["recommendation"] == "validate_with_monitoring"
     assert validation["summary"]["unsafe_capture_rate"] == 1.0
     assert validation["summary"]["benign_new_review_rate"] > 0
+    assert validation["summary"]["reviewer_label_coverage"] == 1.0
+    assert validation["summary"]["reviewer_label_disagreement_count"] > 0
+    assert validation["summary"]["floor_reviewer_precision"] > 0.8
+    assert all("reviewer_labels" in row for row in validation["cases"])
     assert impact["summary"]["recommended_operating_model"] == "classifier_plus_review"
     assert impact["summary"]["unsafe_allowed_reduction_rate"] > 0

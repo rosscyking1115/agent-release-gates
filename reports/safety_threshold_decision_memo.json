@@ -21,7 +21,7 @@
   },
   "memo_type": "safety_threshold_decision_memo",
   "next_threshold_work": [
-    "Add harder unsafe paraphrases and reviewer labels to pressure-test the secondary review-floor guard.",
+    "Add multi-turn unsafe paraphrases and independent reviewer-rubric variants for the secondary review-floor guard.",
     "Measure whether the targeted floor catches unsafe misses without expanding benign review load too far.",
     "Estimate the user-value cost of benign review-to-allow overrides."
   ],
