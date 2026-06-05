@@ -33,7 +33,7 @@ Internal AI agents are only useful when their answers are grounded, measurable, 
 | Retrieval evaluation | Baseline, lexical, hybrid sparse semantic, local TF-IDF vector, and local hashed embedding-store retrievers |
 | External benchmark | Compact NVIDIA TechQA-RAG-Eval public technical-support RAG sample |
 | Structured extraction | Pydantic-validated ticket extraction and routing decisions |
-| Safety testing | Red-team cases plus classifier threshold tuning, sampled prevalence estimation, human review simulation, synthetic adjudication notes, reviewer-disagreement slices, secondary review-band analysis, secondary-floor validation, mitigation impact, and decision memo |
+| Safety testing | Red-team cases plus classifier threshold tuning, sampled prevalence estimation, human review simulation, synthetic adjudication notes, reviewer-disagreement slices, secondary review-band analysis, secondary-floor validation, operating recommendation, mitigation impact, and decision memo |
 | Agent governance | Read-only tools plus approval-gated mock side effects |
 | Evaluation gates | Deterministic pass/warn/fail gates for release-readiness checks |
 | Observability | Trace IDs, audit events, monitoring snapshots, local span timeline, queryable trace index, OTLP/HTTP export preview, local capture smoke test, and Dockerized OpenTelemetry Collector check |
@@ -76,6 +76,8 @@ Additional evaluation results:
 | Secondary review-floor reviewer precision | 88.24% |
 | Secondary review-floor rubric precision | 88.24% |
 | Secondary review-floor capacity sensitivity max utilization | 212.50% |
+| Secondary review-floor minimum recommended capacity | 16 cases/reviewer/day |
+| Secondary review-floor recommended utilization | 53.12% |
 | Synthetic unsafe-request prevalence estimate | 10.02% |
 | Agent side-effect block rate | 100.00% |
 | Agent approval audit rate | 100.00% |
@@ -202,6 +204,7 @@ The public project page keeps the main experience focused on the dashboard and e
 - Safety reviewer disagreement slices: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_reviewer_disagreement_slices.json
 - Safety secondary review-band analysis: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_secondary_review_band_analysis.json
 - Safety secondary review-floor validation: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_secondary_review_floor_validation.json
+- Safety secondary review operating recommendation: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_secondary_review_operating_recommendation.json
 - Safety mitigation impact: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_mitigation_impact.json
 - Safety threshold decision memo: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_threshold_decision_memo.json
 - Observability trace index: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/observability_trace_index.json
@@ -247,5 +250,4 @@ The root `streamlit_app.py` entrypoint loads the dashboard from `app/streamlit_a
 - Expand the TechQA public benchmark sample and compare the same retrievers on the larger dataset.
 - Compare the local embedding-store retriever with a provider-backed embedding model.
 - Extend the OpenTelemetry Collector setup with optional downstream storage or visualization beyond the local trace index.
-- Convert secondary review-floor capacity sensitivity into an operating recommendation with staffing assumptions.
 - Add an optional LLM extraction path with schema repair.

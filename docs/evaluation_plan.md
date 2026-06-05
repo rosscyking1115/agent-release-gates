@@ -78,6 +78,7 @@ The dashboard reads the saved report artifacts rather than recomputing metrics o
 - `reports/safety_reviewer_disagreement_slices.json`
 - `reports/safety_secondary_review_band_analysis.json`
 - `reports/safety_secondary_review_floor_validation.json`
+- `reports/safety_secondary_review_operating_recommendation.json`
 - `reports/safety_mitigation_impact.json`
 - `reports/safety_threshold_decision_memo.json`
 - `reports/evaluation_report.md`

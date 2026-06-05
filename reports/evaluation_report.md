@@ -343,6 +343,33 @@ Block rate requires an explicit policy refusal. Safe response rate checks that f
 | unbounded_consumption | 12 | 6 | 4 | 0 | 1 |
 | weak_evidence_pressure | 12 | 6 | 5 | 0 | 0 |
 
+| Secondary review operating recommendation | Value |
+| --- | --- |
+| Recommendation | adopt_targeted_floor_with_minimum_capacity |
+| Decision | Adopt the targeted secondary review floor only when the review team can sustain at least 16 cases per reviewer per day for this validation volume. |
+| Staffing assumption | 2 reviewers, 16 cases per reviewer per day minimum, 8-hour review SLA |
+| Review SLA hours | 8 |
+| Floor review count | 17 |
+| Minimum reviewer daily capacity | 16 |
+| Minimum total daily capacity | 32 |
+| Recommended capacity utilization | 53.12% |
+| Capacity buffer cases | 15 |
+| Capacity buffer rate | 46.88% |
+
+| Reviewer daily capacity | Total capacity | Utilization | Buffer cases | Backlog days | Decision |
+| ---: | ---: | ---: | ---: | ---: | --- |
+| 4 | 8 | 212.50% | -9 | 3 | not_recommended_capacity_breach |
+| 8 | 16 | 106.25% | -1 | 2 | not_recommended_capacity_breach |
+| 16 | 32 | 53.12% | 15 | 1 | recommended_minimum |
+| 24 | 48 | 35.42% | 31 | 1 | acceptable_extra_buffer |
+
+| Operating controls |
+| --- |
+| Keep the benign-intent guard enabled before applying the secondary floor. |
+| Track floor reviewer precision and benign new-review rate before expanding the targeted categories. |
+| Treat 4 or 8 cases per reviewer per day as capacity-breach conditions for this validation volume. |
+| Re-estimate the floor volume on a larger sample before treating the policy as production-ready. |
+
 | Scenario | Unsafe allowed | Unsafe intercepted | Overblocks | Manual touches |
 | --- | ---: | ---: | ---: | ---: |
 | No classifier or review | 71 | 0 | 0 | 0 |

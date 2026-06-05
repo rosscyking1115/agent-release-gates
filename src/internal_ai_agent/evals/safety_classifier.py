@@ -216,6 +216,11 @@ def evaluate_safety_classifier(project_root: Path) -> dict[str, Any]:
         validation_cases=secondary_review_validation_cases,
         secondary_review_band=secondary_review_band,
     )
+    secondary_review_operating_recommendation = (
+        secondary_review_operating_recommendation_report(
+            secondary_review_validation=secondary_review_validation,
+        )
+    )
     mitigation_impact = mitigation_impact_report(all_results, human_review["review_cases"])
     threshold_memo = threshold_decision_memo(
         summary=summary,
@@ -225,6 +230,9 @@ def evaluate_safety_classifier(project_root: Path) -> dict[str, Any]:
         adjudication_notes=adjudication_notes,
         secondary_review_band=secondary_review_band,
         secondary_review_validation=secondary_review_validation,
+        secondary_review_operating_recommendation=(
+            secondary_review_operating_recommendation
+        ),
         mitigation_impact=mitigation_impact,
     )
     summary["threshold_retuning"] = threshold_retuning["summary"]
@@ -233,6 +241,9 @@ def evaluate_safety_classifier(project_root: Path) -> dict[str, Any]:
     summary["reviewer_disagreement_slices"] = disagreement_slices["summary"]
     summary["secondary_review_band_analysis"] = secondary_review_band["summary"]
     summary["secondary_review_floor_validation"] = secondary_review_validation["summary"]
+    summary["secondary_review_operating_recommendation"] = (
+        secondary_review_operating_recommendation["summary"]
+    )
     summary["mitigation_impact"] = mitigation_impact["summary"]
     summary["threshold_decision"] = threshold_memo["decision"]
     write_json(project_root / "reports/safety_classifier_eval_summary.json", summary)
@@ -252,6 +263,10 @@ def evaluate_safety_classifier(project_root: Path) -> dict[str, Any]:
     write_json(
         project_root / "reports/safety_secondary_review_floor_validation.json",
         secondary_review_validation,
+    )
+    write_json(
+        project_root / "reports/safety_secondary_review_operating_recommendation.json",
+        secondary_review_operating_recommendation,
     )
     write_json(project_root / "reports/safety_mitigation_impact.json", mitigation_impact)
     write_json(project_root / "reports/safety_threshold_decision_memo.json", threshold_memo)
@@ -1037,6 +1052,116 @@ def mitigation_impact_report(
     }
 
 
+def secondary_review_operating_recommendation_report(
+    *,
+    secondary_review_validation: dict[str, Any],
+) -> dict[str, Any]:
+    validation_summary = secondary_review_validation["summary"]
+    policy = secondary_review_validation["validation_policy"]
+    scenarios = _secondary_review_operating_scenarios(
+        secondary_review_validation["capacity_sensitivity"]
+    )
+    recommended = next(
+        (
+            row
+            for row in scenarios
+            if row["operating_decision"] == "recommended_minimum"
+        ),
+        None,
+    )
+    breach_capacities = [
+        row["reviewer_daily_capacity"]
+        for row in scenarios
+        if row["capacity_status"] == "capacity_breach"
+    ]
+    within_capacity = [
+        row["reviewer_daily_capacity"]
+        for row in scenarios
+        if row["capacity_status"] == "within_capacity"
+    ]
+    floor_review_count = validation_summary["capacity_sensitivity_floor_review_count"]
+    if recommended:
+        minimum_reviewer_daily_capacity = recommended["reviewer_daily_capacity"]
+        minimum_total_daily_capacity = recommended["total_daily_capacity"]
+        recommended_utilization = recommended["capacity_utilization"]
+        recommended_backlog_days = recommended["estimated_backlog_days"]
+        capacity_buffer_cases = minimum_total_daily_capacity - floor_review_count
+        recommendation = "adopt_targeted_floor_with_minimum_capacity"
+        decision = (
+            "Adopt the targeted secondary review floor only when the review team "
+            f"can sustain at least {minimum_reviewer_daily_capacity} cases per "
+            "reviewer per day for this validation volume."
+        )
+    else:
+        minimum_reviewer_daily_capacity = None
+        minimum_total_daily_capacity = None
+        recommended_utilization = None
+        recommended_backlog_days = None
+        capacity_buffer_cases = None
+        recommendation = "do_not_adopt_until_capacity_increases"
+        decision = (
+            "Do not adopt the targeted secondary review floor until the review "
+            "team has enough capacity for the validation review volume."
+        )
+    return {
+        "report_type": "safety_secondary_review_operating_recommendation",
+        "summary": {
+            "recommendation": recommendation,
+            "decision": decision,
+            "reviewer_count": REVIEWER_COUNT,
+            "review_sla_hours": REVIEW_SLA_HOURS,
+            "floor_review_count": floor_review_count,
+            "minimum_reviewer_daily_capacity": minimum_reviewer_daily_capacity,
+            "minimum_total_daily_capacity": minimum_total_daily_capacity,
+            "recommended_capacity_utilization": recommended_utilization,
+            "recommended_estimated_backlog_days": recommended_backlog_days,
+            "capacity_buffer_cases": capacity_buffer_cases,
+            "capacity_buffer_rate": _ratio(
+                capacity_buffer_cases or 0,
+                minimum_total_daily_capacity or 0,
+            ),
+            "breach_reviewer_daily_capacities": breach_capacities,
+            "within_capacity_reviewer_daily_capacities": within_capacity,
+            "staffing_assumption": (
+                f"{REVIEWER_COUNT} reviewers, "
+                f"{minimum_reviewer_daily_capacity or 'unmet'} cases per reviewer "
+                f"per day minimum, {REVIEW_SLA_HOURS}-hour review SLA"
+            ),
+            "policy_name": policy["policy_name"],
+            "secondary_review_floor": policy["secondary_review_floor"],
+            "secondary_review_ceiling": policy["secondary_review_ceiling"],
+            "benign_intent_guard": policy["benign_intent_guard"],
+            "validation_recommendation": validation_summary["recommendation"],
+        },
+        "scenarios": scenarios,
+        "operating_controls": [
+            "Keep the benign-intent guard enabled before applying the secondary floor.",
+            (
+                "Track floor reviewer precision and benign new-review rate before "
+                "expanding the targeted categories."
+            ),
+            (
+                "Treat 4 or 8 cases per reviewer per day as capacity-breach "
+                "conditions for this validation volume."
+            ),
+            (
+                "Re-estimate the floor volume on a larger sample before treating "
+                "the policy as production-ready."
+            ),
+        ],
+        "limitations": [
+            (
+                "The recommendation is based on synthetic validation cases, not "
+                "real traffic volume or real reviewer throughput."
+            ),
+            (
+                "The capacity model assumes evenly distributed review arrivals; "
+                "burst traffic would need queueing simulation."
+            ),
+        ],
+    }
+
+
 def threshold_decision_memo(
     *,
     summary: dict[str, Any],
@@ -1046,11 +1171,13 @@ def threshold_decision_memo(
     adjudication_notes: dict[str, Any],
     secondary_review_band: dict[str, Any],
     secondary_review_validation: dict[str, Any],
+    secondary_review_operating_recommendation: dict[str, Any],
     mitigation_impact: dict[str, Any],
 ) -> dict[str, Any]:
     selected = threshold_sweep["selected_policy"]
     secondary_summary = secondary_review_band["summary"]
     validation_summary = secondary_review_validation["summary"]
+    operating_summary = secondary_review_operating_recommendation["summary"]
     return {
         "memo_type": "safety_threshold_decision_memo",
         "decision": "Keep the balanced threshold at 0.65 for the current synthetic slice.",
@@ -1126,15 +1253,21 @@ def threshold_decision_memo(
             "secondary_review_capacity_sensitivity_max_utilization": validation_summary[
                 "capacity_sensitivity_max_utilization"
             ],
+            "secondary_review_minimum_reviewer_daily_capacity": operating_summary[
+                "minimum_reviewer_daily_capacity"
+            ],
+            "secondary_review_recommended_capacity_utilization": operating_summary[
+                "recommended_capacity_utilization"
+            ],
+            "secondary_review_capacity_buffer_cases": operating_summary[
+                "capacity_buffer_cases"
+            ],
             "residual_unsafe_allowed_count": mitigation_impact["summary"][
                 "final_residual_unsafe_allowed_count"
             ],
         },
         "next_threshold_work": [
-            (
-                "Convert secondary review-floor capacity sensitivity into an "
-                "operating recommendation with staffing assumptions."
-            ),
+            operating_summary["decision"],
             (
                 "Measure whether the targeted floor catches unsafe misses without "
                 "expanding benign review load too far."
@@ -1242,6 +1375,32 @@ def _secondary_review_validation_rubric_labels(row: dict[str, Any]) -> dict[str,
             adjudicated_label != row["reviewer_labels"]["adjudicated_label"]
         ),
     }
+
+
+def _secondary_review_operating_scenarios(
+    capacity_sensitivity: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    rows = []
+    first_within_capacity_seen = False
+    for row in capacity_sensitivity:
+        enriched = dict(row)
+        if row["capacity_status"] == "capacity_breach":
+            operating_decision = "not_recommended_capacity_breach"
+        elif not first_within_capacity_seen:
+            operating_decision = "recommended_minimum"
+            first_within_capacity_seen = True
+        else:
+            operating_decision = "acceptable_extra_buffer"
+        enriched["operating_decision"] = operating_decision
+        enriched["capacity_buffer_cases"] = (
+            row["total_daily_capacity"] - row["floor_review_count"]
+        )
+        enriched["capacity_buffer_rate"] = _ratio(
+            enriched["capacity_buffer_cases"],
+            row["total_daily_capacity"],
+        )
+        rows.append(enriched)
+    return rows
 
 
 def _secondary_floor_capacity_sensitivity(

@@ -92,9 +92,8 @@ Every new feature should improve at least one of:
 
 ## Next Priorities
 
-1. Convert safety review-floor capacity sensitivity into a clear operating recommendation.
-2. Expand the TechQA public benchmark and compare local retrieval with provider embeddings.
-3. Add more hand-authored, noisy synthetic tickets and evidence bundles.
-4. Add optional downstream trace storage or visualization.
-5. Add model-assisted adversarial review while preserving deterministic gates.
-6. Add optional LLM extraction with schema repair and failure analysis.
+1. Expand the TechQA public benchmark and compare local retrieval with provider embeddings.
+2. Add more hand-authored, noisy synthetic tickets and evidence bundles.
+3. Add optional downstream trace storage or visualization.
+4. Add model-assisted adversarial review while preserving deterministic gates.
+5. Add optional LLM extraction with schema repair and failure analysis.

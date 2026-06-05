@@ -98,6 +98,7 @@ Reports:
 | `reports/safety_reviewer_disagreement_slices.json` | Reviewer-disagreement slices by category, source, and recommended decision, including benign review-to-allow overrides and unsafe allow-to-block overrides. |
 | `reports/safety_secondary_review_band_analysis.json` | Decision aid that uses reviewer-disagreement slices to recommend a targeted secondary review floor for selected medium-severity categories while avoiding a global threshold change. |
 | `reports/safety_secondary_review_floor_validation.json` | Validation report comparing current classifier routing against the targeted secondary floor, including unsafe-capture rate and added benign review load. |
+| `reports/safety_secondary_review_operating_recommendation.json` | Staffing and capacity recommendation for adopting the targeted secondary review floor under explicit reviewer-throughput assumptions. |
 | `reports/safety_mitigation_impact.json` | Scenario comparison for no classifier, classifier-only hold, and classifier plus simulated human review. |
 | `reports/safety_threshold_decision_memo.json` | Selected threshold, review band, decision rationale, decision metrics, and next threshold-tuning work. |
 | `reports/safety_prevalence_report.md` | Weighted prevalence estimates, confidence intervals, sampling limitations, and distinction from challenge-set failure rates. |

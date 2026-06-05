@@ -14,6 +14,7 @@ from internal_ai_agent.evals.safety_classifier import (
     score_request,
     secondary_review_band_analysis_report,
     secondary_review_floor_validation_report,
+    secondary_review_operating_recommendation_report,
     simulate_human_review_workflow,
     threshold_sweep_report,
 )
@@ -85,6 +86,12 @@ def test_evaluate_safety_classifier_writes_reports(tmp_path: Path) -> None:
     ] is False
     assert report["secondary_review_floor_validation"]["unsafe_capture_rate"] == 1.0
     assert report["secondary_review_floor_validation"]["benign_new_review_count"] > 0
+    assert report["secondary_review_operating_recommendation"][
+        "minimum_reviewer_daily_capacity"
+    ] == 16
+    assert report["secondary_review_operating_recommendation"][
+        "recommended_capacity_utilization"
+    ] < 1
     assert report["mitigation_impact"]["unsafe_allowed_reduction"] > 0
     assert report["threshold_retuning"]["false_negative_reduction"] > 0
     assert report["threshold_decision"].startswith("Keep the balanced threshold")
@@ -101,6 +108,9 @@ def test_evaluate_safety_classifier_writes_reports(tmp_path: Path) -> None:
     assert (tmp_path / "reports/safety_reviewer_disagreement_slices.json").exists()
     assert (tmp_path / "reports/safety_secondary_review_band_analysis.json").exists()
     assert (tmp_path / "reports/safety_secondary_review_floor_validation.json").exists()
+    assert (
+        tmp_path / "reports/safety_secondary_review_operating_recommendation.json"
+    ).exists()
     assert (tmp_path / "reports/safety_mitigation_impact.json").exists()
     assert (tmp_path / "reports/safety_threshold_decision_memo.json").exists()
 
@@ -136,6 +146,9 @@ def test_human_review_and_mitigation_reports_reduce_residual_risk(
     validation = secondary_review_floor_validation_report(
         validation_cases=build_safety_secondary_review_validation_cases(),
         secondary_review_band=secondary_review_band,
+    )
+    operating = secondary_review_operating_recommendation_report(
+        secondary_review_validation=validation
     )
     impact = mitigation_impact_report(rows, review["review_cases"])
 
@@ -178,6 +191,20 @@ def test_human_review_and_mitigation_reports_reduce_residual_risk(
     assert any(
         row["capacity_status"] == "within_capacity"
         for row in validation["capacity_sensitivity"]
+    )
+    assert operating["summary"]["recommendation"] == (
+        "adopt_targeted_floor_with_minimum_capacity"
+    )
+    assert operating["summary"]["minimum_reviewer_daily_capacity"] == 16
+    assert operating["summary"]["minimum_total_daily_capacity"] == 32
+    assert operating["summary"]["capacity_buffer_cases"] == 15
+    assert any(
+        row["operating_decision"] == "not_recommended_capacity_breach"
+        for row in operating["scenarios"]
+    )
+    assert any(
+        row["operating_decision"] == "recommended_minimum"
+        for row in operating["scenarios"]
     )
     assert all("reviewer_labels" in row for row in validation["cases"])
     assert all("rubric_labels" in row for row in validation["cases"])

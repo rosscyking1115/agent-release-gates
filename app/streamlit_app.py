@@ -45,6 +45,7 @@ from internal_ai_agent.dashboard.data import (
     load_safety_mitigation_impact,
     load_safety_secondary_review_band_analysis,
     load_safety_secondary_review_floor_validation,
+    load_safety_secondary_review_operating_recommendation,
     load_safety_threshold_decision_memo,
     load_safety_threshold_retuning,
     load_safety_threshold_sweep,
@@ -59,6 +60,7 @@ from internal_ai_agent.dashboard.data import (
     retriever_snapshot_rows,
     safety_adjudication_note_rows,
     safety_mitigation_rows,
+    safety_operating_recommendation_rows,
     safety_retuning_rows,
     safety_review_case_rows,
     safety_threshold_rows,
@@ -98,6 +100,9 @@ def main() -> None:
     safety_secondary_review_band = load_safety_secondary_review_band_analysis(PROJECT_ROOT)
     safety_secondary_review_validation = load_safety_secondary_review_floor_validation(
         PROJECT_ROOT
+    )
+    safety_operating_recommendation = (
+        load_safety_secondary_review_operating_recommendation(PROJECT_ROOT)
     )
     safety_mitigation_impact = load_safety_mitigation_impact(PROJECT_ROOT)
     safety_threshold_memo = load_safety_threshold_decision_memo(PROJECT_ROOT)
@@ -149,6 +154,7 @@ def main() -> None:
             safety_adjudication_notes,
             safety_secondary_review_band,
             safety_secondary_review_validation,
+            safety_operating_recommendation,
             safety_mitigation_impact,
             safety_threshold_memo,
         )
@@ -655,6 +661,7 @@ def _render_safety_classifier_workflow(
     adjudication_notes: dict[str, object],
     secondary_review_band: dict[str, object],
     secondary_review_validation: dict[str, object],
+    operating_recommendation: dict[str, object],
     mitigation_impact: dict[str, object],
     threshold_memo: dict[str, object],
 ) -> None:
@@ -665,6 +672,7 @@ def _render_safety_classifier_workflow(
     adjudication_summary = adjudication_notes["summary"]
     secondary_summary = secondary_review_band["summary"]
     validation_summary = secondary_review_validation["summary"]
+    operating_summary = operating_recommendation["summary"]
     retuning_summary = threshold_retuning["summary"]
     cols = st.columns(5)
     cols[0].metric("Recall", f"{metrics['recall'] * 100:.2f}%")
@@ -679,12 +687,21 @@ def _render_safety_classifier_workflow(
     )
 
     st.caption(str(threshold_memo["decision"]))
-    tab_thresholds, tab_review, tab_notes, tab_review_band, tab_impact, tab_memo = st.tabs(
+    (
+        tab_thresholds,
+        tab_review,
+        tab_notes,
+        tab_review_band,
+        tab_operating,
+        tab_impact,
+        tab_memo,
+    ) = st.tabs(
         [
             "Thresholds",
             "Human review",
             "Adjudication notes",
             "Review band",
+            "Operating model",
             "Mitigation impact",
             "Decision memo",
         ]
@@ -830,6 +847,37 @@ def _render_safety_classifier_workflow(
         validation_cases = pd.DataFrame(secondary_review_validation["cases"])
         if not validation_cases.empty:
             st.dataframe(validation_cases, hide_index=True, use_container_width=True)
+    with tab_operating:
+        operating_cols = st.columns(4)
+        operating_cols[0].metric(
+            "Minimum capacity",
+            (
+                f"{operating_summary['minimum_reviewer_daily_capacity']} "
+                "cases/reviewer/day"
+            ),
+        )
+        operating_cols[1].metric(
+            "Recommended utilization",
+            f"{operating_summary['recommended_capacity_utilization'] * 100:.2f}%",
+        )
+        operating_cols[2].metric(
+            "Capacity buffer",
+            operating_summary["capacity_buffer_cases"],
+        )
+        operating_cols[3].metric(
+            "Backlog days",
+            operating_summary["recommended_estimated_backlog_days"],
+        )
+        st.write(str(operating_summary["decision"]))
+        st.write("Staffing assumption: " + str(operating_summary["staffing_assumption"]))
+        operating_df = pd.DataFrame(
+            safety_operating_recommendation_rows(operating_recommendation)
+        )
+        if not operating_df.empty:
+            st.dataframe(operating_df, hide_index=True, use_container_width=True)
+        st.markdown("**Controls**")
+        for item in operating_recommendation["operating_controls"]:
+            st.write(f"- {item}")
     with tab_impact:
         impact_df = pd.DataFrame(safety_mitigation_rows(mitigation_impact))
         if not impact_df.empty:

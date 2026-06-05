@@ -31,6 +31,9 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
         reports_dir / "safety_reviewer_disagreement_slices.json"
     )
     safety_mitigation = _read_json(reports_dir / "safety_mitigation_impact.json")
+    safety_operating_recommendation = _read_json(
+        reports_dir / "safety_secondary_review_operating_recommendation.json"
+    )
 
     shutil.copyfile(reports_dir / "evaluation_report.html", public_dir / "evaluation_report.html")
     shutil.copyfile(reports_dir / "evaluation_report.pdf", public_dir / "evaluation_report.pdf")
@@ -69,6 +72,10 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
         public_dir / "safety_secondary_review_floor_validation.json",
     )
     shutil.copyfile(
+        reports_dir / "safety_secondary_review_operating_recommendation.json",
+        public_dir / "safety_secondary_review_operating_recommendation.json",
+    )
+    shutil.copyfile(
         reports_dir / "safety_mitigation_impact.json",
         public_dir / "safety_mitigation_impact.json",
     )
@@ -101,6 +108,7 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
             safety_adjudication=safety_adjudication,
             safety_disagreements=safety_disagreements,
             safety_mitigation=safety_mitigation,
+            safety_operating_recommendation=safety_operating_recommendation,
         ),
         encoding="utf-8",
     )
@@ -122,6 +130,7 @@ def _index_html(
     safety_adjudication: dict[str, Any],
     safety_disagreements: dict[str, Any],
     safety_mitigation: dict[str, Any],
+    safety_operating_recommendation: dict[str, Any],
 ) -> str:
     counts = profile["dataset_counts"]
     mix = profile["golden_case_mix"]
@@ -132,6 +141,10 @@ def _index_html(
     retuning_summary = safety_retuning["summary"]
     review_summary = safety_review["summary"]
     mitigation_summary = safety_mitigation["summary"]
+    operating_summary = safety_operating_recommendation["summary"]
+    operating_capacity_label = (
+        f"{operating_summary['minimum_reviewer_daily_capacity']} / reviewer / day"
+    )
     risk_labels = "\n".join(
         f"<li>{escape(label)}</li>" for label in profile["risk_labels"]
     )
@@ -158,6 +171,10 @@ def _index_html(
         (
             "Safety secondary review-floor validation",
             "safety_secondary_review_floor_validation.json",
+        ),
+        (
+            "Safety secondary review operating recommendation",
+            "safety_secondary_review_operating_recommendation.json",
         ),
         ("Safety mitigation impact", "safety_mitigation_impact.json"),
         ("Safety threshold decision memo", "safety_threshold_decision_memo.json"),
@@ -354,6 +371,7 @@ def _index_html(
         {_metric("Synthetic unsafe prevalence", _pct(safety_prevalence["unsafe_prevalence"]))}
         {_metric("High-severity FN count", safety_metrics["high_severity_false_negative_count"])}
         {_metric("Safety review queue", review_summary["queue_count"])}
+        {_metric("Safety min review capacity", operating_capacity_label)}
         {_metric("Unsafe reduction", _pct(mitigation_summary["unsafe_allowed_reduction_rate"]))}
         {_metric("Indexed traces", trace_index["trace_count"])}
         {_metric("Release gate status", gates["overall_status"])}

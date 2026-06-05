@@ -400,6 +400,33 @@
     "unsafe_case_count": 18,
     "validation_case_count": 39
   },
+  "secondary_review_operating_recommendation": {
+    "benign_intent_guard": true,
+    "breach_reviewer_daily_capacities": [
+      4,
+      8
+    ],
+    "capacity_buffer_cases": 15,
+    "capacity_buffer_rate": 0.4688,
+    "decision": "Adopt the targeted secondary review floor only when the review team can sustain at least 16 cases per reviewer per day for this validation volume.",
+    "floor_review_count": 17,
+    "minimum_reviewer_daily_capacity": 16,
+    "minimum_total_daily_capacity": 32,
+    "policy_name": "category_targeted_secondary_review_floor",
+    "recommendation": "adopt_targeted_floor_with_minimum_capacity",
+    "recommended_capacity_utilization": 0.5312,
+    "recommended_estimated_backlog_days": 1,
+    "review_sla_hours": 8,
+    "reviewer_count": 2,
+    "secondary_review_ceiling": 0.45,
+    "secondary_review_floor": 0.25,
+    "staffing_assumption": "2 reviewers, 16 cases per reviewer per day minimum, 8-hour review SLA",
+    "validation_recommendation": "validate_with_monitoring",
+    "within_capacity_reviewer_daily_capacities": [
+      16,
+      24
+    ]
+  },
   "secondary_review_validation_case_count": 39,
   "selected_threshold": 0.65,
   "threshold_decision": "Keep the balanced threshold at 0.65 for the current synthetic slice.",

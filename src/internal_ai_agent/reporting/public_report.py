@@ -24,6 +24,7 @@ from internal_ai_agent.dashboard.data import (
     retriever_snapshot_rows,
     safety_adjudication_note_rows,
     safety_mitigation_rows,
+    safety_operating_recommendation_rows,
     safety_retuning_rows,
     safety_review_case_rows,
     safety_threshold_rows,
@@ -83,6 +84,9 @@ def generate_public_report(project_root: Path) -> str:
     )
     safety_secondary_review_validation = _read_json(
         reports_dir / "safety_secondary_review_floor_validation.json"
+    )
+    safety_operating_recommendation = _read_json(
+        reports_dir / "safety_secondary_review_operating_recommendation.json"
     )
     safety_mitigation = _read_json(reports_dir / "safety_mitigation_impact.json")
     safety_memo = _read_json(reports_dir / "safety_threshold_decision_memo.json")
@@ -191,6 +195,8 @@ def generate_public_report(project_root: Path) -> str:
             _safety_secondary_review_band_table(safety_secondary_review_band),
             "",
             _safety_secondary_review_validation_table(safety_secondary_review_validation),
+            "",
+            _safety_operating_recommendation_table(safety_operating_recommendation),
             "",
             _safety_mitigation_table(safety_mitigation),
             "",
@@ -870,6 +876,49 @@ def _safety_secondary_review_validation_table(report: dict[str, Any]) -> str:
             "{baseline_unsafe_allowed_count} | {floor_unsafe_allowed_count} | "
             "{benign_new_review_count} |".format(**row)
         )
+    return "\n".join(rows)
+
+
+def _safety_operating_recommendation_table(report: dict[str, Any]) -> str:
+    summary = report["summary"]
+    rows = [
+        "| Secondary review operating recommendation | Value |",
+        "| --- | --- |",
+        f"| Recommendation | {summary['recommendation']} |",
+        f"| Decision | {summary['decision']} |",
+        f"| Staffing assumption | {summary['staffing_assumption']} |",
+        f"| Review SLA hours | {summary['review_sla_hours']} |",
+        f"| Floor review count | {summary['floor_review_count']} |",
+        (
+            "| Minimum reviewer daily capacity | "
+            f"{summary['minimum_reviewer_daily_capacity']} |"
+        ),
+        (
+            "| Minimum total daily capacity | "
+            f"{summary['minimum_total_daily_capacity']} |"
+        ),
+        (
+            "| Recommended capacity utilization | "
+            f"{_pct(summary['recommended_capacity_utilization'])} |"
+        ),
+        f"| Capacity buffer cases | {summary['capacity_buffer_cases']} |",
+        f"| Capacity buffer rate | {_pct(summary['capacity_buffer_rate'])} |",
+        "",
+        (
+            "| Reviewer daily capacity | Total capacity | Utilization | "
+            "Buffer cases | Backlog days | Decision |"
+        ),
+        "| ---: | ---: | ---: | ---: | ---: | --- |",
+    ]
+    for row in safety_operating_recommendation_rows(report):
+        rows.append(
+            "| {reviewer_daily_capacity} | {total_daily_capacity} | "
+            "{capacity_utilization_pct} | {capacity_buffer_cases} | "
+            "{estimated_backlog_days} | {operating_decision} |".format(**row)
+        )
+    rows.extend(["", "| Operating controls |", "| --- |"])
+    for item in report["operating_controls"]:
+        rows.append(f"| {item} |")
     return "\n".join(rows)
 
 

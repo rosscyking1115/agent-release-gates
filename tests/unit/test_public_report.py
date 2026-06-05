@@ -221,6 +221,8 @@ def test_generate_public_report_html_renders_tables_and_safety_boundary(tmp_path
     assert "<h2>Safety Classifier Workflow</h2>" in html
     assert "<td>recommend_targeted_secondary_review_floor</td>" in html
     assert "<td>validate_with_monitoring</td>" in html
+    assert "<td>adopt_targeted_floor_with_minimum_capacity</td>" in html
+    assert "<td>16</td>" in html
     assert "<td>dry_run_preview</td>" in html
     assert "It does not use real company documents" in html
 

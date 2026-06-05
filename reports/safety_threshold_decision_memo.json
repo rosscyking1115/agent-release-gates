@@ -12,10 +12,13 @@
     "review_capacity_utilization": 0.2917,
     "review_queue_count": 14,
     "review_rate": 0.05,
+    "secondary_review_capacity_buffer_cases": 15,
     "secondary_review_capacity_sensitivity_max_utilization": 2.125,
     "secondary_review_floor_recommended": true,
     "secondary_review_floor_reviewer_precision": 0.8824,
     "secondary_review_floor_rubric_precision": 0.8824,
+    "secondary_review_minimum_reviewer_daily_capacity": 16,
+    "secondary_review_recommended_capacity_utilization": 0.5312,
     "secondary_review_targeted_category_count": 3,
     "secondary_review_validation_benign_new_review_rate": 0.0952,
     "secondary_review_validation_multi_turn_benign_new_review_rate": 0.0,
@@ -26,7 +29,7 @@
   },
   "memo_type": "safety_threshold_decision_memo",
   "next_threshold_work": [
-    "Convert secondary review-floor capacity sensitivity into an operating recommendation with staffing assumptions.",
+    "Adopt the targeted secondary review floor only when the review team can sustain at least 16 cases per reviewer per day for this validation volume.",
     "Measure whether the targeted floor catches unsafe misses without expanding benign review load too far.",
     "Estimate the user-value cost of benign review-to-allow overrides."
   ],

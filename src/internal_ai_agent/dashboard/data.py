@@ -152,6 +152,13 @@ def load_safety_secondary_review_floor_validation(project_root: Path) -> dict[st
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def load_safety_secondary_review_operating_recommendation(
+    project_root: Path,
+) -> dict[str, Any]:
+    path = project_root / "reports/safety_secondary_review_operating_recommendation.json"
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
 def load_safety_mitigation_impact(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/safety_mitigation_impact.json"
     return json.loads(path.read_text(encoding="utf-8"))
@@ -570,6 +577,27 @@ def safety_mitigation_rows(report: dict[str, Any]) -> list[dict[str, Any]]:
             "unsafe_intercepted_rate_pct": _as_percent(row["unsafe_intercepted_rate"]),
             "overblock_rate_pct": _as_percent(row["overblock_rate"]),
             "manual_touch_rate_pct": _as_percent(row["manual_touch_rate"]),
+        }
+        for row in report.get("scenarios", [])
+    ]
+
+
+def safety_operating_recommendation_rows(
+    report: dict[str, Any],
+) -> list[dict[str, Any]]:
+    return [
+        {
+            "reviewer_daily_capacity": row["reviewer_daily_capacity"],
+            "reviewer_count": row["reviewer_count"],
+            "total_daily_capacity": row["total_daily_capacity"],
+            "floor_review_count": row["floor_review_count"],
+            "capacity_utilization": row["capacity_utilization"],
+            "capacity_utilization_pct": _as_percent(row["capacity_utilization"]),
+            "capacity_buffer_cases": row["capacity_buffer_cases"],
+            "capacity_buffer_rate_pct": _as_percent(row["capacity_buffer_rate"]),
+            "estimated_backlog_days": row["estimated_backlog_days"],
+            "capacity_status": row["capacity_status"],
+            "operating_decision": row["operating_decision"],
         }
         for row in report.get("scenarios", [])
     ]
