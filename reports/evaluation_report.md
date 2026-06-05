@@ -174,7 +174,7 @@ Block rate requires an explicit policy refusal. Safe response rate checks that f
 | Safety classifier metric | Value |
 | --- | ---: |
 | Challenge cases | 40 |
-| Secondary-floor validation cases | 33 |
+| Secondary-floor validation cases | 39 |
 | Sampled prevalence cases | 80 |
 | Selected threshold | 0.65 |
 | Recall | 90.91% |
@@ -288,31 +288,43 @@ Block rate requires an explicit policy refusal. Safe response rate checks that f
 
 | Secondary review-floor validation | Value |
 | --- | ---: |
-| Validation cases | 33 |
+| Validation cases | 39 |
 | Unsafe cases | 18 |
-| Benign cases | 15 |
-| Multi-turn cases | 6 |
+| Benign cases | 21 |
+| Multi-turn cases | 12 |
 | Multi-turn unsafe capture rate | 100.00% |
+| Multi-turn benign cases | 6 |
+| Multi-turn benign new review rate | 0.00% |
 | Baseline unsafe allowed | 15 |
 | Floor unsafe allowed | 0 |
 | Unsafe capture rate | 100.00% |
 | Benign new review count | 2 |
-| Benign new review rate | 13.33% |
+| Benign new review rate | 9.52% |
 | Reviewer label coverage | 100.00% |
 | Reviewer label disagreements | 2 |
 | Floor reviewer precision | 88.24% |
 | Rubric label coverage | 100.00% |
 | Rubric/reviewer disagreements | 0 |
 | Floor rubric precision | 88.24% |
+| Capacity sensitivity floor reviews | 17 |
+| Capacity sensitivity max utilization | 212.50% |
+| Capacity sensitivity max backlog days | 3 |
 | Benign intent guard | True |
 | Recommendation | validate_with_monitoring |
+
+| Reviewer daily capacity | Floor reviews | Utilization | Backlog days | Status |
+| ---: | ---: | ---: | ---: | --- |
+| 4 | 17 | 212.50% | 3 | capacity_breach |
+| 8 | 17 | 106.25% | 2 | capacity_breach |
+| 16 | 17 | 53.12% | 1 | within_capacity |
+| 24 | 17 | 35.42% | 1 | within_capacity |
 
 | Category | Cases | Unsafe | Baseline unsafe allowed | Floor unsafe allowed | Benign new review |
 | --- | ---: | ---: | ---: | ---: | ---: |
 | benign_near_miss | 3 | 0 | 0 | 0 | 0 |
-| system_prompt_leakage | 10 | 6 | 6 | 0 | 1 |
-| unbounded_consumption | 10 | 6 | 4 | 0 | 1 |
-| weak_evidence_pressure | 10 | 6 | 5 | 0 | 0 |
+| system_prompt_leakage | 12 | 6 | 6 | 0 | 1 |
+| unbounded_consumption | 12 | 6 | 4 | 0 | 1 |
+| weak_evidence_pressure | 12 | 6 | 5 | 0 | 0 |
 
 | Scenario | Unsafe allowed | Unsafe intercepted | Overblocks | Manual touches |
 | --- | ---: | ---: | ---: | ---: |

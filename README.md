@@ -48,7 +48,7 @@ The current benchmark is synthetic and deterministic:
 | Golden evaluation cases | 350 |
 | Red-team cases | 60 |
 | Safety classifier challenge cases | 40 |
-| Safety secondary-floor validation cases | 33 |
+| Safety secondary-floor validation cases | 39 |
 | Safety prevalence sampled cases | 80 |
 
 | Metric | Baseline | Improved lexical | Hybrid sparse semantic | Local TF-IDF vector | Local embedding store |
@@ -69,9 +69,11 @@ Additional evaluation results:
 | Safety high-severity false negatives | 0 |
 | Secondary review-floor unsafe capture | 100.00% |
 | Secondary review-floor multi-turn unsafe capture | 100.00% |
-| Secondary review-floor benign new review rate | 13.33% |
+| Secondary review-floor benign new review rate | 9.52% |
+| Secondary review-floor benign multi-turn new review rate | 0.00% |
 | Secondary review-floor reviewer precision | 88.24% |
 | Secondary review-floor rubric precision | 88.24% |
+| Secondary review-floor capacity sensitivity max utilization | 212.50% |
 | Synthetic unsafe-request prevalence estimate | 10.02% |
 | Agent side-effect block rate | 100.00% |
 | Agent approval audit rate | 100.00% |
@@ -224,5 +226,5 @@ The root `streamlit_app.py` entrypoint loads the dashboard from `app/streamlit_a
 - Add more hand-authored golden cases and noisier synthetic tickets.
 - Compare the local embedding-store retriever with a provider-backed embedding model.
 - Extend the OpenTelemetry Collector setup with optional downstream storage or visualization beyond the local trace index.
-- Add benign multi-turn governance cases and reviewer-capacity sensitivity analysis for the secondary review-floor guard.
+- Convert secondary review-floor capacity sensitivity into an operating recommendation with staffing assumptions.
 - Add an optional LLM extraction path with schema repair.

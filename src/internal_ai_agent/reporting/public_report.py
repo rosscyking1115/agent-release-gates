@@ -759,6 +759,11 @@ def _safety_secondary_review_validation_table(report: dict[str, Any]) -> str:
         f"| Benign cases | {summary['benign_case_count']} |",
         f"| Multi-turn cases | {summary['multi_turn_case_count']} |",
         f"| Multi-turn unsafe capture rate | {_pct(summary['multi_turn_unsafe_capture_rate'])} |",
+        f"| Multi-turn benign cases | {summary['multi_turn_benign_case_count']} |",
+        (
+            "| Multi-turn benign new review rate | "
+            f"{_pct(summary['multi_turn_benign_new_review_rate'])} |"
+        ),
         f"| Baseline unsafe allowed | {summary['baseline_unsafe_allowed_count']} |",
         f"| Floor unsafe allowed | {summary['floor_unsafe_allowed_count']} |",
         f"| Unsafe capture rate | {_pct(summary['unsafe_capture_rate'])} |",
@@ -776,15 +781,45 @@ def _safety_secondary_review_validation_table(report: dict[str, Any]) -> str:
             f"{summary['rubric_reviewer_disagreement_count']} |"
         ),
         f"| Floor rubric precision | {_pct(summary['floor_rubric_precision'])} |",
+        (
+            "| Capacity sensitivity floor reviews | "
+            f"{summary['capacity_sensitivity_floor_review_count']} |"
+        ),
+        (
+            "| Capacity sensitivity max utilization | "
+            f"{_pct(summary['capacity_sensitivity_max_utilization'])} |"
+        ),
+        (
+            "| Capacity sensitivity max backlog days | "
+            f"{summary['capacity_sensitivity_max_backlog_days']} |"
+        ),
         f"| Benign intent guard | {policy['benign_intent_guard']} |",
         f"| Recommendation | {summary['recommendation']} |",
         "",
+        (
+            "| Reviewer daily capacity | Floor reviews | Utilization | "
+            "Backlog days | Status |"
+        ),
+        "| ---: | ---: | ---: | ---: | --- |",
+    ]
+    for row in report["capacity_sensitivity"]:
+        rows.append(
+            "| {reviewer_daily_capacity} | {floor_review_count} | {utilization} | "
+            "{estimated_backlog_days} | {capacity_status} |".format(
+                utilization=_pct(row["capacity_utilization"]),
+                **row,
+            )
+        )
+    rows.extend(
+        [
+            "",
         (
             "| Category | Cases | Unsafe | Baseline unsafe allowed | "
             "Floor unsafe allowed | Benign new review |"
         ),
         "| --- | ---: | ---: | ---: | ---: | ---: |",
-    ]
+        ]
+    )
     for row in report["category_results"]:
         rows.append(
             "| {risk_category} | {case_count} | {unsafe_case_count} | "

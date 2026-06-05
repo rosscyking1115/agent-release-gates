@@ -519,7 +519,7 @@ T*
 T*
 (Challenge cases | 40) Tj
 T*
-(Secondary-floor validation cases | 33) Tj
+(Secondary-floor validation cases | 39) Tj
 T*
 (Sampled prevalence cases | 80) Tj
 T*
@@ -715,7 +715,7 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 17 0 R >>
 endobj
 17 0 obj
-<< /Length 2398 >>
+<< /Length 2350 >>
 stream
 BT
 /F1 10 Tf
@@ -749,15 +749,19 @@ T*
 T*
 (Secondary review-floor validation | Value) Tj
 T*
-(Validation cases | 33) Tj
+(Validation cases | 39) Tj
 T*
 (Unsafe cases | 18) Tj
 T*
-(Benign cases | 15) Tj
+(Benign cases | 21) Tj
 T*
-(Multi-turn cases | 6) Tj
+(Multi-turn cases | 12) Tj
 T*
 (Multi-turn unsafe capture rate | 100.00%) Tj
+T*
+(Multi-turn benign cases | 6) Tj
+T*
+(Multi-turn benign new review rate | 0.00%) Tj
 T*
 (Baseline unsafe allowed | 15) Tj
 T*
@@ -767,7 +771,7 @@ T*
 T*
 (Benign new review count | 2) Tj
 T*
-(Benign new review rate | 13.33%) Tj
+(Benign new review rate | 9.52%) Tj
 T*
 (Reviewer label coverage | 100.00%) Tj
 T*
@@ -781,9 +785,27 @@ T*
 T*
 (Floor rubric precision | 88.24%) Tj
 T*
+(Capacity sensitivity floor reviews | 17) Tj
+T*
+(Capacity sensitivity max utilization | 212.50%) Tj
+T*
+(Capacity sensitivity max backlog days | 3) Tj
+T*
 (Benign intent guard | True) Tj
 T*
 (Recommendation | validate_with_monitoring) Tj
+T*
+() Tj
+T*
+(Reviewer daily capacity | Floor reviews | Utilization | Backlog days | Status) Tj
+T*
+(4 | 17 | 212.50% | 3 | capacity_breach) Tj
+T*
+(8 | 17 | 106.25% | 2 | capacity_breach) Tj
+T*
+(16 | 17 | 53.12% | 1 | within_capacity) Tj
+T*
+(24 | 17 | 35.42% | 1 | within_capacity) Tj
 T*
 () Tj
 T*
@@ -791,11 +813,11 @@ T*
 T*
 (benign_near_miss | 3 | 0 | 0 | 0 | 0) Tj
 T*
-(system_prompt_leakage | 10 | 6 | 6 | 0 | 1) Tj
+(system_prompt_leakage | 12 | 6 | 6 | 0 | 1) Tj
 T*
-(unbounded_consumption | 10 | 6 | 4 | 0 | 1) Tj
+(unbounded_consumption | 12 | 6 | 4 | 0 | 1) Tj
 T*
-(weak_evidence_pressure | 10 | 6 | 5 | 0 | 0) Tj
+(weak_evidence_pressure | 12 | 6 | 5 | 0 | 0) Tj
 T*
 () Tj
 T*
@@ -803,6 +825,19 @@ T*
 T*
 (No classifier or review | 71 | 0 | 0 | 0) Tj
 T*
+ET
+endstream
+endobj
+18 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 19 0 R >>
+endobj
+19 0 obj
+<< /Length 2668 >>
+stream
+BT
+/F1 10 Tf
+14 TL
+54 738 Td
 (Classifier with review queue held | 5 | 66 | 0 | 14) Tj
 T*
 (Classifier plus simulated human review | 5 | 66 | 0 | 14) Tj
@@ -825,19 +860,6 @@ T*
 T*
 (challenge set.) Tj
 T*
-ET
-endstream
-endobj
-18 0 obj
-<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 19 0 R >>
-endobj
-19 0 obj
-<< /Length 2360 >>
-stream
-BT
-/F1 10 Tf
-14 TL
-54 738 Td
 (Rationale 3 | Ambiguous cases remain visible through the human review queue instead of being) Tj
 T*
 (silently allowed.) Tj
@@ -920,6 +942,19 @@ T*
 T*
 (Observability Span Export) Tj
 T*
+ET
+endstream
+endobj
+20 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 21 0 R >>
+endobj
+21 0 obj
+<< /Length 2024 >>
+stream
+BT
+/F1 10 Tf
+14 TL
+54 738 Td
 () Tj
 T*
 () Tj
@@ -942,19 +977,6 @@ T*
 T*
 (Indexed traces | 21) Tj
 T*
-ET
-endstream
-endobj
-20 0 obj
-<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 21 0 R >>
-endobj
-21 0 obj
-<< /Length 2247 >>
-stream
-BT
-/F1 10 Tf
-14 TL
-54 738 Td
 (Indexed spans | 1307) Tj
 T*
 (Error spans | 302) Tj
@@ -1037,6 +1059,19 @@ T*
 T*
 () Tj
 T*
+ET
+endstream
+endobj
+22 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 23 0 R >>
+endobj
+23 0 obj
+<< /Length 874 >>
+stream
+BT
+/F1 10 Tf
+14 TL
+54 738 Td
 (Current Limitations) Tj
 T*
 () Tj
@@ -1059,19 +1094,6 @@ T*
 T*
 () Tj
 T*
-ET
-endstream
-endobj
-22 0 obj
-<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 23 0 R >>
-endobj
-23 0 obj
-<< /Length 389 >>
-stream
-BT
-/F1 10 Tf
-14 TL
-54 738 Td
 (Recommended Next Work) Tj
 T*
 () Tj
@@ -1109,14 +1131,14 @@ xref
 0000014700 00000 n 
 0000017455 00000 n 
 0000017583 00000 n 
-0000020034 00000 n 
-0000020162 00000 n 
-0000022575 00000 n 
-0000022703 00000 n 
-0000025003 00000 n 
-0000025131 00000 n 
+0000019986 00000 n 
+0000020114 00000 n 
+0000022835 00000 n 
+0000022963 00000 n 
+0000025040 00000 n 
+0000025168 00000 n 
 trailer
 << /Size 24 /Root 1 0 R >>
 startxref
-25572
+26094
 %%EOF

@@ -26,7 +26,7 @@ def test_safety_datasets_keep_challenge_and_prevalence_separate() -> None:
 
     assert len(challenge_cases) == 40
     assert len(prevalence_cases) == 80
-    assert len(build_safety_secondary_review_validation_cases()) == 33
+    assert len(build_safety_secondary_review_validation_cases()) == 39
     assert {case["synthetic_prevalence_bucket"] for case in challenge_cases} == {
         "challenge_enriched"
     }
@@ -62,7 +62,7 @@ def test_evaluate_safety_classifier_writes_reports(tmp_path: Path) -> None:
 
     assert report["evaluation_type"] == "safety_prevalence_classifier"
     assert report["challenge_case_count"] == 40
-    assert report["secondary_review_validation_case_count"] == 33
+    assert report["secondary_review_validation_case_count"] == 39
     assert report["prevalence_case_count"] == 80
     assert report["metrics"]["high_severity_false_negative_count"] == 0
     assert report["metrics"]["benign_near_miss_false_positive_count"] == 0
@@ -158,8 +158,10 @@ def test_human_review_and_mitigation_reports_reduce_residual_risk(
     ] is False
     assert validation["summary"]["recommendation"] == "validate_with_monitoring"
     assert validation["summary"]["unsafe_capture_rate"] == 1.0
-    assert validation["summary"]["multi_turn_case_count"] == 6
+    assert validation["summary"]["multi_turn_case_count"] == 12
+    assert validation["summary"]["multi_turn_benign_case_count"] == 6
     assert validation["summary"]["multi_turn_unsafe_capture_rate"] == 1.0
+    assert validation["summary"]["multi_turn_benign_new_review_rate"] == 0.0
     assert validation["summary"]["benign_new_review_rate"] > 0
     assert validation["summary"]["reviewer_label_coverage"] == 1.0
     assert validation["summary"]["reviewer_label_disagreement_count"] > 0
@@ -167,6 +169,16 @@ def test_human_review_and_mitigation_reports_reduce_residual_risk(
     assert validation["summary"]["rubric_label_coverage"] == 1.0
     assert validation["summary"]["rubric_reviewer_disagreement_count"] == 0
     assert validation["summary"]["floor_rubric_precision"] > 0.8
+    assert validation["summary"]["capacity_sensitivity_floor_review_count"] == 17
+    assert validation["summary"]["capacity_sensitivity_max_backlog_days"] == 3
+    assert any(
+        row["capacity_status"] == "capacity_breach"
+        for row in validation["capacity_sensitivity"]
+    )
+    assert any(
+        row["capacity_status"] == "within_capacity"
+        for row in validation["capacity_sensitivity"]
+    )
     assert all("reviewer_labels" in row for row in validation["cases"])
     assert all("rubric_labels" in row for row in validation["cases"])
     assert impact["summary"]["recommended_operating_model"] == "classifier_plus_review"

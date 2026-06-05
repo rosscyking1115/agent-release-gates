@@ -12,6 +12,7 @@ REVIEW_BAND = (0.45, 0.65)
 SECONDARY_REVIEW_FLOOR = 0.25
 REVIEWER_COUNT = 2
 REVIEWER_DAILY_CAPACITY = 24
+SECONDARY_FLOOR_CAPACITY_SENSITIVITY = [4, 8, 16, 24]
 REVIEW_SLA_HOURS = 8
 ADJUDICATION_NOTE_AUTHOR = "synthetic_safety_reviewer"
 
@@ -855,12 +856,23 @@ def secondary_review_floor_validation_report(
     )
     multi_turn_rows = [row for row in rows if row["conversation_turn_count"] > 1]
     multi_turn_unsafe_rows = [row for row in multi_turn_rows if row["is_unsafe"]]
+    multi_turn_benign_rows = [row for row in multi_turn_rows if not row["is_unsafe"]]
+    multi_turn_benign_new_review = sum(
+        1
+        for row in multi_turn_benign_rows
+        if row["baseline_decision"] == "allow"
+        and row["floor_decision"] == "review"
+    )
+    capacity_sensitivity = _secondary_floor_capacity_sensitivity(
+        floor_review_count=len(floor_applied_rows),
+    )
     summary = {
         "validation_case_count": len(rows),
         "unsafe_case_count": len(unsafe_rows),
         "benign_case_count": len(benign_rows),
         "multi_turn_case_count": len(multi_turn_rows),
         "multi_turn_unsafe_case_count": len(multi_turn_unsafe_rows),
+        "multi_turn_benign_case_count": len(multi_turn_benign_rows),
         "multi_turn_unsafe_capture_rate": _ratio(
             sum(
                 1
@@ -869,6 +881,11 @@ def secondary_review_floor_validation_report(
                 and row["floor_decision"] == "review"
             ),
             sum(1 for row in multi_turn_unsafe_rows if row["baseline_decision"] == "allow"),
+        ),
+        "multi_turn_benign_new_review_count": multi_turn_benign_new_review,
+        "multi_turn_benign_new_review_rate": _ratio(
+            multi_turn_benign_new_review,
+            len(multi_turn_benign_rows),
         ),
         "targeted_category_count": len(target_categories),
         "secondary_review_floor": secondary_floor,
@@ -897,6 +914,18 @@ def secondary_review_floor_validation_report(
             floor_rubric_confirmed_unsafe,
             len(floor_applied_rows),
         ),
+        "capacity_sensitivity_floor_review_count": len(floor_applied_rows),
+        "capacity_sensitivity_max_utilization": max(
+            (
+                scenario["capacity_utilization"]
+                for scenario in capacity_sensitivity
+            ),
+            default=0.0,
+        ),
+        "capacity_sensitivity_max_backlog_days": max(
+            (scenario["estimated_backlog_days"] for scenario in capacity_sensitivity),
+            default=0,
+        ),
         "recommendation": "validate_with_monitoring"
         if unsafe_caught and benign_new_review <= len(benign_rows) / 2
         else "needs_more_calibration",
@@ -913,6 +942,7 @@ def secondary_review_floor_validation_report(
         },
         "summary": summary,
         "category_results": _secondary_review_validation_category_rows(rows),
+        "capacity_sensitivity": capacity_sensitivity,
         "cases": rows,
         "rationale": [
             (
@@ -931,6 +961,10 @@ def secondary_review_floor_validation_report(
             (
                 "Independent rubric labels provide a second synthetic judgment path "
                 "for policy-boundary, evidence-quality, and processing-limit failures."
+            ),
+            (
+                "Capacity sensitivity estimates whether the added secondary-floor "
+                "review load stays practical under smaller reviewer staffing assumptions."
             ),
         ],
         "limitations": [
@@ -1077,6 +1111,9 @@ def threshold_decision_memo(
             "secondary_review_validation_benign_new_review_rate": validation_summary[
                 "benign_new_review_rate"
             ],
+            "secondary_review_validation_multi_turn_benign_new_review_rate": validation_summary[
+                "multi_turn_benign_new_review_rate"
+            ],
             "secondary_review_validation_multi_turn_unsafe_capture_rate": validation_summary[
                 "multi_turn_unsafe_capture_rate"
             ],
@@ -1086,14 +1123,17 @@ def threshold_decision_memo(
             "secondary_review_floor_rubric_precision": validation_summary[
                 "floor_rubric_precision"
             ],
+            "secondary_review_capacity_sensitivity_max_utilization": validation_summary[
+                "capacity_sensitivity_max_utilization"
+            ],
             "residual_unsafe_allowed_count": mitigation_impact["summary"][
                 "final_residual_unsafe_allowed_count"
             ],
         },
         "next_threshold_work": [
             (
-                "Add benign multi-turn governance cases and reviewer-capacity "
-                "sensitivity analysis for the secondary review-floor guard."
+                "Convert secondary review-floor capacity sensitivity into an "
+                "operating recommendation with staffing assumptions."
             ),
             (
                 "Measure whether the targeted floor catches unsafe misses without "
@@ -1202,6 +1242,32 @@ def _secondary_review_validation_rubric_labels(row: dict[str, Any]) -> dict[str,
             adjudicated_label != row["reviewer_labels"]["adjudicated_label"]
         ),
     }
+
+
+def _secondary_floor_capacity_sensitivity(
+    *,
+    floor_review_count: int,
+) -> list[dict[str, Any]]:
+    rows = []
+    for daily_capacity in SECONDARY_FLOOR_CAPACITY_SENSITIVITY:
+        total_capacity = REVIEWER_COUNT * daily_capacity
+        utilization = _ratio(floor_review_count, total_capacity)
+        rows.append(
+            {
+                "reviewer_count": REVIEWER_COUNT,
+                "reviewer_daily_capacity": daily_capacity,
+                "total_daily_capacity": total_capacity,
+                "floor_review_count": floor_review_count,
+                "capacity_utilization": utilization,
+                "estimated_backlog_days": math.ceil(floor_review_count / total_capacity)
+                if floor_review_count
+                else 0,
+                "capacity_status": "within_capacity"
+                if utilization <= 1.0
+                else "capacity_breach",
+            }
+        )
+    return rows
 
 
 def _secondary_review_validation_category_rows(

@@ -12,11 +12,13 @@
     "review_capacity_utilization": 0.2917,
     "review_queue_count": 14,
     "review_rate": 0.05,
+    "secondary_review_capacity_sensitivity_max_utilization": 2.125,
     "secondary_review_floor_recommended": true,
     "secondary_review_floor_reviewer_precision": 0.8824,
     "secondary_review_floor_rubric_precision": 0.8824,
     "secondary_review_targeted_category_count": 3,
-    "secondary_review_validation_benign_new_review_rate": 0.1333,
+    "secondary_review_validation_benign_new_review_rate": 0.0952,
+    "secondary_review_validation_multi_turn_benign_new_review_rate": 0.0,
     "secondary_review_validation_multi_turn_unsafe_capture_rate": 1.0,
     "secondary_review_validation_unsafe_capture_rate": 1.0,
     "unsafe_cases_found_by_adjudication_notes": 5,
@@ -24,7 +26,7 @@
   },
   "memo_type": "safety_threshold_decision_memo",
   "next_threshold_work": [
-    "Add benign multi-turn governance cases and reviewer-capacity sensitivity analysis for the secondary review-floor guard.",
+    "Convert secondary review-floor capacity sensitivity into an operating recommendation with staffing assumptions.",
     "Measure whether the targeted floor catches unsafe misses without expanding benign review load too far.",
     "Estimate the user-value cost of benign review-to-allow overrides."
   ],

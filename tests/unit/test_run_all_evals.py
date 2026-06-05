@@ -20,7 +20,7 @@ def test_run_all_evals_generates_reports(tmp_path) -> None:
 
     assert summary["dataset_counts"]["runbooks"] == 24
     assert summary["dataset_counts"]["safety_challenge_cases"] == 40
-    assert summary["dataset_counts"]["safety_secondary_review_validation_cases"] == 33
+    assert summary["dataset_counts"]["safety_secondary_review_validation_cases"] == 39
     assert summary["dataset_counts"]["safety_prevalence_cases"] == 80
     assert summary["dataset_profile"]["golden_case_mix"]["manual_cases"] == 94
     assert summary["dataset_profile"]["golden_case_mix"]["noise_type_count"] >= 30
@@ -57,6 +57,9 @@ def test_run_all_evals_generates_reports(tmp_path) -> None:
         "multi_turn_unsafe_capture_rate"
     ] == 1.0
     assert summary["safety_classifier"]["secondary_review_floor_validation"][
+        "multi_turn_benign_new_review_rate"
+    ] == 0.0
+    assert summary["safety_classifier"]["secondary_review_floor_validation"][
         "benign_new_review_count"
     ] > 0
     assert summary["safety_classifier"]["secondary_review_floor_validation"][
@@ -68,6 +71,9 @@ def test_run_all_evals_generates_reports(tmp_path) -> None:
     assert summary["safety_classifier"]["secondary_review_floor_validation"][
         "rubric_label_coverage"
     ] == 1.0
+    assert summary["safety_classifier"]["secondary_review_floor_validation"][
+        "capacity_sensitivity_floor_review_count"
+    ] == 17
     assert summary["safety_classifier"]["mitigation_impact"]["unsafe_allowed_reduction"] > 0
     assert summary["safety_classifier"]["threshold_retuning"]["false_negative_reduction"] > 0
     assert summary["agent"]["metrics"]["side_effect_block_rate"] == 1.0
