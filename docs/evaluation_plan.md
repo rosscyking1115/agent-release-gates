@@ -58,7 +58,9 @@ The dashboard reads the saved report artifacts rather than recomputing metrics o
 - `reports/retriever_metric_snapshots.json`
 - `reports/techqa_public_rag_summary.json`
 - `reports/techqa_public_benchmark_profile.json`
+- `reports/techqa_public_retriever_comparison.json`
 - `reports/techqa_public_rag_cases.jsonl`
+- `reports/techqa_public_retriever_cases.jsonl`
 - `reports/evaluation_history.json`
 - `reports/evaluation_gates.json`
 - `reports/eval_comparison.json`
@@ -128,13 +130,12 @@ The TechQA public track uses a tracked 160-case sample from NVIDIA TechQA-RAG-Ev
 
 The tracked sample keeps CI and GitHub Pages deterministic. To refresh or resize it, download the upstream `train.json` into `data/public/techqa_train.json`, then run `scripts/prepare_techqa_public_benchmark.py` with an explicit `--limit`.
 
-The retriever comparison report saves a five-system table:
+The TechQA retriever comparison report saves the public-track systems separately from the synthetic internal benchmark:
 
-- baseline team hints
-- improved lexical retrieval
-- hybrid sparse semantic retrieval
-- local TF-IDF vector retrieval
-- local embedding-store retrieval
+- keyword title baseline
+- local TF-IDF public retriever
+
+The current primary local TF-IDF public retriever improves TechQA retrieval hit rate@3 from 72.66% to 87.50% and top-1 citation accuracy from 58.59% to 77.34% versus the keyword-title baseline. The same comparison records the abstention trade-off: impossible-question abstention decreases from 59.38% to 34.38%, so future work should inspect whether the less conservative behavior is desirable before adding provider-backed embeddings.
 
 The public report and dashboard also surface retriever failure analysis. The overview counts failed cases, cases where the expected section was retrieved but not finally cited, abstention mismatches, and the top failure reason for each retriever. The example table keeps the diagnostic and recommended fix attached to concrete case ids.
 

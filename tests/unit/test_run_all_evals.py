@@ -105,6 +105,8 @@ def test_run_all_evals_generates_reports(tmp_path) -> None:
     assert (tmp_path / "reports/techqa_public_rag_summary.json").exists()
     assert (tmp_path / "reports/techqa_public_benchmark_profile.json").exists()
     assert (tmp_path / "reports/techqa_public_rag_cases.jsonl").exists()
+    assert (tmp_path / "reports/techqa_public_retriever_comparison.json").exists()
+    assert (tmp_path / "reports/techqa_public_retriever_cases.jsonl").exists()
     assert (tmp_path / "reports/retriever_metric_snapshots.json").exists()
     assert (tmp_path / "reports/evaluation_history.json").exists()
     assert (tmp_path / "reports/hybrid_eval_summary.json").exists()

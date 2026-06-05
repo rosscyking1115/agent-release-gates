@@ -47,12 +47,20 @@ def test_techqa_public_eval_scores_public_rag_sample(tmp_path: Path) -> None:
     assert report["benchmark_profile"]["sample_case_count"] == 2
     assert report["benchmark_profile"]["unique_document_count"] == 1
     assert report["benchmark_profile"]["provider_backed_embedding_result_published"] is False
+    assert report["primary_retriever"]["system_id"] == "local_tfidf_public_retriever"
+    assert report["retriever_comparison"]["system_count"] == 2
+    assert {system["system_id"] for system in report["retriever_systems"]} == {
+        "keyword_title_baseline",
+        "local_tfidf_public_retriever",
+    }
     assert report["metrics"]["retrieval_hit_rate_at_3"] == 1.0
     assert report["metrics"]["top1_citation_accuracy"] == 1.0
     assert report["metrics"]["impossible_abstention_rate"] == 1.0
     assert (tmp_path / "reports/techqa_public_rag_summary.json").exists()
     assert (tmp_path / "reports/techqa_public_benchmark_profile.json").exists()
     assert (tmp_path / "reports/techqa_public_rag_cases.jsonl").exists()
+    assert (tmp_path / "reports/techqa_public_retriever_comparison.json").exists()
+    assert (tmp_path / "reports/techqa_public_retriever_cases.jsonl").exists()
 
     persisted = json.loads(
         (tmp_path / "reports/techqa_public_rag_summary.json").read_text(encoding="utf-8")
@@ -74,3 +82,5 @@ def test_techqa_public_eval_writes_not_configured_report(tmp_path: Path) -> None
     assert report["benchmark_profile"]["sample_case_count"] == 0
     assert (tmp_path / "reports/techqa_public_rag_summary.json").exists()
     assert (tmp_path / "reports/techqa_public_benchmark_profile.json").exists()
+    assert (tmp_path / "reports/techqa_public_retriever_comparison.json").exists()
+    assert (tmp_path / "reports/techqa_public_retriever_cases.jsonl").exists()

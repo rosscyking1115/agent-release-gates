@@ -104,7 +104,9 @@ Reports:
 | `reports/safety_prevalence_report.md` | Weighted prevalence estimates, confidence intervals, sampling limitations, and distinction from challenge-set failure rates. |
 | `reports/techqa_public_rag_summary.json` | External public TechQA-RAG-Eval retrieval and abstention summary over the tracked public sample. |
 | `reports/techqa_public_benchmark_profile.json` | Public benchmark transparency profile with sample size, answerable/impossible mix, unique document count, context coverage, failure rate, and provider-result status. |
+| `reports/techqa_public_retriever_comparison.json` | Public TechQA retriever comparison between the keyword-title baseline and the primary local TF-IDF public retriever, including retrieval, citation, abstention, and lift metrics. |
 | `reports/techqa_public_rag_cases.jsonl` | Case-level TechQA retrieval results, expected/retrieved citations, abstention decision, and failure reasons. |
+| `reports/techqa_public_retriever_cases.jsonl` | Case-level TechQA results for each compared public retriever system, including system id, retrieved citations, predicted citations, and failure reasons. |
 
 ## Retrieval eval case files
 

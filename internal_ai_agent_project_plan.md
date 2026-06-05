@@ -54,6 +54,7 @@ sample currently contains 160 cases.
 10. OpenTelemetry-style observability and trace index
 11. Docker, CI, Streamlit, and GitHub Pages deployment
 12. TechQA public RAG benchmark integration
+13. TechQA keyword baseline versus local TF-IDF retriever comparison
 
 ## Public Deliverables
 

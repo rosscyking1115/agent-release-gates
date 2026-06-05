@@ -85,7 +85,7 @@ The dataset profile now reports 94 manually authored golden cases, 68 expected a
 
 The retriever snapshot report records deterministic deltas between retriever versions, so regressions are visible even when every system is generated from the same local synthetic dataset.
 
-The TechQA public RAG track evaluates 160 compact public technical-support cases with 87.50% retrieval hit rate@3, 77.34% top-1 citation accuracy, 81.51% mean reciprocal rank@3, and 34.38% impossible-question abstention. The benchmark profile records 128 answerable cases, 32 impossible cases, 119 unique public documents, and a 31.87% failed-case rate.
+The TechQA public RAG track evaluates 160 compact public technical-support cases with 87.50% retrieval hit rate@3, 77.34% top-1 citation accuracy, 81.51% mean reciprocal rank@3, and 34.38% impossible-question abstention for the primary local TF-IDF public retriever. The accompanying comparison shows that the local TF-IDF retriever improves retrieval hit rate@3 by 14.84 percentage points and top-1 citation accuracy by 18.75 percentage points versus a keyword-title baseline, while impossible-question abstention decreases by 25.00 percentage points. The benchmark profile records 128 answerable cases, 32 impossible cases, 119 unique public documents, and a 31.87% failed-case rate.
 
 The controlled-agent workflow blocks side-effecting mock routes without approval and executes them only when approval is granted. The eval reports 100.00% side-effect block rate, approval audit rate, and valid tool-call rate.
 

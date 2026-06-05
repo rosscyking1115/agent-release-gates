@@ -93,6 +93,13 @@ External public RAG benchmark:
 | --- | ---: | ---: | ---: | ---: |
 | NVIDIA TechQA-RAG-Eval sample | 160 | 87.50% | 77.34% | 34.38% |
 
+TechQA retriever comparison:
+
+| Retriever | Retrieval hit rate@3 | Top-1 citation | Impossible-question abstention | Failed cases |
+| --- | ---: | ---: | ---: | ---: |
+| Keyword title baseline | 72.66% | 58.59% | 59.38% | 80 |
+| Local TF-IDF public retriever | 87.50% | 77.34% | 34.38% | 51 |
+
 The TechQA track is public technical-support data under Apache-2.0. It is used as an external validation layer for retrieval and abstention behavior, not as a replacement for the controlled synthetic internal-operations benchmark.
 
 ## Benchmark Transparency
@@ -199,6 +206,7 @@ The public project page keeps the main experience focused on the dashboard and e
 - Evaluation gates: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/evaluation_gates.json
 - TechQA public RAG summary: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/techqa_public_rag_summary.json
 - TechQA public benchmark profile: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/techqa_public_benchmark_profile.json
+- TechQA public retriever comparison: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/techqa_public_retriever_comparison.json
 - Safety classifier summary: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_classifier_eval_summary.json
 - Safety threshold sweep: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_threshold_sweep.json
 - Safety threshold retuning: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_threshold_retuning.json

@@ -409,6 +409,27 @@ def _render_techqa_public_benchmark(summary: dict[str, object]) -> None:
         display_df = table_df[["label", "value_pct"]]
         display_df.columns = ["Metric", "Value"]
         st.dataframe(display_df, hide_index=True, use_container_width=True)
+    systems_df = pd.DataFrame(summary.get("retriever_systems", []))
+    if not systems_df.empty:
+        comparison_df = pd.DataFrame(
+            [
+                {
+                    "System": row["label"],
+                    "Retrieval@3": _format_pct(
+                        float(row["metrics"]["retrieval_hit_rate_at_3"])
+                    ),
+                    "Top-1 citation": _format_pct(
+                        float(row["metrics"]["top1_citation_accuracy"])
+                    ),
+                    "Impossible abstention": _format_pct(
+                        float(row["metrics"]["impossible_abstention_rate"])
+                    ),
+                    "Failed cases": row["failed_case_count"],
+                }
+                for row in summary.get("retriever_systems", [])
+            ]
+        )
+        st.dataframe(comparison_df, hide_index=True, use_container_width=True)
     if profile:
         profile_df = pd.DataFrame(
             [

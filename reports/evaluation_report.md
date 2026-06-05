@@ -110,6 +110,11 @@ The retrieval experiment compares a deliberately weak baseline, a lexical retrie
 | Failed cases | 51 |
 | Provider-backed embedding result published | False |
 
+| TechQA retriever | Retrieval@3 | Top-1 citation | Impossible abstention | Failed cases |
+| --- | ---: | ---: | ---: | ---: |
+| Keyword title baseline | 72.66% | 58.59% | 59.38% | 80 |
+| Local TF-IDF public retriever | 87.50% | 77.34% | 34.38% | 51 |
+
 ## Historical Evaluation Snapshots
 
 | Milestone time | Milestone | Citation coverage | Failed cases | Citation delta | Failure delta |

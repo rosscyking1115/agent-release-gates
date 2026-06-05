@@ -366,7 +366,21 @@ def _techqa_public_table(report: dict[str, Any]) -> str:
             "| Provider-backed embedding result published | "
             f"{profile.get('provider_backed_embedding_result_published', False)} |"
         ),
+        "",
+        (
+            "| TechQA retriever | Retrieval@3 | Top-1 citation | "
+            "Impossible abstention | Failed cases |"
+        ),
+        "| --- | ---: | ---: | ---: | ---: |",
     ]
+    for system in report.get("retriever_systems", []):
+        metrics = system["metrics"]
+        rows.append(
+            f"| {system['label']} | {_pct(metrics['retrieval_hit_rate_at_3'])} | "
+            f"{_pct(metrics['top1_citation_accuracy'])} | "
+            f"{_pct(metrics['impossible_abstention_rate'])} | "
+            f"{system['failed_case_count']} |"
+        )
     return "\n".join(rows)
 
 

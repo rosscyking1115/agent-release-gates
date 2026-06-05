@@ -15,8 +15,27 @@ TECHQA_RAW_PATH = Path("data/public/techqa_train.json")
 TECHQA_SUMMARY_PATH = Path("reports/techqa_public_rag_summary.json")
 TECHQA_CASES_PATH = Path("reports/techqa_public_rag_cases.jsonl")
 TECHQA_PROFILE_PATH = Path("reports/techqa_public_benchmark_profile.json")
+TECHQA_RETRIEVER_COMPARISON_PATH = Path(
+    "reports/techqa_public_retriever_comparison.json"
+)
+TECHQA_RETRIEVER_CASES_PATH = Path("reports/techqa_public_retriever_cases.jsonl")
 TECHQA_DEFAULT_SAMPLE_LIMIT = 160
 ABSTENTION_SCORE_THRESHOLD = 15.0
+TECHQA_PRIMARY_RETRIEVER_ID = "local_tfidf_public_retriever"
+TECHQA_RETRIEVER_SYSTEMS = [
+    {
+        "system_id": "keyword_title_baseline",
+        "label": "Keyword title baseline",
+        "description": "Simple title-token overlap baseline over public support documents.",
+    },
+    {
+        "system_id": TECHQA_PRIMARY_RETRIEVER_ID,
+        "label": "Local TF-IDF public retriever",
+        "description": (
+            "Local TF-IDF document retrieval with title boosts and exact phrase scoring."
+        ),
+    },
+]
 
 
 @dataclass(frozen=True)
@@ -35,6 +54,8 @@ class TechQARetrievedDocument:
 
 @dataclass(frozen=True)
 class TechQACaseResult:
+    system_id: str
+    system_label: str
     case_id: str
     is_impossible: bool
     expected_citation_ids: list[str]
@@ -75,11 +96,23 @@ def evaluate_techqa_public(project_root: Path) -> dict[str, Any]:
         write_json(project_root / TECHQA_SUMMARY_PATH, report)
         write_json(project_root / TECHQA_PROFILE_PATH, profile)
         write_jsonl(project_root / TECHQA_CASES_PATH, [])
+        write_json(
+            project_root / TECHQA_RETRIEVER_COMPARISON_PATH,
+            _empty_retriever_comparison(status="not_configured"),
+        )
+        write_jsonl(project_root / TECHQA_RETRIEVER_CASES_PATH, [])
         return report
 
     documents = _documents_from_cases(cases)
-    results = [_evaluate_case(case, documents) for case in cases]
+    results_by_system = {
+        system["system_id"]: [
+            _evaluate_case(case, documents, system=system) for case in cases
+        ]
+        for system in TECHQA_RETRIEVER_SYSTEMS
+    }
+    results = results_by_system[TECHQA_PRIMARY_RETRIEVER_ID]
     metrics = _summarize(results)
+    retriever_comparison = _retriever_comparison(results_by_system)
     profile = _benchmark_profile(
         cases=cases,
         results=results,
@@ -98,7 +131,10 @@ def evaluate_techqa_public(project_root: Path) -> dict[str, Any]:
         "impossible_case_count": sum(row.is_impossible for row in results),
         "document_count": len(documents),
         "abstention_score_threshold": ABSTENTION_SCORE_THRESHOLD,
+        "primary_retriever": retriever_comparison["primary_retriever"],
         "metrics": metrics,
+        "retriever_comparison": retriever_comparison["summary"],
+        "retriever_systems": retriever_comparison["systems"],
         "benchmark_profile": profile["summary"],
         "failure_reasons": _failure_reason_counts(results),
         "failure_examples": _failure_examples(results),
@@ -117,6 +153,15 @@ def evaluate_techqa_public(project_root: Path) -> dict[str, Any]:
     write_json(project_root / TECHQA_SUMMARY_PATH, report)
     write_json(project_root / TECHQA_PROFILE_PATH, profile)
     write_jsonl(project_root / TECHQA_CASES_PATH, (asdict(row) for row in results))
+    write_json(project_root / TECHQA_RETRIEVER_COMPARISON_PATH, retriever_comparison)
+    write_jsonl(
+        project_root / TECHQA_RETRIEVER_CASES_PATH,
+        (
+            asdict(row)
+            for system_results in results_by_system.values()
+            for row in system_results
+        ),
+    )
     return report
 
 
@@ -267,8 +312,15 @@ def _documents_from_cases(cases: list[dict[str, Any]]) -> list[TechQADocument]:
 def _evaluate_case(
     case: dict[str, Any],
     documents: list[TechQADocument],
+    *,
+    system: dict[str, str],
 ) -> TechQACaseResult:
-    retrieved = _retrieve(str(case["question"]), documents, top_k=3)
+    retrieved = _retrieve(
+        str(case["question"]),
+        documents,
+        top_k=3,
+        system_id=system["system_id"],
+    )
     retrieved_ids = [document.document_id for document in retrieved]
     expected_ids = [str(context["filename"]) for context in case.get("contexts", [])]
     is_impossible = bool(case.get("is_impossible", False))
@@ -284,6 +336,8 @@ def _evaluate_case(
         top1_match=top1_match,
     )
     return TechQACaseResult(
+        system_id=system["system_id"],
+        system_label=system["label"],
         case_id=str(case["id"]),
         is_impossible=is_impossible,
         expected_citation_ids=expected_ids,
@@ -303,9 +357,12 @@ def _retrieve(
     documents: list[TechQADocument],
     *,
     top_k: int,
+    system_id: str,
 ) -> list[TechQARetrievedDocument]:
     if not documents:
         return []
+    if system_id == "keyword_title_baseline":
+        return _retrieve_keyword_title_baseline(question, documents, top_k=top_k)
 
     doc_features = [_document_features(document) for document in documents]
     idf = _inverse_document_frequency(doc_features)
@@ -329,6 +386,105 @@ def _retrieve(
             )
         )
     return sorted(retrieved, key=lambda row: (-row.score, row.document_id))[:top_k]
+
+
+def _retrieve_keyword_title_baseline(
+    question: str,
+    documents: list[TechQADocument],
+    *,
+    top_k: int,
+) -> list[TechQARetrievedDocument]:
+    query_tokens = set(_token_sequence(question))
+    retrieved: list[TechQARetrievedDocument] = []
+    for document in documents:
+        title_tokens = set(_token_sequence(document.title))
+        filename_tokens = set(_token_sequence(document.document_id))
+        score = (len(query_tokens & title_tokens) * 4.0) + (
+            len(query_tokens & filename_tokens) * 2.0
+        )
+        if score <= 0:
+            continue
+        retrieved.append(
+            TechQARetrievedDocument(
+                document_id=document.document_id,
+                title=document.title,
+                score=round(score, 4),
+            )
+        )
+    return sorted(retrieved, key=lambda row: (-row.score, row.document_id))[:top_k]
+
+
+def _retriever_comparison(
+    results_by_system: dict[str, list[TechQACaseResult]],
+) -> dict[str, Any]:
+    systems = []
+    primary_metrics = _summarize(results_by_system[TECHQA_PRIMARY_RETRIEVER_ID])
+    baseline_metrics = _summarize(results_by_system["keyword_title_baseline"])
+    for system in TECHQA_RETRIEVER_SYSTEMS:
+        results = results_by_system[system["system_id"]]
+        metrics = _summarize(results)
+        systems.append(
+            {
+                "system_id": system["system_id"],
+                "label": system["label"],
+                "description": system["description"],
+                "case_count": len(results),
+                "failed_case_count": sum(1 for row in results if row.failure_reasons),
+                "metrics": metrics,
+            }
+        )
+    return {
+        "report_type": "techqa_public_retriever_comparison",
+        "status": "evaluated",
+        "dataset": "nvidia/TechQA-RAG-Eval",
+        "benchmark_track": "external_public_rag",
+        "primary_retriever": next(
+            system for system in systems if system["system_id"] == TECHQA_PRIMARY_RETRIEVER_ID
+        ),
+        "summary": {
+            "system_count": len(systems),
+            "primary_system_id": TECHQA_PRIMARY_RETRIEVER_ID,
+            "baseline_system_id": "keyword_title_baseline",
+            "retrieval_hit_rate_at_3_lift": round(
+                primary_metrics["retrieval_hit_rate_at_3"]
+                - baseline_metrics["retrieval_hit_rate_at_3"],
+                4,
+            ),
+            "top1_citation_accuracy_lift": round(
+                primary_metrics["top1_citation_accuracy"]
+                - baseline_metrics["top1_citation_accuracy"],
+                4,
+            ),
+            "impossible_abstention_rate_delta": round(
+                primary_metrics["impossible_abstention_rate"]
+                - baseline_metrics["impossible_abstention_rate"],
+                4,
+            ),
+        },
+        "systems": systems,
+        "notes": [
+            (
+                "This comparison is local and deterministic. It does not claim a "
+                "provider-backed embedding result."
+            ),
+            (
+                "The primary public retriever remains a local TF-IDF system so the "
+                "public benchmark is reproducible in CI."
+            ),
+        ],
+    }
+
+
+def _empty_retriever_comparison(*, status: str) -> dict[str, Any]:
+    return {
+        "report_type": "techqa_public_retriever_comparison",
+        "status": status,
+        "dataset": "nvidia/TechQA-RAG-Eval",
+        "benchmark_track": "external_public_rag",
+        "summary": {"system_count": 0},
+        "systems": [],
+        "notes": [],
+    }
 
 
 def _summarize(results: list[TechQACaseResult]) -> dict[str, float]:

@@ -55,7 +55,7 @@ Do not add a feature just because it sounds impressive. A feature should be adde
 The project is useful, but it is still too deterministic in several places:
 
 - Retrieval now includes sparse hybrid, local TF-IDF vector, local feature-hashed embedding-store experiments, current-evidence reranking, and a dry-run-first provider embedding evaluation path. A completed provider-backed result is still not published.
-- A 160-case NVIDIA TechQA-RAG-Eval public benchmark track now validates the retrieval harness on external technical-support questions while preserving the synthetic internal-operations lab as the controlled benchmark.
+- A 160-case NVIDIA TechQA-RAG-Eval public benchmark track now validates the retrieval harness on external technical-support questions, including a keyword-title baseline versus local TF-IDF retriever comparison, while preserving the synthetic internal-operations lab as the controlled benchmark.
 - Error analysis now identifies retrieved-but-not-cited failures, deterministic retriever-version trend snapshots, and dated lab milestone history; the expanded manual challenge set drove reranking fixes for schema mismatch, stale context, KYC artefact phrasing, and ambiguous-handoff abstention.
 - Dataset profiling now exposes manual-versus-generated share, abstention coverage, task/noise/issue/team coverage, red-team coverage, and explicit data-quality gap labels. The profile now clears the previous manual-share gap with 94 hand-authored golden cases, while still flagging that provider-backed embedding comparison is not covered.
 - Release gates now convert the generated artifacts into deterministic pass/warn/fail checks for benchmark coverage, retrieval grounding, safety, approval governance, and observability consistency.

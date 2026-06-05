@@ -100,6 +100,11 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
             reports_dir / "techqa_public_benchmark_profile.json",
             public_dir / "techqa_public_benchmark_profile.json",
         )
+    if (reports_dir / "techqa_public_retriever_comparison.json").exists():
+        shutil.copyfile(
+            reports_dir / "techqa_public_retriever_comparison.json",
+            public_dir / "techqa_public_retriever_comparison.json",
+        )
 
     (public_dir / "index.html").write_text(
         _index_html(
@@ -166,6 +171,10 @@ def _index_html(
         ("Evaluation gates", "evaluation_gates.json"),
         ("TechQA public RAG summary", "techqa_public_rag_summary.json"),
         ("TechQA public benchmark profile", "techqa_public_benchmark_profile.json"),
+        (
+            "TechQA public retriever comparison",
+            "techqa_public_retriever_comparison.json",
+        ),
         ("Safety classifier summary", "safety_classifier_eval_summary.json"),
         ("Safety threshold sweep", "safety_threshold_sweep.json"),
         ("Safety threshold retuning", "safety_threshold_retuning.json"),
