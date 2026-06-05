@@ -157,10 +157,14 @@ def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
     assert "| Global threshold change recommended | False |" in report
     assert "| Benign intent guard | True |" in report
     assert "| Secondary review-floor validation | Value |" in report
+    assert "| Multi-turn cases | 6 |" in report
+    assert "| Multi-turn unsafe capture rate | 100.00% |" in report
     assert "| Unsafe capture rate | 100.00% |" in report
     assert "| Benign new review rate | 13.33% |" in report
     assert "| Reviewer label coverage | 100.00% |" in report
     assert "| Floor reviewer precision |" in report
+    assert "| Rubric label coverage | 100.00% |" in report
+    assert "| Floor rubric precision |" in report
     assert "| Threshold decision memo | Value |" in report
     assert "## Agent Trace Examples" in report
     assert "trace_eval_tck-" in report

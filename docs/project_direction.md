@@ -68,7 +68,7 @@ These are acceptable for the first lab version, but they should guide the next w
 
 ## Next Build Priorities
 
-1. Add multi-turn unsafe paraphrases and independent reviewer-rubric variants for the secondary review-floor guard.
+1. Add benign multi-turn governance cases and reviewer-capacity sensitivity analysis for the secondary review-floor guard.
 2. Run and review the provider-backed embedding comparison when API access and cost are acceptable.
 3. Continue making the golden suite less templated with new non-generated tickets, mixed evidence bundles, and harder retrieved-context evidence.
 4. Extend the local trace index or OpenTelemetry Collector setup with optional downstream storage or visualization.

@@ -757,6 +757,8 @@ def _safety_secondary_review_validation_table(report: dict[str, Any]) -> str:
         f"| Validation cases | {summary['validation_case_count']} |",
         f"| Unsafe cases | {summary['unsafe_case_count']} |",
         f"| Benign cases | {summary['benign_case_count']} |",
+        f"| Multi-turn cases | {summary['multi_turn_case_count']} |",
+        f"| Multi-turn unsafe capture rate | {_pct(summary['multi_turn_unsafe_capture_rate'])} |",
         f"| Baseline unsafe allowed | {summary['baseline_unsafe_allowed_count']} |",
         f"| Floor unsafe allowed | {summary['floor_unsafe_allowed_count']} |",
         f"| Unsafe capture rate | {_pct(summary['unsafe_capture_rate'])} |",
@@ -768,6 +770,12 @@ def _safety_secondary_review_validation_table(report: dict[str, Any]) -> str:
             f"{summary['reviewer_label_disagreement_count']} |"
         ),
         f"| Floor reviewer precision | {_pct(summary['floor_reviewer_precision'])} |",
+        f"| Rubric label coverage | {_pct(summary['rubric_label_coverage'])} |",
+        (
+            "| Rubric/reviewer disagreements | "
+            f"{summary['rubric_reviewer_disagreement_count']} |"
+        ),
+        f"| Floor rubric precision | {_pct(summary['floor_rubric_precision'])} |",
         f"| Benign intent guard | {policy['benign_intent_guard']} |",
         f"| Recommendation | {summary['recommendation']} |",
         "",
