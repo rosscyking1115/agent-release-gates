@@ -49,6 +49,7 @@ from internal_ai_agent.dashboard.data import (
     load_safety_threshold_retuning,
     load_safety_threshold_sweep,
     load_security_summary,
+    load_techqa_public_summary,
     metric_rows,
     observability_component_rows,
     red_team_coverage_rows,
@@ -63,6 +64,7 @@ from internal_ai_agent.dashboard.data import (
     safety_threshold_rows,
     security_metric_rows,
     security_risk_breakdown_rows,
+    techqa_public_metric_rows,
     trace_index_component_rows,
     trace_index_error_rows,
     trace_index_query_rows,
@@ -83,6 +85,7 @@ def main() -> None:
     dataset_profile = load_dataset_profile(PROJECT_ROOT)
     retriever_comparison = load_retriever_comparison(PROJECT_ROOT)
     retriever_snapshots = load_retriever_snapshots(PROJECT_ROOT)
+    techqa_public = load_techqa_public_summary(PROJECT_ROOT)
     evaluation_history = load_evaluation_history(PROJECT_ROOT)
     evaluation_gates = load_evaluation_gates(PROJECT_ROOT)
     extraction_summary = load_extraction_summary(PROJECT_ROOT)
@@ -131,6 +134,7 @@ def main() -> None:
         _render_dataset_profile(dataset_profile)
     elif section == "Retrieval Evaluation":
         _render_retriever_experiment(retriever_comparison)
+        _render_techqa_public_benchmark(techqa_public)
         _render_retriever_snapshots(retriever_snapshots)
         _render_evaluation_history(evaluation_history)
         _render_evaluation_gates(evaluation_gates)
@@ -193,7 +197,8 @@ def _render_app_header() -> None:
         use_container_width=True,
     )
     st.info(
-        "All runbooks, tickets, teams, procedures, and metrics are synthetic. "
+        "Internal runbooks, tickets, teams, procedures, and internal benchmark metrics are "
+        "synthetic. The TechQA section is a separate public technical-support benchmark. "
         "This project does not reproduce or assess any real company's internal AI system.",
     )
 
@@ -223,7 +228,7 @@ def _render_sidebar() -> str:
         "https://github.com/rosscyking1115/internal-ai-agent-eval-lab",
         use_container_width=True,
     )
-    st.sidebar.caption("Public deployment uses synthetic data only.")
+    st.sidebar.caption("Synthetic internal benchmark plus public TechQA external benchmark.")
     return section
 
 
@@ -250,7 +255,8 @@ def _render_summary(
 
     st.caption(
         "Synthetic operations eval across exact, paraphrased, and weak-evidence cases. "
-        "All data is generated and contains no real company, customer, or employee information."
+        "Internal benchmark data is generated and contains no real company, customer, "
+        "or employee information."
     )
     gate_cols = st.columns(4)
     gate_cols[0].metric("Expected abstentions", mix["expected_abstentions"])
@@ -363,6 +369,35 @@ def _render_retriever_experiment(comparison: dict[str, object]) -> None:
         "Failures",
     ]
     st.dataframe(table_df, hide_index=True, use_container_width=True)
+
+
+def _render_techqa_public_benchmark(summary: dict[str, object]) -> None:
+    st.subheader("External Public RAG Benchmark")
+    if summary.get("status") != "evaluated":
+        st.info("TechQA public benchmark is not configured in this runtime.")
+        return
+
+    metrics = summary["metrics"]  # type: ignore[index]
+    cols = st.columns(4)
+    cols[0].metric("TechQA cases", summary["case_count"])
+    cols[1].metric("Answerable cases", summary["answerable_case_count"])  # type: ignore[index]
+    cols[2].metric(
+        "Retrieval@3",
+        _format_pct(float(metrics["retrieval_hit_rate_at_3"])),  # type: ignore[index]
+    )
+    cols[3].metric(
+        "Impossible abstention",
+        _format_pct(float(metrics["impossible_abstention_rate"])),  # type: ignore[index]
+    )
+    st.caption(
+        "External validation over NVIDIA TechQA-RAG-Eval technical-support questions. "
+        "This complements, but does not replace, the controlled synthetic internal benchmark."
+    )
+    table_df = pd.DataFrame(techqa_public_metric_rows(summary))
+    if not table_df.empty:
+        display_df = table_df[["label", "value_pct"]]
+        display_df.columns = ["Metric", "Value"]
+        st.dataframe(display_df, hide_index=True, use_container_width=True)
 
 
 def _render_retriever_snapshots(snapshot_report: dict[str, object]) -> None:

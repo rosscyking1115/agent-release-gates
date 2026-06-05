@@ -76,6 +76,20 @@ def load_retriever_snapshots(project_root: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def load_techqa_public_summary(project_root: Path) -> dict[str, Any]:
+    path = project_root / "reports/techqa_public_rag_summary.json"
+    if path.exists():
+        return json.loads(path.read_text(encoding="utf-8"))
+    return {
+        "dataset": "nvidia/TechQA-RAG-Eval",
+        "benchmark_track": "external_public_rag",
+        "status": "not_configured",
+        "case_count": 0,
+        "metrics": {},
+        "notes": [],
+    }
+
+
 def load_evaluation_history(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/evaluation_history.json"
     return json.loads(path.read_text(encoding="utf-8"))
@@ -260,6 +274,28 @@ def retriever_snapshot_rows(snapshot_report: dict[str, Any]) -> list[dict[str, A
             }
         )
     return rows
+
+
+def techqa_public_metric_rows(summary: dict[str, Any]) -> list[dict[str, Any]]:
+    labels = {
+        "retrieval_hit_rate_at_3": "Retrieval hit rate@3",
+        "top1_citation_accuracy": "Top-1 citation accuracy",
+        "mean_reciprocal_rank_at_3": "Mean reciprocal rank@3",
+        "abstention_accuracy": "Abstention accuracy",
+        "impossible_abstention_rate": "Impossible-question abstention",
+        "answerable_false_abstention_rate": "Answerable false abstention",
+    }
+    metrics = summary.get("metrics", {})
+    return [
+        {
+            "metric": metric,
+            "label": label,
+            "value": metrics.get(metric, 0.0),
+            "value_pct": _as_percent(float(metrics.get(metric, 0.0))),
+        }
+        for metric, label in labels.items()
+        if metric in metrics
+    ]
 
 
 def evaluation_history_rows(history: dict[str, Any]) -> list[dict[str, Any]]:

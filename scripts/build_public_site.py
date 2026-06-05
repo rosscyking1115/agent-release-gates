@@ -22,6 +22,7 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
     collector = _read_json(reports_dir / "collector_export_preview.json")
     trace_index = _read_json(reports_dir / "observability_trace_index.json")
     gates = _read_json(reports_dir / "evaluation_gates.json")
+    techqa_public = _read_optional_json(reports_dir / "techqa_public_rag_summary.json")
     safety_classifier = _read_json(reports_dir / "safety_classifier_eval_summary.json")
     safety_retuning = _read_json(reports_dir / "safety_threshold_retuning.json")
     safety_review = _read_json(reports_dir / "safety_human_review_simulation.json")
@@ -79,6 +80,11 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
         reports_dir / "observability_trace_index.json",
         public_dir / "observability_trace_index.json",
     )
+    if (reports_dir / "techqa_public_rag_summary.json").exists():
+        shutil.copyfile(
+            reports_dir / "techqa_public_rag_summary.json",
+            public_dir / "techqa_public_rag_summary.json",
+        )
 
     (public_dir / "index.html").write_text(
         _index_html(
@@ -88,6 +94,7 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
             collector=collector,
             trace_index=trace_index,
             gates=gates,
+            techqa_public=techqa_public,
             safety_classifier=safety_classifier,
             safety_retuning=safety_retuning,
             safety_review=safety_review,
@@ -108,6 +115,7 @@ def _index_html(
     collector: dict[str, Any],
     trace_index: dict[str, Any],
     gates: dict[str, Any],
+    techqa_public: dict[str, Any],
     safety_classifier: dict[str, Any],
     safety_retuning: dict[str, Any],
     safety_review: dict[str, Any],
@@ -133,6 +141,7 @@ def _index_html(
     artifact_links = [
         ("Dataset profile", "dataset_profile.json"),
         ("Evaluation gates", "evaluation_gates.json"),
+        ("TechQA public RAG summary", "techqa_public_rag_summary.json"),
         ("Safety classifier summary", "safety_classifier_eval_summary.json"),
         ("Safety threshold sweep", "safety_threshold_sweep.json"),
         ("Safety threshold retuning", "safety_threshold_retuning.json"),
@@ -306,7 +315,8 @@ def _index_html(
       <p>
         This project does not reproduce, evaluate, or criticize any real
         company's internal AI system. All data, teams, tickets, runbooks,
-        metrics, and workflows are synthetic.
+        internal benchmark metrics, and workflows are synthetic. The TechQA
+        result is a separate public technical-support benchmark.
       </p>
       <div class="actions">
         <a class="button primary" href="{streamlit_url}">Open Interactive Dashboard</a>
@@ -348,6 +358,7 @@ def _index_html(
         {_metric("Indexed traces", trace_index["trace_count"])}
         {_metric("Release gate status", gates["overall_status"])}
         {_metric("Release gate failures", gates["fail_count"])}
+        {_metric("TechQA public RAG@3", _techqa_metric(techqa_public, "retrieval_hit_rate_at_3"))}
       </div>
     </section>
 
@@ -412,6 +423,18 @@ def _pct(value: float) -> str:
 
 def _read_json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _read_optional_json(path: Path) -> dict[str, Any]:
+    if path.exists():
+        return _read_json(path)
+    return {"status": "not_configured", "metrics": {}}
+
+
+def _techqa_metric(report: dict[str, Any], metric: str) -> str:
+    if report.get("status") != "evaluated":
+        return "Not configured"
+    return _pct(float(report.get("metrics", {}).get(metric, 0.0)))
 
 
 if __name__ == "__main__":

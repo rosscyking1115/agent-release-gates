@@ -2,7 +2,7 @@
 
 ## Executive Summary
 
-This report summarizes a fully synthetic evaluation lab for internal AI agent workflows. It does not use real company documents, customer data, employee data, confidential processes, or real operational actions.
+This report summarizes a synthetic internal-operations evaluation lab for internal AI agent workflows, with a separate public TechQA retrieval benchmark. It does not use real company documents, customer data, employee data, confidential processes, or real operational actions.
 
 - Golden retrieval cases: 350
 - Synthetic ticket extraction and agent cases: 180
@@ -87,6 +87,23 @@ The retrieval experiment compares a deliberately weak baseline, a lexical retrie
 | 003_hybrid_sparse_semantic | Hybrid sparse semantic | 99.65% | 1 | +1.07% | -3 | False |  |
 | 004_local_tf_idf_vector | Local TF-IDF vector | 100.00% | 0 | +0.35% | -1 | False |  |
 | 005_local_embedding_store | Local embedding store | 100.00% | 0 | +0.00% | +0 | False |  |
+
+## External Public RAG Benchmark
+
+| TechQA public RAG metric | Value |
+| --- | ---: |
+| Dataset | nvidia/TechQA-RAG-Eval |
+| License | Apache-2.0 |
+| Cases | 80 |
+| Answerable cases | 64 |
+| Impossible cases | 16 |
+| Indexed public documents | 59 |
+| Retrieval hit rate@3 | 90.62% |
+| Top-1 citation accuracy | 78.12% |
+| Mean reciprocal rank@3 | 83.85% |
+| Abstention accuracy | 82.50% |
+| Impossible-question abstention | 43.75% |
+| Answerable false abstention | 7.81% |
 
 ## Historical Evaluation Snapshots
 
@@ -412,6 +429,7 @@ The combined export includes workflow-level spans, agent tool/audit spans, case-
 ## What This Proves
 
 - The project can generate synthetic enterprise operations data safely.
+- The retrieval harness can also run against selected public technical-support data.
 - Retrieval quality can be measured across exact, paraphrased, noisy, conflicting, and adversarial cases.
 - Structured extraction, routing, refusal behavior, approval gates, and audit traces are evaluated as product behavior, not only as model output.
 - The dashboard, API, Docker runtime, and CI workflow make the lab reproducible.
@@ -422,11 +440,13 @@ The combined export includes workflow-level spans, agent tool/audit spans, case-
 - Extraction is deterministic rather than LLM-backed.
 - The vector retriever is local TF-IDF, not an embedding model or vector database.
 - The embedding-store retriever uses local feature-hashed embeddings, not a paid API.
+- The TechQA public track is a compact external sample, not the full dataset.
 - Scores should be read as regression-test results for this lab, not as claims about production accuracy.
 
 ## Recommended Next Work
 
 - Add noisier, human-written ticket variants.
 - Run and review the optional provider-backed embedding comparison.
+- Expand the TechQA public benchmark sample and compare against provider embeddings.
 - Extend the collector deployment with optional downstream storage or visualization.
 - Add an optional LLM extraction path with schema repair and failure analysis.

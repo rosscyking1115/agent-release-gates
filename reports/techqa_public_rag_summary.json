@@ -1,0 +1,207 @@
+{
+  "abstention_score_threshold": 15.0,
+  "answerable_case_count": 64,
+  "benchmark_track": "external_public_rag",
+  "case_count": 80,
+  "dataset": "nvidia/TechQA-RAG-Eval",
+  "document_count": 59,
+  "failure_examples": [
+    {
+      "case_id": "TRAIN_Q016",
+      "expected_citation_ids": [
+        "swg21469413.txt"
+      ],
+      "expected_rank": 2,
+      "failure_reasons": [
+        "false_abstention_answerable_question",
+        "expected_document_retrieved_but_not_top1"
+      ],
+      "is_impossible": false,
+      "retrieved_citation_ids": [
+        "swg22009818.txt",
+        "swg21469413.txt",
+        "swg21636533.txt"
+      ],
+      "top_score": 7.7193
+    },
+    {
+      "case_id": "TRAIN_Q020",
+      "expected_citation_ids": [
+        "swg24035040.txt"
+      ],
+      "expected_rank": 2,
+      "failure_reasons": [
+        "expected_document_retrieved_but_not_top1"
+      ],
+      "is_impossible": false,
+      "retrieved_citation_ids": [
+        "swg21263677.txt",
+        "swg24035040.txt",
+        "swg21998655.txt"
+      ],
+      "top_score": 69.2089
+    },
+    {
+      "case_id": "TRAIN_Q024",
+      "expected_citation_ids": [
+        "swg21592093.txt"
+      ],
+      "expected_rank": 3,
+      "failure_reasons": [
+        "expected_document_retrieved_but_not_top1"
+      ],
+      "is_impossible": false,
+      "retrieved_citation_ids": [
+        "swg21966637.txt",
+        "swg22001418.txt",
+        "swg21592093.txt"
+      ],
+      "top_score": 43.6749
+    },
+    {
+      "case_id": "TRAIN_Q029",
+      "expected_citation_ids": [
+        "swg21964202.txt"
+      ],
+      "expected_rank": null,
+      "failure_reasons": [
+        "expected_document_not_retrieved_at_3"
+      ],
+      "is_impossible": false,
+      "retrieved_citation_ids": [
+        "swg21515420.txt",
+        "swg21636093.txt",
+        "swg21469413.txt"
+      ],
+      "top_score": 45.1068
+    },
+    {
+      "case_id": "TRAIN_Q033",
+      "expected_citation_ids": [
+        "swg21591076.txt"
+      ],
+      "expected_rank": null,
+      "failure_reasons": [
+        "false_abstention_answerable_question",
+        "expected_document_not_retrieved_at_3"
+      ],
+      "is_impossible": false,
+      "retrieved_citation_ids": [
+        "swg24039229.txt",
+        "swg1PI37248.txt",
+        "swg21611699.txt"
+      ],
+      "top_score": 7.0147
+    },
+    {
+      "case_id": "TRAIN_Q038",
+      "expected_citation_ids": [
+        "swg21341204.txt"
+      ],
+      "expected_rank": null,
+      "failure_reasons": [
+        "false_abstention_answerable_question",
+        "expected_document_not_retrieved_at_3"
+      ],
+      "is_impossible": false,
+      "retrieved_citation_ids": [
+        "swg21966637.txt",
+        "swg21998655.txt",
+        "swg21592093.txt"
+      ],
+      "top_score": 6.6404
+    },
+    {
+      "case_id": "TRAIN_Q039",
+      "expected_citation_ids": [
+        "swg21660890.txt"
+      ],
+      "expected_rank": null,
+      "failure_reasons": [
+        "expected_document_not_retrieved_at_3"
+      ],
+      "is_impossible": false,
+      "retrieved_citation_ids": [
+        "swg21636093.txt",
+        "swg21515420.txt",
+        "swg22012345.txt"
+      ],
+      "top_score": 33.309
+    },
+    {
+      "case_id": "TRAIN_Q043",
+      "expected_citation_ids": [
+        "swg21657023.txt"
+      ],
+      "expected_rank": 2,
+      "failure_reasons": [
+        "expected_document_retrieved_but_not_top1"
+      ],
+      "is_impossible": false,
+      "retrieved_citation_ids": [
+        "swg21377984.txt",
+        "swg21657023.txt",
+        "swg24043263.txt"
+      ],
+      "top_score": 43.1495
+    },
+    {
+      "case_id": "TRAIN_Q044",
+      "expected_citation_ids": [
+        "swg21592093.txt"
+      ],
+      "expected_rank": 2,
+      "failure_reasons": [
+        "expected_document_retrieved_but_not_top1"
+      ],
+      "is_impossible": false,
+      "retrieved_citation_ids": [
+        "swg21966637.txt",
+        "swg21592093.txt",
+        "swg22001418.txt"
+      ],
+      "top_score": 36.453
+    },
+    {
+      "case_id": "TRAIN_Q045",
+      "expected_citation_ids": [
+        "swg21598974.txt"
+      ],
+      "expected_rank": 2,
+      "failure_reasons": [
+        "expected_document_retrieved_but_not_top1"
+      ],
+      "is_impossible": false,
+      "retrieved_citation_ids": [
+        "swg21502037.txt",
+        "swg21598974.txt",
+        "swg21576245.txt"
+      ],
+      "top_score": 23.5638
+    }
+  ],
+  "failure_reasons": {
+    "expected_document_not_retrieved_at_3": 6,
+    "expected_document_retrieved_but_not_top1": 8,
+    "failed_to_abstain_impossible_question": 9,
+    "false_abstention_answerable_question": 5
+  },
+  "impossible_case_count": 16,
+  "license": "Apache-2.0",
+  "metrics": {
+    "abstention_accuracy": 0.825,
+    "answerable_false_abstention_rate": 0.0781,
+    "impossible_abstention_rate": 0.4375,
+    "mean_reciprocal_rank_at_3": 0.8385,
+    "retrieval_hit_rate_at_3": 0.9062,
+    "top1_citation_accuracy": 0.7812
+  },
+  "notes": [
+    "This is an external public-data benchmark track. It does not replace the controlled synthetic internal-operations benchmark.",
+    "The evaluator measures retrieval/citation and impossible-question abstention over public technical-support questions.",
+    "The report is deterministic and uses no paid API calls."
+  ],
+  "sample_path": "data/public/techqa_rag_eval_sample.jsonl",
+  "source_url": "https://huggingface.co/datasets/nvidia/TechQA-RAG-Eval",
+  "status": "evaluated"
+}

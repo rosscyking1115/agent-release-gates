@@ -132,6 +132,8 @@ def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
     assert "## Retriever Metric Snapshots" in report
     assert "004_local_tf_idf_vector" in report
     assert "citation_coverage_decreased" not in report
+    assert "## External Public RAG Benchmark" in report
+    assert "TechQA public benchmark is not configured." in report
     assert "## Historical Evaluation Snapshots" in report
     assert "| 2026-06-02T11:00:00Z | Hybrid sparse semantic | 99.65% | 1 | +1.07% | -3 |" in report
     assert "## Retriever Failure Analysis" in report
@@ -185,7 +187,7 @@ def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
     assert "case-level extraction spans" in report
     assert "case-level agent approval spans" in report
     assert "API contract and error-case spans" in report
-    assert "fully synthetic evaluation lab" in report
+    assert "synthetic internal-operations evaluation lab" in report
 
 
 def test_write_public_report_creates_markdown_artifact(tmp_path) -> None:

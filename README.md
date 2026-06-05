@@ -2,7 +2,7 @@
 
 A public synthetic evaluation lab for testing internal AI agent reliability across grounded retrieval, structured extraction, safe refusal, approval-gated tools, auditability, and observability.
 
-This project is not a clone or critique of any real company's internal AI system. It uses fully synthetic runbooks, tickets, teams, procedures, and metrics so the work can be inspected and extended safely.
+This project is not a clone or critique of any real company's internal AI system. Its internal-operations environment uses fully synthetic runbooks, tickets, teams, procedures, and benchmark metrics so the work can be inspected and extended safely.
 
 ## Live Project
 
@@ -16,6 +16,7 @@ This project is not a clone or critique of any real company's internal AI system
 Internal AI agents are only useful when their answers are grounded, measurable, access-aware, safe, and auditable. This lab treats the agent as an operational system rather than a generic chatbot:
 
 - retrieves synthetic runbook evidence and answers with citations
+- validates the retrieval harness on a compact public TechQA-RAG-Eval sample
 - extracts structured fields from synthetic operations tickets
 - routes tickets to synthetic owner teams
 - refuses unsafe, weak-evidence, or policy-bypassing requests
@@ -30,6 +31,7 @@ Internal AI agents are only useful when their answers are grounded, measurable, 
 | Area | Implementation |
 | --- | --- |
 | Retrieval evaluation | Baseline, lexical, hybrid sparse semantic, local TF-IDF vector, and local hashed embedding-store retrievers |
+| External benchmark | Compact NVIDIA TechQA-RAG-Eval public technical-support RAG sample |
 | Structured extraction | Pydantic-validated ticket extraction and routing decisions |
 | Safety testing | Red-team cases plus classifier threshold tuning, sampled prevalence estimation, human review simulation, synthetic adjudication notes, reviewer-disagreement slices, secondary review-band analysis, secondary-floor validation, mitigation impact, and decision memo |
 | Agent governance | Read-only tools plus approval-gated mock side effects |
@@ -83,6 +85,14 @@ Additional evaluation results:
 
 These scores are engineering checks over synthetic data, not claims about real-world production performance.
 
+External public RAG benchmark:
+
+| Dataset | Cases | Retrieval hit rate@3 | Top-1 citation | Impossible-question abstention |
+| --- | ---: | ---: | ---: | ---: |
+| NVIDIA TechQA-RAG-Eval sample | 80 | 90.62% | 78.12% | 43.75% |
+
+The TechQA track is public technical-support data under Apache-2.0. It is used as an external validation layer for retrieval and abstention behavior, not as a replacement for the controlled synthetic internal-operations benchmark.
+
 ## Benchmark Transparency
 
 The project includes a dataset profile because high scores on synthetic cases are only meaningful when the benchmark mix is visible.
@@ -93,7 +103,8 @@ Current dataset-profile highlights:
 - 68 expected abstention cases
 - 42 noise types and 18 task types
 - manual share increased to 26.86%, clearing the previous manual-share gap label
-- all public benchmark data is synthetic and reproducible
+- the internal-operations benchmark data is synthetic and reproducible
+- the public TechQA track is separated so external validation does not blur the synthetic-lab boundary
 
 The most important next retrieval step is comparing the local embedding-store retriever with a provider-backed embedding option. The repo now includes a dry-run-first provider embedding evaluation script for that comparison, but provider-backed results are not claimed until the script is run with credentials.
 
@@ -132,6 +143,13 @@ Install dependencies and regenerate deterministic reports:
 ```powershell
 uv sync
 uv run python scripts/run_all_evals.py
+```
+
+The repo includes a compact TechQA sample for the public benchmark. To refresh it from the upstream public dataset, download `train.json` from `nvidia/TechQA-RAG-Eval` into `data/public/techqa_train.json`, then run:
+
+```powershell
+uv run python scripts/prepare_techqa_public_benchmark.py
+uv run python scripts/run_techqa_public_eval.py
 ```
 
 Run the interactive dashboard:
@@ -175,6 +193,7 @@ The public project page keeps the main experience focused on the dashboard and e
 
 - Dataset profile: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/dataset_profile.json
 - Evaluation gates: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/evaluation_gates.json
+- TechQA public RAG summary: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/techqa_public_rag_summary.json
 - Safety classifier summary: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_classifier_eval_summary.json
 - Safety threshold sweep: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_threshold_sweep.json
 - Safety threshold retuning: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_threshold_retuning.json
@@ -216,6 +235,7 @@ The root `streamlit_app.py` entrypoint loads the dashboard from `app/streamlit_a
 ## Current Limitations
 
 - The benchmark is synthetic and still partly templated.
+- The TechQA public benchmark currently uses a compact sample, not the full upstream dataset.
 - The local embedding store uses deterministic feature hashing, not a provider-backed embedding model.
 - Provider-backed embedding evaluation is available as an optional script, but no provider-backed result is published yet.
 - Structured extraction is deterministic pattern matching, not LLM extraction.
@@ -224,6 +244,7 @@ The root `streamlit_app.py` entrypoint loads the dashboard from `app/streamlit_a
 ## Useful Follow-Up Work
 
 - Add more hand-authored golden cases and noisier synthetic tickets.
+- Expand the TechQA public benchmark sample and compare the same retrievers on the larger dataset.
 - Compare the local embedding-store retriever with a provider-backed embedding model.
 - Extend the OpenTelemetry Collector setup with optional downstream storage or visualization beyond the local trace index.
 - Convert secondary review-floor capacity sensitivity into an operating recommendation with staffing assumptions.

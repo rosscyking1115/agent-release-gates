@@ -2,11 +2,11 @@
 
 ## Decision
 
-Build the project as a useful public synthetic Internal AI Agent Evaluation Lab rather than a clone, mimic, or critique of any real company's internal AI system.
+Build the project as a useful public Internal AI Agent Evaluation Lab rather than a clone or critique of any real company's internal AI system.
 
 ## Context
 
-The goal is to create a reusable local lab for testing internal AI agent behavior without confidential data. Any career story should be a result of the work being useful, measured, and well documented.
+The goal is to create a reusable local lab for testing internal AI agent behavior without confidential data.
 
 The project needs to be more than a chatbot demo. It should help people inspect a measurable internal AI workflow with retrieval, extraction, safety controls, approval gates, auditability, and reproducible evaluation.
 
@@ -15,7 +15,8 @@ The public framing must stay clear:
 - no real company system is reproduced
 - no confidential or employer data is used
 - no claim is made about the quality of any real internal system
-- all workflows, teams, tickets, runbooks, and metrics are synthetic
+- the internal operations benchmark uses synthetic workflows, teams, tickets, runbooks, and metrics
+- external public benchmarks are clearly separated from the synthetic internal benchmark
 
 ## Options Considered
 
@@ -27,7 +28,7 @@ The public framing must stay clear:
 
 ## Chosen Approach
 
-Use a fully synthetic operations domain:
+Use a synthetic operations domain for the internal benchmark:
 
 - synthetic runbooks
 - synthetic operations tickets
@@ -35,6 +36,12 @@ Use a fully synthetic operations domain:
 - red-team cases
 - local deterministic policies
 - mock tools only
+
+Use public technical-support data only as a separate retrieval benchmark:
+
+- compact TechQA-RAG-Eval sample
+- public dataset license attribution
+- no claim that public support cases represent internal operations
 
 The project is positioned as a responsible enterprise AI engineering lab. Its value comes from starting with a weak baseline, measuring failures, and then improving grounding, extraction, safety, approval control, and observability.
 
@@ -56,6 +63,7 @@ The project is positioned as a responsible enterprise AI engineering lab. Its va
 | Synthetic data generator | Data design and privacy-aware development |
 | Baseline vs improved retrieval eval | Measurement discipline |
 | Local vector and embedding-store retrieval experiments | Retrieval experimentation and error analysis |
+| TechQA public RAG benchmark | External validation over public technical-support data |
 | Retriever metric snapshots | Regression tracking across retriever versions |
 | Evaluation release gates | Deterministic quality bars before publishing results |
 | Dataset profile and coverage gaps | Benchmark design honesty |
@@ -77,6 +85,8 @@ The dataset profile now reports 94 manually authored golden cases, 68 expected a
 
 The retriever snapshot report records deterministic deltas between retriever versions, so regressions are visible even when every system is generated from the same local synthetic dataset.
 
+The TechQA public RAG track evaluates 80 compact public technical-support cases with 90.62% retrieval hit rate@3, 78.12% top-1 citation accuracy, 83.85% mean reciprocal rank@3, and 43.75% impossible-question abstention.
+
 The controlled-agent workflow blocks side-effecting mock routes without approval and executes them only when approval is granted. The eval reports 100.00% side-effect block rate, approval audit rate, and valid tool-call rate.
 
 The security red-team suite reports 100.00% improved explicit policy block rate, 100.00% improved safe response rate, 100.00% improved weighted safe response rate, and 0 improved residual risk score across 60 deterministic red-team cases, including harder retrieved-context attacks for priority inversion, approval-gate bypass, citation suppression, unsupported resolution, and access escalation.
@@ -87,16 +97,17 @@ The safety-classifier module separates enriched challenge cases, a targeted seco
 
 | Risk | Mitigation |
 | --- | --- |
-| Project appears to mimic a real employer system | README, model card, and docs clearly state synthetic-only scope |
+| Project appears to imply a real organization system | README, model card, and docs clearly state the synthetic internal benchmark scope |
 | Metrics look too perfect | Manual challenge failures were fixed and kept as regression tests, newer analyst-authored, field-note, mixed review-bundle, and retrieved-context review batches were added, and the report keeps the hybrid field-note miss visible instead of forcing every retriever to 100% |
 | Agent appears to take real actions | Tool names include `mock`, and side effects require approval |
 | Demo depends on paid APIs | Tests and evals are deterministic and local |
 | System seems like only a dashboard | FastAPI endpoints, eval reports, CI, and docs show engineering depth |
-| Project becomes external-signaling-first rather than useful | Product direction doc keeps the build focused on reusable lab value |
+| Public-data results blur the synthetic-lab boundary | TechQA is reported as a separate external benchmark track |
 
 ## Next Decisions
 
 - Whether to compare the local embedding store with a provider-backed embedding model.
+- Whether to expand the TechQA public benchmark beyond the compact sample.
 - Whether to convert secondary review-floor capacity sensitivity into an operating recommendation with explicit staffing assumptions.
 - Whether to add a real LangGraph dependency or keep the local controlled workflow until evaluation cases become more varied.
 - Whether to prioritize noisier data/error analysis or downstream trace-index and collector storage/visualization.

@@ -32,7 +32,7 @@ Expected result:
 Start the evaluation dashboard:
 
 ```powershell
-uv run streamlit run C:\Files\Jobs\project-5-jpm_internal_ai_agent\app\streamlit_app.py --server.port 8510
+uv run streamlit run app/streamlit_app.py --server.port 8510
 ```
 
 Open:
@@ -189,5 +189,6 @@ Before sharing the project publicly, confirm:
 
 - no real company documents are present
 - no customer, employee, or confidential data is present
-- report metrics come from synthetic datasets
-- README framing says this is an original synthetic evaluation lab
+- internal benchmark metrics come from synthetic datasets
+- public-data metrics are clearly labeled as external benchmark results
+- README framing says this is an original evaluation lab, not a real company system

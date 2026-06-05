@@ -63,6 +63,7 @@ def generate_public_report(project_root: Path) -> str:
     comparison = _read_json(reports_dir / "eval_comparison.json")
     retrievers = _read_json(reports_dir / "retriever_comparison.json")
     retriever_snapshots = _read_json(reports_dir / "retriever_metric_snapshots.json")
+    techqa_public = _read_optional_json(reports_dir / "techqa_public_rag_summary.json")
     evaluation_history = _read_json(reports_dir / "evaluation_history.json")
     dataset_profile = load_dataset_profile(project_root)
     evaluation_gates = load_evaluation_gates(project_root)
@@ -93,8 +94,9 @@ def generate_public_report(project_root: Path) -> str:
             "",
             "## Executive Summary",
             "",
-            "This report summarizes a fully synthetic evaluation lab for internal AI agent "
-            "workflows. It does not use real company documents, customer data, employee "
+            "This report summarizes a synthetic internal-operations evaluation lab for "
+            "internal AI agent workflows, with a separate public TechQA retrieval "
+            "benchmark. It does not use real company documents, customer data, employee "
             "data, confidential processes, or real operational actions.",
             "",
             f"- Golden retrieval cases: {comparison['case_count']}",
@@ -134,6 +136,10 @@ def generate_public_report(project_root: Path) -> str:
             "## Retriever Metric Snapshots",
             "",
             _retriever_snapshot_table(retriever_snapshots),
+            "",
+            "## External Public RAG Benchmark",
+            "",
+            _techqa_public_table(techqa_public),
             "",
             "## Historical Evaluation Snapshots",
             "",
@@ -223,6 +229,7 @@ def generate_public_report(project_root: Path) -> str:
             "## What This Proves",
             "",
             "- The project can generate synthetic enterprise operations data safely.",
+            "- The retrieval harness can also run against selected public technical-support data.",
             (
                 "- Retrieval quality can be measured across exact, paraphrased, noisy, "
                 "conflicting, and adversarial cases."
@@ -239,6 +246,7 @@ def generate_public_report(project_root: Path) -> str:
             "- Extraction is deterministic rather than LLM-backed.",
             "- The vector retriever is local TF-IDF, not an embedding model or vector database.",
             "- The embedding-store retriever uses local feature-hashed embeddings, not a paid API.",
+            "- The TechQA public track is a compact external sample, not the full dataset.",
             (
                 "- Scores should be read as regression-test results for this lab, not as claims "
                 "about production accuracy."
@@ -248,6 +256,7 @@ def generate_public_report(project_root: Path) -> str:
             "",
             "- Add noisier, human-written ticket variants.",
             "- Run and review the optional provider-backed embedding comparison.",
+            "- Expand the TechQA public benchmark sample and compare against provider embeddings.",
             "- Extend the collector deployment with optional downstream storage or visualization.",
             "- Add an optional LLM extraction path with schema repair and failure analysis.",
             "",
@@ -279,6 +288,12 @@ def _read_json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def _read_optional_json(path: Path) -> dict[str, Any]:
+    if path.exists():
+        return _read_json(path)
+    return {"status": "not_configured", "metrics": {}, "case_count": 0}
+
+
 def _retriever_table(report: dict[str, Any]) -> str:
     rows = [
         "| System | Hit rate@3 | Citation coverage | Next action accuracy | "
@@ -296,6 +311,35 @@ def _retriever_table(report: dict[str, Any]) -> str:
                 failures=system["failure_count"],
             )
         )
+    return "\n".join(rows)
+
+
+def _techqa_public_table(report: dict[str, Any]) -> str:
+    if report.get("status") != "evaluated":
+        return "TechQA public benchmark is not configured."
+    metrics = report["metrics"]
+    rows = [
+        "| TechQA public RAG metric | Value |",
+        "| --- | ---: |",
+        f"| Dataset | {report['dataset']} |",
+        f"| License | {report['license']} |",
+        f"| Cases | {report['case_count']} |",
+        f"| Answerable cases | {report['answerable_case_count']} |",
+        f"| Impossible cases | {report['impossible_case_count']} |",
+        f"| Indexed public documents | {report['document_count']} |",
+        f"| Retrieval hit rate@3 | {_pct(metrics['retrieval_hit_rate_at_3'])} |",
+        f"| Top-1 citation accuracy | {_pct(metrics['top1_citation_accuracy'])} |",
+        f"| Mean reciprocal rank@3 | {_pct(metrics['mean_reciprocal_rank_at_3'])} |",
+        f"| Abstention accuracy | {_pct(metrics['abstention_accuracy'])} |",
+        (
+            "| Impossible-question abstention | "
+            f"{_pct(metrics['impossible_abstention_rate'])} |"
+        ),
+        (
+            "| Answerable false abstention | "
+            f"{_pct(metrics['answerable_false_abstention_rate'])} |"
+        ),
+    ]
     return "\n".join(rows)
 
 

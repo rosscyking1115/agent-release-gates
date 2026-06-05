@@ -15,6 +15,7 @@ from internal_ai_agent.evals.runner import (
 )
 from internal_ai_agent.evals.safety_classifier import evaluate_safety_classifier
 from internal_ai_agent.evals.security import evaluate_security
+from internal_ai_agent.evals.techqa_public import evaluate_techqa_public
 from internal_ai_agent.io import read_jsonl, write_jsonl
 from internal_ai_agent.observability.collector import write_collector_export_preview
 from internal_ai_agent.observability.otel import (
@@ -34,6 +35,7 @@ def run_all(project_root: Path) -> dict[str, Any]:
     dataset_profile = write_dataset_profile(project_root)
     comparison = evaluate_comparison(project_root)
     retriever_comparison = evaluate_retriever_comparison(project_root)
+    techqa_public = evaluate_techqa_public(project_root)
     extraction = evaluate_extraction(project_root)
     security = evaluate_security(project_root)
     safety_classifier = evaluate_safety_classifier(project_root)
@@ -72,6 +74,7 @@ def run_all(project_root: Path) -> dict[str, Any]:
         "dataset_profile": dataset_profile,
         "comparison": comparison,
         "retriever_comparison": retriever_comparison,
+        "techqa_public": techqa_public,
         "extraction": extraction,
         "security": security,
         "safety_classifier": safety_classifier,
@@ -171,6 +174,16 @@ def main() -> None:
     print(f"- hybrid_citation_coverage: {retriever_systems[-3]['citation_coverage']:.4f}")
     print(f"- vector_citation_coverage: {retriever_systems[-2]['citation_coverage']:.4f}")
     print(f"- embedding_citation_coverage: {retriever_systems[-1]['citation_coverage']:.4f}")
+    if summary["techqa_public"]["status"] == "evaluated":
+        techqa_metrics = summary["techqa_public"]["metrics"]
+        print(
+            "- techqa_public_retrieval_hit_rate_at_3: "
+            f"{techqa_metrics['retrieval_hit_rate_at_3']:.4f}"
+        )
+        print(
+            "- techqa_public_impossible_abstention_rate: "
+            f"{techqa_metrics['impossible_abstention_rate']:.4f}"
+        )
     print(
         f"- extraction_schema_validity: {summary['extraction']['metrics']['schema_validity']:.4f}"
     )
