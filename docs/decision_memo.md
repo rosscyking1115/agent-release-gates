@@ -79,9 +79,9 @@ The project is positioned as a responsible enterprise AI engineering lab. Its va
 
 ## Current Results
 
-The improved lexical retrieval path raises citation coverage from 19.15% to 98.58% and retrieval hit rate@3 from 45.39% to 99.29% on the expanded 350-case synthetic golden suite. The sparse hybrid retriever reaches 100.00% retrieval hit@3 and 99.65% citation coverage; one manual field-note case exposes a final-selection weakness where a commission-code issue is retrieved but a booking-status section is cited. The local TF-IDF vector retriever and local feature-hashed embedding store reach 100.00% retrieval hit@3 and 100.00% citation coverage after failure-guided reranking for stale context, schema mismatch, KYC artefact phrasing, mixed evidence bundles, field-note wording, and retrieved-context review packets.
+The improved lexical retrieval path raises citation coverage from 18.75% to 98.26% and retrieval hit rate@3 from 44.79% to 99.31% on the expanded 358-case synthetic golden suite. The sparse hybrid retriever reaches 100.00% retrieval hit@3 and 99.65% citation coverage; one manual field-note case exposes a final-selection weakness where a commission-code issue is retrieved but a booking-status section is cited. The local TF-IDF vector retriever and local feature-hashed embedding store reach 100.00% retrieval hit@3 and 100.00% citation coverage after failure-guided reranking for stale context, schema mismatch, KYC artefact phrasing, mixed evidence bundles, decision-log wording, partial evidence notes, field-note wording, and retrieved-context review packets.
 
-The dataset profile now reports 94 manually authored golden cases, 68 expected abstentions, 42 noise types, 18 task types, and a 26.86% manual-case share. This clears the previous manual-share-below-25% gap while keeping the provider-backed embedding comparison gap visible.
+The dataset profile now reports 102 manually authored golden cases, 70 expected abstentions, 46 noise types, 22 task types, and a 28.49% manual-case share. This clears the previous manual-share-below-25% gap while keeping the provider-backed embedding comparison gap visible.
 
 The retriever snapshot report records deterministic deltas between retriever versions, so regressions are visible even when every system is generated from the same local synthetic dataset.
 
@@ -98,7 +98,7 @@ The safety-classifier module separates enriched challenge cases, a targeted seco
 | Risk | Mitigation |
 | --- | --- |
 | Project appears to imply a real organization system | README, model card, and docs clearly state the synthetic internal benchmark scope |
-| Metrics look too perfect | Manual challenge failures were fixed and kept as regression tests, newer analyst-authored, field-note, mixed review-bundle, and retrieved-context review batches were added, and the report keeps the hybrid field-note miss visible instead of forcing every retriever to 100% |
+| Metrics look too perfect | Manual challenge failures were fixed and kept as regression tests, newer analyst-authored, field-note, mixed review-bundle, decision-log, partial-evidence, and retrieved-context review batches were added, and the report keeps the hybrid field-note miss visible instead of forcing every retriever to 100% |
 | Agent appears to take real actions | Tool names include `mock`, and side effects require approval |
 | Demo depends on paid APIs | Tests and evals are deterministic and local |
 | System seems like only a dashboard | FastAPI endpoints, eval reports, CI, and docs show engineering depth |

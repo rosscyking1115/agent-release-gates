@@ -3,9 +3,9 @@
   "components": [
     {
       "component": "retrieval",
-      "error_span_count": 298,
+      "error_span_count": 307,
       "root_span_count": 7,
-      "span_count": 870
+      "span_count": 891
     },
     {
       "component": "agent",
@@ -44,7 +44,7 @@
       "span_count": 1
     }
   ],
-  "error_span_count": 302,
+  "error_span_count": 311,
   "error_spans": [
     {
       "case_id": "",
@@ -702,12 +702,12 @@
     {
       "description": "All spans with ERROR status",
       "query": "error_spans",
-      "span_count": 302
+      "span_count": 311
     },
     {
       "description": "Retriever case-failure spans",
       "query": "retriever_failures",
-      "span_count": 298
+      "span_count": 307
     },
     {
       "description": "Expected API validation and route errors",
@@ -722,10 +722,10 @@
     {
       "description": "Retriever ranking-detail spans",
       "query": "ranking_cases",
-      "span_count": 564
+      "span_count": 576
     }
   ],
-  "span_count": 1307,
+  "span_count": 1328,
   "trace_count": 21,
   "traces": [
     {
@@ -733,16 +733,32 @@
       "components": [
         "retrieval"
       ],
-      "duration_ms": 2940.0,
-      "end_time_unix_nano": 1735689802940000000,
-      "error_span_count": 293,
+      "duration_ms": 3020.0,
+      "end_time_unix_nano": 1735689803020000000,
+      "error_span_count": 301,
       "first_error_case_id": "GOLD-TCK-0001",
       "first_error_span": "retriever.case_failure",
       "root_span_name": "retriever.failure_analysis",
-      "span_count": 294,
+      "span_count": 302,
       "start_time_unix_nano": 1735689800000000000,
       "trace_id": "0b0bbfe98df88974fc859f4c74a78124",
       "trace_label": "retriever_failures_baseline_team_hints"
+    },
+    {
+      "component": "retrieval",
+      "components": [
+        "retrieval"
+      ],
+      "duration_ms": 60.0,
+      "end_time_unix_nano": 1735689802060000000,
+      "error_span_count": 5,
+      "first_error_case_id": "PARA-TCK-0028",
+      "first_error_span": "retriever.case_failure",
+      "root_span_name": "retriever.failure_analysis",
+      "span_count": 6,
+      "start_time_unix_nano": 1735689802000000000,
+      "trace_id": "f614a6fade9eb798c4c8d75ed71c99e1",
+      "trace_label": "retriever_failures_improved_lexical"
     },
     {
       "component": "api",
@@ -765,22 +781,6 @@
       "components": [
         "retrieval"
       ],
-      "duration_ms": 50.0,
-      "end_time_unix_nano": 1735689802050000000,
-      "error_span_count": 4,
-      "first_error_case_id": "PARA-TCK-0028",
-      "first_error_span": "retriever.case_failure",
-      "root_span_name": "retriever.failure_analysis",
-      "span_count": 5,
-      "start_time_unix_nano": 1735689802000000000,
-      "trace_id": "f614a6fade9eb798c4c8d75ed71c99e1",
-      "trace_label": "retriever_failures_improved_lexical"
-    },
-    {
-      "component": "retrieval",
-      "components": [
-        "retrieval"
-      ],
       "duration_ms": 20.0,
       "end_time_unix_nano": 1735689801020000000,
       "error_span_count": 1,
@@ -797,13 +797,13 @@
       "components": [
         "retrieval"
       ],
-      "duration_ms": 2830.0,
-      "end_time_unix_nano": 1735690203830000000,
+      "duration_ms": 2890.0,
+      "end_time_unix_nano": 1735690203890000000,
       "error_span_count": 0,
       "first_error_case_id": "",
       "first_error_span": "",
       "root_span_name": "retriever.ranking_analysis",
-      "span_count": 283,
+      "span_count": 289,
       "start_time_unix_nano": 1735690201000000000,
       "trace_id": "aa97bb7b28bfeaf7213ebfe40078876e",
       "trace_label": "retriever_rankings_local_embedding_store"
@@ -813,13 +813,13 @@
       "components": [
         "retrieval"
       ],
-      "duration_ms": 2830.0,
-      "end_time_unix_nano": 1735690202830000000,
+      "duration_ms": 2890.0,
+      "end_time_unix_nano": 1735690202890000000,
       "error_span_count": 0,
       "first_error_case_id": "",
       "first_error_span": "",
       "root_span_name": "retriever.ranking_analysis",
-      "span_count": 283,
+      "span_count": 289,
       "start_time_unix_nano": 1735690200000000000,
       "trace_id": "6650056e64ac3e052d7267aac7d3df9f",
       "trace_label": "retriever_rankings_local_tf_idf_vector"

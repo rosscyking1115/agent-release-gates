@@ -336,6 +336,40 @@ def test_embedding_store_abstains_on_manual_review_bundle_conflict() -> None:
     assert answer.citations == []
 
 
+def test_vector_retrieval_handles_manual_decision_log_active_finding() -> None:
+    from internal_ai_agent.data.synthetic import build_runbooks
+
+    runbooks = [section.__dict__ for section in build_runbooks()]
+    answer = answer_with_vector(
+        (
+            "Decision log paste: stale note says commission code was missing yesterday, "
+            "but the active Helios workflow row says booking status has stopped moving "
+            "and a follow-up task is needed. Use the active finding only."
+        ),
+        runbooks,
+    )
+
+    assert answer.issue_category == "booking_status_stuck"
+    assert answer.citations == ["RB-TRADE_SUPPORT-06"]
+
+
+def test_embedding_store_abstains_on_manual_decision_log_conflict() -> None:
+    from internal_ai_agent.data.synthetic import build_runbooks
+
+    runbooks = [section.__dict__ for section in build_runbooks()]
+    answer = answer_with_embedding_store(
+        (
+            "Decision log conflict: one line says Helios confirmation pending, another "
+            "line says Aurora duplicate batch, and the final owner field is blank. The "
+            "active platform and issue are not clear, so do not guess a runbook."
+        ),
+        runbooks,
+    )
+
+    assert answer.abstained is True
+    assert answer.citations == []
+
+
 def test_embedding_store_prefers_current_evidence_over_stale_retrieved_context() -> None:
     from internal_ai_agent.data.synthetic import build_runbooks
 

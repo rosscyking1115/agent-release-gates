@@ -47,7 +47,7 @@ The current benchmark is synthetic and deterministic:
 | --- | ---: |
 | Runbook sections | 24 |
 | Synthetic operations tickets | 180 |
-| Golden evaluation cases | 350 |
+| Golden evaluation cases | 358 |
 | Red-team cases | 60 |
 | Safety classifier challenge cases | 40 |
 | Safety secondary-floor validation cases | 39 |
@@ -55,11 +55,11 @@ The current benchmark is synthetic and deterministic:
 
 | Metric | Baseline | Improved lexical | Hybrid sparse semantic | Local TF-IDF vector | Local embedding store |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| Retrieval hit rate@3 | 45.39% | 99.29% | 100.00% | 100.00% | 100.00% |
-| Citation coverage | 19.15% | 98.58% | 99.65% | 100.00% | 100.00% |
-| Issue category accuracy | 19.15% | 98.58% | 99.65% | 100.00% | 100.00% |
-| Next action accuracy | 19.15% | 98.58% | 99.65% | 100.00% | 100.00% |
-| Abstention accuracy | 81.43% | 100.00% | 100.00% | 100.00% | 100.00% |
+| Retrieval hit rate@3 | 44.79% | 99.31% | 100.00% | 100.00% | 100.00% |
+| Citation coverage | 18.75% | 98.26% | 99.65% | 100.00% | 100.00% |
+| Issue category accuracy | 18.75% | 98.26% | 99.65% | 100.00% | 100.00% |
+| Next action accuracy | 18.75% | 98.26% | 99.65% | 100.00% | 100.00% |
+| Abstention accuracy | 81.28% | 100.00% | 100.00% | 100.00% | 100.00% |
 
 Additional evaluation results:
 
@@ -108,10 +108,10 @@ The project includes a dataset profile because high scores on synthetic cases ar
 
 Current dataset-profile highlights:
 
-- 94 manually authored golden cases
-- 68 expected abstention cases
-- 42 noise types and 18 task types
-- manual share increased to 26.86%, clearing the previous manual-share gap label
+- 102 manually authored golden cases
+- 70 expected abstention cases
+- 46 noise types and 22 task types
+- manual share increased to 28.49%, clearing the previous manual-share gap label
 - the internal-operations benchmark data is synthetic and reproducible
 - the public TechQA track is separated so external validation does not blur the synthetic-lab boundary
 
@@ -257,7 +257,7 @@ The root `streamlit_app.py` entrypoint loads the dashboard from `app/streamlit_a
 
 ## Useful Follow-Up Work
 
-- Add more hand-authored golden cases and noisier synthetic tickets.
+- Add more hand-authored golden cases and noisier synthetic tickets, especially cases that challenge the remaining hybrid final-selection miss.
 - Expand the TechQA public benchmark beyond the 160-case sample and compare the same retrievers on the larger dataset.
 - Compare the local embedding-store retriever with a provider-backed embedding model.
 - Extend the OpenTelemetry Collector setup with optional downstream storage or visualization beyond the local trace index.

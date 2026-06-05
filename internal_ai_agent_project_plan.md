@@ -55,6 +55,7 @@ sample currently contains 160 cases.
 11. Docker, CI, Streamlit, and GitHub Pages deployment
 12. TechQA public RAG benchmark integration
 13. TechQA keyword baseline versus local TF-IDF retriever comparison
+14. Manual decision-log and partial-evidence golden-case expansion
 
 ## Public Deliverables
 

@@ -13,7 +13,7 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 5 0 R >>
 endobj
 5 0 obj
-<< /Length 2494 >>
+<< /Length 2495 >>
 stream
 BT
 /F1 10 Tf
@@ -41,7 +41,7 @@ T*
 T*
 () Tj
 T*
-(- Golden retrieval cases: 350) Tj
+(- Golden retrieval cases: 358) Tj
 T*
 (- Synthetic ticket extraction and agent cases: 180) Tj
 T*
@@ -65,9 +65,9 @@ T*
 T*
 (Overall status | Release | pass_with_warnings | summary | 12 pass / 1 warn | 0 fail) Tj
 T*
-(Golden case coverage | Benchmark | pass | blocking | 350 | 300) Tj
+(Golden case coverage | Benchmark | pass | blocking | 358 | 300) Tj
 T*
-(Manual golden-case share | Benchmark | pass | blocking | 26.86% | 25.00%) Tj
+(Manual golden-case share | Benchmark | pass | blocking | 28.49% | 25.00%) Tj
 T*
 (Local TF-IDF vector citation coverage | Retrieval | pass | blocking | 100.00% | 99.00%) Tj
 T*
@@ -87,7 +87,7 @@ T*
 T*
 (Indexed trace count | Observability | pass | blocking | 21 | 10) Tj
 T*
-(Collector preview span consistency | Observability | pass | blocking | 1307 | 1307) Tj
+(Collector preview span consistency | Observability | pass | blocking | 1328 | 1328) Tj
 T*
 (Provider-backed embedding result published | Retrieval | warn | non_blocking | not_published |) Tj
 T*
@@ -109,19 +109,19 @@ T*
 T*
 (Synthetic tickets | 180) Tj
 T*
-(Golden cases | 350) Tj
+(Golden cases | 358) Tj
 T*
-(Manual golden cases | 94) Tj
+(Manual golden cases | 102) Tj
 T*
-(Manual share | 26.86%) Tj
+(Manual share | 28.49%) Tj
 T*
-(Expected abstentions | 68) Tj
+(Expected abstentions | 70) Tj
 T*
-(Abstention share | 19.43%) Tj
+(Abstention share | 19.55%) Tj
 T*
-(Noise types | 42) Tj
+(Noise types | 46) Tj
 T*
-(Task types | 18) Tj
+(Task types | 22) Tj
 T*
 ET
 endstream
@@ -196,9 +196,9 @@ T*
 T*
 (System | Hit rate@3 | Citation coverage | Next action accuracy | Abstention accuracy | Failures) Tj
 T*
-(Baseline team hints | 45.39% | 19.15% | 19.15% | 81.43% | 293) Tj
+(Baseline team hints | 44.79% | 18.75% | 18.75% | 81.28% | 301) Tj
 T*
-(Improved lexical | 99.29% | 98.58% | 98.58% | 100.00% | 4) Tj
+(Improved lexical | 99.31% | 98.26% | 98.26% | 100.00% | 5) Tj
 T*
 (Hybrid sparse semantic | 100.00% | 99.65% | 99.65% | 100.00% | 1) Tj
 T*
@@ -232,11 +232,11 @@ T*
 T*
 (Regression | Reason) Tj
 T*
-(001_baseline_team_hints | Baseline team hints | 19.15% | 293 |  |  | False |) Tj
+(001_baseline_team_hints | Baseline team hints | 18.75% | 301 |  |  | False |) Tj
 T*
-(002_improved_lexical | Improved lexical | 98.58% | 4 | +79.43% | -289 | False |) Tj
+(002_improved_lexical | Improved lexical | 98.26% | 5 | +79.51% | -296 | False |) Tj
 T*
-(003_hybrid_sparse_semantic | Hybrid sparse semantic | 99.65% | 1 | +1.07% | -3 | False |) Tj
+(003_hybrid_sparse_semantic | Hybrid sparse semantic | 99.65% | 1 | +1.39% | -4 | False |) Tj
 T*
 (004_local_tf_idf_vector | Local TF-IDF vector | 100.00% | 0 | +0.35% | -1 | False |) Tj
 T*
@@ -321,11 +321,11 @@ T*
 T*
 (Milestone time | Milestone | Citation coverage | Failed cases | Citation delta | Failure delta) Tj
 T*
-(2026-06-02T09:00:00Z | Baseline team hints | 19.15% | 293 |  |) Tj
+(2026-06-02T09:00:00Z | Baseline team hints | 18.75% | 301 |  |) Tj
 T*
-(2026-06-02T10:00:00Z | Improved lexical | 98.58% | 4 | +79.43% | -289) Tj
+(2026-06-02T10:00:00Z | Improved lexical | 98.26% | 5 | +79.51% | -296) Tj
 T*
-(2026-06-02T11:00:00Z | Hybrid sparse semantic | 99.65% | 1 | +1.07% | -3) Tj
+(2026-06-02T11:00:00Z | Hybrid sparse semantic | 99.65% | 1 | +1.39% | -4) Tj
 T*
 (2026-06-02T12:00:00Z | Local TF-IDF vector | 100.00% | 0 | +0.35% | -1) Tj
 T*
@@ -343,9 +343,9 @@ T*
 T*
 (System | Failed cases | Retrieved but not cited | Abstention mismatches | Top failure reason) Tj
 T*
-(Baseline team hints | 293 | 74 | 65 | missing_or_wrong_citation \(228\)) Tj
+(Baseline team hints | 301 | 75 | 67 | missing_or_wrong_citation \(234\)) Tj
 T*
-(Improved lexical | 4 | 2 | 0 | missing_or_wrong_citation \(4\)) Tj
+(Improved lexical | 5 | 3 | 0 | missing_or_wrong_citation \(5\)) Tj
 T*
 (Hybrid sparse semantic | 1 | 1 | 0 | missing_or_wrong_citation \(1\)) Tj
 T*
@@ -426,7 +426,7 @@ T*
 T*
 (wrong_issue_category, wrong_next_action | RB-TRADE_SUPPORT-05 | RB-TRADE_SUPPORT-06 | True |) Tj
 T*
-(RB-TRADE_SUPPORT-06 total=20.5255; RB-TRADE_SUPPORT-04 total=16.5456; RB-TRADE_SUPPORT-05) Tj
+(RB-TRADE_SUPPORT-06 total=20.4313; RB-TRADE_SUPPORT-04 total=16.5456; RB-TRADE_SUPPORT-05) Tj
 T*
 (total=15.8784 | Add within-team reranking using issue-category evidence and expected action) Tj
 T*
@@ -444,15 +444,15 @@ T*
 T*
 (Metric | Baseline | Improved lexical | Delta) Tj
 T*
-(Retrieval hit rate@3 | 45.39% | 99.29% | +53.90%) Tj
+(Retrieval hit rate@3 | 44.79% | 99.31% | +54.52%) Tj
 T*
-(Citation coverage | 19.15% | 98.58% | +79.43%) Tj
+(Citation coverage | 18.75% | 98.26% | +79.51%) Tj
 T*
-(Issue category accuracy | 19.15% | 98.58% | +79.43%) Tj
+(Issue category accuracy | 18.75% | 98.26% | +79.51%) Tj
 T*
-(Next action accuracy | 19.15% | 98.58% | +79.43%) Tj
+(Next action accuracy | 18.75% | 98.26% | +79.51%) Tj
 T*
-(Abstention accuracy | 81.43% | 100.00% | +18.57%) Tj
+(Abstention accuracy | 81.28% | 100.00% | +18.72%) Tj
 T*
 () Tj
 T*
@@ -1082,13 +1082,13 @@ T*
 T*
 (Export metric | Value) Tj
 T*
-(OTel-style spans | 1307) Tj
+(OTel-style spans | 1328) Tj
 T*
 (Exported traces | 21) Tj
 T*
 (Root spans | 21) Tj
 T*
-(Child spans | 1286) Tj
+(Child spans | 1307) Tj
 T*
 (Tool spans | 40) Tj
 T*
@@ -1098,23 +1098,23 @@ T*
 T*
 (Indexed traces | 21) Tj
 T*
-(Indexed spans | 1307) Tj
+(Indexed spans | 1328) Tj
 T*
-(Error spans | 302) Tj
+(Error spans | 311) Tj
 T*
 (Components | 7) Tj
 T*
-(query:error_spans | 302) Tj
+(query:error_spans | 311) Tj
 T*
-(query:retriever_failures | 298) Tj
+(query:retriever_failures | 307) Tj
 T*
 (query:api_error_cases | 4) Tj
 T*
 (query:approval_decisions | 180) Tj
 T*
-(query:ranking_cases | 564) Tj
+(query:ranking_cases | 576) Tj
 T*
-(component:retrieval | 870) Tj
+(component:retrieval | 891) Tj
 T*
 (component:agent | 232) Tj
 T*
@@ -1134,7 +1134,7 @@ T*
 T*
 (Endpoint | http://localhost:4318/v1/traces) Tj
 T*
-(Spans prepared | 1307) Tj
+(Spans prepared | 1328) Tj
 T*
 (OTLP payloads | 7) Tj
 T*
@@ -1246,28 +1246,28 @@ xref
 0000000190 00000 n 
 0000000260 00000 n 
 0000000386 00000 n 
-0000002932 00000 n 
-0000003058 00000 n 
-0000005601 00000 n 
-0000005727 00000 n 
-0000008084 00000 n 
-0000008212 00000 n 
-0000011714 00000 n 
-0000011842 00000 n 
-0000014336 00000 n 
-0000014464 00000 n 
-0000017074 00000 n 
-0000017202 00000 n 
-0000019810 00000 n 
-0000019938 00000 n 
-0000022645 00000 n 
-0000022773 00000 n 
-0000025585 00000 n 
-0000025713 00000 n 
-0000027819 00000 n 
-0000027947 00000 n 
+0000002933 00000 n 
+0000003059 00000 n 
+0000005602 00000 n 
+0000005728 00000 n 
+0000008085 00000 n 
+0000008213 00000 n 
+0000011715 00000 n 
+0000011843 00000 n 
+0000014337 00000 n 
+0000014465 00000 n 
+0000017075 00000 n 
+0000017203 00000 n 
+0000019811 00000 n 
+0000019939 00000 n 
+0000022646 00000 n 
+0000022774 00000 n 
+0000025586 00000 n 
+0000025714 00000 n 
+0000027820 00000 n 
+0000027948 00000 n 
 trailer
 << /Size 26 /Root 1 0 R >>
 startxref
-29179
+29180
 %%EOF

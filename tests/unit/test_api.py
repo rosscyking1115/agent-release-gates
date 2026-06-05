@@ -68,8 +68,8 @@ def test_dataset_profile_endpoint_returns_json() -> None:
     profile = dataset_profile()
 
     assert profile["profile_type"] == "synthetic_dataset_profile"
-    assert profile["dataset_counts"]["golden_cases"] == 350
-    assert profile["golden_case_mix"]["manual_cases"] == 94
+    assert profile["dataset_counts"]["golden_cases"] == 358
+    assert profile["golden_case_mix"]["manual_cases"] == 102
     assert "manual_case_share_below_25_percent" not in profile["risk_labels"]
     assert "provider_backed_embedding_comparison_not_covered" in profile["risk_labels"]
 

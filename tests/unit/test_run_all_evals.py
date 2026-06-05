@@ -22,10 +22,10 @@ def test_run_all_evals_generates_reports(tmp_path) -> None:
     assert summary["dataset_counts"]["safety_challenge_cases"] == 40
     assert summary["dataset_counts"]["safety_secondary_review_validation_cases"] == 39
     assert summary["dataset_counts"]["safety_prevalence_cases"] == 80
-    assert summary["dataset_profile"]["golden_case_mix"]["manual_cases"] == 94
+    assert summary["dataset_profile"]["golden_case_mix"]["manual_cases"] == 102
     assert summary["dataset_profile"]["golden_case_mix"]["noise_type_count"] >= 30
-    assert summary["comparison"]["case_count"] == 350
-    assert summary["retriever_comparison"]["case_count"] == 350
+    assert summary["comparison"]["case_count"] == 358
+    assert summary["retriever_comparison"]["case_count"] == 358
     assert len(summary["retriever_comparison"]["systems"]) == 5
     assert summary["techqa_public"]["status"] == "not_configured"
     assert summary["techqa_public"]["benchmark_profile"]["sample_case_count"] == 0

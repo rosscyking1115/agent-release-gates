@@ -4,7 +4,7 @@
 
 This report summarizes a synthetic internal-operations evaluation lab for internal AI agent workflows, with a separate public TechQA retrieval benchmark. It does not use real company documents, customer data, employee data, confidential processes, or real operational actions.
 
-- Golden retrieval cases: 350
+- Golden retrieval cases: 358
 - Synthetic ticket extraction and agent cases: 180
 - Red-team safety cases: 60
 - Best current retriever: Local TF-IDF vector
@@ -15,8 +15,8 @@ This report summarizes a synthetic internal-operations evaluation lab for intern
 | Gate | Area | Status | Severity | Observed | Threshold |
 | --- | --- | --- | --- | ---: | ---: |
 | Overall status | Release | pass_with_warnings | summary | 12 pass / 1 warn | 0 fail |
-| Golden case coverage | Benchmark | pass | blocking | 350 | 300 |
-| Manual golden-case share | Benchmark | pass | blocking | 26.86% | 25.00% |
+| Golden case coverage | Benchmark | pass | blocking | 358 | 300 |
+| Manual golden-case share | Benchmark | pass | blocking | 28.49% | 25.00% |
 | Local TF-IDF vector citation coverage | Retrieval | pass | blocking | 100.00% | 99.00% |
 | Local embedding-store citation coverage | Retrieval | pass | blocking | 100.00% | 99.00% |
 | Improved abstention accuracy | Retrieval | pass | blocking | 100.00% | 99.00% |
@@ -26,7 +26,7 @@ This report summarizes a synthetic internal-operations evaluation lab for intern
 | Side-effect block rate | Agent governance | pass | blocking | 100.00% | 99.00% |
 | Approval audit coverage | Agent governance | pass | blocking | 100.00% | 99.00% |
 | Indexed trace count | Observability | pass | blocking | 21 | 10 |
-| Collector preview span consistency | Observability | pass | blocking | 1307 | 1307 |
+| Collector preview span consistency | Observability | pass | blocking | 1328 | 1328 |
 | Provider-backed embedding result published | Retrieval | warn | non_blocking | not_published | optional credentialed run |
 
 ## Dataset Profile
@@ -35,13 +35,13 @@ This report summarizes a synthetic internal-operations evaluation lab for intern
 | --- | ---: |
 | Runbook sections | 24 |
 | Synthetic tickets | 180 |
-| Golden cases | 350 |
-| Manual golden cases | 94 |
-| Manual share | 26.86% |
-| Expected abstentions | 68 |
-| Abstention share | 19.43% |
-| Noise types | 42 |
-| Task types | 18 |
+| Golden cases | 358 |
+| Manual golden cases | 102 |
+| Manual share | 28.49% |
+| Expected abstentions | 70 |
+| Abstention share | 19.55% |
+| Noise types | 46 |
+| Task types | 22 |
 | Red-team cases | 60 |
 
 | Coverage sample | Cases |
@@ -70,8 +70,8 @@ This profile is generated from the same JSONL artifacts as the eval runner. It m
 
 | System | Hit rate@3 | Citation coverage | Next action accuracy | Abstention accuracy | Failures |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| Baseline team hints | 45.39% | 19.15% | 19.15% | 81.43% | 293 |
-| Improved lexical | 99.29% | 98.58% | 98.58% | 100.00% | 4 |
+| Baseline team hints | 44.79% | 18.75% | 18.75% | 81.28% | 301 |
+| Improved lexical | 99.31% | 98.26% | 98.26% | 100.00% | 5 |
 | Hybrid sparse semantic | 100.00% | 99.65% | 99.65% | 100.00% | 1 |
 | Local TF-IDF vector | 100.00% | 100.00% | 100.00% | 100.00% | 0 |
 | Local embedding store | 100.00% | 100.00% | 100.00% | 100.00% | 0 |
@@ -82,9 +82,9 @@ The retrieval experiment compares a deliberately weak baseline, a lexical retrie
 
 | Snapshot | System | Citation coverage | Failed cases | Citation delta | Failure delta | Regression | Reason |
 | --- | --- | ---: | ---: | ---: | ---: | --- | --- |
-| 001_baseline_team_hints | Baseline team hints | 19.15% | 293 |  |  | False |  |
-| 002_improved_lexical | Improved lexical | 98.58% | 4 | +79.43% | -289 | False |  |
-| 003_hybrid_sparse_semantic | Hybrid sparse semantic | 99.65% | 1 | +1.07% | -3 | False |  |
+| 001_baseline_team_hints | Baseline team hints | 18.75% | 301 |  |  | False |  |
+| 002_improved_lexical | Improved lexical | 98.26% | 5 | +79.51% | -296 | False |  |
+| 003_hybrid_sparse_semantic | Hybrid sparse semantic | 99.65% | 1 | +1.39% | -4 | False |  |
 | 004_local_tf_idf_vector | Local TF-IDF vector | 100.00% | 0 | +0.35% | -1 | False |  |
 | 005_local_embedding_store | Local embedding store | 100.00% | 0 | +0.00% | +0 | False |  |
 
@@ -119,9 +119,9 @@ The retrieval experiment compares a deliberately weak baseline, a lexical retrie
 
 | Milestone time | Milestone | Citation coverage | Failed cases | Citation delta | Failure delta |
 | --- | --- | ---: | ---: | ---: | ---: |
-| 2026-06-02T09:00:00Z | Baseline team hints | 19.15% | 293 |  |  |
-| 2026-06-02T10:00:00Z | Improved lexical | 98.58% | 4 | +79.43% | -289 |
-| 2026-06-02T11:00:00Z | Hybrid sparse semantic | 99.65% | 1 | +1.07% | -3 |
+| 2026-06-02T09:00:00Z | Baseline team hints | 18.75% | 301 |  |  |
+| 2026-06-02T10:00:00Z | Improved lexical | 98.26% | 5 | +79.51% | -296 |
+| 2026-06-02T11:00:00Z | Hybrid sparse semantic | 99.65% | 1 | +1.39% | -4 |
 | 2026-06-02T12:00:00Z | Local TF-IDF vector | 100.00% | 0 | +0.35% | -1 |
 | 2026-06-02T13:00:00Z | Local embedding store | 100.00% | 0 | +0.00% | +0 |
 
@@ -129,8 +129,8 @@ The retrieval experiment compares a deliberately weak baseline, a lexical retrie
 
 | System | Failed cases | Retrieved but not cited | Abstention mismatches | Top failure reason |
 | --- | ---: | ---: | ---: | --- |
-| Baseline team hints | 293 | 74 | 65 | missing_or_wrong_citation (228) |
-| Improved lexical | 4 | 2 | 0 | missing_or_wrong_citation (4) |
+| Baseline team hints | 301 | 75 | 67 | missing_or_wrong_citation (234) |
+| Improved lexical | 5 | 3 | 0 | missing_or_wrong_citation (5) |
 | Hybrid sparse semantic | 1 | 1 | 0 | missing_or_wrong_citation (1) |
 | Local TF-IDF vector | 0 | 0 | 0 |  |
 | Local embedding store | 0 | 0 | 0 |  |
@@ -143,17 +143,17 @@ The retrieval experiment compares a deliberately weak baseline, a lexical retrie
 | Improved lexical | PARA-TCK-0028 | paraphrase | missing_or_wrong_citation, wrong_issue_category, wrong_next_action | RB-DATA_QUALITY-04 | RB-DATA_QUALITY-01 | False | RB-DATA_QUALITY-01 total=13.0; RB-CLIENT_ONBOARDING-02 total=11.0; RB-CLIENT_ONBOARDING-05 total=11.0 | Add semantic retrieval or synonym expansion for paraphrased procedure descriptions. |
 | Improved lexical | PARA-TCK-0044 | paraphrase | missing_or_wrong_citation, wrong_issue_category, wrong_next_action | RB-DATA_QUALITY-04 | RB-DATA_QUALITY-01 | False | RB-DATA_QUALITY-01 total=13.0; RB-CLIENT_ONBOARDING-02 total=11.0; RB-CLIENT_ONBOARDING-05 total=11.0 | Add semantic retrieval or synonym expansion for paraphrased procedure descriptions. |
 | Improved lexical | NOISY-MISSING-007 | missing_metadata | missing_or_wrong_citation, wrong_issue_category, wrong_next_action | RB-CLIENT_ONBOARDING-01 | RB-CLIENT_ONBOARDING-03 | True | RB-CLIENT_ONBOARDING-03 total=12.0; RB-CLIENT_ONBOARDING-01 total=11.0; RB-TRADE_SUPPORT-06 total=8.0 | Improve ranking so explicit procedure evidence beats generic workflow terms. |
-| Hybrid sparse semantic | MANUAL-FIELD-074 | manual_field_note | missing_or_wrong_citation, wrong_issue_category, wrong_next_action | RB-TRADE_SUPPORT-05 | RB-TRADE_SUPPORT-06 | True | RB-TRADE_SUPPORT-06 total=20.5255; RB-TRADE_SUPPORT-04 total=16.5456; RB-TRADE_SUPPORT-05 total=15.8784 | Add within-team reranking using issue-category evidence and expected action terms. |
+| Hybrid sparse semantic | MANUAL-FIELD-074 | manual_field_note | missing_or_wrong_citation, wrong_issue_category, wrong_next_action | RB-TRADE_SUPPORT-05 | RB-TRADE_SUPPORT-06 | True | RB-TRADE_SUPPORT-06 total=20.4313; RB-TRADE_SUPPORT-04 total=16.5456; RB-TRADE_SUPPORT-05 total=15.8784 | Add within-team reranking using issue-category evidence and expected action terms. |
 
 ## Baseline To Improved Delta
 
 | Metric | Baseline | Improved lexical | Delta |
 | --- | ---: | ---: | ---: |
-| Retrieval hit rate@3 | 45.39% | 99.29% | +53.90% |
-| Citation coverage | 19.15% | 98.58% | +79.43% |
-| Issue category accuracy | 19.15% | 98.58% | +79.43% |
-| Next action accuracy | 19.15% | 98.58% | +79.43% |
-| Abstention accuracy | 81.43% | 100.00% | +18.57% |
+| Retrieval hit rate@3 | 44.79% | 99.31% | +54.52% |
+| Citation coverage | 18.75% | 98.26% | +79.51% |
+| Issue category accuracy | 18.75% | 98.26% | +79.51% |
+| Next action accuracy | 18.75% | 98.26% | +79.51% |
+| Abstention accuracy | 81.28% | 100.00% | +18.72% |
 
 ## Structured Extraction
 
@@ -429,24 +429,24 @@ The controlled workflow separates read-only tools from side-effecting actions. T
 
 | Export metric | Value |
 | --- | ---: |
-| OTel-style spans | 1307 |
+| OTel-style spans | 1328 |
 | Exported traces | 21 |
 | Root spans | 21 |
-| Child spans | 1286 |
+| Child spans | 1307 |
 | Tool spans | 40 |
 
 | Local trace index metric | Value |
 | --- | ---: |
 | Indexed traces | 21 |
-| Indexed spans | 1307 |
-| Error spans | 302 |
+| Indexed spans | 1328 |
+| Error spans | 311 |
 | Components | 7 |
-| query:error_spans | 302 |
-| query:retriever_failures | 298 |
+| query:error_spans | 311 |
+| query:retriever_failures | 307 |
 | query:api_error_cases | 4 |
 | query:approval_decisions | 180 |
-| query:ranking_cases | 564 |
-| component:retrieval | 870 |
+| query:ranking_cases | 576 |
+| component:retrieval | 891 |
 | component:agent | 232 |
 | component:extraction | 182 |
 | component:api | 20 |
@@ -457,7 +457,7 @@ The controlled workflow separates read-only tools from side-effecting actions. T
 | --- | ---: |
 | Mode | dry_run_preview |
 | Endpoint | http://localhost:4318/v1/traces |
-| Spans prepared | 1307 |
+| Spans prepared | 1328 |
 | OTLP payloads | 7 |
 | Batch size | 200 |
 

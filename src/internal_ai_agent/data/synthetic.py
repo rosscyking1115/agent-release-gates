@@ -327,6 +327,7 @@ def build_golden_cases(tickets: list[Ticket], limit: int = 96) -> list[dict[str,
         cases.extend(_build_manual_review_bundle_cases())
         cases.extend(_build_manual_field_note_cases())
         cases.extend(_build_manual_retrieved_context_review_cases())
+        cases.extend(_build_manual_decision_log_cases())
     return cases
 
 
@@ -1475,6 +1476,151 @@ def _build_manual_retrieved_context_review_cases() -> list[dict[str, object]]:
             "expected_citation_ids": [],
             "should_abstain": True,
             "noise_type": "manual_retrieved_context_conflict",
+        },
+    ]
+
+
+def _build_manual_decision_log_cases() -> list[dict[str, object]]:
+    return [
+        {
+            "case_id": "MANUAL-DECISION-001",
+            "task_type": "manual_decision_log_next_action",
+            "user_role": "operations_analyst",
+            "input": (
+                "Decision log paste: stale note says commission code was missing yesterday, "
+                "but the active Helios workflow row says booking status has stopped moving "
+                "and a follow-up task is needed. Use the active finding only. Which cited "
+                "procedure applies?"
+            ),
+            "expected_issue_category": "booking_status_stuck",
+            "expected_team": "trade_support",
+            "expected_next_action": "Check booking workflow status and create a follow-up task.",
+            "expected_citation_ids": ["RB-TRADE_SUPPORT-06"],
+            "should_abstain": False,
+            "noise_type": "manual_decision_log",
+        },
+        {
+            "case_id": "MANUAL-DECISION-002",
+            "task_type": "manual_decision_log_next_action",
+            "user_role": "operations_analyst",
+            "input": (
+                "Release decision log: an older control comment mentioned a threshold breach, "
+                "but the current Atlas release row says the incoming data shape no longer "
+                "matches the expected schema version. Publication should be blocked. Which "
+                "runbook section should be cited?"
+            ),
+            "expected_issue_category": "schema_drift",
+            "expected_team": "data_quality",
+            "expected_next_action": "Compare schema versions and block downstream publication.",
+            "expected_citation_ids": ["RB-DATA_QUALITY-02"],
+            "should_abstain": False,
+            "noise_type": "manual_decision_log",
+        },
+        {
+            "case_id": "MANUAL-DECISION-003",
+            "task_type": "manual_decision_log_next_action",
+            "user_role": "operations_analyst",
+            "input": (
+                "Payments queue decision note: a side thread asks about settlement delay, "
+                "but the current Aurora queue summary says repair items are stacked behind "
+                "high-severity rows and need triage. Which cited next action fits the active "
+                "evidence?"
+            ),
+            "expected_issue_category": "repair_queue_backlog",
+            "expected_team": "payments_ops",
+            "expected_next_action": (
+                "Prioritize high-severity repairs and prepare a queue summary."
+            ),
+            "expected_citation_ids": ["RB-PAYMENTS_OPS-06"],
+            "should_abstain": False,
+            "noise_type": "manual_decision_log",
+        },
+        {
+            "case_id": "MANUAL-DECISION-004",
+            "task_type": "manual_decision_log_next_action",
+            "user_role": "operations_analyst",
+            "input": (
+                "Onboarding decision note: KYC files were supplied in the previous update. "
+                "The active Nova item is a screening alert review, and the reviewer needs "
+                "alert evidence collected before any decision. What should be cited?"
+            ),
+            "expected_issue_category": "screening_alert_review",
+            "expected_team": "client_onboarding",
+            "expected_next_action": "Collect alert evidence and send the case to review.",
+            "expected_citation_ids": ["RB-CLIENT_ONBOARDING-05"],
+            "should_abstain": False,
+            "noise_type": "manual_decision_log",
+        },
+        {
+            "case_id": "MANUAL-PARTIAL-005",
+            "task_type": "manual_partial_evidence_next_action",
+            "user_role": "operations_analyst",
+            "input": (
+                "Partial table copied from a stewardship review: Atlas rows share synthetic "
+                "identifiers and appear to be one duplicate record cluster. The table is "
+                "missing a ticket id, but the issue and platform are clear. Which runbook "
+                "action should the analyst use?"
+            ),
+            "expected_issue_category": "duplicate_record_cluster",
+            "expected_team": "data_quality",
+            "expected_next_action": (
+                "Quarantine duplicate records and open a data stewardship review."
+            ),
+            "expected_citation_ids": ["RB-DATA_QUALITY-04"],
+            "should_abstain": False,
+            "noise_type": "manual_partial_evidence",
+        },
+        {
+            "case_id": "MANUAL-PARTIAL-006",
+            "task_type": "manual_partial_evidence_next_action",
+            "user_role": "operations_analyst",
+            "input": (
+                "Partial reconciliation note: Aurora settlement output has reference ids "
+                "that do not match the expected control output. The owner asks for the "
+                "unmatched settlement reference procedure, not a generic settlement delay "
+                "answer."
+            ),
+            "expected_issue_category": "unmatched_settlement_reference",
+            "expected_team": "payments_ops",
+            "expected_next_action": (
+                "Compare reference ids and draft a reconciliation note for review."
+            ),
+            "expected_citation_ids": ["RB-PAYMENTS_OPS-04"],
+            "should_abstain": False,
+            "noise_type": "manual_partial_evidence",
+        },
+        {
+            "case_id": "MANUAL-DECISION-ABSTAIN-007",
+            "task_type": "manual_decision_log_abstention",
+            "user_role": "operations_analyst",
+            "input": (
+                "Decision log conflict: one line says Helios confirmation pending, another "
+                "line says Aurora duplicate batch, and the final owner field is blank. The "
+                "active platform and issue are not clear, so do not guess a runbook."
+            ),
+            "expected_issue_category": "",
+            "expected_team": "operations",
+            "expected_next_action": "",
+            "expected_citation_ids": [],
+            "should_abstain": True,
+            "noise_type": "manual_decision_log_conflict",
+        },
+        {
+            "case_id": "MANUAL-PARTIAL-ABSTAIN-008",
+            "task_type": "manual_partial_evidence_abstention",
+            "user_role": "operations_analyst",
+            "input": (
+                "Partial screenshot note only says red status and urgent review. It does not "
+                "show the active platform; the active platform and issue are not clear. No "
+                "generated control output is attached, and no owner team is confirmed. Ask for "
+                "clarification instead of citing a procedure."
+            ),
+            "expected_issue_category": "",
+            "expected_team": "operations",
+            "expected_next_action": "",
+            "expected_citation_ids": [],
+            "should_abstain": True,
+            "noise_type": "manual_partial_evidence_conflict",
         },
     ]
 
