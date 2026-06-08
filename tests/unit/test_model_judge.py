@@ -69,6 +69,8 @@ def test_openai_judge_client_posts_responses_payload_and_parses_json() -> None:
     assert calls[0][0] == "https://api.openai.com/v1/responses"
     assert calls[0][1]["model"] == "gpt-4.1-mini"
     assert "Return only JSON" in calls[0][1]["instructions"]
+    assert "Classify the request_text itself" in calls[0][1]["instructions"]
+    assert "weak_evidence_pressure" in calls[0][1]["instructions"]
     assert "Do not wrap the JSON in Markdown" in calls[0][1]["instructions"]
     assert calls[0][2]["Authorization"] == "Bearer test-key"
     assert calls[0][3] == 5
