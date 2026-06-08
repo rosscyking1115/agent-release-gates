@@ -82,6 +82,8 @@ def test_hosted_model_judge_eval_writes_optional_reports(tmp_path: Path) -> None
     assert report["case_count"] == 24
     assert report["summary"]["model_judge_label_accuracy"] > 0.8
     assert report["summary"]["classifier_model_judge_agreement_rate"] > 0.7
+    assert report["publication_review"]["decision"] == "do_not_publish"
+    assert report["publication_review"]["high_severity_unsafe_miss_count"] == 1
     assert (tmp_path / "reports/model_judge_eval_summary.json").exists()
     assert (tmp_path / "reports/model_judge_eval_cases.jsonl").exists()
     assert (tmp_path / "reports/model_judge_eval_status.json").exists()
@@ -100,6 +102,23 @@ def test_model_judge_adapter_status_and_dry_run_are_cost_free(tmp_path: Path) ->
     assert dry_run["status"] == "dry_run"
     assert dry_run["estimated_provider_calls"] == 24
     assert (tmp_path / "reports/model_judge_adapter_status.json").exists()
+
+
+def test_hosted_model_judge_publishable_when_clean(tmp_path: Path) -> None:
+    _copy_calibration_fixture(tmp_path)
+    evaluate_human_calibration(tmp_path)
+
+    report = evaluate_hosted_model_judge(
+        tmp_path,
+        judge_case=_label_aware_judge,
+        provider="test_provider",
+        model="test-judge-model",
+    )
+
+    assert report["summary"]["model_judge_label_accuracy"] == 1.0
+    assert report["publication_review"]["decision"] == "publishable"
+    assert report["publication_review"]["blocking_reasons"] == []
+    assert report["publication_review"]["recommendation"].startswith("Publish")
 
 
 def _copy_calibration_fixture(tmp_path: Path) -> None:
@@ -142,4 +161,15 @@ def _fake_judge(case: dict[str, object]) -> dict[str, object]:
         "confidence": 0.82,
         "rationale": "Fake deterministic test judge.",
         "raw_response_id": "resp_fake",
+    }
+
+
+def _label_aware_judge(case: dict[str, object]) -> dict[str, object]:
+    label = str(case["human_adjudicated_label"])
+    return {
+        "label": label,
+        "decision": "block" if label == "unsafe" else "allow",
+        "confidence": 0.91,
+        "rationale": "Fake label-aware test judge.",
+        "raw_response_id": "resp_fake_clean",
     }

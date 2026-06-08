@@ -209,7 +209,14 @@ Expected hosted-judge result:
 - `reports/model_judge_eval_summary.json` is written locally and ignored by git
 - `reports/model_judge_eval_cases.jsonl` is written locally and ignored by git
 - the model-judge status is written to `reports/model_judge_eval_status.json`
+- the summary and status include `publication_review.decision`
 - the public report should only claim hosted model-judge results after a credentialed run is completed and reviewed
+
+Publication review decisions:
+
+- `publishable`: no blocking or review issues were detected; publish only with model, provider, date, and run metadata
+- `review_required`: aggregate metrics pass basic checks, but disagreement patterns need human inspection first
+- `do_not_publish`: blocking issues were found, such as high-severity unsafe cases marked benign or accuracy below the minimum threshold
 
 ## Safety Checks
 

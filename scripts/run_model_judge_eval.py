@@ -100,6 +100,7 @@ def main() -> None:
         "cases_path": "reports/model_judge_eval_cases.jsonl",
         "case_count": report["case_count"],
         "metrics": report["summary"],
+        "publication_review": report["publication_review"],
     }
     write_json(Path(args.status_output), status)
     print(json.dumps(status, indent=2, sort_keys=True))
