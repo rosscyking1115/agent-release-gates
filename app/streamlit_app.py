@@ -43,6 +43,7 @@ from internal_ai_agent.dashboard.data import (
     load_observability_otel_spans,
     load_observability_trace_index,
     load_public_rag_findings,
+    load_public_rag_model_reranker_adapter_status,
     load_public_rag_reranker_eval,
     load_public_rag_reranking_opportunity,
     load_public_report,
@@ -67,6 +68,7 @@ from internal_ai_agent.dashboard.data import (
     metric_rows,
     model_judge_adapter_rows,
     observability_component_rows,
+    public_rag_model_reranker_adapter_rows,
     public_rag_reranker_track_rows,
     public_rag_reranking_track_rows,
     public_rag_track_rows,
@@ -112,6 +114,9 @@ def main() -> None:
     public_rag_findings = load_public_rag_findings(PROJECT_ROOT)
     public_rag_reranking = load_public_rag_reranking_opportunity(PROJECT_ROOT)
     public_rag_reranker = load_public_rag_reranker_eval(PROJECT_ROOT)
+    public_rag_model_reranker = load_public_rag_model_reranker_adapter_status(
+        PROJECT_ROOT
+    )
     evaluation_history = load_evaluation_history(PROJECT_ROOT)
     evaluation_gates = load_evaluation_gates(PROJECT_ROOT)
     extraction_summary = load_extraction_summary(PROJECT_ROOT)
@@ -172,6 +177,7 @@ def main() -> None:
         _render_public_rag_findings(public_rag_findings)
         _render_public_rag_reranking(public_rag_reranking)
         _render_public_rag_reranker(public_rag_reranker)
+        _render_public_rag_model_reranker(public_rag_model_reranker)
         _render_retriever_snapshots(retriever_snapshots)
         _render_evaluation_history(evaluation_history)
         _render_evaluation_gates(evaluation_gates)
@@ -637,6 +643,35 @@ def _render_public_rag_reranker(report: dict[str, object]) -> None:
     finding_df = pd.DataFrame({"Finding": report.get("findings", [])})
     if not finding_df.empty:
         st.dataframe(finding_df, hide_index=True, use_container_width=True)
+
+
+def _render_public_rag_model_reranker(status: dict[str, object]) -> None:
+    st.subheader("Hosted Public RAG Reranker Adapter")
+    if status.get("status") == "not_configured":
+        st.info("Hosted public RAG reranker packet is not configured in this runtime.")
+        return
+
+    cols = st.columns(4)
+    cols[0].metric("Status", str(status.get("status", "")))
+    cols[1].metric("Packet cases", int(status.get("candidate_case_count", 0)))
+    cols[2].metric("Estimated calls", int(status.get("estimated_provider_calls", 0)))
+    cols[3].metric(
+        "Candidate docs",
+        int(status.get("estimated_candidate_documents", 0)),
+    )
+
+    st.dataframe(
+        pd.DataFrame(public_rag_model_reranker_adapter_rows(status)),
+        hide_index=True,
+        use_container_width=True,
+    )
+    notes = status.get("notes", [])
+    if notes:
+        st.dataframe(
+            pd.DataFrame({"Note": notes}),
+            hide_index=True,
+            use_container_width=True,
+        )
 
 
 def _render_retriever_snapshots(snapshot_report: dict[str, object]) -> None:

@@ -219,6 +219,24 @@ The retrieval experiment compares a deliberately weak baseline, a lexical retrie
 | Keep regression count visible because reranking can trade citation gains for new top-1 mistakes. |
 | Treat this heuristic as a baseline, not a final reranking solution. |
 
+## Hosted Public RAG Reranker Adapter
+
+| Hosted reranker adapter field | Value |
+| --- | --- |
+| Status | dry_run_ready |
+| Provider | openai |
+| API mode | responses |
+| Default model | gpt-4.1-mini |
+| Packet cases | 24 |
+| Estimated provider calls | 24 |
+| Candidate documents | 72 |
+| Rerankable/control split | 12 / 12 |
+| Datasets | Wix/WixQA expert-written: 12, nvidia/TechQA-RAG-Eval: 12 |
+| Credential env var | OPENAI_API_KEY |
+| Model env var | OPENAI_RERANKER_MODEL |
+| Packet path | reports/public_rag_model_reranker_packet.jsonl |
+| Publication rule | Publish hosted reranker scores only after reviewing model ID, run date, cost, changed cases, improved cases, and regressions. |
+
 ## Historical Evaluation Snapshots
 
 | Milestone time | Milestone | Citation coverage | Failed cases | Citation delta | Failure delta |

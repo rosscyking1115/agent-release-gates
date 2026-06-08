@@ -158,6 +158,25 @@ def load_public_rag_reranker_eval(project_root: Path) -> dict[str, Any]:
     }
 
 
+def load_public_rag_model_reranker_adapter_status(project_root: Path) -> dict[str, Any]:
+    path = project_root / "reports/public_rag_model_reranker_adapter_status.json"
+    if path.exists():
+        return json.loads(path.read_text(encoding="utf-8"))
+    return {
+        "status": "not_configured",
+        "adapter_type": "hosted_public_rag_reranker",
+        "provider": "",
+        "api_mode": "",
+        "candidate_case_count": 0,
+        "estimated_provider_calls": 0,
+        "estimated_candidate_documents": 0,
+        "selection_counts": {},
+        "dataset_case_counts": {},
+        "planned_outputs": [],
+        "notes": [],
+    }
+
+
 def load_evaluation_history(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/evaluation_history.json"
     return json.loads(path.read_text(encoding="utf-8"))
@@ -503,6 +522,44 @@ def public_rag_reranker_track_rows(report: dict[str, Any]) -> list[dict[str, Any
             }
         )
     return rows
+
+
+def public_rag_model_reranker_adapter_rows(status: dict[str, Any]) -> list[dict[str, Any]]:
+    selection_counts = status.get("selection_counts", {})
+    dataset_counts = status.get("dataset_case_counts", {})
+    return [
+        {"field": "Status", "value": status.get("status", "")},
+        {"field": "Provider", "value": status.get("provider", "")},
+        {"field": "API mode", "value": status.get("api_mode", "")},
+        {"field": "Packet cases", "value": status.get("candidate_case_count", 0)},
+        {
+            "field": "Estimated provider calls",
+            "value": status.get("estimated_provider_calls", 0),
+        },
+        {
+            "field": "Candidate documents",
+            "value": status.get("estimated_candidate_documents", 0),
+        },
+        {
+            "field": "Rerankable/control split",
+            "value": (
+                f"{selection_counts.get('rerankable', 0)} / "
+                f"{selection_counts.get('top1_control', 0)}"
+            ),
+        },
+        {
+            "field": "Datasets",
+            "value": ", ".join(
+                f"{dataset}: {count}" for dataset, count in dataset_counts.items()
+            ),
+        },
+        {
+            "field": "Credential env var",
+            "value": status.get("credential_env_var", ""),
+        },
+        {"field": "Model env var", "value": status.get("model_env_var", "")},
+        {"field": "Packet path", "value": status.get("packet_path", "")},
+    ]
 
 
 def evaluation_history_rows(history: dict[str, Any]) -> list[dict[str, Any]]:

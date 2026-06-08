@@ -199,6 +199,9 @@ It also writes `reports/public_rag_reranking_opportunity.json`, which separates
 rerankable top-3 cases from residual retrieval misses.
 The follow-on `reports/public_rag_reranker_eval.json` measures a conservative
 query-document reranker against that opportunity ceiling.
+`reports/public_rag_model_reranker_adapter_status.json` and the companion JSONL
+packet prepare the same public candidates for a hosted model reranker comparison;
+no hosted reranker result is claimed until a credentialed run is reviewed.
 
 The raw WixQA downloads are ignored by git; only the compact tracked benchmark sample and generated metrics are published.
 
@@ -262,6 +265,8 @@ The public project page keeps the main experience focused on the dashboard and e
 - Cross-public RAG findings: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/public_rag_findings.json
 - Public RAG reranking opportunity: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/public_rag_reranking_opportunity.json
 - Public RAG reranker evaluation: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/public_rag_reranker_eval.json
+- Hosted public RAG reranker adapter: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/public_rag_model_reranker_adapter_status.json
+- Hosted reranker packet: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/public_rag_model_reranker_packet.jsonl
 - Safety classifier summary: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_classifier_eval_summary.json
 - Safety threshold sweep: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_threshold_sweep.json
 - Safety threshold retuning: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_threshold_retuning.json

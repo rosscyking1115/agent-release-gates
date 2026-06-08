@@ -196,6 +196,8 @@ def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
     assert "Public RAG reranking opportunity is not configured." in report
     assert "## Public RAG Reranker Evaluation" in report
     assert "Public RAG reranker evaluation is not configured." in report
+    assert "## Hosted Public RAG Reranker Adapter" in report
+    assert "Hosted public RAG reranker adapter is not configured." in report
     assert "## Historical Evaluation Snapshots" in report
     assert "| 2026-06-02T11:00:00Z | Hybrid sparse semantic | 99.65% | 1 | +1.39% | -4 |" in report
     assert "## Retriever Failure Analysis" in report

@@ -71,6 +71,9 @@ def generate_public_report(project_root: Path) -> str:
         reports_dir / "public_rag_reranking_opportunity.json"
     )
     public_rag_reranker = _read_optional_json(reports_dir / "public_rag_reranker_eval.json")
+    public_rag_model_reranker = _read_optional_json(
+        reports_dir / "public_rag_model_reranker_adapter_status.json"
+    )
     evaluation_history = _read_json(reports_dir / "evaluation_history.json")
     dataset_profile = load_dataset_profile(project_root)
     evaluation_gates = load_evaluation_gates(project_root)
@@ -183,6 +186,10 @@ def generate_public_report(project_root: Path) -> str:
             "## Public RAG Reranker Evaluation",
             "",
             _public_rag_reranker_table(public_rag_reranker),
+            "",
+            "## Hosted Public RAG Reranker Adapter",
+            "",
+            _public_rag_model_reranker_table(public_rag_model_reranker),
             "",
             "## Historical Evaluation Snapshots",
             "",
@@ -597,6 +604,41 @@ def _public_rag_reranker_table(report: dict[str, Any]) -> str:
     rows.extend(["", "| Recommendation |", "| --- |"])
     for recommendation in report.get("recommendations", []):
         rows.append(f"| {recommendation} |")
+    return "\n".join(rows)
+
+
+def _public_rag_model_reranker_table(report: dict[str, Any]) -> str:
+    if report.get("status") == "not_configured":
+        return "Hosted public RAG reranker adapter is not configured."
+    selection_counts = report.get("selection_counts", {})
+    dataset_counts = report.get("dataset_case_counts", {})
+    datasets = ", ".join(
+        f"{dataset}: {count}" for dataset, count in dataset_counts.items()
+    )
+    rows = [
+        "| Hosted reranker adapter field | Value |",
+        "| --- | --- |",
+        f"| Status | {report.get('status', '')} |",
+        f"| Provider | {report.get('provider', '')} |",
+        f"| API mode | {report.get('api_mode', '')} |",
+        f"| Default model | {report.get('default_model', '')} |",
+        f"| Packet cases | {report.get('candidate_case_count', 0)} |",
+        f"| Estimated provider calls | {report.get('estimated_provider_calls', 0)} |",
+        (
+            "| Candidate documents | "
+            f"{report.get('estimated_candidate_documents', 0)} |"
+        ),
+        (
+            "| Rerankable/control split | "
+            f"{selection_counts.get('rerankable', 0)} / "
+            f"{selection_counts.get('top1_control', 0)} |"
+        ),
+        f"| Datasets | {datasets} |",
+        f"| Credential env var | {report.get('credential_env_var', '')} |",
+        f"| Model env var | {report.get('model_env_var', '')} |",
+        f"| Packet path | {report.get('packet_path', '')} |",
+        f"| Publication rule | {report.get('publication_rule', '')} |",
+    ]
     return "\n".join(rows)
 
 

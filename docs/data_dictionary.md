@@ -130,6 +130,8 @@ Reports:
 | `reports/public_rag_findings.json` | Cross-public TechQA and WixQA findings summary with weighted public RAG metrics, top failure label, track-level lifts, findings, and recommended next experiments. |
 | `reports/public_rag_reranking_opportunity.json` | Cross-public reranking opportunity analysis that separates current top-1 citation accuracy, oracle top-3 rerank ceiling, rerankable cases, and residual retrieval misses. |
 | `reports/public_rag_reranker_eval.json` | Conservative deterministic query-document reranker evaluation with top-1 citation lift, changed cases, improved cases, regressed cases, and track-level examples. |
+| `reports/public_rag_model_reranker_adapter_status.json` | Dry-run hosted reranker adapter status with provider mode, packet size, estimated calls, selection mix, and publication rule. |
+| `reports/public_rag_model_reranker_packet.jsonl` | Public RAG reranker packet with user question, top-3 candidate document snippets, and separate evaluation metadata for a future hosted reranker run. |
 
 ## Retrieval eval case files
 

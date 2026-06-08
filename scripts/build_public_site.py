@@ -35,6 +35,9 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
         reports_dir / "public_rag_reranking_opportunity.json"
     )
     public_rag_reranker = _read_optional_json(reports_dir / "public_rag_reranker_eval.json")
+    public_rag_model_reranker = _read_optional_json(
+        reports_dir / "public_rag_model_reranker_adapter_status.json"
+    )
     safety_classifier = _read_json(reports_dir / "safety_classifier_eval_summary.json")
     safety_retuning = _read_json(reports_dir / "safety_threshold_retuning.json")
     safety_review = _read_json(reports_dir / "safety_human_review_simulation.json")
@@ -162,6 +165,16 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
             reports_dir / "public_rag_reranker_eval.json",
             public_dir / "public_rag_reranker_eval.json",
         )
+    if (reports_dir / "public_rag_model_reranker_adapter_status.json").exists():
+        shutil.copyfile(
+            reports_dir / "public_rag_model_reranker_adapter_status.json",
+            public_dir / "public_rag_model_reranker_adapter_status.json",
+        )
+    if (reports_dir / "public_rag_model_reranker_packet.jsonl").exists():
+        shutil.copyfile(
+            reports_dir / "public_rag_model_reranker_packet.jsonl",
+            public_dir / "public_rag_model_reranker_packet.jsonl",
+        )
 
     (public_dir / "index.html").write_text(
         _index_html(
@@ -178,6 +191,7 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
             public_rag_findings=public_rag_findings,
             public_rag_reranking=public_rag_reranking,
             public_rag_reranker=public_rag_reranker,
+            public_rag_model_reranker=public_rag_model_reranker,
             safety_classifier=safety_classifier,
             safety_retuning=safety_retuning,
             safety_review=safety_review,
@@ -207,6 +221,7 @@ def _index_html(
     public_rag_findings: dict[str, Any],
     public_rag_reranking: dict[str, Any],
     public_rag_reranker: dict[str, Any],
+    public_rag_model_reranker: dict[str, Any],
     safety_classifier: dict[str, Any],
     safety_retuning: dict[str, Any],
     safety_review: dict[str, Any],
@@ -254,6 +269,11 @@ def _index_html(
         ("Cross-public RAG findings", "public_rag_findings.json"),
         ("Public RAG reranking opportunity", "public_rag_reranking_opportunity.json"),
         ("Public RAG reranker evaluation", "public_rag_reranker_eval.json"),
+        (
+            "Hosted public RAG reranker adapter",
+            "public_rag_model_reranker_adapter_status.json",
+        ),
+        ("Hosted reranker packet", "public_rag_model_reranker_packet.jsonl"),
         ("Safety classifier summary", "safety_classifier_eval_summary.json"),
         ("Safety threshold sweep", "safety_threshold_sweep.json"),
         ("Safety threshold retuning", "safety_threshold_retuning.json"),
@@ -503,6 +523,14 @@ def _index_html(
             "Reranker top-1 delta",
             _public_reranker_signed_metric(public_rag_reranker, "top1_accuracy_delta"),
         )}
+        {_metric(
+            "Hosted reranker adapter",
+            _hosted_reranker_status(public_rag_model_reranker),
+        )}
+        {_metric(
+            "Hosted reranker packet",
+            _hosted_reranker_case_count(public_rag_model_reranker),
+        )}
       </div>
     </section>
 
@@ -651,6 +679,17 @@ def _public_reranker_signed_metric(report: dict[str, Any], metric: str) -> str:
     value = float(report.get("summary", {}).get(metric, 0.0))
     sign = "+" if value >= 0 else ""
     return f"{sign}{value * 100:.2f}%"
+
+
+def _hosted_reranker_status(report: dict[str, Any]) -> str:
+    status = str(report.get("status", "not_configured"))
+    return "Not configured" if status == "not_configured" else status
+
+
+def _hosted_reranker_case_count(report: dict[str, Any]) -> object:
+    if report.get("status") == "not_configured":
+        return "Not configured"
+    return report.get("candidate_case_count", 0)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,36 @@
+{
+  "adapter_type": "hosted_public_rag_reranker",
+  "api_mode": "responses",
+  "candidate_case_count": 24,
+  "credential_env_var": "OPENAI_API_KEY",
+  "dataset_case_counts": {
+    "Wix/WixQA expert-written": 12,
+    "nvidia/TechQA-RAG-Eval": 12
+  },
+  "default_model": "gpt-4.1-mini",
+  "estimated_candidate_documents": 72,
+  "estimated_provider_calls": 24,
+  "model_env_var": "OPENAI_RERANKER_MODEL",
+  "notes": [
+    "This artifact prepares a hosted reranker comparison without making API calls.",
+    "The packet is deliberately small and balanced between rerankable cases and top-1 controls.",
+    "The deterministic CI path remains cost-free and does not require credentials."
+  ],
+  "packet_path": "reports/public_rag_model_reranker_packet.jsonl",
+  "planned_cases_path": "reports/public_rag_model_reranker_eval_cases.jsonl",
+  "planned_outputs": [
+    "reports/public_rag_model_reranker_adapter_status.json",
+    "reports/public_rag_model_reranker_packet.jsonl",
+    "reports/public_rag_model_reranker_eval_summary.json",
+    "reports/public_rag_model_reranker_eval_cases.jsonl"
+  ],
+  "planned_summary_path": "reports/public_rag_model_reranker_eval_summary.json",
+  "provider": "openai",
+  "provider_input_boundary": "Provider input includes public user questions and public candidate document snippets only. Expected citation labels are stored separately under evaluation_metadata and should not be sent to the provider.",
+  "publication_rule": "Publish hosted reranker scores only after reviewing model ID, run date, cost, changed cases, improved cases, and regressions.",
+  "selection_counts": {
+    "rerankable": 12,
+    "top1_control": 12
+  },
+  "status": "dry_run_ready"
+}
