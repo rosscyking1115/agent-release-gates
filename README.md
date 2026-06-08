@@ -192,6 +192,10 @@ uv run python scripts/prepare_wixqa_public_benchmark.py
 uv run python scripts/run_wixqa_public_eval.py
 ```
 
+`scripts/run_all_evals.py` also writes `reports/public_rag_findings.json`, a
+cross-public summary that combines TechQA and WixQA without mixing those metrics
+into the synthetic internal-operations benchmark.
+
 The raw WixQA downloads are ignored by git; only the compact tracked benchmark sample and generated metrics are published.
 
 Run the interactive dashboard:
@@ -251,6 +255,7 @@ The public project page keeps the main experience focused on the dashboard and e
 - WixQA public RAG summary: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/wixqa_public_rag_summary.json
 - WixQA public benchmark profile: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/wixqa_public_benchmark_profile.json
 - WixQA public retriever comparison: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/wixqa_public_retriever_comparison.json
+- Cross-public RAG findings: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/public_rag_findings.json
 - Safety classifier summary: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_classifier_eval_summary.json
 - Safety threshold sweep: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_threshold_sweep.json
 - Safety threshold retuning: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_threshold_retuning.json

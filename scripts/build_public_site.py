@@ -30,6 +30,7 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
     wixqa_profile = _read_optional_json(
         reports_dir / "wixqa_public_benchmark_profile.json"
     )
+    public_rag_findings = _read_optional_json(reports_dir / "public_rag_findings.json")
     safety_classifier = _read_json(reports_dir / "safety_classifier_eval_summary.json")
     safety_retuning = _read_json(reports_dir / "safety_threshold_retuning.json")
     safety_review = _read_json(reports_dir / "safety_human_review_simulation.json")
@@ -142,6 +143,11 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
             reports_dir / "wixqa_public_retriever_comparison.json",
             public_dir / "wixqa_public_retriever_comparison.json",
         )
+    if (reports_dir / "public_rag_findings.json").exists():
+        shutil.copyfile(
+            reports_dir / "public_rag_findings.json",
+            public_dir / "public_rag_findings.json",
+        )
 
     (public_dir / "index.html").write_text(
         _index_html(
@@ -155,6 +161,7 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
             techqa_profile=techqa_profile,
             wixqa_public=wixqa_public,
             wixqa_profile=wixqa_profile,
+            public_rag_findings=public_rag_findings,
             safety_classifier=safety_classifier,
             safety_retuning=safety_retuning,
             safety_review=safety_review,
@@ -181,6 +188,7 @@ def _index_html(
     techqa_profile: dict[str, Any],
     wixqa_public: dict[str, Any],
     wixqa_profile: dict[str, Any],
+    public_rag_findings: dict[str, Any],
     safety_classifier: dict[str, Any],
     safety_retuning: dict[str, Any],
     safety_review: dict[str, Any],
@@ -225,6 +233,7 @@ def _index_html(
             "WixQA public retriever comparison",
             "wixqa_public_retriever_comparison.json",
         ),
+        ("Cross-public RAG findings", "public_rag_findings.json"),
         ("Safety classifier summary", "safety_classifier_eval_summary.json"),
         ("Safety threshold sweep", "safety_threshold_sweep.json"),
         ("Safety threshold retuning", "safety_threshold_retuning.json"),
@@ -454,6 +463,14 @@ def _index_html(
         {_metric("TechQA public RAG@3", _techqa_metric(techqa_public, "retrieval_hit_rate_at_3"))}
         {_metric("WixQA public cases", _wixqa_profile_value(wixqa_profile, "sample_case_count"))}
         {_metric("WixQA public RAG@3", _wixqa_metric(wixqa_public, "retrieval_hit_rate_at_3"))}
+        {_metric(
+            "Public RAG cases",
+            _public_rag_summary_value(public_rag_findings, "total_case_count"),
+        )}
+        {_metric(
+            "Public RAG weighted RAG@3",
+            _public_rag_metric(public_rag_findings, "weighted_retrieval_hit_rate_at_3"),
+        )}
       </div>
     </section>
 
@@ -570,6 +587,18 @@ def _wixqa_profile_value(report: dict[str, Any], key: str) -> object:
     if not summary or summary.get("status") != "evaluated":
         return "Not configured"
     return summary.get(key, "Not configured")
+
+
+def _public_rag_metric(report: dict[str, Any], metric: str) -> str:
+    if report.get("status") != "evaluated":
+        return "Not configured"
+    return _pct(float(report.get("summary", {}).get(metric, 0.0)))
+
+
+def _public_rag_summary_value(report: dict[str, Any], key: str) -> object:
+    if report.get("status") != "evaluated":
+        return "Not configured"
+    return report.get("summary", {}).get(key, "Not configured")
 
 
 if __name__ == "__main__":

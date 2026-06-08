@@ -42,6 +42,7 @@ from internal_ai_agent.dashboard.data import (
     load_model_judge_adapter_status,
     load_observability_otel_spans,
     load_observability_trace_index,
+    load_public_rag_findings,
     load_public_report,
     load_public_report_html,
     load_public_report_pdf,
@@ -64,6 +65,7 @@ from internal_ai_agent.dashboard.data import (
     metric_rows,
     model_judge_adapter_rows,
     observability_component_rows,
+    public_rag_track_rows,
     red_team_coverage_rows,
     retriever_experiment_rows,
     retriever_failure_example_rows,
@@ -103,6 +105,7 @@ def main() -> None:
     retriever_snapshots = load_retriever_snapshots(PROJECT_ROOT)
     techqa_public = load_techqa_public_summary(PROJECT_ROOT)
     wixqa_public = load_wixqa_public_summary(PROJECT_ROOT)
+    public_rag_findings = load_public_rag_findings(PROJECT_ROOT)
     evaluation_history = load_evaluation_history(PROJECT_ROOT)
     evaluation_gates = load_evaluation_gates(PROJECT_ROOT)
     extraction_summary = load_extraction_summary(PROJECT_ROOT)
@@ -160,6 +163,7 @@ def main() -> None:
         _render_retriever_experiment(retriever_comparison)
         _render_techqa_public_benchmark(techqa_public)
         _render_wixqa_public_benchmark(wixqa_public)
+        _render_public_rag_findings(public_rag_findings)
         _render_retriever_snapshots(retriever_snapshots)
         _render_evaluation_history(evaluation_history)
         _render_evaluation_gates(evaluation_gates)
@@ -526,6 +530,41 @@ def _render_wixqa_public_benchmark(summary: dict[str, object]) -> None:
             ]
         )
         st.dataframe(comparison_df, hide_index=True, use_container_width=True)
+
+
+def _render_public_rag_findings(report: dict[str, object]) -> None:
+    st.subheader("Cross-Public RAG Findings")
+    if report.get("status") != "evaluated":
+        st.info("Cross-public RAG findings are not configured in this runtime.")
+        return
+
+    summary = report["summary"]  # type: ignore[index]
+    cols = st.columns(5)
+    cols[0].metric("Public tracks", summary["evaluated_track_count"])  # type: ignore[index]
+    cols[1].metric("Public cases", summary["total_case_count"])  # type: ignore[index]
+    cols[2].metric(
+        "Weighted RAG@3",
+        _format_pct(float(summary["weighted_retrieval_hit_rate_at_3"])),  # type: ignore[index]
+    )
+    cols[3].metric(
+        "Top-1 citation",
+        _format_pct(float(summary["weighted_top1_citation_accuracy"])),  # type: ignore[index]
+    )
+    cols[4].metric("Top failure", summary["top_cross_track_failure_label"])  # type: ignore[index]
+
+    track_df = pd.DataFrame(public_rag_track_rows(report))
+    if not track_df.empty:
+        st.dataframe(track_df, hide_index=True, use_container_width=True)
+
+    finding_df = pd.DataFrame({"Finding": report.get("findings", [])})
+    if not finding_df.empty:
+        st.dataframe(finding_df, hide_index=True, use_container_width=True)
+
+    recommendation_df = pd.DataFrame(
+        {"Recommended next experiment": report.get("recommendations", [])}
+    )
+    if not recommendation_df.empty:
+        st.dataframe(recommendation_df, hide_index=True, use_container_width=True)
 
 
 def _render_retriever_snapshots(snapshot_report: dict[str, object]) -> None:

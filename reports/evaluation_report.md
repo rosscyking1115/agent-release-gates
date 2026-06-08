@@ -139,6 +139,33 @@ The retrieval experiment compares a deliberately weak baseline, a lexical retrie
 | Keyword title baseline | 61.25% | 46.25% | 43 |
 | Local TF-IDF WixQA retriever | 88.75% | 75.00% | 20 |
 
+## Public RAG Findings
+
+| Cross-public RAG finding metric | Value |
+| --- | ---: |
+| Evaluated public tracks | 2 |
+| Total public cases | 240 |
+| Total public documents | 215 |
+| Weighted retrieval hit rate@3 | 87.92% |
+| Weighted top-1 citation accuracy | 76.56% |
+| Weighted failure rate | 29.58% |
+| Top cross-track failure label | retrieval_miss (25) |
+| Largest retrieval lift | Wix/WixQA expert-written (+27.50%) |
+| Largest top-1 lift | Wix/WixQA expert-written (+28.75%) |
+
+| Finding |
+| --- |
+| Local TF-IDF retrieval outperforms the keyword-title baseline on every evaluated public RAG track. |
+| Across public tracks, weighted retrieval hit rate@3 is 87.92% and weighted top-1 citation accuracy is 76.56%. |
+| The most common cross-track failure label is retrieval_miss (25). |
+| TechQA exposes the abstention trade-off: the primary retriever improves answerable retrieval, but impossible-question abstention remains the main inspection target. |
+| WixQA adds multi-article enterprise-support pressure and shows stronger retrieval coverage than top-1 citation accuracy, so reranking remains important. |
+
+| Recommendation |
+| --- |
+| Run a provider-backed embedding comparison on the same compact public samples before publishing any model-quality claim. |
+| Add a reranking experiment focused on cases where the expected document is retrieved but not ranked first. |
+
 ## Historical Evaluation Snapshots
 
 | Milestone time | Milestone | Citation coverage | Failed cases | Citation delta | Failure delta |

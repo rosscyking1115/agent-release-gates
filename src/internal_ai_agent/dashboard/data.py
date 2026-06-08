@@ -106,6 +106,24 @@ def load_wixqa_public_summary(project_root: Path) -> dict[str, Any]:
     }
 
 
+def load_public_rag_findings(project_root: Path) -> dict[str, Any]:
+    path = project_root / "reports/public_rag_findings.json"
+    if path.exists():
+        return json.loads(path.read_text(encoding="utf-8"))
+    return {
+        "report_type": "public_rag_findings",
+        "status": "not_configured",
+        "summary": {
+            "evaluated_track_count": 0,
+            "total_case_count": 0,
+            "total_failed_case_count": 0,
+        },
+        "tracks": [],
+        "findings": [],
+        "recommendations": [],
+    }
+
+
 def load_evaluation_history(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/evaluation_history.json"
     return json.loads(path.read_text(encoding="utf-8"))
@@ -395,6 +413,24 @@ def wixqa_public_metric_rows(summary: dict[str, Any]) -> list[dict[str, Any]]:
         }
         for metric, label in labels.items()
         if metric in metrics
+    ]
+
+
+def public_rag_track_rows(report: dict[str, Any]) -> list[dict[str, Any]]:
+    return [
+        {
+            "dataset": row["dataset"],
+            "cases": row["case_count"],
+            "documents": row["document_count"],
+            "retrieval_at_3": _as_percent(float(row["retrieval_hit_rate_at_3"])),
+            "top1_citation": _as_percent(float(row["top1_citation_accuracy"])),
+            "failure_rate": _as_percent(float(row["failure_rate"])),
+            "retrieval_lift": _as_signed_percent(
+                float(row["retrieval_hit_rate_at_3_lift"])
+            ),
+            "top1_lift": _as_signed_percent(float(row["top1_citation_accuracy_lift"])),
+        }
+        for row in report.get("tracks", [])
     ]
 
 

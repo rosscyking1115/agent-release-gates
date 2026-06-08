@@ -190,6 +190,8 @@ def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
     assert "TechQA public benchmark is not configured." in report
     assert "## WixQA Public Enterprise RAG Benchmark" in report
     assert "WixQA public benchmark is not configured." in report
+    assert "## Public RAG Findings" in report
+    assert "Public RAG findings are not configured." in report
     assert "## Historical Evaluation Snapshots" in report
     assert "| 2026-06-02T11:00:00Z | Hybrid sparse semantic | 99.65% | 1 | +1.39% | -4 |" in report
     assert "## Retriever Failure Analysis" in report

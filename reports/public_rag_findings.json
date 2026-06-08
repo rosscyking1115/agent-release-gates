@@ -1,0 +1,93 @@
+{
+  "findings": [
+    "Local TF-IDF retrieval outperforms the keyword-title baseline on every evaluated public RAG track.",
+    "Across public tracks, weighted retrieval hit rate@3 is 87.92% and weighted top-1 citation accuracy is 76.56%.",
+    "The most common cross-track failure label is retrieval_miss (25).",
+    "TechQA exposes the abstention trade-off: the primary retriever improves answerable retrieval, but impossible-question abstention remains the main inspection target.",
+    "WixQA adds multi-article enterprise-support pressure and shows stronger retrieval coverage than top-1 citation accuracy, so reranking remains important."
+  ],
+  "notes": [
+    "This report combines only external public-data RAG tracks. It does not mix public-data metrics with synthetic internal-operations metrics.",
+    "The current comparison is deterministic and local; no paid provider calls are used."
+  ],
+  "recommendations": [
+    "Run a provider-backed embedding comparison on the same compact public samples before publishing any model-quality claim.",
+    "Add a reranking experiment focused on cases where the expected document is retrieved but not ranked first."
+  ],
+  "report_type": "public_rag_findings",
+  "status": "evaluated",
+  "summary": {
+    "evaluated_track_count": 2,
+    "largest_retrieval_lift_track": "Wix/WixQA expert-written (+27.50%)",
+    "largest_top1_lift_track": "Wix/WixQA expert-written (+28.75%)",
+    "top_cross_track_failure_label": "retrieval_miss (25)",
+    "total_case_count": 240,
+    "total_document_count": 215,
+    "total_failed_case_count": 71,
+    "weighted_failure_rate": 0.2958,
+    "weighted_retrieval_hit_rate_at_3": 0.8792,
+    "weighted_top1_citation_accuracy": 0.7656
+  },
+  "tracks": [
+    {
+      "baseline_retriever": "Keyword title baseline",
+      "benchmark_track": "external_public_rag",
+      "case_count": 160,
+      "dataset": "nvidia/TechQA-RAG-Eval",
+      "dataset_specific_metrics": {
+        "answerable_false_abstention_rate": 0.0547,
+        "impossible_abstention_rate": 0.3438
+      },
+      "document_count": 119,
+      "failed_case_count": 51,
+      "failure_rate": 0.3187,
+      "failure_reasons": {
+        "expected_document_not_retrieved_at_3": 16,
+        "expected_document_retrieved_but_not_top1": 13,
+        "failed_to_abstain_impossible_question": 21,
+        "false_abstention_answerable_question": 7
+      },
+      "license": "Apache-2.0",
+      "mean_reciprocal_rank_at_3": 0.8151,
+      "primary_retriever": "Local TF-IDF public retriever",
+      "retrieval_hit_rate_at_3": 0.875,
+      "retrieval_hit_rate_at_3_lift": 0.1484,
+      "taxonomy_labels": {
+        "excessive_abstention": 7,
+        "over_refusal": 7,
+        "retrieval_miss": 16,
+        "weak_evidence_treated_as_strong": 21,
+        "wrong_citation": 13
+      },
+      "top1_citation_accuracy": 0.7734,
+      "top1_citation_accuracy_lift": 0.1875
+    },
+    {
+      "baseline_retriever": "Keyword title baseline",
+      "benchmark_track": "external_public_enterprise_rag",
+      "case_count": 80,
+      "dataset": "Wix/WixQA expert-written",
+      "dataset_specific_metrics": {
+        "multi_article_retrieval_hit_rate_at_3": 0.9565
+      },
+      "document_count": 96,
+      "failed_case_count": 20,
+      "failure_rate": 0.25,
+      "failure_reasons": {
+        "expected_document_not_retrieved_at_3": 9,
+        "expected_document_retrieved_but_not_top1": 11
+      },
+      "license": "MIT",
+      "mean_reciprocal_rank_at_3": 0.8104,
+      "primary_retriever": "Local TF-IDF WixQA retriever",
+      "retrieval_hit_rate_at_3": 0.8875,
+      "retrieval_hit_rate_at_3_lift": 0.275,
+      "taxonomy_labels": {
+        "retrieval_miss": 9,
+        "wrong_citation": 11
+      },
+      "top1_citation_accuracy": 0.75,
+      "top1_citation_accuracy_lift": 0.2875
+    }
+  ]
+}

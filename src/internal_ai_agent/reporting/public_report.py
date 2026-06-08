@@ -66,6 +66,7 @@ def generate_public_report(project_root: Path) -> str:
     retriever_snapshots = _read_json(reports_dir / "retriever_metric_snapshots.json")
     techqa_public = _read_optional_json(reports_dir / "techqa_public_rag_summary.json")
     wixqa_public = _read_optional_json(reports_dir / "wixqa_public_rag_summary.json")
+    public_rag_findings = _read_optional_json(reports_dir / "public_rag_findings.json")
     evaluation_history = _read_json(reports_dir / "evaluation_history.json")
     dataset_profile = load_dataset_profile(project_root)
     evaluation_gates = load_evaluation_gates(project_root)
@@ -166,6 +167,10 @@ def generate_public_report(project_root: Path) -> str:
             "## WixQA Public Enterprise RAG Benchmark",
             "",
             _wixqa_public_table(wixqa_public),
+            "",
+            "## Public RAG Findings",
+            "",
+            _public_rag_findings_table(public_rag_findings),
             "",
             "## Historical Evaluation Snapshots",
             "",
@@ -488,6 +493,37 @@ def _wixqa_public_table(report: dict[str, Any]) -> str:
             f"{_pct(system_metrics['top1_citation_accuracy'])} | "
             f"{system['failed_case_count']} |"
         )
+    return "\n".join(rows)
+
+
+def _public_rag_findings_table(report: dict[str, Any]) -> str:
+    if report.get("status") != "evaluated":
+        return "Public RAG findings are not configured."
+    summary = report["summary"]
+    rows = [
+        "| Cross-public RAG finding metric | Value |",
+        "| --- | ---: |",
+        f"| Evaluated public tracks | {summary['evaluated_track_count']} |",
+        f"| Total public cases | {summary['total_case_count']} |",
+        f"| Total public documents | {summary['total_document_count']} |",
+        f"| Weighted retrieval hit rate@3 | {_pct(summary['weighted_retrieval_hit_rate_at_3'])} |",
+        (
+            "| Weighted top-1 citation accuracy | "
+            f"{_pct(summary['weighted_top1_citation_accuracy'])} |"
+        ),
+        f"| Weighted failure rate | {_pct(summary['weighted_failure_rate'])} |",
+        f"| Top cross-track failure label | {summary['top_cross_track_failure_label']} |",
+        f"| Largest retrieval lift | {summary['largest_retrieval_lift_track']} |",
+        f"| Largest top-1 lift | {summary['largest_top1_lift_track']} |",
+        "",
+        "| Finding |",
+        "| --- |",
+    ]
+    for finding in report.get("findings", []):
+        rows.append(f"| {finding} |")
+    rows.extend(["", "| Recommendation |", "| --- |"])
+    for recommendation in report.get("recommendations", []):
+        rows.append(f"| {recommendation} |")
     return "\n".join(rows)
 
 

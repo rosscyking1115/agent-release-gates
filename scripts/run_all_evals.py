@@ -12,6 +12,7 @@ from internal_ai_agent.evals.failure_taxonomy import write_failure_taxonomy_summ
 from internal_ai_agent.evals.gates import write_evaluation_gates
 from internal_ai_agent.evals.human_calibration import evaluate_human_calibration
 from internal_ai_agent.evals.model_judge import write_model_judge_adapter_status
+from internal_ai_agent.evals.public_rag_findings import write_public_rag_findings
 from internal_ai_agent.evals.runner import (
     evaluate_comparison,
     evaluate_retriever_comparison,
@@ -42,6 +43,11 @@ def run_all(project_root: Path) -> dict[str, Any]:
     retriever_comparison = evaluate_retriever_comparison(project_root)
     techqa_public = evaluate_techqa_public(project_root)
     wixqa_public = evaluate_wixqa_public(project_root)
+    public_rag_findings = write_public_rag_findings(
+        project_root,
+        techqa_public=techqa_public,
+        wixqa_public=wixqa_public,
+    )
     extraction = evaluate_extraction(project_root)
     security = evaluate_security(project_root)
     safety_classifier = evaluate_safety_classifier(project_root)
@@ -86,6 +92,7 @@ def run_all(project_root: Path) -> dict[str, Any]:
         "retriever_comparison": retriever_comparison,
         "techqa_public": techqa_public,
         "wixqa_public": wixqa_public,
+        "public_rag_findings": public_rag_findings,
         "extraction": extraction,
         "security": security,
         "safety_classifier": safety_classifier,
@@ -208,6 +215,16 @@ def main() -> None:
         print(
             "- wixqa_public_top1_citation_accuracy: "
             f"{wixqa_metrics['top1_citation_accuracy']:.4f}"
+        )
+    if summary["public_rag_findings"]["status"] == "evaluated":
+        findings_summary = summary["public_rag_findings"]["summary"]
+        print(
+            "- public_rag_weighted_retrieval_hit_rate_at_3: "
+            f"{findings_summary['weighted_retrieval_hit_rate_at_3']:.4f}"
+        )
+        print(
+            "- public_rag_top_failure_label: "
+            f"{findings_summary['top_cross_track_failure_label']}"
         )
     print(
         f"- extraction_schema_validity: {summary['extraction']['metrics']['schema_validity']:.4f}"
