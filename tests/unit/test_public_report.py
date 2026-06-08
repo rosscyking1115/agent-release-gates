@@ -8,6 +8,7 @@ from internal_ai_agent.evals.dataset_profile import write_dataset_profile
 from internal_ai_agent.evals.extraction import evaluate_extraction
 from internal_ai_agent.evals.failure_taxonomy import write_failure_taxonomy_summary
 from internal_ai_agent.evals.gates import write_evaluation_gates
+from internal_ai_agent.evals.human_calibration import evaluate_human_calibration
 from internal_ai_agent.evals.runner import (
     evaluate_comparison,
     evaluate_retriever_comparison,
@@ -15,7 +16,7 @@ from internal_ai_agent.evals.runner import (
 )
 from internal_ai_agent.evals.safety_classifier import evaluate_safety_classifier
 from internal_ai_agent.evals.security import evaluate_security
-from internal_ai_agent.io import write_json
+from internal_ai_agent.io import read_jsonl, write_json, write_jsonl
 from internal_ai_agent.reporting.public_report import (
     generate_public_report,
     generate_public_report_html,
@@ -26,12 +27,17 @@ from internal_ai_agent.reporting.public_report import (
 
 def _prepare_reports(project_root: Path) -> None:
     generate_all(project_root)
+    write_jsonl(
+        project_root / "data/eval/human_calibration_cases.jsonl",
+        read_jsonl(Path("data/eval/human_calibration_cases.jsonl")),
+    )
     write_dataset_profile(project_root)
     evaluate_comparison(project_root)
     retriever_comparison = evaluate_retriever_comparison(project_root)
     extraction = evaluate_extraction(project_root)
     security = evaluate_security(project_root)
     evaluate_safety_classifier(project_root)
+    evaluate_human_calibration(project_root)
     write_failure_taxonomy_summary(project_root)
     agent = evaluate_agent(project_root)
     write_evaluation_history(
@@ -156,6 +162,9 @@ def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
     assert "| retrieved_access_escalation |" in report
     assert "## Safety Classifier Workflow" in report
     assert "| Safety classifier metric | Value |" in report
+    assert "| Maintainer-labelled calibration metric | Value |" in report
+    assert "| Calibration cases | 24 |" in report
+    assert "| Classifier label accuracy |" in report
     assert "| Safety retuning metric | Value |" in report
     assert "| False-negative reduction |" in report
     assert "| Human-authored adjudication notes metric | Value |" in report

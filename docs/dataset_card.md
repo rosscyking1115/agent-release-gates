@@ -43,7 +43,7 @@ Synthetic labels are generated and maintained inside the repo:
 - risk categories and severity bands
 - simulated reviewer outcomes
 
-The project does not yet publish real independent human labels. Human-labeled calibration is planned and should be reported separately from synthetic labels when added.
+The project includes a 24-case maintainer-labeled calibration sample for checking classifier/rubric behavior against adjudicated labels. It does not yet publish independent external human labels, so external review should still be reported separately when added.
 
 ## Collection Process
 
@@ -64,13 +64,14 @@ The dataset boundary is intentionally conservative:
 
 - Synthetic cases can overstate performance if the generator and evaluator share assumptions.
 - Some ticket and runbook text is still templated despite manual-case expansion.
-- Simulated reviewer labels are useful for workflow testing but are not a substitute for real human review.
+- Simulated reviewer labels are useful for workflow testing but are not a substitute for independent human review.
+- The maintainer-labeled calibration sample is useful for reproducibility and rubric debugging, but it is not an external annotation study.
 - Public TechQA coverage is compact and should be expanded before drawing broader external conclusions.
 
 ## Recommended Dataset Work
 
 - Add more hand-authored benign, ambiguous, unsafe, prompt-injection, weak-evidence, excessive-agency, and tool-misuse cases.
-- Add a small independent human-labeled calibration sample.
+- Add independent reviewer labels for the calibration sample.
 - Track inter-rater agreement and reviewer-disagreement reasons.
 - Expand public TechQA coverage beyond the compact sample.
 - Keep synthetic and public-data metrics separated in every public report.

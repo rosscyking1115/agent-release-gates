@@ -170,6 +170,21 @@ def load_safety_threshold_decision_memo(project_root: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def load_human_calibration_summary(project_root: Path) -> dict[str, Any]:
+    path = project_root / "reports/human_calibration_summary.json"
+    if path.exists():
+        return json.loads(path.read_text(encoding="utf-8"))
+    return {
+        "report_type": "human_label_calibration",
+        "case_count": 0,
+        "summary": {},
+        "by_category": [],
+        "by_error_type": {},
+        "sample_cases": [],
+        "notes": [],
+    }
+
+
 def load_failure_taxonomy_summary(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/failure_taxonomy_summary.json"
     if path.exists():
@@ -784,6 +799,46 @@ def trace_index_error_rows(index: dict[str, Any]) -> list[dict[str, Any]]:
 def trace_index_trace_rows(index: dict[str, Any], *, limit: int = 20) -> list[dict[str, Any]]:
     rows = list(index.get("traces", []))
     return rows[:limit]
+
+
+def human_calibration_category_rows(report: dict[str, Any]) -> list[dict[str, Any]]:
+    rows = []
+    for row in report.get("by_category", []):
+        rows.append(
+            {
+                **row,
+                "classifier_label_accuracy_pct": _as_percent(
+                    float(row["classifier_label_accuracy"])
+                ),
+                "classifier_action_match_pct": _as_percent(
+                    float(row["classifier_action_match_rate"])
+                ),
+            }
+        )
+    return rows
+
+
+def human_calibration_case_rows(
+    report: dict[str, Any],
+    *,
+    limit: int = 12,
+) -> list[dict[str, Any]]:
+    rows = []
+    for row in list(report.get("sample_cases", []))[:limit]:
+        rows.append(
+            {
+                "case_id": row["case_id"],
+                "risk_category": row["risk_category"],
+                "risk_severity": row["risk_severity"],
+                "human_label": row["human_adjudicated_label"],
+                "expected_action": row["expected_action"],
+                "classifier_decision": row["classifier_decision"],
+                "classifier_score": row["classifier_score"],
+                "reviewer_disagreement": row["reviewer_disagreement"],
+                "error_type": row["error_type"],
+            }
+        )
+    return rows
 
 
 def _span_outcome(span: dict[str, Any]) -> str:

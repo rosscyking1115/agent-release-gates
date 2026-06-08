@@ -90,6 +90,9 @@ def generate_public_report(project_root: Path) -> str:
     )
     safety_mitigation = _read_json(reports_dir / "safety_mitigation_impact.json")
     safety_memo = _read_json(reports_dir / "safety_threshold_decision_memo.json")
+    human_calibration = _read_optional_json(
+        reports_dir / "human_calibration_summary.json"
+    )
     failure_taxonomy = _read_optional_json(reports_dir / "failure_taxonomy_summary.json")
     agent = _read_json(reports_dir / "agent_eval_summary.json")
 
@@ -188,6 +191,8 @@ def generate_public_report(project_root: Path) -> str:
             "",
             _safety_classifier_table(safety_classifier),
             "",
+            _human_calibration_table(human_calibration),
+            "",
             _safety_threshold_table(safety_threshold_sweep),
             "",
             _safety_retuning_table(safety_threshold_retuning),
@@ -267,8 +272,8 @@ def generate_public_report(project_root: Path) -> str:
                 "about production accuracy."
             ),
             (
-                "- Human-review labels are simulated workflow labels, not real "
-                "independent annotations."
+                "- Human-review workflow labels are simulated; the calibration "
+                "sample is maintainer-labelled and not yet independently reviewed."
             ),
             (
                 "- Multi-model comparison and LLM-as-judge reliability analysis are "
@@ -279,8 +284,8 @@ def generate_public_report(project_root: Path) -> str:
             "",
             "- Formalize the failure taxonomy across safety, retrieval, citation, "
             "privacy, tool-use, and usefulness failures.",
-            "- Add a human-labeled calibration sample and compare human review, "
-            "deterministic rules, and LLM-as-judge decisions.",
+            "- Add independent external human review for the calibration sample "
+            "and compare deterministic rules with LLM-as-judge decisions.",
             "- Add optional multi-model evaluation adapters and publish only "
             "reproducible result tables.",
             "- Run safety intervention experiments across refusal policy, retrieval "
@@ -706,6 +711,65 @@ def _safety_classifier_table(report: dict[str, Any]) -> str:
             f"{mitigation['final_residual_unsafe_allowed_count']} |"
         ),
     ]
+    return "\n".join(rows)
+
+
+def _human_calibration_table(report: dict[str, Any]) -> str:
+    if report.get("report_type") != "human_label_calibration":
+        return "Human-label calibration is not configured."
+    summary = report["summary"]
+    rows = [
+        "| Maintainer-labelled calibration metric | Value |",
+        "| --- | ---: |",
+        f"| Calibration cases | {summary['case_count']} |",
+        f"| Unsafe cases | {summary['unsafe_case_count']} |",
+        f"| Benign cases | {summary['benign_case_count']} |",
+        f"| Reviewer agreement rate | {_pct(summary['reviewer_agreement_rate'])} |",
+        f"| Classifier label accuracy | {_pct(summary['classifier_label_accuracy'])} |",
+        (
+            "| Classifier expected-action match | "
+            f"{_pct(summary['classifier_action_match_rate'])} |"
+        ),
+        f"| Unsafe capture rate | {_pct(summary['unsafe_capture_rate'])} |",
+        f"| Unsafe auto-allowed | {summary['unsafe_auto_allowed_count']} |",
+        f"| Benign auto-blocked | {summary['benign_auto_blocked_count']} |",
+        f"| Benign sent to review | {summary['benign_reviewed_count']} |",
+    ]
+    if report["by_category"]:
+        rows.extend(
+            [
+                "",
+                "| Category | Cases | Unsafe | Label accuracy | Action match | Top error |",
+                "| --- | ---: | ---: | ---: | ---: | --- |",
+            ]
+        )
+        for row in report["by_category"]:
+            rows.append(
+                "| {risk_category} | {case_count} | {unsafe_case_count} | "
+                "{label_accuracy} | {action_match} | {top_error_type} |".format(
+                    label_accuracy=_pct(row["classifier_label_accuracy"]),
+                    action_match=_pct(row["classifier_action_match_rate"]),
+                    **row,
+                )
+            )
+    if report["sample_cases"]:
+        rows.extend(
+            [
+                "",
+                (
+                    "| Case | Human label | Expected action | Classifier decision | "
+                    "Reviewer disagreement | Error type |"
+                ),
+                "| --- | --- | --- | --- | --- | --- |",
+            ]
+        )
+        for row in report["sample_cases"][:6]:
+            rows.append(
+                "| {case_id} | {human_adjudicated_label} | {expected_action} | "
+                "{classifier_decision} | {reviewer_disagreement} | {error_type} |".format(
+                    **row
+                )
+            )
     return "\n".join(rows)
 
 

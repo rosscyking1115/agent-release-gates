@@ -22,6 +22,8 @@ from internal_ai_agent.dashboard.data import (
     failed_case_rows,
     failure_example_rows,
     failure_reason_rows,
+    human_calibration_case_rows,
+    human_calibration_category_rows,
     load_agent_summary,
     load_agent_trace_examples,
     load_case_rows,
@@ -32,6 +34,7 @@ from internal_ai_agent.dashboard.data import (
     load_evaluation_history,
     load_extraction_summary,
     load_failure_taxonomy_summary,
+    load_human_calibration_summary,
     load_observability_otel_spans,
     load_observability_trace_index,
     load_public_report,
@@ -109,6 +112,7 @@ def main() -> None:
     )
     safety_mitigation_impact = load_safety_mitigation_impact(PROJECT_ROOT)
     safety_threshold_memo = load_safety_threshold_decision_memo(PROJECT_ROOT)
+    human_calibration = load_human_calibration_summary(PROJECT_ROOT)
     failure_taxonomy = load_failure_taxonomy_summary(PROJECT_ROOT)
     agent_summary = load_agent_summary(PROJECT_ROOT)
     agent_traces = load_agent_trace_examples(PROJECT_ROOT)
@@ -161,6 +165,7 @@ def main() -> None:
             safety_operating_recommendation,
             safety_mitigation_impact,
             safety_threshold_memo,
+            human_calibration,
         )
         _render_extraction_metrics(extraction_summary, extraction_rows)
         _render_security_metrics(security_summary, security_rows)
@@ -739,6 +744,7 @@ def _render_safety_classifier_workflow(
     operating_recommendation: dict[str, object],
     mitigation_impact: dict[str, object],
     threshold_memo: dict[str, object],
+    human_calibration: dict[str, object],
 ) -> None:
     st.subheader("Safety Prevalence And Classifier Workflow")
     metrics = classifier["metrics"]
@@ -764,6 +770,7 @@ def _render_safety_classifier_workflow(
     st.caption(str(threshold_memo["decision"]))
     (
         tab_thresholds,
+        tab_calibration,
         tab_review,
         tab_notes,
         tab_review_band,
@@ -773,6 +780,7 @@ def _render_safety_classifier_workflow(
     ) = st.tabs(
         [
             "Thresholds",
+            "Calibration",
             "Human review",
             "Adjudication notes",
             "Review band",
@@ -832,6 +840,37 @@ def _render_safety_classifier_workflow(
                 "High severity FN",
             ]
             st.dataframe(display_df, hide_index=True, use_container_width=True)
+    with tab_calibration:
+        calibration_summary = human_calibration.get("summary", {})
+        if not calibration_summary:
+            st.info("Human-label calibration summary is not available yet.")
+        else:
+            calibration_cols = st.columns(5)
+            calibration_cols[0].metric("Cases", calibration_summary["case_count"])
+            calibration_cols[1].metric(
+                "Label accuracy",
+                f"{calibration_summary['classifier_label_accuracy'] * 100:.2f}%",
+            )
+            calibration_cols[2].metric(
+                "Action match",
+                f"{calibration_summary['classifier_action_match_rate'] * 100:.2f}%",
+            )
+            calibration_cols[3].metric(
+                "Reviewer agreement",
+                f"{calibration_summary['reviewer_agreement_rate'] * 100:.2f}%",
+            )
+            calibration_cols[4].metric(
+                "Unsafe auto-allowed",
+                calibration_summary["unsafe_auto_allowed_count"],
+            )
+            category_df = pd.DataFrame(
+                human_calibration_category_rows(human_calibration)
+            )
+            if not category_df.empty:
+                st.dataframe(category_df, hide_index=True, use_container_width=True)
+            case_df = pd.DataFrame(human_calibration_case_rows(human_calibration))
+            if not case_df.empty:
+                st.dataframe(case_df, hide_index=True, use_container_width=True)
     with tab_review:
         review_cols = st.columns(5)
         review_cols[0].metric(

@@ -9,6 +9,7 @@ from internal_ai_agent.evals.dataset_profile import write_dataset_profile
 from internal_ai_agent.evals.extraction import evaluate_extraction
 from internal_ai_agent.evals.failure_taxonomy import write_failure_taxonomy_summary
 from internal_ai_agent.evals.gates import write_evaluation_gates
+from internal_ai_agent.evals.human_calibration import evaluate_human_calibration
 from internal_ai_agent.evals.runner import (
     evaluate_comparison,
     evaluate_retriever_comparison,
@@ -40,6 +41,7 @@ def run_all(project_root: Path) -> dict[str, Any]:
     extraction = evaluate_extraction(project_root)
     security = evaluate_security(project_root)
     safety_classifier = evaluate_safety_classifier(project_root)
+    human_calibration = evaluate_human_calibration(project_root)
     agent = evaluate_agent(project_root)
     evaluation_history = write_evaluation_history(
         project_root,
@@ -80,6 +82,7 @@ def run_all(project_root: Path) -> dict[str, Any]:
         "extraction": extraction,
         "security": security,
         "safety_classifier": safety_classifier,
+        "human_calibration": human_calibration,
         "agent": agent,
         "evaluation_history": evaluation_history,
         "observability_spans_path": str(observability_spans_path),
@@ -216,6 +219,10 @@ def main() -> None:
     print(
         "- safety_secondary_floor_unsafe_capture_rate: "
         f"{summary['safety_classifier']['secondary_review_floor_validation']['unsafe_capture_rate']:.4f}"
+    )
+    print(
+        "- human_calibration_label_accuracy: "
+        f"{summary['human_calibration']['summary']['classifier_label_accuracy']:.4f}"
     )
     print(
         "- agent_side_effect_block_rate: "

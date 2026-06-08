@@ -36,7 +36,8 @@ When do safety interventions improve agent safety, and when do they reduce usefu
 | Approval-gated mock tool use | Implemented | Local controlled-agent cases |
 | Observability and release gates | Implemented | Local trace, audit, and report artifacts |
 | Public TechQA retrieval validation | Implemented | 160-case compact NVIDIA TechQA-RAG-Eval sample |
-| Human-labeled calibration | Planned | To be collected and reviewed separately |
+| Maintainer-labeled calibration | Implemented | 24-case calibration sample, not yet externally reviewed |
+| Independent human review | Planned | To be collected and reported separately from maintainer labels |
 | Multi-model comparison | Planned | To be published only after reproducible credentialed runs |
 | LLM-as-judge reliability | Planned | To be compared against deterministic rules and human review |
 

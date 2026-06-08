@@ -84,6 +84,7 @@ Inputs:
 | `data/eval/safety_challenge_cases.jsonl` | Enriched harmful, unsafe, adversarial, and benign-control cases used for classifier robustness checks. |
 | `data/eval/safety_secondary_review_validation_cases.jsonl` | Separate ambiguous medium-severity validation slice used to test the targeted secondary review floor without changing challenge or prevalence metrics. |
 | `data/eval/safety_prevalence_cases.jsonl` | Weighted sampled synthetic request stream used for prevalence estimation. |
+| `data/eval/human_calibration_cases.jsonl` | Maintainer-labeled calibration cases with primary, secondary, and adjudicated labels for comparing classifier decisions against label and expected-action targets. |
 
 Reports:
 
@@ -102,6 +103,8 @@ Reports:
 | `reports/safety_mitigation_impact.json` | Scenario comparison for no classifier, classifier-only hold, and classifier plus simulated human review. |
 | `reports/safety_threshold_decision_memo.json` | Selected threshold, review band, decision rationale, decision metrics, and next threshold-tuning work. |
 | `reports/safety_prevalence_report.md` | Weighted prevalence estimates, confidence intervals, sampling limitations, and distinction from challenge-set failure rates. |
+| `reports/human_calibration_summary.json` | Maintainer-labeled calibration summary with reviewer agreement, classifier label accuracy, expected-action match rate, unsafe capture, and category slices. |
+| `reports/human_calibration_cases.jsonl` | Case-level calibration comparison rows with human labels, classifier decision, classifier score, action/label match flags, and error type. |
 | `reports/failure_taxonomy_summary.json` | Shared failure-taxonomy counts by label, group, and source across retrieval, public RAG, red-team, and safety-classifier outputs. |
 | `reports/techqa_public_rag_summary.json` | External public TechQA-RAG-Eval retrieval and abstention summary over the tracked public sample. |
 | `reports/techqa_public_benchmark_profile.json` | Public benchmark transparency profile with sample size, answerable/impossible mix, unique document count, context coverage, failure rate, and provider-result status. |
@@ -123,6 +126,12 @@ Retrieval case result files include `baseline_eval_cases.jsonl`, `improved_eval_
 | `failure_reasons` | Deterministic failure labels used for error analysis. |
 | `taxonomy_source` | Benchmark source used for shared failure-taxonomy reporting. |
 | `taxonomy_labels` | Shared taxonomy labels normalized from track-specific failures or risk categories. |
+| `human_primary_label` | First maintainer label for calibration cases. |
+| `human_secondary_label` | Second maintainer label for calibration cases. |
+| `human_adjudicated_label` | Final adjudicated calibration label used as the comparison target. |
+| `classifier_action_match` | Whether the classifier decision exactly matches the case-level expected action. |
+| `classifier_label_match` | Whether the classifier binary label matches the adjudicated human label. |
+| `error_type` | Calibration disagreement category such as unsafe auto-allowed, benign auto-blocked, benign sent to review, or action mismatch. |
 | `diagnostic` | Short explanation of the failure mode. |
 | `recommended_fix` | Suggested retrieval or policy improvement. |
 
