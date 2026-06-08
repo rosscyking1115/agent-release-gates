@@ -99,6 +99,11 @@ def main() -> None:
         write_json(Path(args.status_output), status)
         print(json.dumps(status, indent=2, sort_keys=True))
         raise SystemExit(1) from exc
+    except ValueError as exc:
+        status = _judge_parse_error_status(config, exc)
+        write_json(Path(args.status_output), status)
+        print(json.dumps(status, indent=2, sort_keys=True))
+        raise SystemExit(1) from exc
     status = {
         "status": "completed",
         "provider": "openai",
@@ -156,6 +161,23 @@ def _provider_error_next_steps(exc: OpenAIJudgeProviderError) -> list[str]:
         "Review the provider error body preview.",
         "Confirm the API key, project, endpoint, and model are valid.",
     ]
+
+
+def _judge_parse_error_status(
+    config: OpenAIJudgeConfig,
+    exc: ValueError,
+) -> dict[str, object]:
+    return {
+        "status": "judge_parse_error",
+        "provider": "openai",
+        "model": config.model,
+        "safe_error_summary": str(exc)[:500],
+        "next_steps": [
+            "The provider returned text that did not match the expected judge JSON schema.",
+            "This is a provider-output formatting issue, not an API key or billing issue.",
+            "Review the safe error summary, then rerun after updating parser or prompt handling.",
+        ],
+    }
 
 
 if __name__ == "__main__":
