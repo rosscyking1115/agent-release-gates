@@ -36,11 +36,12 @@ When do safety interventions improve agent safety, and when do they reduce usefu
 | Approval-gated mock tool use | Implemented | Local controlled-agent cases |
 | Observability and release gates | Implemented | Local trace, audit, and report artifacts |
 | Public TechQA retrieval validation | Implemented | 160-case compact NVIDIA TechQA-RAG-Eval sample |
-| Maintainer-labeled calibration | Implemented | 24-case calibration sample, not yet externally reviewed |
+| Maintainer-labeled calibration | Implemented | 24-case calibration sample |
+| External human-review packet | Implemented | Review packet and label template prepared; labels awaiting independent reviewers |
 | Local rubric judge reliability | Implemented | Deterministic judge baseline against maintainer labels |
 | Hosted model-judge adapter | Implemented | Dry-run-first OpenAI Responses API adapter |
 | Reviewed hosted model-judge result | Implemented | gpt-4.1-mini calibration run published with one reviewed over-refusal limitation |
-| Independent human review | Planned | To be collected and reported separately from maintainer labels |
+| Independent human review labels | Planned | To be collected and reported separately from maintainer labels |
 | Multi-model comparison | Planned | To be published only after reproducible credentialed runs |
 | Hosted LLM-as-judge reliability | Implemented | One reviewed OpenAI judge run; multi-model comparison remains planned |
 
@@ -65,7 +66,7 @@ This benchmark should not be used as evidence of real production performance, re
 ## Known Limitations
 
 - Synthetic cases are still partly templated.
-- Human-review labels are simulated and deterministic, not real independent annotations.
+- Human-review labels are simulated and deterministic; the external-review packet is prepared, but independent labels are not yet published.
 - Public TechQA uses a compact 160-case sample, not the full upstream dataset.
 - Provider-backed embeddings and multi-model results are not yet published.
 - Deterministic rules make the benchmark reproducible but do not replace adversarial human review.

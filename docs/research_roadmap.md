@@ -15,6 +15,7 @@ When do safety interventions improve agent safety, and when do they reduce usefu
 - Synthetic internal-operations benchmark with retrieval, citation, abstention, extraction, safety, tool-governance, and observability checks.
 - Public TechQA retrieval validation using a compact 160-case sample.
 - Safety classifier evaluation with false positive / false negative trade-offs, sampled synthetic prevalence, simulated human review, mitigation impact, and threshold decision memo.
+- External human-review packet and label template for independent calibration labels.
 - Deterministic release gates, public reports, Docker runtime, CI, Streamlit dashboard, and GitHub Pages site.
 
 ## Stage 1: Public Benchmark Hygiene
@@ -42,8 +43,8 @@ Attach a formal failure taxonomy to case-level results and report summaries:
 
 ## Stage 3: Human And Judge Reliability
 
-- Add a small human-labeled calibration sample.
-- Record reviewer agreement and disagreement notes.
+- Collect independent labels for the prepared calibration packet.
+- Record reviewer agreement, disagreement notes, and adjudication-required cases.
 - Compare human review, deterministic rules, and LLM-as-judge on the same cases.
 - Report false positives, false negatives, and disagreement slices.
 - Document where automatic judging should not be trusted.

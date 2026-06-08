@@ -37,6 +37,9 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
     safety_operating_recommendation = _read_json(
         reports_dir / "safety_secondary_review_operating_recommendation.json"
     )
+    external_review = _read_optional_json(
+        reports_dir / "external_human_review_summary.json"
+    )
 
     shutil.copyfile(reports_dir / "evaluation_report.html", public_dir / "evaluation_report.html")
     shutil.copyfile(reports_dir / "evaluation_report.pdf", public_dir / "evaluation_report.pdf")
@@ -90,6 +93,21 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
         reports_dir / "observability_trace_index.json",
         public_dir / "observability_trace_index.json",
     )
+    if (reports_dir / "external_human_review_summary.json").exists():
+        shutil.copyfile(
+            reports_dir / "external_human_review_summary.json",
+            public_dir / "external_human_review_summary.json",
+        )
+    if (project_root / "data/review/external_human_review_packet.csv").exists():
+        shutil.copyfile(
+            project_root / "data/review/external_human_review_packet.csv",
+            public_dir / "external_human_review_packet.csv",
+        )
+    if (project_root / "data/review/external_human_review_label_template.csv").exists():
+        shutil.copyfile(
+            project_root / "data/review/external_human_review_label_template.csv",
+            public_dir / "external_human_review_label_template.csv",
+        )
     if (reports_dir / "techqa_public_rag_summary.json").exists():
         shutil.copyfile(
             reports_dir / "techqa_public_rag_summary.json",
@@ -123,6 +141,7 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
             safety_disagreements=safety_disagreements,
             safety_mitigation=safety_mitigation,
             safety_operating_recommendation=safety_operating_recommendation,
+            external_review=external_review,
         ),
         encoding="utf-8",
     )
@@ -146,6 +165,7 @@ def _index_html(
     safety_disagreements: dict[str, Any],
     safety_mitigation: dict[str, Any],
     safety_operating_recommendation: dict[str, Any],
+    external_review: dict[str, Any],
 ) -> str:
     counts = profile["dataset_counts"]
     mix = profile["golden_case_mix"]
@@ -160,6 +180,7 @@ def _index_html(
     operating_capacity_label = (
         f"{operating_summary['minimum_reviewer_daily_capacity']} / reviewer / day"
     )
+    external_status = external_review.get("status", "not_configured")
     risk_labels = "\n".join(
         f"<li>{escape(label)}</li>" for label in profile["risk_labels"]
     )
@@ -198,6 +219,9 @@ def _index_html(
         ),
         ("Safety mitigation impact", "safety_mitigation_impact.json"),
         ("Safety threshold decision memo", "safety_threshold_decision_memo.json"),
+        ("External human review summary", "external_human_review_summary.json"),
+        ("External review packet", "external_human_review_packet.csv"),
+        ("External review label template", "external_human_review_label_template.csv"),
         ("Observability trace index", "observability_trace_index.json"),
     ]
     artifacts = "\n".join(
@@ -391,6 +415,7 @@ def _index_html(
         {_metric("Synthetic unsafe prevalence", _pct(safety_prevalence["unsafe_prevalence"]))}
         {_metric("High-severity FN count", safety_metrics["high_severity_false_negative_count"])}
         {_metric("Safety review queue", review_summary["queue_count"])}
+        {_metric("External review status", external_status)}
         {_metric("Safety min review capacity", operating_capacity_label)}
         {_metric("Unsafe reduction", _pct(mitigation_summary["unsafe_allowed_reduction_rate"]))}
         {_metric("Indexed traces", trace_index["trace_count"])}
@@ -440,6 +465,11 @@ def _index_html(
       <ul>
         <li><a href="{repo_url}/blob/main/docs/benchmark_card.md">Benchmark card</a></li>
         <li><a href="{repo_url}/blob/main/docs/dataset_card.md">Dataset card</a></li>
+        <li>
+          <a href="{repo_url}/blob/main/docs/external_human_review_protocol.md">
+            External human review protocol
+          </a>
+        </li>
         <li><a href="{repo_url}/blob/main/docs/failure_taxonomy.md">Failure taxonomy</a></li>
         <li><a href="{repo_url}/blob/main/docs/research_roadmap.md">Research roadmap</a></li>
         <li><a href="{repo_url}/blob/main/CONTRIBUTING.md">Contributing guide</a></li>

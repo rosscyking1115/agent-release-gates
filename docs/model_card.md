@@ -67,7 +67,7 @@ The safety classifier workflow reports 40 enriched challenge cases, 39 secondary
 
 The controlled-agent eval reports 100.00% trace coverage, audit event coverage, approval audit rate, monitoring snapshot rate, valid tool-call rate, side-effect block rate, approved action execution rate, and route-tool selection accuracy. It also exports deterministic OpenTelemetry-style spans for sampled blocked and approved tool routes. The full run adds evaluation-stage spans for data generation, retrieval, extraction, security, agent evaluation, report/API artifacts, case-level retriever failures, case-level retriever ranking details, case-level extraction outcomes, case-level agent approval decisions, and API contract/error cases. The dashboard renders those spans as a local trace timeline and trace index, including component summaries, predefined query counts, and error-span examples. The lab also includes an optional OTLP/HTTP exporter with a deterministic dry-run preview, a local capture smoke test for POST-path verification, and a Dockerized OpenTelemetry Collector deployment check.
 
-The dataset profile reports 102 manual golden cases, 70 expected abstentions, 46 noise types, 22 task types, and a 28.49% manual-case share. That profile is treated as part of the evaluation evidence because benchmark coverage affects how much trust the headline scores deserve.
+The dataset profile reports 102 manual golden cases, 70 expected abstentions, 46 noise types, 22 task types, and a 28.49% manual-case share. That profile is treated as part of the evaluation evidence because benchmark coverage affects how much trust the headline scores deserve. The external human-review workflow now prepares a 24-case review packet and blank label template, but the public result remains `awaiting_labels` until independent reviewers complete the template.
 
 The retriever snapshot report records deterministic version-to-version deltas and flags regressions when citation coverage falls or failed-case count rises. The evaluation history report adds stable dated lab milestones for the same local benchmark sequence, plus a current cross-workflow quality summary.
 
@@ -87,7 +87,7 @@ Safety extension status: the Safety Prevalence & Classifier Evaluation module se
 - Structured extraction is deterministic pattern matching, not LLM extraction.
 - Security checks and severity weights are deterministic controls, even after adding harder retrieved-context attacks and residual-risk scoring; they are not a full adversarial red-team harness.
 - Safety evaluation includes sampled prevalence estimation, classifier threshold tuning, human-review queue simulation, reviewer-disagreement slicing, secondary review-band analysis, secondary-floor validation, mitigation-impact reporting, and a completed threshold decision memo. Reviewer behavior is still deterministic and synthetic.
-- Real independent human labels, inter-rater agreement, and multi-model result tables are planned but not yet published. Hosted LLM-as-judge evidence currently consists of one reviewed OpenAI calibration run.
+- Real independent human labels, inter-rater agreement, and multi-model result tables are planned but not yet published. The external-review packet is prepared, and hosted LLM-as-judge evidence currently consists of one reviewed OpenAI calibration run.
 - The controlled agent is a local workflow, not a LangGraph state machine yet.
 - Telemetry export is local JSONL with a deterministic trace index and optional OTLP/HTTP collector adapter; CI verifies posting against a local capture endpoint and a Dockerized OpenTelemetry Collector metrics-verified deployment, but not downstream storage or production visualization.
 - Metrics should be interpreted as engineering checks over synthetic cases, not claims about real-world production performance.
@@ -109,7 +109,7 @@ Side-effecting operations are mock-only and require explicit approval.
 
 - Publish and maintain benchmark and dataset cards for external review.
 - Formalize the failure taxonomy and attach labels to case-level results.
-- Add a human-labeled calibration sample with agreement and disagreement reporting.
+- Collect independent labels for the prepared external-review packet and report agreement and disagreement metrics.
 - Compare deterministic rules, hosted LLM-as-judge runs, and independent human review on the same sample.
 - Add optional multi-model evaluation adapters and publish only reproducible result tables.
 - Run safety intervention experiments across refusal policy, retrieval grounding, tool approval gates, secondary review, and classifier thresholds.

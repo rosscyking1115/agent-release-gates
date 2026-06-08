@@ -183,6 +183,43 @@ Expected provider-run result:
 - the same citation, abstention, routing, and failure-analysis checks are applied as the local retrievers
 - the report should not be described as a project result until the provider-backed run has actually completed
 
+## External Human Review
+
+The external-review workflow is credential-free and prepares the packet needed
+for independent reviewers:
+
+```powershell
+uv run python scripts/prepare_external_human_review.py
+```
+
+Generated files:
+
+- `data/review/external_human_review_packet.csv`
+- `data/review/external_human_review_label_template.csv`
+- `reports/external_human_review_summary.json`
+- `reports/external_human_review_cases.jsonl`
+
+To collect labels, give reviewers the packet and ask them to complete the label
+template without looking at maintainer labels, classifier labels, or hosted
+judge labels. Save completed labels as:
+
+```text
+data/review/external_human_review_labels.csv
+```
+
+Then rerun:
+
+```powershell
+uv run python scripts/prepare_external_human_review.py
+uv run python scripts/run_all_evals.py
+uv run python scripts/build_public_site.py
+```
+
+The public report should only claim independent human-review results after the
+completed label file is present and the reviewers are independent of the
+maintainer labels. Until then, the external-review status should remain
+`awaiting_labels`.
+
 ## Hosted Model-Judge Evaluation
 
 The hosted model-judge comparison is optional and dry-run-first. The default command estimates the calibration run shape without making network calls:

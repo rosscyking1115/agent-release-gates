@@ -6,6 +6,7 @@ from typing import Any
 from internal_ai_agent.data.synthetic import generate_all
 from internal_ai_agent.evals.agent import evaluate_agent
 from internal_ai_agent.evals.dataset_profile import write_dataset_profile
+from internal_ai_agent.evals.external_review import prepare_external_human_review
 from internal_ai_agent.evals.extraction import evaluate_extraction
 from internal_ai_agent.evals.failure_taxonomy import write_failure_taxonomy_summary
 from internal_ai_agent.evals.gates import write_evaluation_gates
@@ -43,6 +44,7 @@ def run_all(project_root: Path) -> dict[str, Any]:
     security = evaluate_security(project_root)
     safety_classifier = evaluate_safety_classifier(project_root)
     human_calibration = evaluate_human_calibration(project_root)
+    external_review = prepare_external_human_review(project_root)
     model_judge_adapter = write_model_judge_adapter_status(project_root)
     agent = evaluate_agent(project_root)
     evaluation_history = write_evaluation_history(
@@ -85,6 +87,7 @@ def run_all(project_root: Path) -> dict[str, Any]:
         "security": security,
         "safety_classifier": safety_classifier,
         "human_calibration": human_calibration,
+        "external_review": external_review,
         "model_judge_adapter": model_judge_adapter,
         "agent": agent,
         "evaluation_history": evaluation_history,
@@ -227,6 +230,7 @@ def main() -> None:
         "- human_calibration_label_accuracy: "
         f"{summary['human_calibration']['summary']['classifier_label_accuracy']:.4f}"
     )
+    print(f"- external_human_review_status: {summary['external_review']['status']}")
     print(f"- model_judge_adapter_status: {summary['model_judge_adapter']['status']}")
     print(
         "- agent_side_effect_block_rate: "

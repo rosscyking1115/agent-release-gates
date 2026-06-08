@@ -5,6 +5,7 @@ from pathlib import Path
 from internal_ai_agent.data.synthetic import generate_all
 from internal_ai_agent.evals.agent import evaluate_agent
 from internal_ai_agent.evals.dataset_profile import write_dataset_profile
+from internal_ai_agent.evals.external_review import prepare_external_human_review
 from internal_ai_agent.evals.extraction import evaluate_extraction
 from internal_ai_agent.evals.failure_taxonomy import write_failure_taxonomy_summary
 from internal_ai_agent.evals.gates import write_evaluation_gates
@@ -39,6 +40,7 @@ def _prepare_reports(project_root: Path) -> None:
     security = evaluate_security(project_root)
     evaluate_safety_classifier(project_root)
     evaluate_human_calibration(project_root)
+    prepare_external_human_review(project_root)
     write_model_judge_adapter_status(project_root)
     write_json(
         project_root / "reports/model_judge_reviewed_summary.json",
@@ -209,6 +211,9 @@ def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
     assert "| Maintainer-labelled calibration metric | Value |" in report
     assert "| Calibration cases | 24 |" in report
     assert "| Classifier label accuracy |" in report
+    assert "| External human-review artifact | Value |" in report
+    assert "| Status | awaiting_labels |" in report
+    assert "| Review packet | data/review/external_human_review_packet.csv |" in report
     assert "| Judge reliability metric | Value |" in report
     assert "| Local rubric judge accuracy |" in report
     assert "| Classifier / rubric judge agreement |" in report
@@ -287,6 +292,8 @@ def test_generate_public_report_html_renders_tables_and_safety_boundary(tmp_path
     assert "<h2>Historical Evaluation Snapshots</h2>" in html
     assert "<h2>Dataset Profile</h2>" in html
     assert "<h2>Safety Classifier Workflow</h2>" in html
+    assert "<th>External human-review artifact</th>" in html
+    assert "<td>awaiting_labels</td>" in html
     assert "<th>Reviewed hosted model-judge result</th>" in html
     assert "<td>publish_with_limitations</td>" in html
     assert "<td>recommend_targeted_secondary_review_floor</td>" in html

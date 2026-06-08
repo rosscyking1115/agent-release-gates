@@ -1,0 +1,23 @@
+{
+  "case_count": 24,
+  "label_row_count": 0,
+  "label_template_path": "data/review/external_human_review_label_template.csv",
+  "labels_path": "data/review/external_human_review_labels.csv",
+  "notes": [
+    "External human review packet and label template are prepared, but no independent reviewer labels have been added yet.",
+    "Add completed labels to data/review/external_human_review_labels.csv and rerun the evaluator to report agreement and kappa."
+  ],
+  "packet_path": "data/review/external_human_review_packet.csv",
+  "report_type": "external_human_review",
+  "reviewer_count": 0,
+  "status": "awaiting_labels",
+  "summary": {
+    "adjudication_required_count": 0,
+    "cases_with_two_or_more_reviewers": 0,
+    "external_label_coverage": 0.0,
+    "external_maintainer_agreement_rate": 0.0,
+    "external_maintainer_disagreement_count": 0,
+    "pairwise_agreement_rate": 0.0,
+    "pairwise_cohen_kappa": 0.0
+  }
+}

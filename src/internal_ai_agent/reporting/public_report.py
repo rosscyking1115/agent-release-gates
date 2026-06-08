@@ -93,6 +93,9 @@ def generate_public_report(project_root: Path) -> str:
     human_calibration = _read_optional_json(
         reports_dir / "human_calibration_summary.json"
     )
+    external_review = _read_optional_json(
+        reports_dir / "external_human_review_summary.json"
+    )
     judge_reliability = _read_optional_json(
         reports_dir / "judge_reliability_summary.json"
     )
@@ -201,6 +204,8 @@ def generate_public_report(project_root: Path) -> str:
             _safety_classifier_table(safety_classifier),
             "",
             _human_calibration_table(human_calibration),
+            "",
+            _external_review_table(external_review),
             "",
             _judge_reliability_table(judge_reliability),
             "",
@@ -791,6 +796,60 @@ def _human_calibration_table(report: dict[str, Any]) -> str:
                     **row
                 )
             )
+    return "\n".join(rows)
+
+
+def _external_review_table(report: dict[str, Any]) -> str:
+    if report.get("report_type") != "external_human_review":
+        return "External human review is not configured."
+    summary = report["summary"]
+    rows = [
+        "| External human-review artifact | Value |",
+        "| --- | --- |",
+        f"| Status | {report['status']} |",
+        f"| Calibration cases | {report['case_count']} |",
+        f"| Label rows | {report['label_row_count']} |",
+        f"| Reviewers | {report['reviewer_count']} |",
+        f"| Label coverage | {_pct(summary['external_label_coverage'])} |",
+        (
+            "| Cases with two or more reviewers | "
+            f"{summary['cases_with_two_or_more_reviewers']} |"
+        ),
+        f"| Pairwise agreement | {_pct(summary['pairwise_agreement_rate'])} |",
+        f"| Pairwise Cohen kappa | {summary['pairwise_cohen_kappa']} |",
+        (
+            "| External / maintainer agreement | "
+            f"{_pct(summary['external_maintainer_agreement_rate'])} |"
+        ),
+        (
+            "| External / maintainer disagreements | "
+            f"{summary['external_maintainer_disagreement_count']} |"
+        ),
+        f"| Adjudication required | {summary['adjudication_required_count']} |",
+        f"| Review packet | {report['packet_path']} |",
+        f"| Label template | {report['label_template_path']} |",
+    ]
+    if report.get("disagreement_examples"):
+        rows.extend(
+            [
+                "",
+                (
+                    "| External review case | Category | Maintainer | "
+                    "External consensus | Adjudication |"
+                ),
+                "| --- | --- | --- | --- | --- |",
+            ]
+        )
+        for row in report["disagreement_examples"][:8]:
+            rows.append(
+                "| {case_id} | {risk_category} | {maintainer_label} | "
+                "{external_consensus_label} | {adjudication_required} |".format(
+                    **row
+                )
+            )
+    rows.extend(["", "| External review note |", "| --- |"])
+    for note in report.get("notes", []):
+        rows.append(f"| {note} |")
     return "\n".join(rows)
 
 

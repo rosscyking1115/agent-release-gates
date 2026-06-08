@@ -43,7 +43,7 @@ Synthetic labels are generated and maintained inside the repo:
 - risk categories and severity bands
 - simulated reviewer outcomes
 
-The project includes a 24-case maintainer-labeled calibration sample for checking classifier/rubric behavior against adjudicated labels. It does not yet publish independent external human labels, so external review should still be reported separately when added.
+The project includes a 24-case maintainer-labeled calibration sample for checking classifier/rubric behavior against adjudicated labels. It also publishes an external-review packet and label template for the same cases. Completed independent external human labels are not yet published and should be reported separately when added.
 
 ## Collection Process
 
@@ -64,15 +64,16 @@ The dataset boundary is intentionally conservative:
 
 - Synthetic cases can overstate performance if the generator and evaluator share assumptions.
 - Some ticket and runbook text is still templated despite manual-case expansion.
-- Simulated reviewer labels are useful for workflow testing but are not a substitute for independent human review.
+- Simulated reviewer labels are useful for workflow testing but are not a substitute for completed independent human review.
 - The maintainer-labeled calibration sample is useful for reproducibility and rubric debugging, but it is not an external annotation study.
+- The external-review packet is prepared, but independent labels are still awaiting collection.
 - The local rubric judge is deterministic and transparent; the hosted judge track currently has one reviewed OpenAI calibration run, not a multi-model comparison.
 - Public TechQA coverage is compact and should be expanded before drawing broader external conclusions.
 
 ## Recommended Dataset Work
 
 - Add more hand-authored benign, ambiguous, unsafe, prompt-injection, weak-evidence, excessive-agency, and tool-misuse cases.
-- Add independent reviewer labels for the calibration sample.
+- Collect independent reviewer labels using the prepared external-review packet.
 - Track inter-rater agreement and reviewer-disagreement reasons.
 - Extend the hosted LLM judge comparison beyond the first reviewed OpenAI run and publish judge disagreement slices.
 - Expand public TechQA coverage beyond the compact sample.
