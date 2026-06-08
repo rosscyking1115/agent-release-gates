@@ -87,7 +87,7 @@ Safety extension status: the Safety Prevalence & Classifier Evaluation module se
 - Structured extraction is deterministic pattern matching, not LLM extraction.
 - Security checks and severity weights are deterministic controls, even after adding harder retrieved-context attacks and residual-risk scoring; they are not a full adversarial red-team harness.
 - Safety evaluation includes sampled prevalence estimation, classifier threshold tuning, human-review queue simulation, reviewer-disagreement slicing, secondary review-band analysis, secondary-floor validation, mitigation-impact reporting, and a completed threshold decision memo. Reviewer behavior is still deterministic and synthetic.
-- Real independent human labels, inter-rater agreement, LLM-as-judge comparison, and multi-model result tables are planned but not yet published.
+- Real independent human labels, inter-rater agreement, and multi-model result tables are planned but not yet published. Hosted LLM-as-judge evidence currently consists of one reviewed OpenAI calibration run.
 - The controlled agent is a local workflow, not a LangGraph state machine yet.
 - Telemetry export is local JSONL with a deterministic trace index and optional OTLP/HTTP collector adapter; CI verifies posting against a local capture endpoint and a Dockerized OpenTelemetry Collector metrics-verified deployment, but not downstream storage or production visualization.
 - Metrics should be interpreted as engineering checks over synthetic cases, not claims about real-world production performance.
@@ -110,7 +110,7 @@ Side-effecting operations are mock-only and require explicit approval.
 - Publish and maintain benchmark and dataset cards for external review.
 - Formalize the failure taxonomy and attach labels to case-level results.
 - Add a human-labeled calibration sample with agreement and disagreement reporting.
-- Compare deterministic rules, LLM-as-judge, and human review on the same sample.
+- Compare deterministic rules, hosted LLM-as-judge runs, and independent human review on the same sample.
 - Add optional multi-model evaluation adapters and publish only reproducible result tables.
 - Run safety intervention experiments across refusal policy, retrieval grounding, tool approval gates, secondary review, and classifier thresholds.
 - Expand the TechQA public benchmark beyond the 160-case sample and compare local retrieval with provider-backed embeddings.

@@ -66,7 +66,7 @@ The dataset boundary is intentionally conservative:
 - Some ticket and runbook text is still templated despite manual-case expansion.
 - Simulated reviewer labels are useful for workflow testing but are not a substitute for independent human review.
 - The maintainer-labeled calibration sample is useful for reproducibility and rubric debugging, but it is not an external annotation study.
-- The local rubric judge is deterministic and transparent; it is a baseline for judge reliability plumbing, not a hosted LLM judge.
+- The local rubric judge is deterministic and transparent; the hosted judge track currently has one reviewed OpenAI calibration run, not a multi-model comparison.
 - Public TechQA coverage is compact and should be expanded before drawing broader external conclusions.
 
 ## Recommended Dataset Work
@@ -74,6 +74,6 @@ The dataset boundary is intentionally conservative:
 - Add more hand-authored benign, ambiguous, unsafe, prompt-injection, weak-evidence, excessive-agency, and tool-misuse cases.
 - Add independent reviewer labels for the calibration sample.
 - Track inter-rater agreement and reviewer-disagreement reasons.
-- Compare the local rubric judge against hosted LLM judges and publish judge disagreement slices.
+- Extend the hosted LLM judge comparison beyond the first reviewed OpenAI run and publish judge disagreement slices.
 - Expand public TechQA coverage beyond the compact sample.
 - Keep synthetic and public-data metrics separated in every public report.

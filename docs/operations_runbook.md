@@ -212,6 +212,16 @@ Expected hosted-judge result:
 - the summary and status include `publication_review.decision`
 - the public report should only claim hosted model-judge results after a credentialed run is completed and reviewed
 
+After reviewing the local result, promote a sanitized public summary:
+
+```powershell
+uv run python scripts/promote_model_judge_result.py --decision publish_with_limitations
+uv run python scripts/export_public_report.py
+uv run python scripts/build_public_site.py
+```
+
+Do not commit `reports/model_judge_eval_summary.json` or `reports/model_judge_eval_cases.jsonl`; they remain local-only provider outputs.
+
 Publication review decisions:
 
 - `publishable`: no blocking or review issues were detected; publish only with model, provider, date, and run metadata

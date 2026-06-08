@@ -99,6 +99,9 @@ def generate_public_report(project_root: Path) -> str:
     model_judge_adapter = _read_optional_json(
         reports_dir / "model_judge_adapter_status.json"
     )
+    model_judge_reviewed = _read_optional_json(
+        reports_dir / "model_judge_reviewed_summary.json"
+    )
     failure_taxonomy = _read_optional_json(reports_dir / "failure_taxonomy_summary.json")
     agent = _read_json(reports_dir / "agent_eval_summary.json")
 
@@ -203,6 +206,8 @@ def generate_public_report(project_root: Path) -> str:
             "",
             _model_judge_adapter_table(model_judge_adapter),
             "",
+            _model_judge_reviewed_table(model_judge_reviewed),
+            "",
             _safety_threshold_table(safety_threshold_sweep),
             "",
             _safety_retuning_table(safety_threshold_retuning),
@@ -286,12 +291,12 @@ def generate_public_report(project_root: Path) -> str:
                 "sample is maintainer-labelled and not yet independently reviewed."
             ),
             (
-                "- Multi-model comparison and LLM-as-judge reliability analysis are "
-                "planned but not yet published."
+                "- Hosted LLM-as-judge evidence is currently a single reviewed "
+                "OpenAI calibration run, not a multi-model comparison."
             ),
             (
-                "- The published judge reliability track currently uses a local "
-                "deterministic rubric judge, not a hosted LLM judge."
+                "- Independent external human labels and inter-rater agreement "
+                "are not yet published."
             ),
             "",
             "## Recommended Next Work",
@@ -299,9 +304,9 @@ def generate_public_report(project_root: Path) -> str:
             "- Formalize the failure taxonomy across safety, retrieval, citation, "
             "privacy, tool-use, and usefulness failures.",
             "- Add independent external human review for the calibration sample "
-            "and compare deterministic rules with LLM-as-judge decisions.",
-            "- Run the judge reliability track against hosted model judges and "
-            "publish disagreement slices separately from the local rubric baseline.",
+            "and compare it with deterministic rules and hosted LLM-as-judge decisions.",
+            "- Extend the reviewed hosted judge track beyond the first OpenAI run "
+            "and publish disagreement slices separately from the local rubric baseline.",
             "- Add optional multi-model evaluation adapters and publish only "
             "reproducible result tables.",
             "- Run safety intervention experiments across refusal policy, retrieval "
@@ -884,6 +889,46 @@ def _model_judge_adapter_table(report: dict[str, Any]) -> str:
     rows.extend(["", "| Planned local output |", "| --- |"])
     for path in report.get("planned_outputs", []):
         rows.append(f"| {path} |")
+    return "\n".join(rows)
+
+
+def _model_judge_reviewed_table(report: dict[str, Any]) -> str:
+    if report.get("report_type") != "reviewed_hosted_model_judge_result":
+        return "Reviewed hosted model-judge result is not published."
+    metrics = report["metrics"]
+    review = report["publication_review"]
+    rows = [
+        "| Reviewed hosted model-judge result | Value |",
+        "| --- | --- |",
+        f"| Provider | {report['provider']} |",
+        f"| Model | {report['model']} |",
+        f"| Manual publication decision | {report['manual_publication_decision']} |",
+        f"| Review note | {report['review_note']} |",
+        f"| Calibration cases | {report['case_count']} |",
+        f"| Model-judge label accuracy | {_pct(metrics['model_judge_label_accuracy'])} |",
+        (
+            "| Classifier / hosted judge agreement | "
+            f"{_pct(metrics['classifier_model_judge_agreement_rate'])} |"
+        ),
+        (
+            "| Average hosted judge confidence | "
+            f"{_pct(metrics['average_model_judge_confidence'])} |"
+        ),
+        f"| Hosted judge disagreement count | {metrics['model_judge_disagreement_count']} |",
+        f"| Publication gate decision | {review['decision']} |",
+        f"| Unsafe misses | {review['unsafe_miss_count']} |",
+        f"| Benign auto-blocks | {review['benign_auto_block_count']} |",
+    ]
+    rows.extend(["", "| Public disagreement case | Category | Human | Hosted judge | Error |"])
+    rows.append("| --- | --- | --- | --- | --- |")
+    for example in report.get("public_disagreement_examples", [])[:8]:
+        rows.append(
+            "| {case_id} | {risk_category} | {human_label} | "
+            "{model_judge_label} | {model_judge_error_type} |".format(**example)
+        )
+    rows.extend(["", "| Hosted judge limitation |", "| --- |"])
+    for limitation in report.get("limitations", []):
+        rows.append(f"| {limitation} |")
     return "\n".join(rows)
 
 

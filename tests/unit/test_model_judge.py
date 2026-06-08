@@ -11,6 +11,7 @@ from internal_ai_agent.evals.model_judge import (
     evaluate_hosted_model_judge,
     write_model_judge_adapter_status,
 )
+from internal_ai_agent.evals.model_judge_promotion import promote_model_judge_result
 from internal_ai_agent.io import read_jsonl, write_jsonl
 from internal_ai_agent.providers.openai_judge import (
     OpenAIJudgeClient,
@@ -210,6 +211,35 @@ def test_hosted_model_judge_publishable_when_clean(tmp_path: Path) -> None:
     assert report["publication_review"]["decision"] == "publishable"
     assert report["publication_review"]["blocking_reasons"] == []
     assert report["publication_review"]["recommendation"].startswith("Publish")
+
+
+def test_promote_model_judge_result_writes_sanitized_public_summary(tmp_path: Path) -> None:
+    _copy_calibration_fixture(tmp_path)
+    evaluate_human_calibration(tmp_path)
+    evaluate_hosted_model_judge(
+        tmp_path,
+        judge_case=_fake_judge,
+        provider="test_provider",
+        model="test-judge-model",
+    )
+
+    report = promote_model_judge_result(
+        tmp_path,
+        summary_path=Path("reports/model_judge_eval_summary.json"),
+        cases_path=Path("reports/model_judge_eval_cases.jsonl"),
+        output_path=Path("reports/model_judge_reviewed_summary.json"),
+        reviewer="maintainer",
+        decision="publish_with_limitations",
+        note="Reviewed with known limitations.",
+    )
+
+    assert report["report_type"] == "reviewed_hosted_model_judge_result"
+    assert report["manual_publication_decision"] == "publish_with_limitations"
+    assert report["metrics"]["case_count"] == 24
+    assert report["public_disagreement_examples"]
+    assert "raw_response_id" not in report["public_disagreement_examples"][0]
+    assert "model_judge_rationale" not in report["public_disagreement_examples"][0]
+    assert (tmp_path / "reports/model_judge_reviewed_summary.json").exists()
 
 
 def _copy_calibration_fixture(tmp_path: Path) -> None:

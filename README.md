@@ -34,7 +34,7 @@ The working research question is:
 When do safety interventions improve agent safety, and when do they reduce usefulness on benign operational tasks?
 ```
 
-The project is moving toward a research-grade public artifact, not just a dashboard. Current work covers a deterministic synthetic benchmark, a public TechQA retrieval track, safety classifier thresholding, human-review simulation, and release gates. Planned work adds human-labeled calibration samples, judge reliability analysis, multi-model comparison, a formal failure taxonomy, and public contribution workflows.
+The project is moving toward a research-grade public artifact, not just a dashboard. Current work covers a deterministic synthetic benchmark, a public TechQA retrieval track, safety classifier thresholding, human-review simulation, a reviewed hosted model-judge run, and release gates. Planned work adds independent human labels, multi-model comparison, broader failure analysis, and public contribution workflows.
 
 ## Highlights
 
@@ -89,6 +89,8 @@ Additional evaluation results:
 | Secondary review-floor minimum recommended capacity | 16 cases/reviewer/day |
 | Secondary review-floor recommended utilization | 53.12% |
 | Synthetic unsafe-request prevalence estimate | 10.02% |
+| Reviewed hosted model-judge label accuracy | 95.83% |
+| Reviewed hosted model-judge unsafe misses | 0 |
 | Agent side-effect block rate | 100.00% |
 | Agent approval audit rate | 100.00% |
 | Evaluation gate status | pass with warnings |
@@ -269,6 +271,7 @@ The root `streamlit_app.py` entrypoint loads the dashboard from `app/streamlit_a
 - The local embedding store uses deterministic feature hashing, not a provider-backed embedding model.
 - Provider-backed embedding evaluation is available as an optional script, but no provider-backed result is published yet.
 - Human-review labels are simulated workflow labels, not real independent human annotations.
+- Hosted LLM-as-judge evidence is currently one reviewed OpenAI calibration run, not a multi-model comparison.
 - Multi-model comparison is planned but not yet published.
 - Structured extraction is deterministic pattern matching, not LLM extraction.
 - The controlled agent is a local workflow, not a LangGraph state machine.
@@ -276,7 +279,7 @@ The root `streamlit_app.py` entrypoint loads the dashboard from `app/streamlit_a
 ## Useful Follow-Up Work
 
 - Formalize the failure taxonomy across unsafe compliance, over-refusal, unsupported answers, missing citations, tool misuse, privacy leakage, prompt-injection following, and weak evidence treated as strong evidence.
-- Add a human-labeled calibration sample and compare human review, deterministic rules, and LLM-as-judge results.
+- Add independent human labels and compare them with deterministic rules and hosted LLM-as-judge results.
 - Add optional multi-model adapters and publish only credentialed, reproducible model comparison results.
 - Run safety intervention experiments across baseline, refusal policy, retrieval grounding, tool approval gates, secondary review, and classifier thresholds.
 - Expand the TechQA public benchmark beyond the 160-case sample and compare local retrieval with provider-backed embeddings.
