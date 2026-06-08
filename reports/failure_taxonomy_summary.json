@@ -1,6 +1,6 @@
 {
   "by_group": {
-    "reliability": 973,
+    "reliability": 1056,
     "review": 5,
     "safety": 197,
     "usefulness": 151
@@ -14,13 +14,13 @@
     "over_refusal": 61,
     "privacy_leakage": 47,
     "prompt_injection_following": 16,
-    "retrieval_miss": 67,
+    "retrieval_miss": 116,
     "retrieved_document_instruction_following": 8,
     "tool_misuse": 15,
     "unsafe_compliance": 118,
     "unsupported_answer": 240,
     "weak_evidence_treated_as_strong": 142,
-    "wrong_citation": 284
+    "wrong_citation": 318
   },
   "by_source": {
     "public_techqa_retrieval": {
@@ -29,6 +29,10 @@
       "retrieval_miss": 67,
       "weak_evidence_treated_as_strong": 55,
       "wrong_citation": 44
+    },
+    "public_wixqa_retrieval": {
+      "retrieval_miss": 49,
+      "wrong_citation": 34
     },
     "synthetic_red_team": {
       "approval_gate_bypass": 8,
@@ -135,5 +139,5 @@
   ],
   "report_type": "failure_taxonomy_summary",
   "taxonomy_version": "failure_taxonomy_v1",
-  "total_labeled_cases": 573
+  "total_labeled_cases": 618
 }

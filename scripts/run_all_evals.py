@@ -20,6 +20,7 @@ from internal_ai_agent.evals.runner import (
 from internal_ai_agent.evals.safety_classifier import evaluate_safety_classifier
 from internal_ai_agent.evals.security import evaluate_security
 from internal_ai_agent.evals.techqa_public import evaluate_techqa_public
+from internal_ai_agent.evals.wixqa_public import evaluate_wixqa_public
 from internal_ai_agent.io import read_jsonl, write_jsonl
 from internal_ai_agent.observability.collector import write_collector_export_preview
 from internal_ai_agent.observability.otel import (
@@ -40,6 +41,7 @@ def run_all(project_root: Path) -> dict[str, Any]:
     comparison = evaluate_comparison(project_root)
     retriever_comparison = evaluate_retriever_comparison(project_root)
     techqa_public = evaluate_techqa_public(project_root)
+    wixqa_public = evaluate_wixqa_public(project_root)
     extraction = evaluate_extraction(project_root)
     security = evaluate_security(project_root)
     safety_classifier = evaluate_safety_classifier(project_root)
@@ -83,6 +85,7 @@ def run_all(project_root: Path) -> dict[str, Any]:
         "comparison": comparison,
         "retriever_comparison": retriever_comparison,
         "techqa_public": techqa_public,
+        "wixqa_public": wixqa_public,
         "extraction": extraction,
         "security": security,
         "safety_classifier": safety_classifier,
@@ -195,6 +198,16 @@ def main() -> None:
         print(
             "- techqa_public_impossible_abstention_rate: "
             f"{techqa_metrics['impossible_abstention_rate']:.4f}"
+        )
+    if summary["wixqa_public"]["status"] == "evaluated":
+        wixqa_metrics = summary["wixqa_public"]["metrics"]
+        print(
+            "- wixqa_public_retrieval_hit_rate_at_3: "
+            f"{wixqa_metrics['retrieval_hit_rate_at_3']:.4f}"
+        )
+        print(
+            "- wixqa_public_top1_citation_accuracy: "
+            f"{wixqa_metrics['top1_citation_accuracy']:.4f}"
         )
     print(
         f"- extraction_schema_validity: {summary['extraction']['metrics']['schema_validity']:.4f}"

@@ -207,6 +207,8 @@ def _load_taxonomy_rows(project_root: Path) -> list[dict[str, Any]]:
         "reports/safety_classifier_eval_cases.jsonl",
         "reports/techqa_public_rag_cases.jsonl",
         "reports/techqa_public_retriever_cases.jsonl",
+        "reports/wixqa_public_rag_cases.jsonl",
+        "reports/wixqa_public_retriever_cases.jsonl",
     ]
     rows: list[dict[str, Any]] = []
     for relative_path in paths:

@@ -20,4 +20,6 @@ reports/model_judge_eval_status.json
 reports/model_judge_eval_summary.json
 reports/model_judge_eval_cases.jsonl
 data/public/techqa_train.json
+data/public/wixqa_expertwritten_test.jsonl
+data/public/wixqa_kb_corpus.jsonl
 /public/

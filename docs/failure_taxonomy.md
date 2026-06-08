@@ -47,7 +47,7 @@ This taxonomy defines the shared failure labels used across retrieval, safety, p
 Each public report should separate:
 
 - synthetic benchmark labels
-- public TechQA retrieval labels
+- public TechQA and WixQA retrieval labels
 - simulated reviewer labels
 - future real human labels
 - future LLM-as-judge labels

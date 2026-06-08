@@ -2,7 +2,7 @@
 
 ## Scope
 
-This project models risks for a public AI-agent safety and reliability benchmark that uses a synthetic internal-operations domain. It does not contain real company data, customer data, employee data, credentials, or confidential workflows. Public datasets, such as TechQA-RAG-Eval, are handled as separate external benchmark tracks.
+This project models risks for a public AI-agent safety and reliability benchmark that uses a synthetic internal-operations domain. It does not contain real company data, customer data, employee data, credentials, or confidential workflows. Public datasets, such as TechQA-RAG-Eval and WixQA, are handled as separate external benchmark tracks.
 
 ## Assets
 

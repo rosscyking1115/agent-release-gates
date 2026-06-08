@@ -17,6 +17,7 @@ AI agents are only useful when their answers are grounded, measurable, access-aw
 
 - retrieves synthetic runbook evidence and answers with citations
 - validates the retrieval harness on a 160-case public TechQA-RAG-Eval sample
+- validates enterprise-support retrieval on an 80-case public WixQA expert-written sample
 - extracts structured fields from synthetic operations tickets
 - routes tickets to synthetic owner teams
 - refuses unsafe, weak-evidence, or policy-bypassing requests
@@ -34,14 +35,14 @@ The working research question is:
 When do safety interventions improve agent safety, and when do they reduce usefulness on benign operational tasks?
 ```
 
-The project is moving toward a research-grade public artifact, not just a dashboard. Current work covers a deterministic synthetic benchmark, a public TechQA retrieval track, safety classifier thresholding, human-review simulation, an external-review packet, a reviewed hosted model-judge run, and release gates. Planned work adds completed independent human labels, multi-model comparison, broader failure analysis, and public contribution workflows.
+The project is moving toward a research-grade public artifact, not just a dashboard. Current work covers a deterministic synthetic benchmark, public TechQA and WixQA retrieval tracks, safety classifier thresholding, human-review simulation, an external-review packet, a reviewed hosted model-judge run, and release gates. Planned work adds completed independent human labels, multi-model comparison, broader failure analysis, and public contribution workflows.
 
 ## Highlights
 
 | Area | Implementation |
 | --- | --- |
 | Retrieval evaluation | Baseline, lexical, hybrid sparse semantic, local TF-IDF vector, and local hashed embedding-store retrievers |
-| External benchmark | 160-case NVIDIA TechQA-RAG-Eval public technical-support RAG sample |
+| External benchmarks | 160-case NVIDIA TechQA-RAG-Eval sample and 80-case WixQA expert-written enterprise-support sample |
 | Structured extraction | Pydantic-validated ticket extraction and routing decisions |
 | Safety testing | Red-team cases plus classifier threshold tuning, sampled prevalence estimation, human review simulation, synthetic adjudication notes, reviewer-disagreement slices, secondary review-band analysis, secondary-floor validation, operating recommendation, mitigation impact, and decision memo |
 | Agent governance | Read-only tools plus approval-gated mock side effects |
@@ -102,9 +103,10 @@ These scores are engineering checks over synthetic data, not claims about real-w
 
 External public RAG benchmark:
 
-| Dataset | Cases | Retrieval hit rate@3 | Top-1 citation | Impossible-question abstention |
+| Dataset | Cases | Retrieval hit rate@3 | Top-1 citation | Additional metric |
 | --- | ---: | ---: | ---: | ---: |
-| NVIDIA TechQA-RAG-Eval sample | 160 | 87.50% | 77.34% | 34.38% |
+| NVIDIA TechQA-RAG-Eval sample | 160 | 87.50% | 77.34% | 34.38% impossible-question abstention |
+| WixQA expert-written sample | 80 | 88.75% | 75.00% | 95.65% multi-article retrieval@3 |
 
 TechQA retriever comparison:
 
@@ -113,7 +115,14 @@ TechQA retriever comparison:
 | Keyword title baseline | 72.66% | 58.59% | 59.38% | 80 |
 | Local TF-IDF public retriever | 87.50% | 77.34% | 34.38% | 51 |
 
-The TechQA track is public technical-support data under Apache-2.0. It is used as an external validation layer for retrieval and abstention behavior, not as a replacement for the controlled synthetic internal-operations benchmark.
+WixQA retriever comparison:
+
+| Retriever | Retrieval hit rate@3 | Top-1 citation | Multi-article retrieval@3 | Failed cases |
+| --- | ---: | ---: | ---: | ---: |
+| Keyword title baseline | 61.25% | 46.25% | 65.22% | 43 |
+| Local TF-IDF WixQA retriever | 88.75% | 75.00% | 95.65% | 20 |
+
+The TechQA track is public technical-support data under Apache-2.0. The WixQA track is public enterprise-support data under MIT. They are used as external validation layers for retrieval behavior, not as replacements for the controlled synthetic internal-operations benchmark.
 
 ## Benchmark Transparency
 
@@ -126,7 +135,7 @@ Current dataset-profile highlights:
 - 46 noise types and 22 task types
 - manual share increased to 28.49%, clearing the previous manual-share gap label
 - the internal-operations benchmark data is synthetic and reproducible
-- the public TechQA track is separated so external validation does not blur the synthetic-lab boundary
+- the public TechQA and WixQA tracks are separated so external validation does not blur the synthetic-lab boundary
 
 The most important next retrieval step is comparing the local embedding-store retriever with a provider-backed embedding option. The repo now includes a dry-run-first provider embedding evaluation script for that comparison, but provider-backed results are not claimed until the script is run with credentials.
 
@@ -175,6 +184,15 @@ uv run python scripts/run_techqa_public_eval.py
 ```
 
 Use `--limit` on the preparation script to intentionally change the tracked sample size.
+
+The repo also includes an 80-case WixQA expert-written sample for public enterprise-support retrieval. To refresh it from upstream, download `wixqa_expertwritten/test.jsonl` and `wix_kb_corpus/wix_kb_corpus.jsonl` from `Wix/WixQA` into `data/public/`, then run:
+
+```powershell
+uv run python scripts/prepare_wixqa_public_benchmark.py
+uv run python scripts/run_wixqa_public_eval.py
+```
+
+The raw WixQA downloads are ignored by git; only the compact tracked benchmark sample and generated metrics are published.
 
 Run the interactive dashboard:
 
@@ -230,6 +248,9 @@ The public project page keeps the main experience focused on the dashboard and e
 - TechQA public RAG summary: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/techqa_public_rag_summary.json
 - TechQA public benchmark profile: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/techqa_public_benchmark_profile.json
 - TechQA public retriever comparison: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/techqa_public_retriever_comparison.json
+- WixQA public RAG summary: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/wixqa_public_rag_summary.json
+- WixQA public benchmark profile: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/wixqa_public_benchmark_profile.json
+- WixQA public retriever comparison: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/wixqa_public_retriever_comparison.json
 - Safety classifier summary: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_classifier_eval_summary.json
 - Safety threshold sweep: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_threshold_sweep.json
 - Safety threshold retuning: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_threshold_retuning.json
@@ -273,6 +294,7 @@ The root `streamlit_app.py` entrypoint loads the dashboard from `app/streamlit_a
 
 - The benchmark is synthetic and still partly templated.
 - The TechQA public benchmark currently uses a 160-case compact sample, not the full upstream dataset.
+- The WixQA public benchmark currently uses an 80-case compact sample, not the full upstream benchmark suite.
 - The local embedding store uses deterministic feature hashing, not a provider-backed embedding model.
 - Provider-backed embedding evaluation is available as an optional script, but no provider-backed result is published yet.
 - Human-review labels are simulated workflow labels, not real independent human annotations.
@@ -289,3 +311,4 @@ The root `streamlit_app.py` entrypoint loads the dashboard from `app/streamlit_a
 - Add optional multi-model adapters and publish only credentialed, reproducible model comparison results.
 - Run safety intervention experiments across baseline, refusal policy, retrieval grounding, tool approval gates, secondary review, and classifier thresholds.
 - Expand the TechQA public benchmark beyond the 160-case sample and compare local retrieval with provider-backed embeddings.
+- Expand the WixQA public benchmark and compare local retrieval with provider-backed embeddings.

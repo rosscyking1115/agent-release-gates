@@ -127,7 +127,7 @@
   "profile_type": "synthetic_dataset_profile",
   "recommended_next_data_work": [
     "Compare local retrieval with a provider-backed embedding option.",
-    "Keep all public benchmark data synthetic and reproducible."
+    "Keep synthetic and public benchmark data separated and reproducible."
   ],
   "red_team_coverage": {
     "by_attack_channel": {

@@ -26,6 +26,10 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
     techqa_profile = _read_optional_json(
         reports_dir / "techqa_public_benchmark_profile.json"
     )
+    wixqa_public = _read_optional_json(reports_dir / "wixqa_public_rag_summary.json")
+    wixqa_profile = _read_optional_json(
+        reports_dir / "wixqa_public_benchmark_profile.json"
+    )
     safety_classifier = _read_json(reports_dir / "safety_classifier_eval_summary.json")
     safety_retuning = _read_json(reports_dir / "safety_threshold_retuning.json")
     safety_review = _read_json(reports_dir / "safety_human_review_simulation.json")
@@ -123,6 +127,21 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
             reports_dir / "techqa_public_retriever_comparison.json",
             public_dir / "techqa_public_retriever_comparison.json",
         )
+    if (reports_dir / "wixqa_public_rag_summary.json").exists():
+        shutil.copyfile(
+            reports_dir / "wixqa_public_rag_summary.json",
+            public_dir / "wixqa_public_rag_summary.json",
+        )
+    if (reports_dir / "wixqa_public_benchmark_profile.json").exists():
+        shutil.copyfile(
+            reports_dir / "wixqa_public_benchmark_profile.json",
+            public_dir / "wixqa_public_benchmark_profile.json",
+        )
+    if (reports_dir / "wixqa_public_retriever_comparison.json").exists():
+        shutil.copyfile(
+            reports_dir / "wixqa_public_retriever_comparison.json",
+            public_dir / "wixqa_public_retriever_comparison.json",
+        )
 
     (public_dir / "index.html").write_text(
         _index_html(
@@ -134,6 +153,8 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
             gates=gates,
             techqa_public=techqa_public,
             techqa_profile=techqa_profile,
+            wixqa_public=wixqa_public,
+            wixqa_profile=wixqa_profile,
             safety_classifier=safety_classifier,
             safety_retuning=safety_retuning,
             safety_review=safety_review,
@@ -158,6 +179,8 @@ def _index_html(
     gates: dict[str, Any],
     techqa_public: dict[str, Any],
     techqa_profile: dict[str, Any],
+    wixqa_public: dict[str, Any],
+    wixqa_profile: dict[str, Any],
     safety_classifier: dict[str, Any],
     safety_retuning: dict[str, Any],
     safety_review: dict[str, Any],
@@ -195,6 +218,12 @@ def _index_html(
         (
             "TechQA public retriever comparison",
             "techqa_public_retriever_comparison.json",
+        ),
+        ("WixQA public RAG summary", "wixqa_public_rag_summary.json"),
+        ("WixQA public benchmark profile", "wixqa_public_benchmark_profile.json"),
+        (
+            "WixQA public retriever comparison",
+            "wixqa_public_retriever_comparison.json",
         ),
         ("Safety classifier summary", "safety_classifier_eval_summary.json"),
         ("Safety threshold sweep", "safety_threshold_sweep.json"),
@@ -376,8 +405,8 @@ def _index_html(
       <p>
         This project does not reproduce, evaluate, or criticize any real
         company's internal AI system. All data, teams, tickets, runbooks,
-        internal benchmark metrics, and workflows are synthetic. The TechQA
-        result is a separate public technical-support benchmark.
+        internal benchmark metrics, and workflows are synthetic. TechQA and
+        WixQA results are separate public-data RAG benchmarks.
       </p>
       <div class="actions">
         <a class="button primary" href="{streamlit_url}">Open Interactive Dashboard</a>
@@ -423,6 +452,8 @@ def _index_html(
         {_metric("Release gate failures", gates["fail_count"])}
         {_metric("TechQA public cases", _techqa_profile_value(techqa_profile, "sample_case_count"))}
         {_metric("TechQA public RAG@3", _techqa_metric(techqa_public, "retrieval_hit_rate_at_3"))}
+        {_metric("WixQA public cases", _wixqa_profile_value(wixqa_profile, "sample_case_count"))}
+        {_metric("WixQA public RAG@3", _wixqa_metric(wixqa_public, "retrieval_hit_rate_at_3"))}
       </div>
     </section>
 
@@ -522,6 +553,19 @@ def _techqa_metric(report: dict[str, Any], metric: str) -> str:
 
 
 def _techqa_profile_value(report: dict[str, Any], key: str) -> object:
+    summary = report.get("summary", {})
+    if not summary or summary.get("status") != "evaluated":
+        return "Not configured"
+    return summary.get(key, "Not configured")
+
+
+def _wixqa_metric(report: dict[str, Any], metric: str) -> str:
+    if report.get("status") != "evaluated":
+        return "Not configured"
+    return _pct(float(report.get("metrics", {}).get(metric, 0.0)))
+
+
+def _wixqa_profile_value(report: dict[str, Any], key: str) -> object:
     summary = report.get("summary", {})
     if not summary or summary.get("status") != "evaluated":
         return "Not configured"

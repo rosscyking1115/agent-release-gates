@@ -64,7 +64,7 @@ The project is useful, but the next credibility gap is external validation rathe
 Current gaps:
 
 - Retrieval now includes sparse hybrid, local TF-IDF vector, local feature-hashed embedding-store experiments, current-evidence reranking, and a dry-run-first provider embedding evaluation path. A completed provider-backed result is still not published.
-- A 160-case NVIDIA TechQA-RAG-Eval public benchmark track now validates the retrieval harness on external technical-support questions, including a keyword-title baseline versus local TF-IDF retriever comparison, while preserving the synthetic internal-operations lab as the controlled benchmark.
+- A 160-case NVIDIA TechQA-RAG-Eval public benchmark track validates technical-support retrieval, and an 80-case WixQA expert-written public benchmark validates enterprise-support retrieval, while preserving the synthetic internal-operations lab as the controlled benchmark.
 - Error analysis now identifies retrieved-but-not-cited failures, deterministic retriever-version trend snapshots, and dated lab milestone history; the expanded manual challenge set drove reranking fixes for schema mismatch, stale context, KYC artefact phrasing, decision-log wording, partial evidence notes, and ambiguous-handoff abstention.
 - Dataset profiling now exposes manual-versus-generated share, abstention coverage, task/noise/issue/team coverage, red-team coverage, and explicit data-quality gap labels. The profile now clears the previous manual-share gap with 102 hand-authored golden cases, while still flagging that provider-backed embedding comparison is not covered.
 - Release gates now convert the generated artifacts into deterministic pass/warn/fail checks for benchmark coverage, retrieval grounding, safety, approval governance, and observability consistency.
@@ -73,7 +73,7 @@ Current gaps:
 - Multi-model comparison is not yet published. Optional adapters should be added only when runs can be reproduced and limitations can be stated clearly.
 - A formal failure taxonomy needs to be made explicit across unsafe compliance, over-refusal, unsupported answers, missing citations, tool misuse, privacy leakage, prompt-injection following, excessive agency, and weak evidence treated as strong evidence.
 - Ticket and runbook data are still partly templated, even after adding noisy, human-like, human email-thread, manual evidence-packet, manual field-note, mixed review-bundle, manual decision-log, partial-evidence, retrieved-context-review, retrieved-document-injection, and long-conflicting-context cases.
-- The TechQA public benchmark currently uses a 160-case compact sample rather than the full upstream dataset.
+- The TechQA and WixQA public benchmarks currently use compact tracked samples rather than the full upstream datasets.
 - Extraction is deterministic pattern matching.
 - Red-team checks include harder retrieved-context attacks, but are still string-based.
 - Agent orchestration is local code rather than a state machine.
@@ -88,5 +88,5 @@ These are acceptable for the first lab version, but they should guide the next w
 3. Collect independent labels using the prepared review packet, then compare human review, deterministic rules, and hosted LLM-as-judge decisions.
 4. Add optional multi-model evaluation adapters and publish only reproducible, credentialed result tables.
 5. Run safety intervention experiments across baseline, refusal policy, retrieval grounding, tool approval gates, secondary review, and classifier thresholds.
-6. Expand the TechQA public benchmark beyond 160 cases and compare local retrievers against provider-backed embeddings.
+6. Expand the TechQA and WixQA public benchmarks and compare local retrievers against provider-backed embeddings.
 7. Continue making the golden suite less templated with new non-generated tickets, mixed evidence bundles, and harder retrieved-context evidence.

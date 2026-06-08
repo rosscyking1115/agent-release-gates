@@ -6,6 +6,7 @@ This project uses two clearly separated data sources:
 
 - Synthetic internal-operations data generated locally for controlled evaluation.
 - A compact public TechQA-RAG-Eval sample for external retrieval validation.
+- A compact public WixQA expert-written sample for enterprise-support retrieval validation.
 
 The synthetic data is designed for safety and reproducibility. It does not contain real company documents, customer data, employee data, credentials, production logs, or confidential workflows.
 
@@ -32,6 +33,17 @@ Current profile:
 - 119 unique public documents
 - Apache-2.0 upstream dataset license
 
+## Public WixQA Track
+
+The public WixQA track uses an 80-case compact sample from the expert-written split of Wix/WixQA, grounded in public Wix Help Center articles. It is used only for external enterprise-support retrieval validation. It is not treated as internal-operations data.
+
+Current profile:
+
+- 80 expert-written support questions
+- 96 unique public documents
+- 23 multi-article questions
+- MIT upstream dataset license
+
 ## Label Sources
 
 Synthetic labels are generated and maintained inside the repo:
@@ -47,7 +59,7 @@ The project includes a 24-case maintainer-labeled calibration sample for checkin
 
 ## Collection Process
 
-Synthetic data is generated with local deterministic scripts. Public TechQA data is prepared only when the upstream `train.json` is downloaded into `data/public/techqa_train.json`, then sampled through the preparation script.
+Synthetic data is generated with local deterministic scripts. Public TechQA data is prepared only when the upstream `train.json` is downloaded into `data/public/techqa_train.json`, then sampled through the preparation script. Public WixQA data is prepared only when the upstream expert-written QA file and KB corpus are downloaded into `data/public/`, then compacted into a tracked sample.
 
 ## Safety And Privacy
 
@@ -69,6 +81,7 @@ The dataset boundary is intentionally conservative:
 - The external-review packet is prepared, but independent labels are still awaiting collection.
 - The local rubric judge is deterministic and transparent; the hosted judge track currently has one reviewed OpenAI calibration run, not a multi-model comparison.
 - Public TechQA coverage is compact and should be expanded before drawing broader external conclusions.
+- Public WixQA coverage is compact and should be expanded before drawing broader external conclusions.
 
 ## Recommended Dataset Work
 
@@ -77,4 +90,5 @@ The dataset boundary is intentionally conservative:
 - Track inter-rater agreement and reviewer-disagreement reasons.
 - Extend the hosted LLM judge comparison beyond the first reviewed OpenAI run and publish judge disagreement slices.
 - Expand public TechQA coverage beyond the compact sample.
+- Expand public WixQA coverage beyond the compact sample.
 - Keep synthetic and public-data metrics separated in every public report.

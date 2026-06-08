@@ -65,6 +65,7 @@ def generate_public_report(project_root: Path) -> str:
     retrievers = _read_json(reports_dir / "retriever_comparison.json")
     retriever_snapshots = _read_json(reports_dir / "retriever_metric_snapshots.json")
     techqa_public = _read_optional_json(reports_dir / "techqa_public_rag_summary.json")
+    wixqa_public = _read_optional_json(reports_dir / "wixqa_public_rag_summary.json")
     evaluation_history = _read_json(reports_dir / "evaluation_history.json")
     dataset_profile = load_dataset_profile(project_root)
     evaluation_gates = load_evaluation_gates(project_root)
@@ -116,7 +117,7 @@ def generate_public_report(project_root: Path) -> str:
             "",
             "This report summarizes a public AI-agent safety and reliability "
             "evaluation lab. The core benchmark uses a synthetic internal-operations "
-            "domain, with a separate public TechQA retrieval benchmark. It does not "
+            "domain, with separate public TechQA and WixQA retrieval benchmarks. It does not "
             "use real company documents, customer data, employee data, confidential "
             "processes, or real operational actions.",
             "",
@@ -161,6 +162,10 @@ def generate_public_report(project_root: Path) -> str:
             "## External Public RAG Benchmark",
             "",
             _techqa_public_table(techqa_public),
+            "",
+            "## WixQA Public Enterprise RAG Benchmark",
+            "",
+            _wixqa_public_table(wixqa_public),
             "",
             "## Historical Evaluation Snapshots",
             "",
@@ -288,6 +293,10 @@ def generate_public_report(project_root: Path) -> str:
                 "not the full dataset."
             ),
             (
+                "- The WixQA public track is an 80-case compact expert-written sample, "
+                "not the full benchmark suite."
+            ),
+            (
                 "- Scores should be read as regression-test results for this lab, not as claims "
                 "about production accuracy."
             ),
@@ -320,6 +329,7 @@ def generate_public_report(project_root: Path) -> str:
                 "- Expand the TechQA public benchmark beyond 160 cases and compare "
                 "against provider embeddings."
             ),
+            "- Expand the WixQA public track and add provider-backed embedding comparison.",
             "",
         ]
     )
@@ -428,6 +438,54 @@ def _techqa_public_table(report: dict[str, Any]) -> str:
             f"| {system['label']} | {_pct(metrics['retrieval_hit_rate_at_3'])} | "
             f"{_pct(metrics['top1_citation_accuracy'])} | "
             f"{_pct(metrics['impossible_abstention_rate'])} | "
+            f"{system['failed_case_count']} |"
+        )
+    return "\n".join(rows)
+
+
+def _wixqa_public_table(report: dict[str, Any]) -> str:
+    if report.get("status") != "evaluated":
+        return "WixQA public benchmark is not configured."
+    metrics = report["metrics"]
+    profile = report.get("benchmark_profile", {})
+    rows = [
+        "| WixQA public RAG metric | Value |",
+        "| --- | ---: |",
+        f"| Dataset | {report['dataset']} |",
+        f"| License | {report['license']} |",
+        f"| Cases | {report['case_count']} |",
+        f"| Sample scope | {profile.get('sample_scope', 'tracked_compact_public_sample')} |",
+        f"| Indexed public documents | {report['document_count']} |",
+        f"| Multi-article cases | {report['multi_article_case_count']} |",
+        (
+            "| Multi-article case share | "
+            f"{_pct(profile.get('multi_article_case_share', 0.0))} |"
+        ),
+        (
+            "| Avg grounding docs / case | "
+            f"{profile.get('average_grounding_documents_per_case', 0.0)} |"
+        ),
+        f"| Retrieval hit rate@3 | {_pct(metrics['retrieval_hit_rate_at_3'])} |",
+        f"| Top-1 citation accuracy | {_pct(metrics['top1_citation_accuracy'])} |",
+        f"| Mean reciprocal rank@3 | {_pct(metrics['mean_reciprocal_rank_at_3'])} |",
+        (
+            "| Multi-article retrieval@3 | "
+            f"{_pct(metrics['multi_article_retrieval_hit_rate_at_3'])} |"
+        ),
+        f"| Failed cases | {profile.get('failed_case_count', 0)} |",
+        (
+            "| Provider-backed embedding result published | "
+            f"{profile.get('provider_backed_embedding_result_published', False)} |"
+        ),
+        "",
+        "| WixQA retriever | Retrieval@3 | Top-1 citation | Failed cases |",
+        "| --- | ---: | ---: | ---: |",
+    ]
+    for system in report.get("retriever_systems", []):
+        system_metrics = system["metrics"]
+        rows.append(
+            f"| {system['label']} | {_pct(system_metrics['retrieval_hit_rate_at_3'])} | "
+            f"{_pct(system_metrics['top1_citation_accuracy'])} | "
             f"{system['failed_case_count']} |"
         )
     return "\n".join(rows)

@@ -60,6 +60,7 @@ from internal_ai_agent.dashboard.data import (
     load_safety_threshold_sweep,
     load_security_summary,
     load_techqa_public_summary,
+    load_wixqa_public_summary,
     metric_rows,
     model_judge_adapter_rows,
     observability_component_rows,
@@ -83,6 +84,7 @@ from internal_ai_agent.dashboard.data import (
     trace_index_error_rows,
     trace_index_query_rows,
     trace_index_trace_rows,
+    wixqa_public_metric_rows,
 )
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -100,6 +102,7 @@ def main() -> None:
     retriever_comparison = load_retriever_comparison(PROJECT_ROOT)
     retriever_snapshots = load_retriever_snapshots(PROJECT_ROOT)
     techqa_public = load_techqa_public_summary(PROJECT_ROOT)
+    wixqa_public = load_wixqa_public_summary(PROJECT_ROOT)
     evaluation_history = load_evaluation_history(PROJECT_ROOT)
     evaluation_gates = load_evaluation_gates(PROJECT_ROOT)
     extraction_summary = load_extraction_summary(PROJECT_ROOT)
@@ -156,6 +159,7 @@ def main() -> None:
     elif section == "Retrieval Evaluation":
         _render_retriever_experiment(retriever_comparison)
         _render_techqa_public_benchmark(techqa_public)
+        _render_wixqa_public_benchmark(wixqa_public)
         _render_retriever_snapshots(retriever_snapshots)
         _render_evaluation_history(evaluation_history)
         _render_evaluation_gates(evaluation_gates)
@@ -223,7 +227,7 @@ def _render_app_header() -> None:
     )
     st.info(
         "Internal runbooks, tickets, teams, procedures, and internal benchmark metrics are "
-        "synthetic. The TechQA section is a separate public technical-support benchmark. "
+        "synthetic. TechQA and WixQA are separate public-data RAG benchmarks. "
         "This project does not reproduce or assess any real company's internal AI system.",
     )
 
@@ -253,7 +257,7 @@ def _render_sidebar() -> str:
         "https://github.com/rosscyking1115/internal-ai-agent-eval-lab",
         use_container_width=True,
     )
-    st.sidebar.caption("Synthetic benchmark plus public TechQA external validation.")
+    st.sidebar.caption("Synthetic benchmark plus TechQA and WixQA public validation.")
     return section
 
 
@@ -469,6 +473,59 @@ def _render_techqa_public_benchmark(summary: dict[str, object]) -> None:
             ]
         )
         st.dataframe(profile_df, hide_index=True, use_container_width=True)
+
+
+def _render_wixqa_public_benchmark(summary: dict[str, object]) -> None:
+    st.subheader("WixQA Public Enterprise RAG Benchmark")
+    if summary.get("status") != "evaluated":
+        st.info("WixQA public benchmark is not configured in this runtime.")
+        return
+
+    metrics = summary["metrics"]  # type: ignore[index]
+    profile = summary.get("benchmark_profile", {})
+    cols = st.columns(5)
+    cols[0].metric("WixQA cases", summary["case_count"])
+    cols[1].metric("Public docs", summary["document_count"])  # type: ignore[index]
+    cols[2].metric(
+        "Retrieval@3",
+        _format_pct(float(metrics["retrieval_hit_rate_at_3"])),  # type: ignore[index]
+    )
+    cols[3].metric(
+        "Top-1 citation",
+        _format_pct(float(metrics["top1_citation_accuracy"])),  # type: ignore[index]
+    )
+    cols[4].metric(
+        "Multi-article cases",
+        profile.get("multi_article_case_count", summary.get("multi_article_case_count", 0)),  # type: ignore[union-attr]
+    )
+    st.caption(
+        "External validation over WixQA expert-written enterprise-support questions "
+        "grounded in public Wix Help Center articles. This adds real public customer-support "
+        "RAG evidence while keeping internal operations scenarios synthetic."
+    )
+    table_df = pd.DataFrame(wixqa_public_metric_rows(summary))
+    if not table_df.empty:
+        display_df = table_df[["label", "value_pct"]]
+        display_df.columns = ["Metric", "Value"]
+        st.dataframe(display_df, hide_index=True, use_container_width=True)
+    systems_df = pd.DataFrame(summary.get("retriever_systems", []))
+    if not systems_df.empty:
+        comparison_df = pd.DataFrame(
+            [
+                {
+                    "System": row["label"],
+                    "Retrieval@3": _format_pct(
+                        float(row["metrics"]["retrieval_hit_rate_at_3"])
+                    ),
+                    "Top-1 citation": _format_pct(
+                        float(row["metrics"]["top1_citation_accuracy"])
+                    ),
+                    "Failed cases": row["failed_case_count"],
+                }
+                for row in summary.get("retriever_systems", [])
+            ]
+        )
+        st.dataframe(comparison_df, hide_index=True, use_container_width=True)
 
 
 def _render_retriever_snapshots(snapshot_report: dict[str, object]) -> None:

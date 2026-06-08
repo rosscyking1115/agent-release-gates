@@ -1,0 +1,297 @@
+{
+  "benchmark_profile": {
+    "article_type_counts": {
+      "article": 104,
+      "feature_request": 2
+    },
+    "average_grounding_documents_per_case": 1.325,
+    "benchmark_track": "external_public_enterprise_rag",
+    "dataset": "Wix/WixQA expert-written",
+    "failed_case_count": 20,
+    "failure_rate": 0.25,
+    "license": "MIT",
+    "multi_article_case_count": 23,
+    "multi_article_case_share": 0.2875,
+    "provider_backed_embedding_result_published": false,
+    "retrieval_hit_rate_at_3": 0.8875,
+    "sample_case_count": 80,
+    "sample_path": "data/public/wixqa_public_rag_sample.jsonl",
+    "sample_scope": "tracked_compact_public_sample",
+    "sample_selection_policy": "first_expertwritten_cases_with_all_articles_present",
+    "source_url": "https://huggingface.co/datasets/Wix/WixQA",
+    "status": "evaluated",
+    "top1_citation_accuracy": 0.75,
+    "tracked_sample_default_limit": 80,
+    "unique_document_count": 96
+  },
+  "benchmark_track": "external_public_enterprise_rag",
+  "case_count": 80,
+  "dataset": "Wix/WixQA expert-written",
+  "document_count": 96,
+  "failure_examples": [
+    {
+      "case_id": "WIXQA-EXPERT-0004",
+      "expected_citation_ids": [
+        "a513a215c1798f329293330cb5f5e975a18978954b5ee27d84441e029f900d51",
+        "b9ba8c318ee75f49eaa89c1d5b8d461fa2b4c27167381b869aeb31027d7187f9"
+      ],
+      "expected_rank": 3,
+      "failure_reasons": [
+        "expected_document_retrieved_but_not_top1"
+      ],
+      "retrieved_citation_ids": [
+        "9b71e0c1c1101d626c050e2209b382430c36eb91644c25dc9016802164ea769f",
+        "040613a5d53923efc2955eb8cfaf4573d7543dd0236bf90be63e40613359e4cf",
+        "a513a215c1798f329293330cb5f5e975a18978954b5ee27d84441e029f900d51"
+      ],
+      "taxonomy_labels": [
+        "wrong_citation"
+      ],
+      "top_score": 8.0001
+    },
+    {
+      "case_id": "WIXQA-EXPERT-0005",
+      "expected_citation_ids": [
+        "8cc75fbcc571336d1ef1768e7727bd9d1e6c1333f22eeb5366232b9a1a066418"
+      ],
+      "expected_rank": null,
+      "failure_reasons": [
+        "expected_document_not_retrieved_at_3"
+      ],
+      "retrieved_citation_ids": [
+        "3407d197c71652bee58835ba148794a8be7e70cf9e25c599044b823c82db29fd",
+        "c5d82d4a0741f072da98db371148bfb349e37561fd94b32c1326dd77d44a4ca0",
+        "0b6d939e9e0d8599e895cad834a336ccec3f5e4c149645def2ea4d4d6091b356"
+      ],
+      "taxonomy_labels": [
+        "retrieval_miss"
+      ],
+      "top_score": 16.125
+    },
+    {
+      "case_id": "WIXQA-EXPERT-0019",
+      "expected_citation_ids": [
+        "8c2e56296ddb7b441238ff06cfa9b38204aca9e27371386689b1fa4643cdfbff"
+      ],
+      "expected_rank": 3,
+      "failure_reasons": [
+        "expected_document_retrieved_but_not_top1"
+      ],
+      "retrieved_citation_ids": [
+        "bb528ecfbf28534c702f7e30e97e1709741bb421299f376de6cb2bc8d8226fc4",
+        "e9366441d1e037a1470c9bad57455dbadc24db0ca931791edd0f3b026ea6a58f",
+        "8c2e56296ddb7b441238ff06cfa9b38204aca9e27371386689b1fa4643cdfbff"
+      ],
+      "taxonomy_labels": [
+        "wrong_citation"
+      ],
+      "top_score": 25.3425
+    },
+    {
+      "case_id": "WIXQA-EXPERT-0025",
+      "expected_citation_ids": [
+        "49d9e88fadbf11fa4e685c847590078ff9394c2fe7566094f504f53ca4aca465"
+      ],
+      "expected_rank": 2,
+      "failure_reasons": [
+        "expected_document_retrieved_but_not_top1"
+      ],
+      "retrieved_citation_ids": [
+        "7a49619f637ed0508bca64c0995e2726276d8faba2907d97350e0f01384709af",
+        "49d9e88fadbf11fa4e685c847590078ff9394c2fe7566094f504f53ca4aca465",
+        "ad7a6f1f5851bf2c4bc738d6223bb1546e78c7b7f3317d721b67181cd675c5a8"
+      ],
+      "taxonomy_labels": [
+        "wrong_citation"
+      ],
+      "top_score": 15.7045
+    },
+    {
+      "case_id": "WIXQA-EXPERT-0026",
+      "expected_citation_ids": [
+        "42494683352ccb36b16ef52dc0b32ff1aab64f5f3a6fe90827c33e0252a59098"
+      ],
+      "expected_rank": null,
+      "failure_reasons": [
+        "expected_document_not_retrieved_at_3"
+      ],
+      "retrieved_citation_ids": [
+        "89e39fdcca5874eb36d1ac6e359aad2cd93b601cac1cf7b8743449ff7893ead8",
+        "fd36cb06f2de70a197a60c3d2e28ec709fb884cad11153f4bb6086f82755bd5a",
+        "c5d82d4a0741f072da98db371148bfb349e37561fd94b32c1326dd77d44a4ca0"
+      ],
+      "taxonomy_labels": [
+        "retrieval_miss"
+      ],
+      "top_score": 42.3287
+    },
+    {
+      "case_id": "WIXQA-EXPERT-0036",
+      "expected_citation_ids": [
+        "b4717557702f3383d3d4d7bf071c2ab5558b34fc62860d2879f9d48f86ec2de8"
+      ],
+      "expected_rank": null,
+      "failure_reasons": [
+        "expected_document_not_retrieved_at_3"
+      ],
+      "retrieved_citation_ids": [
+        "e4b87cd9f38d652e0a018619be5ab7f6065f07e1bd2556d629fb34e693feff91",
+        "13b7554664bd39da1825c1d396cefbb0afd2d9989c1a15659dd158b0a46b916c",
+        "0b6d939e9e0d8599e895cad834a336ccec3f5e4c149645def2ea4d4d6091b356"
+      ],
+      "taxonomy_labels": [
+        "retrieval_miss"
+      ],
+      "top_score": 51.5186
+    },
+    {
+      "case_id": "WIXQA-EXPERT-0041",
+      "expected_citation_ids": [
+        "7ccd1a9278fc1868865563acc0217c1d235e1ce76037eafcde2c68cef64a8134"
+      ],
+      "expected_rank": 2,
+      "failure_reasons": [
+        "expected_document_retrieved_but_not_top1"
+      ],
+      "retrieved_citation_ids": [
+        "d487a621f0535cd8d7c717d614c18d36b49841066c8dd641967d05be5205b6c9",
+        "7ccd1a9278fc1868865563acc0217c1d235e1ce76037eafcde2c68cef64a8134",
+        "7f365d820565efdc168e39938b16e965ea0e70a394eaac7e926078ec3b562ceb"
+      ],
+      "taxonomy_labels": [
+        "wrong_citation"
+      ],
+      "top_score": 12.4156
+    },
+    {
+      "case_id": "WIXQA-EXPERT-0044",
+      "expected_citation_ids": [
+        "c71c2c71e9442d4007e45716aa6e8f4826f19a00e850c8b742bd10aa6090a1e5"
+      ],
+      "expected_rank": 2,
+      "failure_reasons": [
+        "expected_document_retrieved_but_not_top1"
+      ],
+      "retrieved_citation_ids": [
+        "7f365d820565efdc168e39938b16e965ea0e70a394eaac7e926078ec3b562ceb",
+        "c71c2c71e9442d4007e45716aa6e8f4826f19a00e850c8b742bd10aa6090a1e5",
+        "4c851bd1efd1009bb75a387d406fb7914e906fda9016127529184916bd23aaf9"
+      ],
+      "taxonomy_labels": [
+        "wrong_citation"
+      ],
+      "top_score": 9.5451
+    },
+    {
+      "case_id": "WIXQA-EXPERT-0045",
+      "expected_citation_ids": [
+        "674a8ee961c87e71e35bc7f786673c780ab0b522230ff5806aed8dac13989744"
+      ],
+      "expected_rank": null,
+      "failure_reasons": [
+        "expected_document_not_retrieved_at_3"
+      ],
+      "retrieved_citation_ids": [
+        "4c851bd1efd1009bb75a387d406fb7914e906fda9016127529184916bd23aaf9",
+        "a513a215c1798f329293330cb5f5e975a18978954b5ee27d84441e029f900d51",
+        "33dfa4eb3abc1c459f4b8f24cb14757f39c1b9c7c13f598cf904b9d395cc6970"
+      ],
+      "taxonomy_labels": [
+        "retrieval_miss"
+      ],
+      "top_score": 15.2948
+    },
+    {
+      "case_id": "WIXQA-EXPERT-0049",
+      "expected_citation_ids": [
+        "89e39fdcca5874eb36d1ac6e359aad2cd93b601cac1cf7b8743449ff7893ead8",
+        "fd36cb06f2de70a197a60c3d2e28ec709fb884cad11153f4bb6086f82755bd5a"
+      ],
+      "expected_rank": 3,
+      "failure_reasons": [
+        "expected_document_retrieved_but_not_top1"
+      ],
+      "retrieved_citation_ids": [
+        "5097c7944bbd290a11bf9dbf7624d475139d109ed0b33bc0449f53e8583be1f3",
+        "add129d0bc54006961811dd5065b2a69281974d794e372f68bc07c93696113dd",
+        "fd36cb06f2de70a197a60c3d2e28ec709fb884cad11153f4bb6086f82755bd5a"
+      ],
+      "taxonomy_labels": [
+        "wrong_citation"
+      ],
+      "top_score": 24.1353
+    }
+  ],
+  "failure_reasons": {
+    "expected_document_not_retrieved_at_3": 9,
+    "expected_document_retrieved_but_not_top1": 11
+  },
+  "license": "MIT",
+  "metrics": {
+    "mean_reciprocal_rank_at_3": 0.8104,
+    "multi_article_retrieval_hit_rate_at_3": 0.9565,
+    "retrieval_hit_rate_at_3": 0.8875,
+    "top1_citation_accuracy": 0.75
+  },
+  "multi_article_case_count": 23,
+  "notes": [
+    "This is a second external public-data benchmark track using real enterprise-support questions and public Wix Help Center articles.",
+    "It complements TechQA and the controlled synthetic benchmark; it does not replace safety red-team cases or synthetic tool-use cases.",
+    "The report is deterministic and uses no paid API calls."
+  ],
+  "primary_retriever": {
+    "case_count": 80,
+    "description": "Local TF-IDF retrieval with title boosts and exact phrase scoring.",
+    "failed_case_count": 20,
+    "label": "Local TF-IDF WixQA retriever",
+    "metrics": {
+      "mean_reciprocal_rank_at_3": 0.8104,
+      "multi_article_retrieval_hit_rate_at_3": 0.9565,
+      "retrieval_hit_rate_at_3": 0.8875,
+      "top1_citation_accuracy": 0.75
+    },
+    "system_id": "local_tfidf_wixqa_retriever"
+  },
+  "retriever_comparison": {
+    "baseline_system_id": "keyword_title_baseline",
+    "primary_system_id": "local_tfidf_wixqa_retriever",
+    "retrieval_hit_rate_at_3_lift": 0.275,
+    "system_count": 2,
+    "top1_citation_accuracy_lift": 0.2875
+  },
+  "retriever_systems": [
+    {
+      "case_count": 80,
+      "description": "Simple title-token overlap baseline over Wix public KB articles.",
+      "failed_case_count": 43,
+      "label": "Keyword title baseline",
+      "metrics": {
+        "mean_reciprocal_rank_at_3": 0.5292,
+        "multi_article_retrieval_hit_rate_at_3": 0.6522,
+        "retrieval_hit_rate_at_3": 0.6125,
+        "top1_citation_accuracy": 0.4625
+      },
+      "system_id": "keyword_title_baseline"
+    },
+    {
+      "case_count": 80,
+      "description": "Local TF-IDF retrieval with title boosts and exact phrase scoring.",
+      "failed_case_count": 20,
+      "label": "Local TF-IDF WixQA retriever",
+      "metrics": {
+        "mean_reciprocal_rank_at_3": 0.8104,
+        "multi_article_retrieval_hit_rate_at_3": 0.9565,
+        "retrieval_hit_rate_at_3": 0.8875,
+        "top1_citation_accuracy": 0.75
+      },
+      "system_id": "local_tfidf_wixqa_retriever"
+    }
+  ],
+  "sample_path": "data/public/wixqa_public_rag_sample.jsonl",
+  "source_url": "https://huggingface.co/datasets/Wix/WixQA",
+  "status": "evaluated",
+  "taxonomy_labels": {
+    "retrieval_miss": 9,
+    "wrong_citation": 11
+  }
+}

@@ -49,6 +49,7 @@ Use a synthetic operations domain for the internal benchmark:
 Use public technical-support data only as a separate retrieval benchmark:
 
 - 160-case TechQA-RAG-Eval sample
+- 80-case WixQA expert-written sample
 - public dataset license attribution
 - no claim that public support cases represent internal operations
 
@@ -74,6 +75,7 @@ The project is positioned as a responsible AI-agent safety and reliability evalu
 | Baseline vs improved retrieval eval | Measurement discipline |
 | Local vector and embedding-store retrieval experiments | Retrieval experimentation and error analysis |
 | TechQA public RAG benchmark | External validation over public technical-support data |
+| WixQA public RAG benchmark | External validation over public enterprise-support data |
 | Retriever metric snapshots | Regression tracking across retriever versions |
 | Evaluation release gates | Deterministic quality bars before publishing results |
 | Dataset profile and coverage gaps | Benchmark design honesty |
@@ -97,6 +99,8 @@ The retriever snapshot report records deterministic deltas between retriever ver
 
 The TechQA public RAG track evaluates 160 compact public technical-support cases with 87.50% retrieval hit rate@3, 77.34% top-1 citation accuracy, 81.51% mean reciprocal rank@3, and 34.38% impossible-question abstention for the primary local TF-IDF public retriever. The accompanying comparison shows that the local TF-IDF retriever improves retrieval hit rate@3 by 14.84 percentage points and top-1 citation accuracy by 18.75 percentage points versus a keyword-title baseline, while impossible-question abstention decreases by 25.00 percentage points. The benchmark profile records 128 answerable cases, 32 impossible cases, 119 unique public documents, and a 31.87% failed-case rate.
 
+The WixQA public RAG track evaluates 80 compact expert-written enterprise-support cases with 88.75% retrieval hit rate@3, 75.00% top-1 citation accuracy, 81.04% mean reciprocal rank@3, and 95.65% multi-article retrieval hit rate@3 for the primary local TF-IDF WixQA retriever. The accompanying comparison shows retrieval hit rate@3 improving by 27.50 percentage points and top-1 citation accuracy improving by 28.75 percentage points versus a keyword-title baseline. The benchmark profile records 96 unique public documents, 23 multi-article cases, and a 25.00% failed-case rate.
+
 The controlled-agent workflow blocks side-effecting mock routes without approval and executes them only when approval is granted. The eval reports 100.00% side-effect block rate, approval audit rate, and valid tool-call rate.
 
 The security red-team suite reports 100.00% improved explicit policy block rate, 100.00% improved safe response rate, 100.00% improved weighted safe response rate, and 0 improved residual risk score across 60 deterministic red-team cases, including harder retrieved-context attacks for priority inversion, approval-gate bypass, citation suppression, unsupported resolution, and access escalation.
@@ -112,12 +116,12 @@ The safety-classifier module separates enriched challenge cases, a targeted seco
 | Agent appears to take real actions | Tool names include `mock`, and side effects require approval |
 | Demo depends on paid APIs | Tests and evals are deterministic and local |
 | System seems like only a dashboard | FastAPI endpoints, eval reports, CI, and docs show engineering depth |
-| Public-data results blur the synthetic-lab boundary | TechQA is reported as a separate external benchmark track |
+| Public-data results blur the synthetic-lab boundary | TechQA and WixQA are reported as separate external benchmark tracks |
 
 ## Next Decisions
 
 - How to attach a formal failure taxonomy to case-level results and summaries.
 - How to collect and publish a small human-labeled calibration sample without overclaiming production validity.
 - Which LLM-as-judge and multi-model adapters to support first, and how to separate unpublished local runs from public results.
-- Whether to expand the TechQA public benchmark before or after provider-backed embedding comparison.
+- Whether to expand the TechQA and WixQA public benchmarks before or after provider-backed embedding comparison.
 - How to invite external review through GitHub issues, contribution docs, benchmark cards, and a paper-style report.

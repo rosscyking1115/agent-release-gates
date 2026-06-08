@@ -122,6 +122,11 @@ Reports:
 | `reports/techqa_public_retriever_comparison.json` | Public TechQA retriever comparison between the keyword-title baseline and the primary local TF-IDF public retriever, including retrieval, citation, abstention, and lift metrics. |
 | `reports/techqa_public_rag_cases.jsonl` | Case-level TechQA retrieval results, expected/retrieved citations, abstention decision, and failure reasons. |
 | `reports/techqa_public_retriever_cases.jsonl` | Case-level TechQA results for each compared public retriever system, including system id, retrieved citations, predicted citations, and failure reasons. |
+| `reports/wixqa_public_rag_summary.json` | External public WixQA expert-written retrieval summary over the tracked public enterprise-support sample. |
+| `reports/wixqa_public_benchmark_profile.json` | Public WixQA benchmark transparency profile with sample size, unique document count, multi-article share, article-type mix, failure rate, and provider-result status. |
+| `reports/wixqa_public_retriever_comparison.json` | Public WixQA retriever comparison between the keyword-title baseline and the primary local TF-IDF WixQA retriever, including retrieval, citation, multi-article, and lift metrics. |
+| `reports/wixqa_public_rag_cases.jsonl` | Case-level WixQA retrieval results, expected/retrieved article ids, ranking result, and failure reasons. |
+| `reports/wixqa_public_retriever_cases.jsonl` | Case-level WixQA results for each compared public retriever system, including system id, retrieved citations, top scores, and failure reasons. |
 
 ## Retrieval eval case files
 

@@ -138,7 +138,7 @@ def _recommended_next_data_work(risk_labels: list[str]) -> list[str]:
         recommendations.append("Add more weak-evidence and ownership-conflict abstention cases.")
     if "provider_backed_embedding_comparison_not_covered" in risk_labels:
         recommendations.append("Compare local retrieval with a provider-backed embedding option.")
-    recommendations.append("Keep all public benchmark data synthetic and reproducible.")
+    recommendations.append("Keep synthetic and public benchmark data separated and reproducible.")
     return recommendations
 
 

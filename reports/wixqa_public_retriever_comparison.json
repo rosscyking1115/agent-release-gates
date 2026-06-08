@@ -1,0 +1,58 @@
+{
+  "benchmark_track": "external_public_enterprise_rag",
+  "dataset": "Wix/WixQA expert-written",
+  "notes": [
+    "This comparison is local and deterministic.",
+    "Provider-backed embedding comparison remains optional."
+  ],
+  "primary_retriever": {
+    "case_count": 80,
+    "description": "Local TF-IDF retrieval with title boosts and exact phrase scoring.",
+    "failed_case_count": 20,
+    "label": "Local TF-IDF WixQA retriever",
+    "metrics": {
+      "mean_reciprocal_rank_at_3": 0.8104,
+      "multi_article_retrieval_hit_rate_at_3": 0.9565,
+      "retrieval_hit_rate_at_3": 0.8875,
+      "top1_citation_accuracy": 0.75
+    },
+    "system_id": "local_tfidf_wixqa_retriever"
+  },
+  "report_type": "wixqa_public_retriever_comparison",
+  "status": "evaluated",
+  "summary": {
+    "baseline_system_id": "keyword_title_baseline",
+    "primary_system_id": "local_tfidf_wixqa_retriever",
+    "retrieval_hit_rate_at_3_lift": 0.275,
+    "system_count": 2,
+    "top1_citation_accuracy_lift": 0.2875
+  },
+  "systems": [
+    {
+      "case_count": 80,
+      "description": "Simple title-token overlap baseline over Wix public KB articles.",
+      "failed_case_count": 43,
+      "label": "Keyword title baseline",
+      "metrics": {
+        "mean_reciprocal_rank_at_3": 0.5292,
+        "multi_article_retrieval_hit_rate_at_3": 0.6522,
+        "retrieval_hit_rate_at_3": 0.6125,
+        "top1_citation_accuracy": 0.4625
+      },
+      "system_id": "keyword_title_baseline"
+    },
+    {
+      "case_count": 80,
+      "description": "Local TF-IDF retrieval with title boosts and exact phrase scoring.",
+      "failed_case_count": 20,
+      "label": "Local TF-IDF WixQA retriever",
+      "metrics": {
+        "mean_reciprocal_rank_at_3": 0.8104,
+        "multi_article_retrieval_hit_rate_at_3": 0.9565,
+        "retrieval_hit_rate_at_3": 0.8875,
+        "top1_citation_accuracy": 0.75
+      },
+      "system_id": "local_tfidf_wixqa_retriever"
+    }
+  ]
+}

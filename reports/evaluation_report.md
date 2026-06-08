@@ -2,7 +2,7 @@
 
 ## Executive Summary
 
-This report summarizes a public AI-agent safety and reliability evaluation lab. The core benchmark uses a synthetic internal-operations domain, with a separate public TechQA retrieval benchmark. It does not use real company documents, customer data, employee data, confidential processes, or real operational actions.
+This report summarizes a public AI-agent safety and reliability evaluation lab. The core benchmark uses a synthetic internal-operations domain, with separate public TechQA and WixQA retrieval benchmarks. It does not use real company documents, customer data, employee data, confidential processes, or real operational actions.
 
 - Golden retrieval cases: 358
 - Synthetic ticket extraction and agent cases: 180
@@ -115,6 +115,30 @@ The retrieval experiment compares a deliberately weak baseline, a lexical retrie
 | Keyword title baseline | 72.66% | 58.59% | 59.38% | 80 |
 | Local TF-IDF public retriever | 87.50% | 77.34% | 34.38% | 51 |
 
+## WixQA Public Enterprise RAG Benchmark
+
+| WixQA public RAG metric | Value |
+| --- | ---: |
+| Dataset | Wix/WixQA expert-written |
+| License | MIT |
+| Cases | 80 |
+| Sample scope | tracked_compact_public_sample |
+| Indexed public documents | 96 |
+| Multi-article cases | 23 |
+| Multi-article case share | 28.75% |
+| Avg grounding docs / case | 1.325 |
+| Retrieval hit rate@3 | 88.75% |
+| Top-1 citation accuracy | 75.00% |
+| Mean reciprocal rank@3 | 81.04% |
+| Multi-article retrieval@3 | 95.65% |
+| Failed cases | 20 |
+| Provider-backed embedding result published | False |
+
+| WixQA retriever | Retrieval@3 | Top-1 citation | Failed cases |
+| --- | ---: | ---: | ---: |
+| Keyword title baseline | 61.25% | 46.25% | 43 |
+| Local TF-IDF WixQA retriever | 88.75% | 75.00% | 20 |
+
 ## Historical Evaluation Snapshots
 
 | Milestone time | Milestone | Citation coverage | Failed cases | Citation delta | Failure delta |
@@ -147,16 +171,16 @@ The retrieval experiment compares a deliberately weak baseline, a lexical retrie
 
 ## Failure Taxonomy
 
-Total taxonomy-labeled cases: 573
+Total taxonomy-labeled cases: 618
 
 | Taxonomy label | Group | Count |
 | --- | --- | ---: |
-| wrong_citation | reliability | 284 |
+| wrong_citation | reliability | 318 |
 | missing_citation | reliability | 240 |
 | unsupported_answer | reliability | 240 |
 | weak_evidence_treated_as_strong | reliability | 142 |
 | unsafe_compliance | safety | 118 |
-| retrieval_miss | reliability | 67 |
+| retrieval_miss | reliability | 116 |
 | excessive_abstention | usefulness | 61 |
 | over_refusal | usefulness | 61 |
 | privacy_leakage | safety | 47 |
@@ -165,6 +189,7 @@ Total taxonomy-labeled cases: 573
 | Source | Top taxonomy label | Count |
 | --- | --- | ---: |
 | public_techqa_retrieval | retrieval_miss | 67 |
+| public_wixqa_retrieval | retrieval_miss | 49 |
 | synthetic_red_team | unsafe_compliance | 56 |
 | synthetic_retrieval | missing_citation | 240 |
 | synthetic_safety_classifier | unsafe_compliance | 62 |
@@ -640,6 +665,7 @@ The combined export includes workflow-level spans, agent tool/audit spans, case-
 - The vector retriever is local TF-IDF, not an embedding model or vector database.
 - The embedding-store retriever uses local feature-hashed embeddings, not a paid API.
 - The TechQA public track is a 160-case compact external sample, not the full dataset.
+- The WixQA public track is an 80-case compact expert-written sample, not the full benchmark suite.
 - Scores should be read as regression-test results for this lab, not as claims about production accuracy.
 - Human-review workflow labels are simulated; the calibration sample is maintainer-labelled and not yet independently reviewed.
 - Hosted LLM-as-judge evidence is currently a single reviewed OpenAI calibration run, not a multi-model comparison.
@@ -653,3 +679,4 @@ The combined export includes workflow-level spans, agent tool/audit spans, case-
 - Add optional multi-model evaluation adapters and publish only reproducible result tables.
 - Run safety intervention experiments across refusal policy, retrieval grounding, tool approval gates, secondary review, and classifier thresholds.
 - Expand the TechQA public benchmark beyond 160 cases and compare against provider embeddings.
+- Expand the WixQA public track and add provider-backed embedding comparison.
