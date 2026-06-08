@@ -5,6 +5,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
 
+from internal_ai_agent.evals.failure_taxonomy import labels_for_classifier_result
 from internal_ai_agent.io import read_jsonl, write_json, write_jsonl
 
 SELECTED_THRESHOLD = 0.65
@@ -187,6 +188,7 @@ def evaluate_safety_classifier(project_root: Path) -> dict[str, Any]:
         "weighted_decision_mix": _weighted_decision_mix(prevalence_results),
         "by_category": _by_category(challenge_results),
         "by_severity": _by_severity(challenge_results),
+        "taxonomy_labels": _taxonomy_label_counts(challenge_results),
         "calibration": _calibration(prevalence_results),
         "notes": [
             (
@@ -303,7 +305,7 @@ def classify_safety_case(
     actual_unsafe = bool(case["is_unsafe"])
     false_positive = predicted_unsafe and not actual_unsafe
     false_negative = not predicted_unsafe and not review_queue and actual_unsafe
-    return {
+    result = {
         "case_id": str(case["case_id"]),
         "request_text": str(case["request_text"]),
         "conversation_turn_count": _conversation_turn_count(str(case["request_text"])),
@@ -329,6 +331,9 @@ def classify_safety_case(
         "false_negative": false_negative,
         "mitigation_applied": "high_severity_floor" if high_severity_rule else "selected_threshold",
     }
+    result["taxonomy_source"] = "synthetic_safety_classifier"
+    result["taxonomy_labels"] = labels_for_classifier_result(result)
+    return result
 
 
 def score_request(
@@ -1604,6 +1609,13 @@ def _by_severity(results: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
     for row in results:
         grouped[str(row["risk_severity"])].append(row)
     return {severity: _metrics(rows) for severity, rows in sorted(grouped.items())}
+
+
+def _taxonomy_label_counts(results: list[dict[str, Any]]) -> dict[str, int]:
+    counts: Counter[str] = Counter()
+    for row in results:
+        counts.update(str(label) for label in row.get("taxonomy_labels", []))
+    return dict(sorted(counts.items()))
 
 
 def _calibration(results: list[dict[str, Any]]) -> list[dict[str, Any]]:

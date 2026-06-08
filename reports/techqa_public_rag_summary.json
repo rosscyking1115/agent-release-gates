@@ -45,6 +45,9 @@
         "swg22011696.txt",
         "swg21998452.txt"
       ],
+      "taxonomy_labels": [
+        "wrong_citation"
+      ],
       "top_score": 321.142
     },
     {
@@ -61,6 +64,9 @@
         "swg21067352.txt",
         "swg21902654.txt",
         "swg22009818.txt"
+      ],
+      "taxonomy_labels": [
+        "retrieval_miss"
       ],
       "top_score": 71.1317
     },
@@ -79,6 +85,9 @@
         "swg27019359.txt",
         "swg21426787.txt"
       ],
+      "taxonomy_labels": [
+        "wrong_citation"
+      ],
       "top_score": 21.5374
     },
     {
@@ -95,6 +104,9 @@
         "swg21263677.txt",
         "swg24035040.txt",
         "swg21993043.txt"
+      ],
+      "taxonomy_labels": [
+        "wrong_citation"
       ],
       "top_score": 68.7803
     },
@@ -113,6 +125,9 @@
         "swg21966637.txt",
         "swg22001418.txt"
       ],
+      "taxonomy_labels": [
+        "retrieval_miss"
+      ],
       "top_score": 44.1336
     },
     {
@@ -129,6 +144,9 @@
         "swg21515420.txt",
         "swg21249798.txt",
         "swg21636093.txt"
+      ],
+      "taxonomy_labels": [
+        "retrieval_miss"
       ],
       "top_score": 43.2497
     },
@@ -148,6 +166,11 @@
         "swg1PI37248.txt",
         "swg21611699.txt"
       ],
+      "taxonomy_labels": [
+        "excessive_abstention",
+        "over_refusal",
+        "retrieval_miss"
+      ],
       "top_score": 6.4425
     },
     {
@@ -166,6 +189,11 @@
         "swg21998655.txt",
         "swg21983129.txt"
       ],
+      "taxonomy_labels": [
+        "excessive_abstention",
+        "over_refusal",
+        "retrieval_miss"
+      ],
       "top_score": 6.469
     },
     {
@@ -183,6 +211,9 @@
         "swg21636093.txt",
         "swg24041394.txt"
       ],
+      "taxonomy_labels": [
+        "retrieval_miss"
+      ],
       "top_score": 36.1334
     },
     {
@@ -199,6 +230,9 @@
         "swg21377984.txt",
         "swg21657023.txt",
         "swg24043263.txt"
+      ],
+      "taxonomy_labels": [
+        "wrong_citation"
       ],
       "top_score": 44.415
     }
@@ -281,5 +315,12 @@
   ],
   "sample_path": "data/public/techqa_rag_eval_sample.jsonl",
   "source_url": "https://huggingface.co/datasets/nvidia/TechQA-RAG-Eval",
-  "status": "evaluated"
+  "status": "evaluated",
+  "taxonomy_labels": {
+    "excessive_abstention": 7,
+    "over_refusal": 7,
+    "retrieval_miss": 16,
+    "weak_evidence_treated_as_strong": 21,
+    "wrong_citation": 13
+  }
 }

@@ -170,6 +170,19 @@ def load_safety_threshold_decision_memo(project_root: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def load_failure_taxonomy_summary(project_root: Path) -> dict[str, Any]:
+    path = project_root / "reports/failure_taxonomy_summary.json"
+    if path.exists():
+        return json.loads(path.read_text(encoding="utf-8"))
+    return {
+        "report_type": "failure_taxonomy_summary",
+        "total_labeled_cases": 0,
+        "by_label": {},
+        "by_source": {},
+        "definitions": {},
+    }
+
+
 def load_agent_summary(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/agent_eval_summary.json"
     return json.loads(path.read_text(encoding="utf-8"))
@@ -398,6 +411,33 @@ def failure_reason_rows(summary: dict[str, Any]) -> list[dict[str, Any]]:
         {"reason": reason, "count": count}
         for reason, count in summary.get("failure_reasons", {}).items()
     ]
+
+
+def taxonomy_label_rows(summary: dict[str, Any]) -> list[dict[str, Any]]:
+    definitions = summary.get("definitions", {})
+    return [
+        {
+            "label": label,
+            "group": definitions.get(label, {}).get("group", "unknown"),
+            "count": count,
+        }
+        for label, count in sorted(
+            summary.get("by_label", {}).items(),
+            key=lambda item: (-int(item[1]), str(item[0])),
+        )
+    ]
+
+
+def taxonomy_source_rows(summary: dict[str, Any]) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for source, labels in sorted(summary.get("by_source", {}).items()):
+        if not labels:
+            continue
+        top_label, count = sorted(
+            labels.items(), key=lambda item: (-int(item[1]), str(item[0]))
+        )[0]
+        rows.append({"source": source, "top_label": top_label, "count": count})
+    return rows
 
 
 def failure_example_rows(summary: dict[str, Any]) -> list[dict[str, Any]]:

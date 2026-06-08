@@ -31,6 +31,7 @@ from internal_ai_agent.dashboard.data import (
     load_evaluation_gates,
     load_evaluation_history,
     load_extraction_summary,
+    load_failure_taxonomy_summary,
     load_observability_otel_spans,
     load_observability_trace_index,
     load_public_report,
@@ -66,6 +67,8 @@ from internal_ai_agent.dashboard.data import (
     safety_threshold_rows,
     security_metric_rows,
     security_risk_breakdown_rows,
+    taxonomy_label_rows,
+    taxonomy_source_rows,
     techqa_public_metric_rows,
     trace_index_component_rows,
     trace_index_error_rows,
@@ -106,6 +109,7 @@ def main() -> None:
     )
     safety_mitigation_impact = load_safety_mitigation_impact(PROJECT_ROOT)
     safety_threshold_memo = load_safety_threshold_decision_memo(PROJECT_ROOT)
+    failure_taxonomy = load_failure_taxonomy_summary(PROJECT_ROOT)
     agent_summary = load_agent_summary(PROJECT_ROOT)
     agent_traces = load_agent_trace_examples(PROJECT_ROOT)
     observability_otel_spans = load_observability_otel_spans(PROJECT_ROOT)
@@ -144,7 +148,7 @@ def main() -> None:
         _render_evaluation_history(evaluation_history)
         _render_evaluation_gates(evaluation_gates)
         _render_retriever_error_analysis(retriever_cases)
-        _render_error_analysis()
+        _render_error_analysis(failure_taxonomy)
     elif section == "Safety And Extraction":
         _render_safety_classifier_workflow(
             safety_classifier,
@@ -589,10 +593,16 @@ def _render_retriever_error_analysis(
     )
 
 
-def _render_error_analysis() -> None:
+def _render_error_analysis(failure_taxonomy: dict[str, object]) -> None:
     st.subheader("Noisy Case And Error Analysis")
-    tab_noise, tab_task, tab_failures, tab_examples = st.tabs(
-        ["Noise types", "Task types", "Failure reasons", "Failure examples"]
+    tab_noise, tab_task, tab_failures, tab_taxonomy, tab_examples = st.tabs(
+        [
+            "Noise types",
+            "Task types",
+            "Failure reasons",
+            "Failure taxonomy",
+            "Failure examples",
+        ]
     )
 
     improved_summary = _load_eval_summary("improved_eval_summary.json")
@@ -641,6 +651,25 @@ def _render_error_analysis() -> None:
             st.dataframe(pd.DataFrame(rows), hide_index=True, use_container_width=True)
         else:
             st.success("No improved-system failure reasons recorded.")
+
+    with tab_taxonomy:
+        st.metric("Taxonomy-labeled cases", failure_taxonomy["total_labeled_cases"])
+        label_rows = taxonomy_label_rows(failure_taxonomy)
+        source_rows = taxonomy_source_rows(failure_taxonomy)
+        if label_rows:
+            st.dataframe(
+                pd.DataFrame(label_rows),
+                hide_index=True,
+                use_container_width=True,
+            )
+        if source_rows:
+            st.dataframe(
+                pd.DataFrame(source_rows),
+                hide_index=True,
+                use_container_width=True,
+            )
+        if not label_rows and not source_rows:
+            st.info("Failure taxonomy summary is not available yet.")
 
     with tab_examples:
         rows = failure_example_rows(improved_summary)

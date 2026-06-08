@@ -8,6 +8,7 @@ from math import log
 from pathlib import Path
 from typing import Any
 
+from internal_ai_agent.evals.failure_taxonomy import labels_for_failure_reasons
 from internal_ai_agent.io import read_jsonl, write_json, write_jsonl
 
 TECHQA_SAMPLE_PATH = Path("data/public/techqa_rag_eval_sample.jsonl")
@@ -67,6 +68,8 @@ class TechQACaseResult:
     predicted_abstain: bool
     abstention_correct: bool
     failure_reasons: list[str]
+    taxonomy_source: str
+    taxonomy_labels: list[str]
 
 
 def evaluate_techqa_public(project_root: Path) -> dict[str, Any]:
@@ -137,6 +140,7 @@ def evaluate_techqa_public(project_root: Path) -> dict[str, Any]:
         "retriever_systems": retriever_comparison["systems"],
         "benchmark_profile": profile["summary"],
         "failure_reasons": _failure_reason_counts(results),
+        "taxonomy_labels": _taxonomy_label_counts(results),
         "failure_examples": _failure_examples(results),
         "notes": [
             (
@@ -349,6 +353,8 @@ def _evaluate_case(
         predicted_abstain=predicted_abstain,
         abstention_correct=predicted_abstain == is_impossible,
         failure_reasons=failure_reasons,
+        taxonomy_source="public_techqa_retrieval",
+        taxonomy_labels=labels_for_failure_reasons(failure_reasons),
     )
 
 
@@ -528,6 +534,13 @@ def _failure_reason_counts(results: list[TechQACaseResult]) -> dict[str, int]:
     return dict(sorted(counts.items()))
 
 
+def _taxonomy_label_counts(results: list[TechQACaseResult]) -> dict[str, int]:
+    counts: Counter[str] = Counter()
+    for row in results:
+        counts.update(row.taxonomy_labels)
+    return dict(sorted(counts.items()))
+
+
 def _failure_examples(
     results: list[TechQACaseResult],
     *,
@@ -542,6 +555,7 @@ def _failure_examples(
                 "case_id": row.case_id,
                 "is_impossible": row.is_impossible,
                 "failure_reasons": row.failure_reasons,
+                "taxonomy_labels": row.taxonomy_labels,
                 "expected_citation_ids": row.expected_citation_ids,
                 "retrieved_citation_ids": row.retrieved_citation_ids,
                 "expected_rank": row.expected_rank,

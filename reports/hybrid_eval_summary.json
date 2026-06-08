@@ -528,7 +528,12 @@
         "RB-TRADE_SUPPORT-04",
         "RB-TRADE_SUPPORT-05"
       ],
-      "task_type": "manual_field_note_next_action"
+      "task_type": "manual_field_note_next_action",
+      "taxonomy_labels": [
+        "missing_citation",
+        "unsupported_answer",
+        "wrong_citation"
+      ]
     }
   ],
   "failure_reasons": {
@@ -550,5 +555,10 @@
     "The semantic features are local alias vectors, not a paid embedding model.",
     "Role filtering excludes runbook sections the requester is not allowed to retrieve."
   ],
-  "system_version": "hybrid_sparse_semantic_retrieval"
+  "system_version": "hybrid_sparse_semantic_retrieval",
+  "taxonomy_labels": {
+    "missing_citation": 1,
+    "unsupported_answer": 1,
+    "wrong_citation": 1
+  }
 }

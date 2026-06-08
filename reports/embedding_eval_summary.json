@@ -497,5 +497,6 @@
     "This exercises an embedding-store search contract without requiring paid APIs, network access, or non-deterministic model downloads.",
     "Role filtering excludes runbook sections the requester is not allowed to retrieve."
   ],
-  "system_version": "local_hashed_embedding_store_retrieval"
+  "system_version": "local_hashed_embedding_store_retrieval",
+  "taxonomy_labels": {}
 }

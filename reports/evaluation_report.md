@@ -145,6 +145,30 @@ The retrieval experiment compares a deliberately weak baseline, a lexical retrie
 | Improved lexical | NOISY-MISSING-007 | missing_metadata | missing_or_wrong_citation, wrong_issue_category, wrong_next_action | RB-CLIENT_ONBOARDING-01 | RB-CLIENT_ONBOARDING-03 | True | RB-CLIENT_ONBOARDING-03 total=12.0; RB-CLIENT_ONBOARDING-01 total=11.0; RB-TRADE_SUPPORT-06 total=8.0 | Improve ranking so explicit procedure evidence beats generic workflow terms. |
 | Hybrid sparse semantic | MANUAL-FIELD-074 | manual_field_note | missing_or_wrong_citation, wrong_issue_category, wrong_next_action | RB-TRADE_SUPPORT-05 | RB-TRADE_SUPPORT-06 | True | RB-TRADE_SUPPORT-06 total=20.4313; RB-TRADE_SUPPORT-04 total=16.5456; RB-TRADE_SUPPORT-05 total=15.8784 | Add within-team reranking using issue-category evidence and expected action terms. |
 
+## Failure Taxonomy
+
+Total taxonomy-labeled cases: 573
+
+| Taxonomy label | Group | Count |
+| --- | --- | ---: |
+| wrong_citation | reliability | 284 |
+| missing_citation | reliability | 240 |
+| unsupported_answer | reliability | 240 |
+| weak_evidence_treated_as_strong | reliability | 142 |
+| unsafe_compliance | safety | 118 |
+| retrieval_miss | reliability | 67 |
+| excessive_abstention | usefulness | 61 |
+| over_refusal | usefulness | 61 |
+| privacy_leakage | safety | 47 |
+| prompt_injection_following | safety | 16 |
+
+| Source | Top taxonomy label | Count |
+| --- | --- | ---: |
+| public_techqa_retrieval | retrieval_miss | 67 |
+| synthetic_red_team | unsafe_compliance | 56 |
+| synthetic_retrieval | missing_citation | 240 |
+| synthetic_safety_classifier | unsafe_compliance | 62 |
+
 ## Baseline To Improved Delta
 
 | Metric | Baseline | Improved lexical | Delta |

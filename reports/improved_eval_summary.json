@@ -528,7 +528,12 @@
         "RB-CLIENT_ONBOARDING-02",
         "RB-CLIENT_ONBOARDING-05"
       ],
-      "task_type": "ticket_next_action_paraphrased"
+      "task_type": "ticket_next_action_paraphrased",
+      "taxonomy_labels": [
+        "missing_citation",
+        "unsupported_answer",
+        "wrong_citation"
+      ]
     },
     {
       "case_id": "PARA-TCK-0044",
@@ -576,7 +581,12 @@
         "RB-CLIENT_ONBOARDING-02",
         "RB-CLIENT_ONBOARDING-05"
       ],
-      "task_type": "ticket_next_action_paraphrased"
+      "task_type": "ticket_next_action_paraphrased",
+      "taxonomy_labels": [
+        "missing_citation",
+        "unsupported_answer",
+        "wrong_citation"
+      ]
     },
     {
       "case_id": "NOISY-MISSING-007",
@@ -624,7 +634,12 @@
         "RB-CLIENT_ONBOARDING-01",
         "RB-TRADE_SUPPORT-06"
       ],
-      "task_type": "ticket_next_action_noisy"
+      "task_type": "ticket_next_action_noisy",
+      "taxonomy_labels": [
+        "missing_citation",
+        "unsupported_answer",
+        "wrong_citation"
+      ]
     },
     {
       "case_id": "MANUAL-FIELD-042",
@@ -672,7 +687,12 @@
         "RB-PAYMENTS_OPS-01",
         "RB-CLIENT_ONBOARDING-02"
       ],
-      "task_type": "manual_field_note_next_action"
+      "task_type": "manual_field_note_next_action",
+      "taxonomy_labels": [
+        "missing_citation",
+        "unsupported_answer",
+        "wrong_citation"
+      ]
     },
     {
       "case_id": "MANUAL-DECISION-001",
@@ -720,7 +740,12 @@
         "RB-TRADE_SUPPORT-06",
         "RB-CLIENT_ONBOARDING-01"
       ],
-      "task_type": "manual_decision_log_next_action"
+      "task_type": "manual_decision_log_next_action",
+      "taxonomy_labels": [
+        "missing_citation",
+        "unsupported_answer",
+        "wrong_citation"
+      ]
     }
   ],
   "failure_reasons": {
@@ -741,5 +766,10 @@
     "Improved retrieval scores procedure title and content token overlap.",
     "Role filtering excludes runbook sections the requester is not allowed to retrieve."
   ],
-  "system_version": "improved_lexical_retrieval"
+  "system_version": "improved_lexical_retrieval",
+  "taxonomy_labels": {
+    "missing_citation": 5,
+    "unsupported_answer": 5,
+    "wrong_citation": 5
+  }
 }

@@ -102,6 +102,7 @@ Reports:
 | `reports/safety_mitigation_impact.json` | Scenario comparison for no classifier, classifier-only hold, and classifier plus simulated human review. |
 | `reports/safety_threshold_decision_memo.json` | Selected threshold, review band, decision rationale, decision metrics, and next threshold-tuning work. |
 | `reports/safety_prevalence_report.md` | Weighted prevalence estimates, confidence intervals, sampling limitations, and distinction from challenge-set failure rates. |
+| `reports/failure_taxonomy_summary.json` | Shared failure-taxonomy counts by label, group, and source across retrieval, public RAG, red-team, and safety-classifier outputs. |
 | `reports/techqa_public_rag_summary.json` | External public TechQA-RAG-Eval retrieval and abstention summary over the tracked public sample. |
 | `reports/techqa_public_benchmark_profile.json` | Public benchmark transparency profile with sample size, answerable/impossible mix, unique document count, context coverage, failure rate, and provider-result status. |
 | `reports/techqa_public_retriever_comparison.json` | Public TechQA retriever comparison between the keyword-title baseline and the primary local TF-IDF public retriever, including retrieval, citation, abstention, and lift metrics. |
@@ -120,6 +121,8 @@ Retrieval case result files include `baseline_eval_cases.jsonl`, `improved_eval_
 | `retrieved_citation_ids` | Top retrieved sections before final answer selection. |
 | `retrieved_candidate_scores` | Top retrieved sections with total score and optional component breakdown, such as vector similarity, embedding similarity, alias boost, team hint, current-evidence boost, and negation penalty. |
 | `failure_reasons` | Deterministic failure labels used for error analysis. |
+| `taxonomy_source` | Benchmark source used for shared failure-taxonomy reporting. |
+| `taxonomy_labels` | Shared taxonomy labels normalized from track-specific failures or risk categories. |
 | `diagnostic` | Short explanation of the failure mode. |
 | `recommended_fix` | Suggested retrieval or policy improvement. |
 

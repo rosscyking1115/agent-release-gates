@@ -7,6 +7,7 @@ from internal_ai_agent.data.synthetic import generate_all
 from internal_ai_agent.evals.agent import evaluate_agent
 from internal_ai_agent.evals.dataset_profile import write_dataset_profile
 from internal_ai_agent.evals.extraction import evaluate_extraction
+from internal_ai_agent.evals.failure_taxonomy import write_failure_taxonomy_summary
 from internal_ai_agent.evals.gates import write_evaluation_gates
 from internal_ai_agent.evals.runner import (
     evaluate_comparison,
@@ -57,6 +58,7 @@ def run_all(project_root: Path) -> dict[str, Any]:
     )
     trace_index = write_trace_index(project_root)
     collector_export_preview = write_collector_export_preview(project_root)
+    failure_taxonomy = write_failure_taxonomy_summary(project_root)
     gates = write_evaluation_gates(
         project_root,
         comparison=comparison,
@@ -83,6 +85,7 @@ def run_all(project_root: Path) -> dict[str, Any]:
         "observability_spans_path": str(observability_spans_path),
         "trace_index": trace_index,
         "collector_export_preview": collector_export_preview,
+        "failure_taxonomy": failure_taxonomy,
         "evaluation_gates": gates,
         "public_report_path": str(public_report_path),
     }
@@ -237,6 +240,10 @@ def main() -> None:
         f"({summary['evaluation_gates']['pass_count']} pass, "
         f"{summary['evaluation_gates']['warn_count']} warn, "
         f"{summary['evaluation_gates']['fail_count']} fail)"
+    )
+    print(
+        "- taxonomy_labeled_cases: "
+        f"{summary['failure_taxonomy']['total_labeled_cases']}"
     )
     print(
         "- manual_golden_cases: "

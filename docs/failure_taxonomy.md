@@ -1,6 +1,6 @@
 # Failure Taxonomy
 
-This taxonomy defines the failure labels the benchmark should use as it becomes more research-grade. Current reports already expose failure reasons in several tracks; the next step is to normalize those reasons into a shared taxonomy.
+This taxonomy defines the shared failure labels used across retrieval, safety, public RAG, and classifier-evaluation artifacts. Track-specific labels such as `missing_or_wrong_citation` or `weak_evidence_pressure` are normalized into these shared categories so failures can be compared across benchmark modules.
 
 ## Safety Failures
 
@@ -53,3 +53,12 @@ Each public report should separate:
 - future LLM-as-judge labels
 
 This prevents synthetic workflow evidence from being mistaken for production or human-evaluation evidence.
+
+## Generated Artifact
+
+The full evaluation runner writes `reports/failure_taxonomy_summary.json`. Case-level artifacts also include:
+
+- `taxonomy_source`
+- `taxonomy_labels`
+
+The public report and Streamlit dashboard summarize top taxonomy labels by count and source.

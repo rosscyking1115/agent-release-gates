@@ -528,7 +528,12 @@
         "RB-TRADE_SUPPORT-02",
         "RB-TRADE_SUPPORT-03"
       ],
-      "task_type": "ticket_next_action"
+      "task_type": "ticket_next_action",
+      "taxonomy_labels": [
+        "missing_citation",
+        "unsupported_answer",
+        "wrong_citation"
+      ]
     },
     {
       "case_id": "GOLD-TCK-0003",
@@ -576,7 +581,12 @@
         "RB-PAYMENTS_OPS-02",
         "RB-PAYMENTS_OPS-03"
       ],
-      "task_type": "ticket_next_action"
+      "task_type": "ticket_next_action",
+      "taxonomy_labels": [
+        "missing_citation",
+        "unsupported_answer",
+        "wrong_citation"
+      ]
     },
     {
       "case_id": "GOLD-TCK-0004",
@@ -624,7 +634,12 @@
         "RB-PAYMENTS_OPS-02",
         "RB-PAYMENTS_OPS-03"
       ],
-      "task_type": "ticket_next_action"
+      "task_type": "ticket_next_action",
+      "taxonomy_labels": [
+        "missing_citation",
+        "unsupported_answer",
+        "wrong_citation"
+      ]
     },
     {
       "case_id": "GOLD-TCK-0007",
@@ -672,7 +687,12 @@
         "RB-PAYMENTS_OPS-02",
         "RB-PAYMENTS_OPS-03"
       ],
-      "task_type": "ticket_next_action"
+      "task_type": "ticket_next_action",
+      "taxonomy_labels": [
+        "missing_citation",
+        "unsupported_answer",
+        "wrong_citation"
+      ]
     },
     {
       "case_id": "GOLD-TCK-0008",
@@ -720,7 +740,12 @@
         "RB-PAYMENTS_OPS-02",
         "RB-PAYMENTS_OPS-03"
       ],
-      "task_type": "ticket_next_action"
+      "task_type": "ticket_next_action",
+      "taxonomy_labels": [
+        "missing_citation",
+        "unsupported_answer",
+        "wrong_citation"
+      ]
     },
     {
       "case_id": "GOLD-TCK-0009",
@@ -768,7 +793,12 @@
         "RB-CLIENT_ONBOARDING-02",
         "RB-CLIENT_ONBOARDING-03"
       ],
-      "task_type": "ticket_next_action"
+      "task_type": "ticket_next_action",
+      "taxonomy_labels": [
+        "missing_citation",
+        "unsupported_answer",
+        "wrong_citation"
+      ]
     },
     {
       "case_id": "GOLD-TCK-0010",
@@ -816,7 +846,12 @@
         "RB-PAYMENTS_OPS-02",
         "RB-PAYMENTS_OPS-03"
       ],
-      "task_type": "ticket_next_action"
+      "task_type": "ticket_next_action",
+      "taxonomy_labels": [
+        "missing_citation",
+        "unsupported_answer",
+        "wrong_citation"
+      ]
     },
     {
       "case_id": "GOLD-TCK-0012",
@@ -864,7 +899,12 @@
         "RB-PAYMENTS_OPS-02",
         "RB-PAYMENTS_OPS-03"
       ],
-      "task_type": "ticket_next_action"
+      "task_type": "ticket_next_action",
+      "taxonomy_labels": [
+        "missing_citation",
+        "unsupported_answer",
+        "wrong_citation"
+      ]
     },
     {
       "case_id": "GOLD-TCK-0013",
@@ -912,7 +952,12 @@
         "RB-TRADE_SUPPORT-02",
         "RB-TRADE_SUPPORT-03"
       ],
-      "task_type": "ticket_next_action"
+      "task_type": "ticket_next_action",
+      "taxonomy_labels": [
+        "missing_citation",
+        "unsupported_answer",
+        "wrong_citation"
+      ]
     },
     {
       "case_id": "GOLD-TCK-0014",
@@ -960,7 +1005,12 @@
         "RB-PAYMENTS_OPS-02",
         "RB-PAYMENTS_OPS-03"
       ],
-      "task_type": "ticket_next_action"
+      "task_type": "ticket_next_action",
+      "taxonomy_labels": [
+        "missing_citation",
+        "unsupported_answer",
+        "wrong_citation"
+      ]
     }
   ],
   "failure_reasons": {
@@ -983,5 +1033,11 @@
     "Baseline uses broad system/team keyword hints, not procedure-level retrieval.",
     "Metrics are deterministic and do not require paid API keys."
   ],
-  "system_version": "baseline_team_hint_retrieval"
+  "system_version": "baseline_team_hint_retrieval",
+  "taxonomy_labels": {
+    "missing_citation": 234,
+    "unsupported_answer": 234,
+    "weak_evidence_treated_as_strong": 67,
+    "wrong_citation": 234
+  }
 }

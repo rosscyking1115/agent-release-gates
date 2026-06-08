@@ -4,6 +4,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
+from internal_ai_agent.evals.failure_taxonomy import labels_for_failure_reasons
 from internal_ai_agent.io import read_jsonl, write_json, write_jsonl
 from internal_ai_agent.rag.baseline import (
     BaselineAnswer,
@@ -43,6 +44,8 @@ class CaseResult:
     expected_abstain: bool
     abstention_correct: bool
     failure_reasons: list[str]
+    taxonomy_source: str
+    taxonomy_labels: list[str]
     diagnostic: str
     recommended_fix: str
 
@@ -63,6 +66,7 @@ def evaluate_baseline(project_root: Path) -> dict[str, Any]:
         "by_task_type": _summarize_by_dimension(results, "task_type"),
         "by_noise_type": _summarize_by_dimension(results, "noise_type"),
         "failure_reasons": _failure_reason_counts(results),
+        "taxonomy_labels": _taxonomy_label_counts(results),
         "failure_examples": _failure_examples(results),
         "notes": [
             "Baseline uses broad system/team keyword hints, not procedure-level retrieval.",
@@ -101,6 +105,7 @@ def evaluate_lexical(project_root: Path) -> dict[str, Any]:
         "by_task_type": _summarize_by_dimension(results, "task_type"),
         "by_noise_type": _summarize_by_dimension(results, "noise_type"),
         "failure_reasons": _failure_reason_counts(results),
+        "taxonomy_labels": _taxonomy_label_counts(results),
         "failure_examples": _failure_examples(results),
         "notes": [
             "Improved retrieval scores procedure title and content token overlap.",
@@ -139,6 +144,7 @@ def evaluate_hybrid(project_root: Path) -> dict[str, Any]:
         "by_task_type": _summarize_by_dimension(results, "task_type"),
         "by_noise_type": _summarize_by_dimension(results, "noise_type"),
         "failure_reasons": _failure_reason_counts(results),
+        "taxonomy_labels": _taxonomy_label_counts(results),
         "failure_examples": _failure_examples(results),
         "notes": [
             (
@@ -179,6 +185,7 @@ def evaluate_vector(project_root: Path) -> dict[str, Any]:
         "by_task_type": _summarize_by_dimension(results, "task_type"),
         "by_noise_type": _summarize_by_dimension(results, "noise_type"),
         "failure_reasons": _failure_reason_counts(results),
+        "taxonomy_labels": _taxonomy_label_counts(results),
         "failure_examples": _failure_examples(results),
         "notes": [
             (
@@ -222,6 +229,7 @@ def evaluate_embedding_store(project_root: Path) -> dict[str, Any]:
         "by_task_type": _summarize_by_dimension(results, "task_type"),
         "by_noise_type": _summarize_by_dimension(results, "noise_type"),
         "failure_reasons": _failure_reason_counts(results),
+        "taxonomy_labels": _taxonomy_label_counts(results),
         "failure_examples": _failure_examples(results),
         "notes": [
             (
@@ -281,6 +289,7 @@ def evaluate_provider_embedding_store(
         "by_task_type": _summarize_by_dimension(results, "task_type"),
         "by_noise_type": _summarize_by_dimension(results, "noise_type"),
         "failure_reasons": _failure_reason_counts(results),
+        "taxonomy_labels": _taxonomy_label_counts(results),
         "failure_examples": _failure_examples(results),
         "notes": [
             (
@@ -477,6 +486,8 @@ def _evaluate_case(case: dict[str, Any], answer: BaselineAnswer) -> CaseResult:
         expected_abstain=expected_abstain,
         abstention_correct=answer.abstained == expected_abstain,
         failure_reasons=failure_reasons,
+        taxonomy_source="synthetic_retrieval",
+        taxonomy_labels=labels_for_failure_reasons(failure_reasons),
         diagnostic=_diagnostic(case, answer, expected_citations, failure_reasons),
         recommended_fix=_recommended_fix(case, answer, failure_reasons),
     )
@@ -562,6 +573,14 @@ def _failure_reason_counts(results: list[CaseResult]) -> dict[str, int]:
     return dict(sorted(counts.items()))
 
 
+def _taxonomy_label_counts(results: list[CaseResult]) -> dict[str, int]:
+    counts: dict[str, int] = {}
+    for row in results:
+        for label in row.taxonomy_labels:
+            counts[label] = counts.get(label, 0) + 1
+    return dict(sorted(counts.items()))
+
+
 def _failure_examples(results: list[CaseResult], limit: int = 10) -> list[dict[str, Any]]:
     examples: list[dict[str, Any]] = []
     for row in results:
@@ -573,6 +592,7 @@ def _failure_examples(results: list[CaseResult], limit: int = 10) -> list[dict[s
                 "task_type": row.task_type,
                 "noise_type": row.noise_type,
                 "failure_reasons": row.failure_reasons,
+                "taxonomy_labels": row.taxonomy_labels,
                 "expected_citation_ids": row.expected_citation_ids,
                 "predicted_citation_ids": row.predicted_citation_ids,
                 "retrieved_citation_ids": row.retrieved_citation_ids,

@@ -6,6 +6,7 @@ from internal_ai_agent.data.synthetic import generate_all
 from internal_ai_agent.evals.agent import evaluate_agent
 from internal_ai_agent.evals.dataset_profile import write_dataset_profile
 from internal_ai_agent.evals.extraction import evaluate_extraction
+from internal_ai_agent.evals.failure_taxonomy import write_failure_taxonomy_summary
 from internal_ai_agent.evals.gates import write_evaluation_gates
 from internal_ai_agent.evals.runner import (
     evaluate_comparison,
@@ -31,6 +32,7 @@ def _prepare_reports(project_root: Path) -> None:
     extraction = evaluate_extraction(project_root)
     security = evaluate_security(project_root)
     evaluate_safety_classifier(project_root)
+    write_failure_taxonomy_summary(project_root)
     agent = evaluate_agent(project_root)
     write_evaluation_history(
         project_root,
@@ -137,6 +139,9 @@ def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
     assert "## Historical Evaluation Snapshots" in report
     assert "| 2026-06-02T11:00:00Z | Hybrid sparse semantic | 99.65% | 1 | +1.39% | -4 |" in report
     assert "## Retriever Failure Analysis" in report
+    assert "## Failure Taxonomy" in report
+    assert "Total taxonomy-labeled cases:" in report
+    assert "| missing_citation | reliability |" in report
     assert "MANUAL-FIELD-074" in report
     assert "| Local embedding store | 100.00% | 100.00% | 100.00% | 100.00% | 0 |" in report
     assert "MANUAL-CHAT-001" not in report

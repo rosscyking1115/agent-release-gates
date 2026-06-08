@@ -90,6 +90,7 @@ def generate_public_report(project_root: Path) -> str:
     )
     safety_mitigation = _read_json(reports_dir / "safety_mitigation_impact.json")
     safety_memo = _read_json(reports_dir / "safety_threshold_decision_memo.json")
+    failure_taxonomy = _read_optional_json(reports_dir / "failure_taxonomy_summary.json")
     agent = _read_json(reports_dir / "agent_eval_summary.json")
 
     markdown = "\n".join(
@@ -155,6 +156,10 @@ def generate_public_report(project_root: Path) -> str:
             _retriever_failure_overview_table(project_root),
             "",
             _retriever_failure_examples_table(project_root),
+            "",
+            "## Failure Taxonomy",
+            "",
+            _failure_taxonomy_table(failure_taxonomy),
             "",
             "## Baseline To Improved Delta",
             "",
@@ -582,6 +587,40 @@ def _retriever_failure_examples_table(project_root: Path) -> str:
             "{expected_citation} | {predicted_citation} | {retrieved_but_not_cited} | "
             "{score_explanation} | {recommended_fix} |".format(**row)
         )
+    return "\n".join(rows)
+
+
+def _failure_taxonomy_table(report: dict[str, Any]) -> str:
+    if report.get("report_type") != "failure_taxonomy_summary":
+        return "Failure taxonomy summary is not configured."
+    definitions = report.get("definitions", {})
+    label_rows = sorted(
+        report.get("by_label", {}).items(),
+        key=lambda item: (-int(item[1]), str(item[0])),
+    )[:10]
+    rows = [
+        f"Total taxonomy-labeled cases: {report['total_labeled_cases']}",
+        "",
+        "| Taxonomy label | Group | Count |",
+        "| --- | --- | ---: |",
+    ]
+    for label, count in label_rows:
+        group = definitions.get(label, {}).get("group", "unknown")
+        rows.append(f"| {label} | {group} | {count} |")
+    rows.extend(
+        [
+            "",
+            "| Source | Top taxonomy label | Count |",
+            "| --- | --- | ---: |",
+        ]
+    )
+    for source, labels in sorted(report.get("by_source", {}).items()):
+        if not labels:
+            continue
+        top_label, count = sorted(
+            labels.items(), key=lambda item: (-int(item[1]), str(item[0]))
+        )[0]
+        rows.append(f"| {source} | {top_label} | {count} |")
     return "\n".join(rows)
 
 

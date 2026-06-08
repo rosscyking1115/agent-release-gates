@@ -497,5 +497,6 @@
     "It uses cosine similarity plus a small keyword rerank; no external embedding API is used.",
     "Role filtering excludes runbook sections the requester is not allowed to retrieve."
   ],
-  "system_version": "local_tfidf_vector_retrieval"
+  "system_version": "local_tfidf_vector_retrieval",
+  "taxonomy_labels": {}
 }
