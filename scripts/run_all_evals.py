@@ -13,6 +13,9 @@ from internal_ai_agent.evals.gates import write_evaluation_gates
 from internal_ai_agent.evals.human_calibration import evaluate_human_calibration
 from internal_ai_agent.evals.model_judge import write_model_judge_adapter_status
 from internal_ai_agent.evals.public_rag_findings import write_public_rag_findings
+from internal_ai_agent.evals.public_rag_reranking import (
+    write_public_rag_reranking_opportunity,
+)
 from internal_ai_agent.evals.runner import (
     evaluate_comparison,
     evaluate_retriever_comparison,
@@ -48,6 +51,7 @@ def run_all(project_root: Path) -> dict[str, Any]:
         techqa_public=techqa_public,
         wixqa_public=wixqa_public,
     )
+    public_rag_reranking = write_public_rag_reranking_opportunity(project_root)
     extraction = evaluate_extraction(project_root)
     security = evaluate_security(project_root)
     safety_classifier = evaluate_safety_classifier(project_root)
@@ -93,6 +97,7 @@ def run_all(project_root: Path) -> dict[str, Any]:
         "techqa_public": techqa_public,
         "wixqa_public": wixqa_public,
         "public_rag_findings": public_rag_findings,
+        "public_rag_reranking": public_rag_reranking,
         "extraction": extraction,
         "security": security,
         "safety_classifier": safety_classifier,
@@ -225,6 +230,16 @@ def main() -> None:
         print(
             "- public_rag_top_failure_label: "
             f"{findings_summary['top_cross_track_failure_label']}"
+        )
+    if summary["public_rag_reranking"]["status"] == "evaluated":
+        reranking_summary = summary["public_rag_reranking"]["summary"]
+        print(
+            "- public_rag_rerank_ceiling_top1_citation_accuracy: "
+            f"{reranking_summary['oracle_top3_rerank_ceiling']:.4f}"
+        )
+        print(
+            "- public_rag_rerankable_case_count: "
+            f"{reranking_summary['rerankable_case_count']}"
         )
     print(
         f"- extraction_schema_validity: {summary['extraction']['metrics']['schema_validity']:.4f}"

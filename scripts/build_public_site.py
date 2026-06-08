@@ -31,6 +31,9 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
         reports_dir / "wixqa_public_benchmark_profile.json"
     )
     public_rag_findings = _read_optional_json(reports_dir / "public_rag_findings.json")
+    public_rag_reranking = _read_optional_json(
+        reports_dir / "public_rag_reranking_opportunity.json"
+    )
     safety_classifier = _read_json(reports_dir / "safety_classifier_eval_summary.json")
     safety_retuning = _read_json(reports_dir / "safety_threshold_retuning.json")
     safety_review = _read_json(reports_dir / "safety_human_review_simulation.json")
@@ -148,6 +151,11 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
             reports_dir / "public_rag_findings.json",
             public_dir / "public_rag_findings.json",
         )
+    if (reports_dir / "public_rag_reranking_opportunity.json").exists():
+        shutil.copyfile(
+            reports_dir / "public_rag_reranking_opportunity.json",
+            public_dir / "public_rag_reranking_opportunity.json",
+        )
 
     (public_dir / "index.html").write_text(
         _index_html(
@@ -162,6 +170,7 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
             wixqa_public=wixqa_public,
             wixqa_profile=wixqa_profile,
             public_rag_findings=public_rag_findings,
+            public_rag_reranking=public_rag_reranking,
             safety_classifier=safety_classifier,
             safety_retuning=safety_retuning,
             safety_review=safety_review,
@@ -189,6 +198,7 @@ def _index_html(
     wixqa_public: dict[str, Any],
     wixqa_profile: dict[str, Any],
     public_rag_findings: dict[str, Any],
+    public_rag_reranking: dict[str, Any],
     safety_classifier: dict[str, Any],
     safety_retuning: dict[str, Any],
     safety_review: dict[str, Any],
@@ -234,6 +244,7 @@ def _index_html(
             "wixqa_public_retriever_comparison.json",
         ),
         ("Cross-public RAG findings", "public_rag_findings.json"),
+        ("Public RAG reranking opportunity", "public_rag_reranking_opportunity.json"),
         ("Safety classifier summary", "safety_classifier_eval_summary.json"),
         ("Safety threshold sweep", "safety_threshold_sweep.json"),
         ("Safety threshold retuning", "safety_threshold_retuning.json"),
@@ -471,6 +482,14 @@ def _index_html(
             "Public RAG weighted RAG@3",
             _public_rag_metric(public_rag_findings, "weighted_retrieval_hit_rate_at_3"),
         )}
+        {_metric(
+            "Rerankable public cases",
+            _public_reranking_summary_value(public_rag_reranking, "rerankable_case_count"),
+        )}
+        {_metric(
+            "Rerank ceiling top-1",
+            _public_reranking_metric(public_rag_reranking, "oracle_top3_rerank_ceiling"),
+        )}
       </div>
     </section>
 
@@ -596,6 +615,18 @@ def _public_rag_metric(report: dict[str, Any], metric: str) -> str:
 
 
 def _public_rag_summary_value(report: dict[str, Any], key: str) -> object:
+    if report.get("status") != "evaluated":
+        return "Not configured"
+    return report.get("summary", {}).get(key, "Not configured")
+
+
+def _public_reranking_metric(report: dict[str, Any], metric: str) -> str:
+    if report.get("status") != "evaluated":
+        return "Not configured"
+    return _pct(float(report.get("summary", {}).get(metric, 0.0)))
+
+
+def _public_reranking_summary_value(report: dict[str, Any], key: str) -> object:
     if report.get("status") != "evaluated":
         return "Not configured"
     return report.get("summary", {}).get(key, "Not configured")

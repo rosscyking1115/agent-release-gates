@@ -217,8 +217,8 @@ def _recommendations(tracks: list[dict[str, Any]], summary: dict[str, Any]) -> l
             "samples before publishing any model-quality claim."
         ),
         (
-            "Add a reranking experiment focused on cases where the expected document is "
-            "retrieved but not ranked first."
+            "Use the reranking opportunity analysis to test a real query-document "
+            "reranker against the measured top-3 ceiling."
         ),
     ]
     if "weak_evidence_treated_as_strong" in summary["top_cross_track_failure_label"]:

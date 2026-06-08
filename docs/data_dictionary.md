@@ -128,6 +128,7 @@ Reports:
 | `reports/wixqa_public_rag_cases.jsonl` | Case-level WixQA retrieval results, expected/retrieved article ids, ranking result, and failure reasons. |
 | `reports/wixqa_public_retriever_cases.jsonl` | Case-level WixQA results for each compared public retriever system, including system id, retrieved citations, top scores, and failure reasons. |
 | `reports/public_rag_findings.json` | Cross-public TechQA and WixQA findings summary with weighted public RAG metrics, top failure label, track-level lifts, findings, and recommended next experiments. |
+| `reports/public_rag_reranking_opportunity.json` | Cross-public reranking opportunity analysis that separates current top-1 citation accuracy, oracle top-3 rerank ceiling, rerankable cases, and residual retrieval misses. |
 
 ## Retrieval eval case files
 

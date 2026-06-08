@@ -12,7 +12,7 @@
   ],
   "recommendations": [
     "Run a provider-backed embedding comparison on the same compact public samples before publishing any model-quality claim.",
-    "Add a reranking experiment focused on cases where the expected document is retrieved but not ranked first."
+    "Use the reranking opportunity analysis to test a real query-document reranker against the measured top-3 ceiling."
   ],
   "report_type": "public_rag_findings",
   "status": "evaluated",

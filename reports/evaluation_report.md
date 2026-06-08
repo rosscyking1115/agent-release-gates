@@ -164,7 +164,34 @@ The retrieval experiment compares a deliberately weak baseline, a lexical retrie
 | Recommendation |
 | --- |
 | Run a provider-backed embedding comparison on the same compact public samples before publishing any model-quality claim. |
-| Add a reranking experiment focused on cases where the expected document is retrieved but not ranked first. |
+| Use the reranking opportunity analysis to test a real query-document reranker against the measured top-3 ceiling. |
+
+## Public RAG Reranking Opportunity
+
+| Reranking opportunity metric | Value |
+| --- | ---: |
+| Evaluated public tracks | 2 |
+| Public answerable cases | 208 |
+| Current weighted top-1 citation accuracy | 76.44% |
+| Oracle top-3 rerank ceiling | 87.98% |
+| Possible weighted top-1 lift | 11.54% |
+| Rerankable cases | 24 |
+| Residual retrieval misses | 25 |
+| Residual retrieval gap | 12.02% |
+| Largest rerankable track | Wix/WixQA expert-written (+13.75%) |
+| Largest residual gap track | nvidia/TechQA-RAG-Eval (+12.50%) |
+
+| Finding |
+| --- |
+| Across public RAG tracks, top-3 reranking could lift weighted top-1 citation accuracy from 76.44% to 87.98%. |
+| The current compact public samples contain 24 rerankable cases and 25 residual retrieval misses. |
+| Reranking is worth testing, but retriever recall still needs separate work because reranking cannot recover documents outside the candidate set. |
+
+| Recommendation |
+| --- |
+| Add a query-document reranker over the top-3 or top-5 retrieved public documents and compare it against this opportunity ceiling. |
+| Track reranking lift separately from retrieval-hit@3 so ranking gains are not confused with candidate-generation gains. |
+| Prioritize candidate-generation changes alongside reranking because the residual retrieval gap is larger than the rerankable top-1 gap. |
 
 ## Historical Evaluation Snapshots
 
