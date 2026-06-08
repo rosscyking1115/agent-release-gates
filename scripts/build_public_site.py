@@ -244,9 +244,9 @@ def _index_html(
     operating_capacity_label = (
         f"{operating_summary['minimum_reviewer_daily_capacity']} / reviewer / day"
     )
-    external_status = external_review.get("status", "not_configured")
+    external_status = _display_status(external_review.get("status", "not_configured"))
     risk_labels = "\n".join(
-        f"<li>{escape(label)}</li>" for label in profile["risk_labels"]
+        f"<li>{escape(_humanize_label(label))}</li>" for label in profile["risk_labels"]
     )
     recommendations = "\n".join(
         f"<li>{escape(item)}</li>" for item in profile["recommended_next_data_work"]
@@ -497,7 +497,7 @@ def _index_html(
         {_metric("Safety min review capacity", operating_capacity_label)}
         {_metric("Unsafe reduction", _pct(mitigation_summary["unsafe_allowed_reduction_rate"]))}
         {_metric("Indexed traces", trace_index["trace_count"])}
-        {_metric("Release gate status", gates["overall_status"])}
+        {_metric("Release gate status", _display_status(gates["overall_status"]))}
         {_metric("Release gate failures", gates["fail_count"])}
         {_metric("TechQA public cases", _techqa_profile_value(techqa_profile, "sample_case_count"))}
         {_metric("TechQA public RAG@3", _techqa_metric(techqa_public, "retrieval_hit_rate_at_3"))}
@@ -524,7 +524,7 @@ def _index_html(
             _public_reranker_signed_metric(public_rag_reranker, "top1_accuracy_delta"),
         )}
         {_metric(
-            "Hosted reranker adapter",
+            "Hosted reranker readiness",
             _hosted_reranker_status(public_rag_model_reranker),
         )}
         {_metric(
@@ -535,7 +535,7 @@ def _index_html(
     </section>
 
     <section class="section">
-      <h2>Benchmark Gaps Are Visible</h2>
+      <h2>Benchmark Transparency</h2>
       <p>
         The lab reports benchmark-quality risks alongside model and retriever
         scores. That is deliberate: high scores on synthetic data are only useful
@@ -683,13 +683,48 @@ def _public_reranker_signed_metric(report: dict[str, Any], metric: str) -> str:
 
 def _hosted_reranker_status(report: dict[str, Any]) -> str:
     status = str(report.get("status", "not_configured"))
-    return "Not configured" if status == "not_configured" else status
+    return _display_status(status)
 
 
 def _hosted_reranker_case_count(report: dict[str, Any]) -> object:
     if report.get("status") == "not_configured":
-        return "Not configured"
+        return "Not available"
     return report.get("candidate_case_count", 0)
+
+
+def _display_status(status: object) -> str:
+    labels = {
+        "awaiting_labels": "Awaiting independent labels",
+        "dry_run_ready": "Ready for credentialed run",
+        "dry_run_preview": "Prepared preview",
+        "not_configured": "Not available",
+        "not_published": "Not yet published",
+        "pass_with_warnings": "Pass with warnings",
+        "pass": "Pass",
+        "warn": "Warning",
+        "blocking": "Blocking",
+        "non_blocking": "Non-blocking",
+        "completed": "Completed",
+        "evaluated": "Evaluated",
+    }
+    value = str(status)
+    if "_" not in value:
+        return labels.get(value, value)
+    return labels.get(value, value.replace("_", " ").title())
+
+
+def _humanize_label(label: str) -> str:
+    labels = {
+        "provider_backed_embedding_comparison_not_covered": (
+            "Provider-backed embedding comparison is available as an optional "
+            "credentialed run but is not published yet."
+        ),
+        "real_company_data_intentionally_excluded": (
+            "Real company data is intentionally excluded; synthetic and public "
+            "benchmarks are reported separately."
+        ),
+    }
+    return labels.get(label, label.replace("_", " ").capitalize())
 
 
 if __name__ == "__main__":

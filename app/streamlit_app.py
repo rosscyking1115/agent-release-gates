@@ -652,7 +652,7 @@ def _render_public_rag_model_reranker(status: dict[str, object]) -> None:
         return
 
     cols = st.columns(4)
-    cols[0].metric("Status", str(status.get("status", "")))
+    cols[0].metric("Status", _format_status(status.get("status", "")))
     cols[1].metric("Packet cases", int(status.get("candidate_case_count", 0)))
     cols[2].metric("Estimated calls", int(status.get("estimated_provider_calls", 0)))
     cols[3].metric(
@@ -1562,6 +1562,25 @@ def _format_pct(value: float) -> str:
 def _format_signed_pct(value: float) -> str:
     sign = "+" if value >= 0 else ""
     return f"{sign}{value * 100:.2f}%"
+
+
+def _format_status(status: object) -> str:
+    labels = {
+        "awaiting_labels": "Awaiting independent labels",
+        "dry_run_ready": "Ready for credentialed run",
+        "dry_run_preview": "Prepared preview",
+        "not_configured": "Not available",
+        "not_published": "Not yet published",
+        "pass_with_warnings": "Pass with warnings",
+        "blocking": "Blocking",
+        "non_blocking": "Non-blocking",
+        "completed": "Completed",
+        "evaluated": "Evaluated",
+    }
+    value = str(status)
+    if "_" not in value:
+        return labels.get(value, value)
+    return labels.get(value, value.replace("_", " ").title())
 
 
 if __name__ == "__main__":

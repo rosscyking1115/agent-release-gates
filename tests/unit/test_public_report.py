@@ -169,12 +169,12 @@ def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
     assert "Best current retriever: Local TF-IDF vector" in report
     assert "## Evaluation Release Gates" in report
     assert (
-        "| Overall status | Release | pass_with_warnings | summary | "
+        "| Overall status | Release | Pass with warnings | summary | "
         "12 pass / 1 warn | 0 fail |"
     ) in report
     assert (
-        "| Provider-backed embedding result published | Retrieval | warn | "
-        "non_blocking | not_published | optional credentialed run |"
+        "| Provider-backed embedding result published | Retrieval | Warning | "
+        "Non-blocking | Not yet published | optional credentialed run |"
     ) in report
     assert "## Dataset Profile" in report
     assert "| Manual golden cases | 102 |" in report
@@ -222,16 +222,16 @@ def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
     assert "| Calibration cases | 24 |" in report
     assert "| Classifier label accuracy |" in report
     assert "| External human-review artifact | Value |" in report
-    assert "| Status | awaiting_labels |" in report
+    assert "| Status | Awaiting independent labels |" in report
     assert "| Review packet | data/review/external_human_review_packet.csv |" in report
     assert "| Judge reliability metric | Value |" in report
     assert "| Local rubric judge accuracy |" in report
     assert "| Classifier / rubric judge agreement |" in report
     assert "| Hosted model-judge adapter | Value |" in report
-    assert "| Status | dry_run_ready |" in report
+    assert "| Status | Ready for credentialed run |" in report
     assert "| API mode | responses |" in report
     assert "| Reviewed hosted model-judge result | Value |" in report
-    assert "| Manual publication decision | publish_with_limitations |" in report
+    assert "| Manual publication decision | Publish with limitations |" in report
     assert "| Model-judge label accuracy | 95.83% |" in report
     assert "| HUMAN-CAL-010 | tool_misuse | benign | unsafe | judge_benign_auto_blocked |" in report
     assert "| Safety retuning metric | Value |" in report
@@ -254,7 +254,7 @@ def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
     assert "| Floor rubric precision |" in report
     assert "| Capacity sensitivity floor reviews | 17 |" in report
     assert "| Capacity sensitivity max utilization | 212.50% |" in report
-    assert "| 4 | 17 | 212.50% | 3 | capacity_breach |" in report
+    assert "| 4 | 17 | 212.50% | 3 | Capacity breach |" in report
     assert "| Threshold decision memo | Value |" in report
     assert "## Agent Trace Examples" in report
     assert "trace_eval_tck-" in report
@@ -295,7 +295,7 @@ def test_generate_public_report_html_renders_tables_and_safety_boundary(tmp_path
     assert "<table>" in html
     assert "<td>Hybrid sparse semantic</td>" in html
     assert "<h2>Evaluation Release Gates</h2>" in html
-    assert "<td>pass_with_warnings</td>" in html
+    assert "<td>Pass with warnings</td>" in html
     assert "<td>Local TF-IDF vector</td>" in html
     assert "<td>Local embedding store</td>" in html
     assert "<h2>Retriever Metric Snapshots</h2>" in html
@@ -303,14 +303,14 @@ def test_generate_public_report_html_renders_tables_and_safety_boundary(tmp_path
     assert "<h2>Dataset Profile</h2>" in html
     assert "<h2>Safety Classifier Workflow</h2>" in html
     assert "<th>External human-review artifact</th>" in html
-    assert "<td>awaiting_labels</td>" in html
+    assert "<td>Awaiting independent labels</td>" in html
     assert "<th>Reviewed hosted model-judge result</th>" in html
-    assert "<td>publish_with_limitations</td>" in html
-    assert "<td>recommend_targeted_secondary_review_floor</td>" in html
-    assert "<td>validate_with_monitoring</td>" in html
-    assert "<td>adopt_targeted_floor_with_minimum_capacity</td>" in html
+    assert "<td>Publish with limitations</td>" in html
+    assert "<td>Recommend targeted secondary review floor</td>" in html
+    assert "<td>Validate with monitoring</td>" in html
+    assert "<td>Adopt targeted floor with minimum capacity</td>" in html
     assert "<td>16</td>" in html
-    assert "<td>dry_run_preview</td>" in html
+    assert "<td>Prepared preview</td>" in html
     assert "It does not use real company documents" in html
 
 

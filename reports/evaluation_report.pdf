@@ -13,7 +13,7 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 5 0 R >>
 endobj
 5 0 obj
-<< /Length 2538 >>
+<< /Length 2545 >>
 stream
 BT
 /F1 10 Tf
@@ -65,35 +65,35 @@ T*
 T*
 (Gate | Area | Status | Severity | Observed | Threshold) Tj
 T*
-(Overall status | Release | pass_with_warnings | summary | 12 pass / 1 warn | 0 fail) Tj
+(Overall status | Release | Pass with warnings | summary | 12 pass / 1 warn | 0 fail) Tj
 T*
-(Golden case coverage | Benchmark | pass | blocking | 358 | 300) Tj
+(Golden case coverage | Benchmark | Pass | Blocking | 358 | 300) Tj
 T*
-(Manual golden-case share | Benchmark | pass | blocking | 28.49% | 25.00%) Tj
+(Manual golden-case share | Benchmark | Pass | Blocking | 28.49% | 25.00%) Tj
 T*
-(Local TF-IDF vector citation coverage | Retrieval | pass | blocking | 100.00% | 99.00%) Tj
+(Local TF-IDF vector citation coverage | Retrieval | Pass | Blocking | 100.00% | 99.00%) Tj
 T*
-(Local embedding-store citation coverage | Retrieval | pass | blocking | 100.00% | 99.00%) Tj
+(Local embedding-store citation coverage | Retrieval | Pass | Blocking | 100.00% | 99.00%) Tj
 T*
-(Improved abstention accuracy | Retrieval | pass | blocking | 100.00% | 99.00%) Tj
+(Improved abstention accuracy | Retrieval | Pass | Blocking | 100.00% | 99.00%) Tj
 T*
-(Structured extraction schema validity | Extraction | pass | blocking | 100.00% | 99.00%) Tj
+(Structured extraction schema validity | Extraction | Pass | Blocking | 100.00% | 99.00%) Tj
 T*
-(Weighted safe response rate | Safety | pass | blocking | 100.00% | 99.00%) Tj
+(Weighted safe response rate | Safety | Pass | Blocking | 100.00% | 99.00%) Tj
 T*
-(Improved residual risk score | Safety | pass | blocking | 0 | 0) Tj
+(Improved residual risk score | Safety | Pass | Blocking | 0 | 0) Tj
 T*
-(Side-effect block rate | Agent governance | pass | blocking | 100.00% | 99.00%) Tj
+(Side-effect block rate | Agent governance | Pass | Blocking | 100.00% | 99.00%) Tj
 T*
-(Approval audit coverage | Agent governance | pass | blocking | 100.00% | 99.00%) Tj
+(Approval audit coverage | Agent governance | Pass | Blocking | 100.00% | 99.00%) Tj
 T*
-(Indexed trace count | Observability | pass | blocking | 21 | 10) Tj
+(Indexed trace count | Observability | Pass | Blocking | 21 | 10) Tj
 T*
-(Collector preview span consistency | Observability | pass | blocking | 1328 | 1328) Tj
+(Collector preview span consistency | Observability | Pass | Blocking | 1328 | 1328) Tj
 T*
-(Provider-backed embedding result published | Retrieval | warn | non_blocking | not_published |) Tj
+(Provider-backed embedding result published | Retrieval | Warning | Non-blocking | Not yet) Tj
 T*
-(optional credentialed run) Tj
+(published | optional credentialed run) Tj
 T*
 () Tj
 T*
@@ -481,7 +481,7 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 13 0 R >>
 endobj
 13 0 obj
-<< /Length 2304 >>
+<< /Length 2319 >>
 stream
 BT
 /F1 10 Tf
@@ -575,9 +575,9 @@ T*
 T*
 () Tj
 T*
-(Hosted reranker adapter field | Value) Tj
+(Hosted reranker readiness field | Value) Tj
 T*
-(Status | dry_run_ready) Tj
+(Status | Ready for credentialed run) Tj
 T*
 (Provider | openai) Tj
 T*
@@ -608,9 +608,9 @@ BT
 T*
 (Datasets | Wix/WixQA expert-written: 12, nvidia/TechQA-RAG-Eval: 12) Tj
 T*
-(Credential env var | OPENAI_API_KEY) Tj
+(Credential setting | OPENAI_API_KEY) Tj
 T*
-(Model env var | OPENAI_RERANKER_MODEL) Tj
+(Model setting | OPENAI_RERANKER_MODEL) Tj
 T*
 (Packet path | reports/public_rag_model_reranker_packet.jsonl) Tj
 T*
@@ -949,7 +949,7 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 21 0 R >>
 endobj
 21 0 obj
-<< /Length 2613 >>
+<< /Length 2625 >>
 stream
 BT
 /F1 10 Tf
@@ -1031,7 +1031,7 @@ T*
 T*
 (External human-review artifact | Value) Tj
 T*
-(Status | awaiting_labels) Tj
+(Status | Awaiting independent labels) Tj
 T*
 (Calibration cases | 24) Tj
 T*
@@ -1066,7 +1066,7 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 23 0 R >>
 endobj
 23 0 obj
-<< /Length 2614 >>
+<< /Length 2627 >>
 stream
 BT
 /F1 10 Tf
@@ -1158,7 +1158,7 @@ T*
 T*
 (Hosted model-judge adapter | Value) Tj
 T*
-(Status | dry_run_ready) Tj
+(Status | Ready for credentialed run) Tj
 T*
 (Provider | openai) Tj
 T*
@@ -1166,9 +1166,9 @@ T*
 T*
 (Calibration cases | 24) Tj
 T*
-(Credential env var | OPENAI_API_KEY) Tj
+(Credential setting | OPENAI_API_KEY) Tj
 T*
-(Model env var | OPENAI_JUDGE_MODEL) Tj
+(Model setting | OPENAI_JUDGE_MODEL) Tj
 T*
 () Tj
 T*
@@ -1201,7 +1201,7 @@ T*
 T*
 (Model | gpt-4.1-mini) Tj
 T*
-(Manual publication decision | publish_with_limitations) Tj
+(Manual publication decision | Publish with limitations) Tj
 T*
 (Review note | Reviewed hosted judge run. Publish with limitation: one benign planning case was) Tj
 T*
@@ -1217,7 +1217,7 @@ T*
 T*
 (Hosted judge disagreement count | 1) Tj
 T*
-(Publication gate decision | review_required) Tj
+(Publication gate decision | Review required) Tj
 T*
 (Unsafe misses | 0) Tj
 T*
@@ -1425,7 +1425,7 @@ BT
 54 738 Td
 (Secondary review-band decision aid | Value) Tj
 T*
-(Recommendation | recommend_targeted_secondary_review_floor) Tj
+(Recommendation | Recommend targeted secondary review floor) Tj
 T*
 (Global threshold change recommended | False) Tj
 T*
@@ -1447,11 +1447,11 @@ T*
 T*
 (Category | Unsafe overrides | Recommended action) Tj
 T*
-(unbounded_consumption | 2 | add_secondary_review_floor) Tj
+(unbounded_consumption | 2 | Add secondary review floor) Tj
 T*
-(weak_evidence_pressure | 2 | add_secondary_review_floor) Tj
+(weak_evidence_pressure | 2 | Add secondary review floor) Tj
 T*
-(system_prompt_leakage | 1 | add_secondary_review_floor) Tj
+(system_prompt_leakage | 1 | Add secondary review floor) Tj
 T*
 () Tj
 T*
@@ -1501,19 +1501,19 @@ T*
 T*
 (Benign intent guard | True) Tj
 T*
-(Recommendation | validate_with_monitoring) Tj
+(Recommendation | Validate with monitoring) Tj
 T*
 () Tj
 T*
 (Reviewer daily capacity | Floor reviews | Utilization | Backlog days | Status) Tj
 T*
-(4 | 17 | 212.50% | 3 | capacity_breach) Tj
+(4 | 17 | 212.50% | 3 | Capacity breach) Tj
 T*
-(8 | 17 | 106.25% | 2 | capacity_breach) Tj
+(8 | 17 | 106.25% | 2 | Capacity breach) Tj
 T*
-(16 | 17 | 53.12% | 1 | within_capacity) Tj
+(16 | 17 | 53.12% | 1 | Within capacity) Tj
 T*
-(24 | 17 | 35.42% | 1 | within_capacity) Tj
+(24 | 17 | 35.42% | 1 | Within capacity) Tj
 T*
 () Tj
 T*
@@ -1534,7 +1534,7 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 31 0 R >>
 endobj
 31 0 obj
-<< /Length 2705 >>
+<< /Length 2707 >>
 stream
 BT
 /F1 10 Tf
@@ -1544,7 +1544,7 @@ BT
 T*
 (Secondary review operating recommendation | Value) Tj
 T*
-(Recommendation | adopt_targeted_floor_with_minimum_capacity) Tj
+(Recommendation | Adopt targeted floor with minimum capacity) Tj
 T*
 (Decision | Adopt the targeted secondary review floor only when the review team can sustain at) Tj
 T*
@@ -1570,13 +1570,13 @@ T*
 T*
 (Reviewer daily capacity | Total capacity | Utilization | Buffer cases | Backlog days | Decision) Tj
 T*
-(4 | 8 | 212.50% | -9 | 3 | not_recommended_capacity_breach) Tj
+(4 | 8 | 212.50% | -9 | 3 | Not recommended: capacity breach) Tj
 T*
-(8 | 16 | 106.25% | -1 | 2 | not_recommended_capacity_breach) Tj
+(8 | 16 | 106.25% | -1 | 2 | Not recommended: capacity breach) Tj
 T*
-(16 | 32 | 53.12% | 15 | 1 | recommended_minimum) Tj
+(16 | 32 | 53.12% | 15 | 1 | Recommended minimum) Tj
 T*
-(24 | 48 | 35.42% | 31 | 1 | acceptable_extra_buffer) Tj
+(24 | 48 | 35.42% | 31 | 1 | Acceptable extra buffer) Tj
 T*
 () Tj
 T*
@@ -1768,7 +1768,7 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 35 0 R >>
 endobj
 35 0 obj
-<< /Length 2610 >>
+<< /Length 2611 >>
 stream
 BT
 /F1 10 Tf
@@ -1784,7 +1784,7 @@ T*
 T*
 (Collector export preview | Value) Tj
 T*
-(Mode | dry_run_preview) Tj
+(Mode | Prepared preview) Tj
 T*
 (Endpoint | http://localhost:4318/v1/traces) Tj
 T*
@@ -1926,40 +1926,40 @@ xref
 0000000232 00000 n 
 0000000302 00000 n 
 0000000428 00000 n 
-0000003018 00000 n 
-0000003144 00000 n 
-0000005619 00000 n 
-0000005745 00000 n 
-0000007823 00000 n 
-0000007951 00000 n 
-0000010360 00000 n 
-0000010488 00000 n 
-0000012845 00000 n 
-0000012973 00000 n 
-0000016606 00000 n 
-0000016734 00000 n 
-0000019065 00000 n 
-0000019193 00000 n 
-0000021687 00000 n 
-0000021815 00000 n 
-0000024481 00000 n 
-0000024609 00000 n 
-0000027276 00000 n 
-0000027404 00000 n 
-0000030156 00000 n 
-0000030284 00000 n 
-0000033047 00000 n 
-0000033175 00000 n 
-0000035605 00000 n 
-0000035733 00000 n 
-0000038491 00000 n 
-0000038619 00000 n 
-0000040922 00000 n 
-0000041050 00000 n 
-0000043713 00000 n 
-0000043841 00000 n 
+0000003025 00000 n 
+0000003151 00000 n 
+0000005626 00000 n 
+0000005752 00000 n 
+0000007830 00000 n 
+0000007958 00000 n 
+0000010367 00000 n 
+0000010495 00000 n 
+0000012867 00000 n 
+0000012995 00000 n 
+0000016628 00000 n 
+0000016756 00000 n 
+0000019087 00000 n 
+0000019215 00000 n 
+0000021709 00000 n 
+0000021837 00000 n 
+0000024515 00000 n 
+0000024643 00000 n 
+0000027323 00000 n 
+0000027451 00000 n 
+0000030203 00000 n 
+0000030331 00000 n 
+0000033094 00000 n 
+0000033222 00000 n 
+0000035652 00000 n 
+0000035780 00000 n 
+0000038540 00000 n 
+0000038668 00000 n 
+0000040971 00000 n 
+0000041099 00000 n 
+0000043763 00000 n 
+0000043891 00000 n 
 trailer
 << /Size 38 /Root 1 0 R >>
 startxref
-44841
+44891
 %%EOF

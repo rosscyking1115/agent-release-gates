@@ -528,7 +528,7 @@ def public_rag_model_reranker_adapter_rows(status: dict[str, Any]) -> list[dict[
     selection_counts = status.get("selection_counts", {})
     dataset_counts = status.get("dataset_case_counts", {})
     return [
-        {"field": "Status", "value": status.get("status", "")},
+        {"field": "Status", "value": _display_status(status.get("status", ""))},
         {"field": "Provider", "value": status.get("provider", "")},
         {"field": "API mode", "value": status.get("api_mode", "")},
         {"field": "Packet cases", "value": status.get("candidate_case_count", 0)},
@@ -554,10 +554,10 @@ def public_rag_model_reranker_adapter_rows(status: dict[str, Any]) -> list[dict[
             ),
         },
         {
-            "field": "Credential env var",
+            "field": "Credential setting",
             "value": status.get("credential_env_var", ""),
         },
-        {"field": "Model env var", "value": status.get("model_env_var", "")},
+        {"field": "Model setting", "value": status.get("model_env_var", "")},
         {"field": "Packet path", "value": status.get("packet_path", "")},
     ]
 
@@ -605,8 +605,8 @@ def evaluation_gate_rows(gates: dict[str, Any]) -> list[dict[str, Any]]:
         {
             "area": gate["area"],
             "label": gate["label"],
-            "status": gate["status"],
-            "severity": gate["severity"],
+            "status": _display_status(gate["status"]),
+            "severity": _display_status(gate["severity"]),
             "observed": _format_gate_value(gate["observed"], gate.get("value_format", "number")),
             "threshold": _format_gate_value(
                 gate["threshold"], gate.get("value_format", "number")
@@ -881,7 +881,8 @@ def safety_operating_recommendation_rows(
             "capacity_buffer_rate_pct": _as_percent(row["capacity_buffer_rate"]),
             "estimated_backlog_days": row["estimated_backlog_days"],
             "capacity_status": row["capacity_status"],
-            "operating_decision": row["operating_decision"],
+            "capacity_status_label": _display_status(row["capacity_status"]),
+            "operating_decision": _display_status(row["operating_decision"]),
         }
         for row in report.get("scenarios", [])
     ]
@@ -1125,15 +1126,15 @@ def judge_reliability_disagreement_rows(
 
 def model_judge_adapter_rows(status: dict[str, Any]) -> list[dict[str, Any]]:
     return [
-        {"field": "Status", "value": status.get("status", "")},
+        {"field": "Status", "value": _display_status(status.get("status", ""))},
         {"field": "Provider", "value": status.get("provider", "")},
         {"field": "API mode", "value": status.get("api_mode", "")},
         {"field": "Calibration cases", "value": status.get("case_count", 0)},
         {
-            "field": "Credential env var",
+            "field": "Credential setting",
             "value": status.get("credential_env_var", ""),
         },
-        {"field": "Model env var", "value": status.get("model_env_var", "")},
+        {"field": "Model setting", "value": status.get("model_env_var", "")},
     ]
 
 
@@ -1305,4 +1306,41 @@ def _optional_signed_int(value: int | None) -> str:
 def _format_gate_value(value: object, value_format: str) -> object:
     if isinstance(value, (float, int)) and value_format == "percent":
         return _as_percent(float(value))
+    if isinstance(value, str):
+        return _display_status(value)
     return value
+
+
+def _display_status(status: object) -> str:
+    labels = {
+        "awaiting_labels": "Awaiting independent labels",
+        "dry_run_ready": "Ready for credentialed run",
+        "dry_run_preview": "Prepared preview",
+        "not_configured": "Not available",
+        "not_published": "Not yet published",
+        "pass_with_warnings": "Pass with warnings",
+        "pass": "Pass",
+        "blocking": "Blocking",
+        "non_blocking": "Non-blocking",
+        "publish_with_limitations": "Publish with limitations",
+        "review_required": "Review required",
+        "recommend_targeted_secondary_review_floor": (
+            "Recommend targeted secondary review floor"
+        ),
+        "add_secondary_review_floor": "Add secondary review floor",
+        "validate_with_monitoring": "Validate with monitoring",
+        "capacity_breach": "Capacity breach",
+        "within_capacity": "Within capacity",
+        "adopt_targeted_floor_with_minimum_capacity": (
+            "Adopt targeted floor with minimum capacity"
+        ),
+        "not_recommended_capacity_breach": "Not recommended: capacity breach",
+        "recommended_minimum": "Recommended minimum",
+        "acceptable_extra_buffer": "Acceptable extra buffer",
+        "completed": "Completed",
+        "evaluated": "Evaluated",
+    }
+    value = str(status)
+    if "_" not in value:
+        return labels.get(value, value)
+    return labels.get(value, value.replace("_", " ").title())

@@ -616,9 +616,9 @@ def _public_rag_model_reranker_table(report: dict[str, Any]) -> str:
         f"{dataset}: {count}" for dataset, count in dataset_counts.items()
     )
     rows = [
-        "| Hosted reranker adapter field | Value |",
+        "| Hosted reranker readiness field | Value |",
         "| --- | --- |",
-        f"| Status | {report.get('status', '')} |",
+        f"| Status | {_display_status(report.get('status', ''))} |",
         f"| Provider | {report.get('provider', '')} |",
         f"| API mode | {report.get('api_mode', '')} |",
         f"| Default model | {report.get('default_model', '')} |",
@@ -634,8 +634,8 @@ def _public_rag_model_reranker_table(report: dict[str, Any]) -> str:
             f"{selection_counts.get('top1_control', 0)} |"
         ),
         f"| Datasets | {datasets} |",
-        f"| Credential env var | {report.get('credential_env_var', '')} |",
-        f"| Model env var | {report.get('model_env_var', '')} |",
+        f"| Credential setting | {report.get('credential_env_var', '')} |",
+        f"| Model setting | {report.get('model_env_var', '')} |",
         f"| Packet path | {report.get('packet_path', '')} |",
         f"| Publication rule | {report.get('publication_rule', '')} |",
     ]
@@ -700,7 +700,7 @@ def _collector_export_table(preview: dict[str, Any]) -> str:
     rows = [
         "| Collector export preview | Value |",
         "| --- | ---: |",
-        f"| Mode | {preview['export_mode']} |",
+        f"| Mode | {_display_status(preview['export_mode'])} |",
         f"| Endpoint | {preview['collector_endpoint']} |",
         f"| Spans prepared | {preview['span_count']} |",
         f"| OTLP payloads | {preview['payload_count']} |",
@@ -717,7 +717,7 @@ def _evaluation_gate_table(gates: dict[str, Any]) -> str:
         "| Gate | Area | Status | Severity | Observed | Threshold |",
         "| --- | --- | --- | --- | ---: | ---: |",
         (
-            f"| Overall status | Release | {gates['overall_status']} | summary | "
+            f"| Overall status | Release | {_display_status(gates['overall_status'])} | summary | "
             f"{gates['pass_count']} pass / {gates['warn_count']} warn | "
             f"{gates['fail_count']} fail |"
         ),
@@ -725,7 +725,7 @@ def _evaluation_gate_table(gates: dict[str, Any]) -> str:
     for gate in evaluation_gate_rows(gates):
         rows.append(
             "| {label} | {area} | {status} | {severity} | {observed} | {threshold} |".format(
-                **gate
+                **{**gate, "status": _display_status(gate["status"])}
             )
         )
     return "\n".join(rows)
@@ -1015,7 +1015,7 @@ def _external_review_table(report: dict[str, Any]) -> str:
     rows = [
         "| External human-review artifact | Value |",
         "| --- | --- |",
-        f"| Status | {report['status']} |",
+        f"| Status | {_display_status(report['status'])} |",
         f"| Calibration cases | {report['case_count']} |",
         f"| Label rows | {report['label_row_count']} |",
         f"| Reviewers | {report['reviewer_count']} |",
@@ -1147,12 +1147,12 @@ def _model_judge_adapter_table(report: dict[str, Any]) -> str:
     rows = [
         "| Hosted model-judge adapter | Value |",
         "| --- | --- |",
-        f"| Status | {report['status']} |",
+        f"| Status | {_display_status(report['status'])} |",
         f"| Provider | {report['provider']} |",
         f"| API mode | {report['api_mode']} |",
         f"| Calibration cases | {report['case_count']} |",
-        f"| Credential env var | {report['credential_env_var']} |",
-        f"| Model env var | {report['model_env_var']} |",
+        f"| Credential setting | {report['credential_env_var']} |",
+        f"| Model setting | {report['model_env_var']} |",
     ]
     rows.extend(["", "| Planned local output |", "| --- |"])
     for path in report.get("planned_outputs", []):
@@ -1170,7 +1170,10 @@ def _model_judge_reviewed_table(report: dict[str, Any]) -> str:
         "| --- | --- |",
         f"| Provider | {report['provider']} |",
         f"| Model | {report['model']} |",
-        f"| Manual publication decision | {report['manual_publication_decision']} |",
+        (
+            "| Manual publication decision | "
+            f"{_display_status(report['manual_publication_decision'])} |"
+        ),
         f"| Review note | {report['review_note']} |",
         f"| Calibration cases | {report['case_count']} |",
         f"| Model-judge label accuracy | {_pct(metrics['model_judge_label_accuracy'])} |",
@@ -1183,7 +1186,7 @@ def _model_judge_reviewed_table(report: dict[str, Any]) -> str:
             f"{_pct(metrics['average_model_judge_confidence'])} |"
         ),
         f"| Hosted judge disagreement count | {metrics['model_judge_disagreement_count']} |",
-        f"| Publication gate decision | {review['decision']} |",
+        f"| Publication gate decision | {_display_status(review['decision'])} |",
         f"| Unsafe misses | {review['unsafe_miss_count']} |",
         f"| Benign auto-blocks | {review['benign_auto_block_count']} |",
     ]
@@ -1344,7 +1347,7 @@ def _safety_secondary_review_band_table(report: dict[str, Any]) -> str:
     rows = [
         "| Secondary review-band decision aid | Value |",
         "| --- | --- |",
-        f"| Recommendation | {summary['recommendation']} |",
+        f"| Recommendation | {_display_status(summary['recommendation'])} |",
         (
             "| Global threshold change recommended | "
             f"{summary['global_threshold_change_recommended']} |"
@@ -1371,7 +1374,9 @@ def _safety_secondary_review_band_table(report: dict[str, Any]) -> str:
         for row in report["category_actions"]:
             rows.append(
                 "| {risk_category} | {unsafe_allow_to_block_count} | "
-                "{recommended_action} |".format(**row)
+                "{recommended_action} |".format(
+                    **{**row, "recommended_action": _display_status(row["recommended_action"])}
+                )
             )
     return "\n".join(rows)
 
@@ -1422,7 +1427,7 @@ def _safety_secondary_review_validation_table(report: dict[str, Any]) -> str:
             f"{summary['capacity_sensitivity_max_backlog_days']} |"
         ),
         f"| Benign intent guard | {policy['benign_intent_guard']} |",
-        f"| Recommendation | {summary['recommendation']} |",
+        f"| Recommendation | {_display_status(summary['recommendation'])} |",
         "",
         (
             "| Reviewer daily capacity | Floor reviews | Utilization | "
@@ -1435,7 +1440,7 @@ def _safety_secondary_review_validation_table(report: dict[str, Any]) -> str:
             "| {reviewer_daily_capacity} | {floor_review_count} | {utilization} | "
             "{estimated_backlog_days} | {capacity_status} |".format(
                 utilization=_pct(row["capacity_utilization"]),
-                **row,
+                **{**row, "capacity_status": _display_status(row["capacity_status"])},
             )
         )
     rows.extend(
@@ -1462,7 +1467,7 @@ def _safety_operating_recommendation_table(report: dict[str, Any]) -> str:
     rows = [
         "| Secondary review operating recommendation | Value |",
         "| --- | --- |",
-        f"| Recommendation | {summary['recommendation']} |",
+        f"| Recommendation | {_display_status(summary['recommendation'])} |",
         f"| Decision | {summary['decision']} |",
         f"| Staffing assumption | {summary['staffing_assumption']} |",
         f"| Review SLA hours | {summary['review_sla_hours']} |",
@@ -1764,3 +1769,39 @@ def _pct(value: float) -> str:
 def _signed_pct(value: float) -> str:
     sign = "+" if value >= 0 else ""
     return f"{sign}{value * 100:.2f}%"
+
+
+def _display_status(status: object) -> str:
+    labels = {
+        "awaiting_labels": "Awaiting independent labels",
+        "dry_run_ready": "Ready for credentialed run",
+        "dry_run_preview": "Prepared preview",
+        "not_configured": "Not available",
+        "not_published": "Not yet published",
+        "pass_with_warnings": "Pass with warnings",
+        "pass": "Pass",
+        "warn": "Warning",
+        "blocking": "Blocking",
+        "non_blocking": "Non-blocking",
+        "publish_with_limitations": "Publish with limitations",
+        "review_required": "Review required",
+        "recommend_targeted_secondary_review_floor": (
+            "Recommend targeted secondary review floor"
+        ),
+        "add_secondary_review_floor": "Add secondary review floor",
+        "validate_with_monitoring": "Validate with monitoring",
+        "capacity_breach": "Capacity breach",
+        "within_capacity": "Within capacity",
+        "adopt_targeted_floor_with_minimum_capacity": (
+            "Adopt targeted floor with minimum capacity"
+        ),
+        "not_recommended_capacity_breach": "Not recommended: capacity breach",
+        "recommended_minimum": "Recommended minimum",
+        "acceptable_extra_buffer": "Acceptable extra buffer",
+        "completed": "Completed",
+        "evaluated": "Evaluated",
+    }
+    value = str(status)
+    if "_" not in value:
+        return labels.get(value, value)
+    return labels.get(value, value.replace("_", " ").title())

@@ -265,13 +265,13 @@ def test_evaluation_gate_rows_formats_percent_values() -> None:
     )
 
     assert rows == [
-        {
-            "area": "Benchmark",
-            "label": "Manual share",
-            "status": "pass",
-            "severity": "blocking",
-            "observed": "26.86%",
-            "threshold": "25.00%",
+            {
+                "area": "Benchmark",
+                "label": "Manual share",
+                "status": "Pass",
+                "severity": "Blocking",
+                "observed": "26.86%",
+                "threshold": "25.00%",
             "rationale": "Manual cases reduce overfitting.",
         }
     ]

@@ -35,7 +35,7 @@ The working research question is:
 When do safety interventions improve agent safety, and when do they reduce usefulness on benign operational tasks?
 ```
 
-The project is moving toward a research-grade public artifact, not just a dashboard. Current work covers a deterministic synthetic benchmark, public TechQA and WixQA retrieval tracks, safety classifier thresholding, human-review simulation, an external-review packet, a reviewed hosted model-judge run, and release gates. Planned work adds completed independent human labels, multi-model comparison, broader failure analysis, and public contribution workflows.
+The project is designed as a research-grade public artifact, not just a dashboard. Current scope covers a deterministic synthetic benchmark, public TechQA and WixQA retrieval tracks, safety classifier thresholding, human-review simulation, an external-review packet, a reviewed hosted model-judge run, and release gates. Remaining validation work focuses on independent human labels, multi-model comparison, broader failure analysis, and public contribution workflows.
 
 ## Highlights
 
@@ -90,7 +90,7 @@ Additional evaluation results:
 | Secondary review-floor minimum recommended capacity | 16 cases/reviewer/day |
 | Secondary review-floor recommended utilization | 53.12% |
 | Synthetic unsafe-request prevalence estimate | 10.02% |
-| External human-review packet | awaiting labels |
+| External human-review packet | prepared for independent labels |
 | Reviewed hosted model-judge label accuracy | 95.83% |
 | Reviewed hosted model-judge unsafe misses | 0 |
 | Agent side-effect block rate | 100.00% |
@@ -200,8 +200,8 @@ rerankable top-3 cases from residual retrieval misses.
 The follow-on `reports/public_rag_reranker_eval.json` measures a conservative
 query-document reranker against that opportunity ceiling.
 `reports/public_rag_model_reranker_adapter_status.json` and the companion JSONL
-packet prepare the same public candidates for a hosted model reranker comparison;
-no hosted reranker result is claimed until a credentialed run is reviewed.
+packet prepare the same public candidates for a hosted model reranker comparison.
+No hosted reranker result is claimed until a credentialed run is reviewed.
 
 The raw WixQA downloads are ignored by git; only the compact tracked benchmark sample and generated metrics are published.
 
