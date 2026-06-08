@@ -2,7 +2,7 @@
 
 ## Goal
 
-Build a synthetic internal AI agent lab that can answer operations questions, extract ticket data, recommend next actions, and produce measurable reliability and safety metrics.
+Build a public AI-agent safety and reliability lab that can answer synthetic operations questions, extract ticket data, recommend next actions, and produce measurable reliability and safety metrics.
 
 ## Phase 0/1 Architecture
 

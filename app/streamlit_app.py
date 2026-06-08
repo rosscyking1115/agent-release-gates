@@ -78,7 +78,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 def main() -> None:
     st.set_page_config(
-        page_title="Internal AI Agent Evaluation Lab",
+        page_title="Agent Safety & Reliability Evaluation Lab",
         layout="wide",
     )
     _render_app_header()
@@ -176,10 +176,10 @@ def main() -> None:
 
 
 def _render_app_header() -> None:
-    st.title("Internal AI Agent Evaluation Lab")
+    st.title("Agent Safety & Reliability Evaluation Lab")
     st.caption(
-        "Synthetic evaluation dashboard for grounded retrieval, structured extraction, "
-        "safety controls, approval-gated tools, and observability."
+        "Public evaluation dashboard for grounded retrieval, safe refusal, "
+        "approval-gated tools, safety trade-offs, and observability."
     )
     link_cols = st.columns(4)
     link_cols[0].link_button(
@@ -210,7 +210,7 @@ def _render_app_header() -> None:
 
 
 def _render_sidebar() -> str:
-    st.sidebar.title("Evaluation Lab")
+    st.sidebar.title("Safety & Reliability Lab")
     section = st.sidebar.radio(
         "View",
         [
@@ -234,7 +234,7 @@ def _render_sidebar() -> str:
         "https://github.com/rosscyking1115/internal-ai-agent-eval-lab",
         use_container_width=True,
     )
-    st.sidebar.caption("Synthetic internal benchmark plus public TechQA external benchmark.")
+    st.sidebar.caption("Synthetic benchmark plus public TechQA external validation.")
     return section
 
 

@@ -1,1 +1,1 @@
-"""API package for the Internal AI Agent Evaluation Lab."""
+"""API package for the Agent Safety & Reliability Evaluation Lab."""

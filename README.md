@@ -1,8 +1,8 @@
-# Internal AI Agent Evaluation Lab
+# Agent Safety & Reliability Evaluation Lab
 
-A public synthetic evaluation lab for testing internal AI agent reliability across grounded retrieval, structured extraction, safe refusal, approval-gated tools, auditability, and observability.
+A public evaluation harness for measuring AI-agent reliability under grounded retrieval, unsafe requests, weak evidence, prompt injection, and approval-gated tool-use conditions.
 
-This project is not a clone or critique of any real company's internal AI system. Its internal-operations environment uses fully synthetic runbooks, tickets, teams, procedures, and benchmark metrics so the work can be inspected and extended safely.
+The core benchmark uses a fully synthetic internal-operations environment so safety, retrieval, and tool-governance behavior can be tested without confidential data. The project is not a clone, critique, or reverse-engineering attempt of any real company's internal AI system.
 
 ## Live Project
 
@@ -13,7 +13,7 @@ This project is not a clone or critique of any real company's internal AI system
 
 ## What This Project Demonstrates
 
-Internal AI agents are only useful when their answers are grounded, measurable, access-aware, safe, and auditable. This lab treats the agent as an operational system rather than a generic chatbot:
+AI agents are only useful when their answers are grounded, measurable, access-aware, safe, and auditable. This lab treats the agent as an operational system rather than a generic chatbot:
 
 - retrieves synthetic runbook evidence and answers with citations
 - validates the retrieval harness on a 160-case public TechQA-RAG-Eval sample
@@ -25,6 +25,16 @@ Internal AI agents are only useful when their answers are grounded, measurable, 
 - records traces, audit events, monitoring snapshots, and OpenTelemetry-style spans
 - publishes deterministic release gates for benchmark, safety, governance, and observability checks
 - publishes deterministic reports and a public benchmark profile
+
+## Research Framing
+
+The working research question is:
+
+```text
+When do safety interventions improve agent safety, and when do they reduce usefulness on benign operational tasks?
+```
+
+The project is moving toward a research-grade public artifact, not just a dashboard. Current work covers a deterministic synthetic benchmark, a public TechQA retrieval track, safety classifier thresholding, human-review simulation, and release gates. Planned work adds human-labeled calibration samples, judge reliability analysis, multi-model comparison, a formal failure taxonomy, and public contribution workflows.
 
 ## Highlights
 
@@ -202,6 +212,12 @@ CI runs linting, tests, deterministic report regeneration, local OTLP smoke test
 
 The public project page keeps the main experience focused on the dashboard and evaluation report. These JSON artifacts remain available for technical review:
 
+- Benchmark card: https://github.com/rosscyking1115/internal-ai-agent-eval-lab/blob/main/docs/benchmark_card.md
+- Dataset card: https://github.com/rosscyking1115/internal-ai-agent-eval-lab/blob/main/docs/dataset_card.md
+- Failure taxonomy: https://github.com/rosscyking1115/internal-ai-agent-eval-lab/blob/main/docs/failure_taxonomy.md
+- Research roadmap: https://github.com/rosscyking1115/internal-ai-agent-eval-lab/blob/main/docs/research_roadmap.md
+- Contributing guide: https://github.com/rosscyking1115/internal-ai-agent-eval-lab/blob/main/CONTRIBUTING.md
+
 - Dataset profile: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/dataset_profile.json
 - Evaluation gates: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/evaluation_gates.json
 - TechQA public RAG summary: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/techqa_public_rag_summary.json
@@ -252,13 +268,15 @@ The root `streamlit_app.py` entrypoint loads the dashboard from `app/streamlit_a
 - The TechQA public benchmark currently uses a 160-case compact sample, not the full upstream dataset.
 - The local embedding store uses deterministic feature hashing, not a provider-backed embedding model.
 - Provider-backed embedding evaluation is available as an optional script, but no provider-backed result is published yet.
+- Human-review labels are simulated workflow labels, not real independent human annotations.
+- Multi-model comparison is planned but not yet published.
 - Structured extraction is deterministic pattern matching, not LLM extraction.
 - The controlled agent is a local workflow, not a LangGraph state machine.
 
 ## Useful Follow-Up Work
 
-- Add more hand-authored golden cases and noisier synthetic tickets, especially cases that challenge the remaining hybrid final-selection miss.
-- Expand the TechQA public benchmark beyond the 160-case sample and compare the same retrievers on the larger dataset.
-- Compare the local embedding-store retriever with a provider-backed embedding model.
-- Extend the OpenTelemetry Collector setup with optional downstream storage or visualization beyond the local trace index.
-- Add an optional LLM extraction path with schema repair.
+- Formalize the failure taxonomy across unsafe compliance, over-refusal, unsupported answers, missing citations, tool misuse, privacy leakage, prompt-injection following, and weak evidence treated as strong evidence.
+- Add a human-labeled calibration sample and compare human review, deterministic rules, and LLM-as-judge results.
+- Add optional multi-model adapters and publish only credentialed, reproducible model comparison results.
+- Run safety intervention experiments across baseline, refusal policy, retrieval grounding, tool approval gates, secondary review, and classifier thresholds.
+- Expand the TechQA public benchmark beyond the 160-case sample and compare local retrieval with provider-backed embeddings.

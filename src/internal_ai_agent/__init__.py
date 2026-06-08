@@ -1,4 +1,4 @@
-"""Internal AI Agent Evaluation Lab."""
+"""Agent Safety & Reliability Evaluation Lab."""
 
 __all__ = ["__version__"]
 

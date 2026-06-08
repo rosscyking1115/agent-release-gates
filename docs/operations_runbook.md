@@ -1,6 +1,6 @@
 # Operations Runbook
 
-This runbook explains how to verify the synthetic internal AI agent lab locally.
+This runbook explains how to verify the Agent Safety & Reliability Evaluation Lab locally.
 
 ## Local Verification
 

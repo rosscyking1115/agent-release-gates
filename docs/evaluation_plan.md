@@ -2,7 +2,9 @@
 
 ## Purpose
 
-The evaluation harness should show whether the internal AI agent is becoming more reliable, grounded, and safe over time.
+The evaluation harness should show whether an AI-agent workflow is becoming more reliable, grounded, safe, and useful over time.
+
+The lab uses a synthetic internal-operations domain for controlled measurement, plus separate public-data tracks where external validation is available. The central research question is how safety interventions change both unsafe compliance risk and benign-task usefulness.
 
 ## Datasets
 
@@ -25,6 +27,18 @@ The evaluation harness should show whether the internal AI agent is becoming mor
 - prompt-injection block rate
 - safety classifier precision, recall, false positive rate, and false negative rate
 - estimated unsafe-request prevalence and human-review load
+
+## Research-Grade Extension Track
+
+The next evaluation layer should turn the lab into a stronger public benchmark:
+
+- formal failure taxonomy for unsafe compliance, over-refusal, unsupported answer, missing citation, tool misuse, privacy leakage, prompt-injection following, excessive agency, and weak evidence treated as strong evidence
+- hand-authored evaluation cases that include benign controls, ambiguous requests, unsafe requests, prompt injection, weak evidence, excessive agency, and tool misuse
+- human-labeled calibration sample with reviewer agreement and disagreement notes
+- judge reliability comparison between deterministic rules, LLM-as-judge, and human review
+- multi-model evaluation adapters with clearly separated unpublished, credentialed, and reproducible result states
+- safety intervention matrix comparing baseline, refusal policy, retrieval grounding, tool approval gate, secondary review, and classifier threshold settings
+- paper-style report with abstract, method, dataset, metrics, results, failure analysis, limitations, and future work
 
 ## Deterministic Checks
 

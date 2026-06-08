@@ -28,7 +28,7 @@ def test_health() -> None:
 def test_evaluation_report_endpoint_returns_markdown() -> None:
     report = evaluation_report()
 
-    assert "# Internal AI Agent Evaluation Report" in report
+    assert "# Agent Safety & Reliability Evaluation Report" in report
     assert "## Retrieval Evaluation" in report
 
 
@@ -36,7 +36,7 @@ def test_evaluation_report_html_endpoint_returns_html() -> None:
     report = evaluation_report_html()
 
     assert "<!doctype html>" in report
-    assert "<h1>Internal AI Agent Evaluation Report</h1>" in report
+    assert "<h1>Agent Safety &amp; Reliability Evaluation Report</h1>" in report
 
 
 def test_evaluation_report_pdf_endpoint_returns_pdf() -> None:
@@ -44,7 +44,7 @@ def test_evaluation_report_pdf_endpoint_returns_pdf() -> None:
 
     assert response.media_type == "application/pdf"
     assert response.body.startswith(b"%PDF-1.4")
-    assert b"INTERNAL AI AGENT EVALUATION REPORT" in response.body
+    assert b"AGENT SAFETY & RELIABILITY EVALUATION REPORT" in response.body
 
 
 def test_evaluation_history_endpoint_returns_json() -> None:

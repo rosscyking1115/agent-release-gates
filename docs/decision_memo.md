@@ -2,13 +2,21 @@
 
 ## Decision
 
-Build the project as a useful public Internal AI Agent Evaluation Lab rather than a clone or critique of any real company's internal AI system.
+Use **Agent Safety & Reliability Evaluation Lab** as the public project identity.
+
+Keep the synthetic internal-operations domain as the controlled benchmark scenario, but stop using "Internal AI Agent" as the headline. The public artifact should be framed as an evaluation harness for grounded retrieval, safe refusal, tool-use governance, observability, and safety/usefulness trade-off analysis.
 
 ## Context
 
-The goal is to create a reusable local lab for testing internal AI agent behavior without confidential data.
+The goal is to create a reusable public lab for testing AI-agent behavior without confidential data.
 
-The project needs to be more than a chatbot demo. It should help people inspect a measurable internal AI workflow with retrieval, extraction, safety controls, approval gates, auditability, and reproducible evaluation.
+The project needs to be more than a chatbot demo or portfolio dashboard. It should help people inspect a measurable agent workflow with retrieval, extraction, safety controls, approval gates, auditability, and reproducible evaluation.
+
+The active research question is:
+
+```text
+When do safety interventions improve agent safety, and when do they reduce usefulness on benign operational tasks?
+```
 
 The public framing must stay clear:
 
@@ -25,6 +33,7 @@ The public framing must stay clear:
 | Generic chatbot | Fast to build | Weak utility and hard to evaluate |
 | Realistic internal AI clone | Could look relevant | Unsafe framing; risks implying access to real systems |
 | Synthetic evaluation lab | Safe, measurable, reusable by others | Requires more engineering discipline and documentation |
+| Public safety and reliability benchmark | Stronger research framing; easier for external reviewers to inspect | Requires clearer dataset cards, contribution process, and limitation language |
 
 ## Chosen Approach
 
@@ -43,7 +52,7 @@ Use public technical-support data only as a separate retrieval benchmark:
 - public dataset license attribution
 - no claim that public support cases represent internal operations
 
-The project is positioned as a responsible enterprise AI engineering lab. Its value comes from starting with a weak baseline, measuring failures, and then improving grounding, extraction, safety, approval control, and observability.
+The project is positioned as a responsible AI-agent safety and reliability evaluation lab. Its value comes from starting with a weak baseline, measuring failures, and then improving grounding, extraction, safety, approval control, observability, and trade-off reporting.
 
 ## Design Principles
 
@@ -55,6 +64,7 @@ The project is positioned as a responsible enterprise AI engineering lab. Its va
 - Require approval before side-effecting mock tools.
 - Keep all data synthetic and safe to publish.
 - Prefer deterministic tests before adding paid or stochastic model providers.
+- Label planned research-grade features clearly until they are implemented and reproducible.
 
 ## Evidence Built So Far
 
@@ -106,7 +116,8 @@ The safety-classifier module separates enriched challenge cases, a targeted seco
 
 ## Next Decisions
 
-- Whether to compare the local embedding store with a provider-backed embedding model.
-- Whether to expand the TechQA public benchmark beyond the 160-case compact sample.
-- Whether to add a real LangGraph dependency or keep the local controlled workflow until evaluation cases become more varied.
-- Whether to prioritize noisier data/error analysis or downstream trace-index and collector storage/visualization.
+- How to attach a formal failure taxonomy to case-level results and summaries.
+- How to collect and publish a small human-labeled calibration sample without overclaiming production validity.
+- Which LLM-as-judge and multi-model adapters to support first, and how to separate unpublished local runs from public results.
+- Whether to expand the TechQA public benchmark before or after provider-backed embedding comparison.
+- How to invite external review through GitHub issues, contribution docs, benchmark cards, and a paper-style report.

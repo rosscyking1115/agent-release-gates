@@ -2,7 +2,7 @@
 
 ## Scope
 
-This project models risks for a synthetic internal AI agent benchmark. It does not contain real company data, customer data, employee data, credentials, or confidential workflows. Public datasets, such as TechQA-RAG-Eval, are handled as separate external benchmark tracks.
+This project models risks for a public AI-agent safety and reliability benchmark that uses a synthetic internal-operations domain. It does not contain real company data, customer data, employee data, credentials, or confidential workflows. Public datasets, such as TechQA-RAG-Eval, are handled as separate external benchmark tracks.
 
 ## Assets
 
@@ -51,4 +51,4 @@ The project includes deterministic red-team cases for prompt injection, groundin
 
 ## Public Positioning Control
 
-The project must not imply that it is a clone, leak, reverse-engineering attempt, or critique of any real organization system. Public materials should describe it as an independent evaluation lab for responsible internal AI agent design, with a synthetic internal benchmark and clearly separated public-data validation.
+The project must not imply that it is a clone, leak, reverse-engineering attempt, or critique of any real organization system. Public materials should describe it as an independent Agent Safety & Reliability Evaluation Lab, with a synthetic internal-operations benchmark and clearly separated public-data validation.

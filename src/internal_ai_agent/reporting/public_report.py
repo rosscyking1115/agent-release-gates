@@ -94,14 +94,15 @@ def generate_public_report(project_root: Path) -> str:
 
     markdown = "\n".join(
         [
-            "# Internal AI Agent Evaluation Report",
+            "# Agent Safety & Reliability Evaluation Report",
             "",
             "## Executive Summary",
             "",
-            "This report summarizes a synthetic internal-operations evaluation lab for "
-            "internal AI agent workflows, with a separate public TechQA retrieval "
-            "benchmark. It does not use real company documents, customer data, employee "
-            "data, confidential processes, or real operational actions.",
+            "This report summarizes a public AI-agent safety and reliability "
+            "evaluation lab. The core benchmark uses a synthetic internal-operations "
+            "domain, with a separate public TechQA retrieval benchmark. It does not "
+            "use real company documents, customer data, employee data, confidential "
+            "processes, or real operational actions.",
             "",
             f"- Golden retrieval cases: {comparison['case_count']}",
             f"- Synthetic ticket extraction and agent cases: {agent['case_count']}",
@@ -260,17 +261,29 @@ def generate_public_report(project_root: Path) -> str:
                 "- Scores should be read as regression-test results for this lab, not as claims "
                 "about production accuracy."
             ),
+            (
+                "- Human-review labels are simulated workflow labels, not real "
+                "independent annotations."
+            ),
+            (
+                "- Multi-model comparison and LLM-as-judge reliability analysis are "
+                "planned but not yet published."
+            ),
             "",
             "## Recommended Next Work",
             "",
-            "- Add noisier, human-written ticket variants.",
-            "- Run and review the optional provider-backed embedding comparison.",
+            "- Formalize the failure taxonomy across safety, retrieval, citation, "
+            "privacy, tool-use, and usefulness failures.",
+            "- Add a human-labeled calibration sample and compare human review, "
+            "deterministic rules, and LLM-as-judge decisions.",
+            "- Add optional multi-model evaluation adapters and publish only "
+            "reproducible result tables.",
+            "- Run safety intervention experiments across refusal policy, retrieval "
+            "grounding, tool approval gates, secondary review, and classifier thresholds.",
             (
                 "- Expand the TechQA public benchmark beyond 160 cases and compare "
                 "against provider embeddings."
             ),
-            "- Extend the collector deployment with optional downstream storage or visualization.",
-            "- Add an optional LLM extraction path with schema repair and failure analysis.",
             "",
         ]
     )
@@ -992,7 +1005,7 @@ def _markdown_to_html_document(markdown: str) -> str:
             "<head>",
             '<meta charset="utf-8">',
             '<meta name="viewport" content="width=device-width, initial-scale=1">',
-            "<title>Internal AI Agent Evaluation Report</title>",
+            "<title>Agent Safety & Reliability Evaluation Report</title>",
             "<style>",
             "body { font-family: Arial, sans-serif; margin: 40px auto; max-width: 1040px; "
             "line-height: 1.55; color: #1f2937; }",

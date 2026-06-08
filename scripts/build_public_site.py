@@ -212,7 +212,7 @@ def _index_html(
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Internal AI Agent Evaluation Lab</title>
+  <title>Agent Safety & Reliability Evaluation Lab</title>
   <style>
     :root {{
       color-scheme: light;
@@ -343,11 +343,11 @@ def _index_html(
 <body>
   <main>
     <header>
-      <h1>Internal AI Agent Evaluation Lab</h1>
+      <h1>Agent Safety & Reliability Evaluation Lab</h1>
       <p>
-        A public synthetic lab for evaluating internal AI agent reliability across
-        grounded retrieval, structured extraction, safety refusals,
-        approval-gated mock tools, audit events, and observability.
+        A public evaluation harness for measuring AI-agent reliability across
+        grounded retrieval, safe refusal, approval-gated mock tools,
+        safety/usefulness trade-offs, audit events, and observability.
       </p>
       <p>
         This project does not reproduce, evaluate, or criticize any real
@@ -429,6 +429,21 @@ def _index_html(
         Then open <code>http://localhost:8510</code> for the dashboard and
         <code>http://localhost:8000/health</code> for the API.
       </p>
+    </section>
+
+    <section class="section">
+      <h2>Public Review Docs</h2>
+      <p>
+        These documents explain the benchmark scope, dataset boundary, failure
+        taxonomy, contribution path, and research-grade roadmap.
+      </p>
+      <ul>
+        <li><a href="{repo_url}/blob/main/docs/benchmark_card.md">Benchmark card</a></li>
+        <li><a href="{repo_url}/blob/main/docs/dataset_card.md">Dataset card</a></li>
+        <li><a href="{repo_url}/blob/main/docs/failure_taxonomy.md">Failure taxonomy</a></li>
+        <li><a href="{repo_url}/blob/main/docs/research_roadmap.md">Research roadmap</a></li>
+        <li><a href="{repo_url}/blob/main/CONTRIBUTING.md">Contributing guide</a></li>
+      </ul>
     </section>
 
     <section class="section">

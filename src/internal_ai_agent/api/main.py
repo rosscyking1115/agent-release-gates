@@ -30,7 +30,7 @@ from internal_ai_agent.rag.baseline import (
 )
 
 app = FastAPI(
-    title="Internal AI Agent Evaluation Lab",
+    title="Agent Safety & Reliability Evaluation Lab",
     description="Synthetic enterprise operations AI agent demo.",
     version="0.1.0",
 )

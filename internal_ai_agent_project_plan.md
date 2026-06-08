@@ -1,15 +1,17 @@
-# Internal AI Agent Evaluation Lab Plan
+# Agent Safety & Reliability Evaluation Lab Plan
 
 ## Purpose
 
-Build a public evaluation lab for internal AI agent reliability without using
+Build a public evaluation lab for AI-agent safety and reliability without using
 confidential company data. The lab uses a synthetic internal-operations
 environment for controlled evaluation and a separate public TechQA benchmark for
 external retrieval validation.
 
 The project should demonstrate whether an agent workflow is grounded, safe,
-access-aware, auditable, and reproducible. It should not claim to reproduce or
-assess any real company's internal system.
+access-aware, auditable, and reproducible. It should also measure where safety
+interventions create false positives, false negatives, review load, or usefulness
+loss. It should not claim to reproduce or assess any real company's internal
+system.
 
 ## Scope
 
@@ -23,6 +25,8 @@ The lab evaluates:
 - audit events, traces, and OpenTelemetry-style span exports
 - deterministic release gates and public reports
 - external public technical-support retrieval on TechQA-RAG-Eval
+- safety/usefulness trade-offs across intervention settings
+- failure taxonomy and judge-reliability analysis
 
 ## Data Boundary
 
@@ -66,6 +70,7 @@ sample currently contains 160 cases.
 - deterministic test suite
 - Docker and Docker Compose runtime
 - model card, threat model, operations runbook, and architecture docs
+- benchmark card, dataset card, research roadmap, and contribution guide
 
 ## Quality Bar
 
@@ -95,8 +100,9 @@ Every new feature should improve at least one of:
 
 ## Next Priorities
 
-1. Expand the TechQA public benchmark beyond 160 cases and compare local retrieval with provider embeddings.
-2. Add more hand-authored, noisy synthetic tickets and evidence bundles.
-3. Add optional downstream trace storage or visualization.
-4. Add model-assisted adversarial review while preserving deterministic gates.
-5. Add optional LLM extraction with schema repair and failure analysis.
+1. Publish benchmark and dataset cards, plus contribution guidance for external review.
+2. Formalize the failure taxonomy across safety, retrieval, citation, privacy, tool-use, and usefulness failures.
+3. Add a human-labeled calibration sample and compare human review with deterministic rules and LLM-as-judge.
+4. Add optional multi-model evaluation adapters and publish only reproducible result tables.
+5. Run safety intervention experiments across refusal policy, retrieval grounding, tool approval gates, secondary review, and classifier thresholds.
+6. Expand the TechQA public benchmark beyond 160 cases and compare local retrieval with provider embeddings.

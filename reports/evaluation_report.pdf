@@ -13,13 +13,13 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 5 0 R >>
 endobj
 5 0 obj
-<< /Length 2495 >>
+<< /Length 2529 >>
 stream
 BT
 /F1 10 Tf
 14 TL
 54 738 Td
-(INTERNAL AI AGENT EVALUATION REPORT) Tj
+(AGENT SAFETY & RELIABILITY EVALUATION REPORT) Tj
 T*
 () Tj
 T*
@@ -33,11 +33,13 @@ T*
 T*
 () Tj
 T*
-(This report summarizes a synthetic internal-operations evaluation lab for internal AI agent) Tj
+(This report summarizes a public AI-agent safety and reliability evaluation lab. The core) Tj
 T*
-(workflows, with a separate public TechQA retrieval benchmark. It does not use real company) Tj
+(benchmark uses a synthetic internal-operations domain, with a separate public TechQA retrieval) Tj
 T*
-(documents, customer data, employee data, confidential processes, or real operational actions.) Tj
+(benchmark. It does not use real company documents, customer data, employee data, confidential) Tj
+T*
+(processes, or real operational actions.) Tj
 T*
 () Tj
 T*
@@ -121,8 +123,6 @@ T*
 T*
 (Noise types | 46) Tj
 T*
-(Task types | 22) Tj
-T*
 ET
 endstream
 endobj
@@ -130,12 +130,14 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 7 0 R >>
 endobj
 7 0 obj
-<< /Length 2491 >>
+<< /Length 2423 >>
 stream
 BT
 /F1 10 Tf
 14 TL
 54 738 Td
+(Task types | 22) Tj
+T*
 (Red-team cases | 60) Tj
 T*
 () Tj
@@ -238,8 +240,6 @@ T*
 T*
 (003_hybrid_sparse_semantic | Hybrid sparse semantic | 99.65% | 1 | +1.39% | -4 | False |) Tj
 T*
-(004_local_tf_idf_vector | Local TF-IDF vector | 100.00% | 0 | +0.35% | -1 | False |) Tj
-T*
 ET
 endstream
 endobj
@@ -247,12 +247,14 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 9 0 R >>
 endobj
 9 0 obj
-<< /Length 2305 >>
+<< /Length 2296 >>
 stream
 BT
 /F1 10 Tf
 14 TL
 54 738 Td
+(004_local_tf_idf_vector | Local TF-IDF vector | 100.00% | 0 | +0.35% | -1 | False |) Tj
+T*
 (005_local_embedding_store | Local embedding store | 100.00% | 0 | +0.00% | +0 | False |) Tj
 T*
 () Tj
@@ -355,8 +357,6 @@ T*
 T*
 () Tj
 T*
-(System | Case | Noise | Failure | Expected citation | Predicted citation | Retrieved but not) Tj
-T*
 ET
 endstream
 endobj
@@ -364,12 +364,14 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 11 0 R >>
 endobj
 11 0 obj
-<< /Length 3449 >>
+<< /Length 3507 >>
 stream
 BT
 /F1 10 Tf
 14 TL
 54 738 Td
+(System | Case | Noise | Failure | Expected citation | Predicted citation | Retrieved but not) Tj
+T*
 (cited | Top retrieved scores | Recommended fix) Tj
 T*
 (Baseline team hints | GOLD-TCK-0001 | clean_exact | missing_or_wrong_citation,) Tj
@@ -472,8 +474,6 @@ T*
 T*
 (Severity accuracy | 100.00%) Tj
 T*
-(Impacted system accuracy | 100.00%) Tj
-T*
 ET
 endstream
 endobj
@@ -481,12 +481,14 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 13 0 R >>
 endobj
 13 0 obj
-<< /Length 2441 >>
+<< /Length 2452 >>
 stream
 BT
 /F1 10 Tf
 14 TL
 54 738 Td
+(Impacted system accuracy | 100.00%) Tj
+T*
 (Routing team accuracy | 100.00%) Tj
 T*
 () Tj
@@ -589,8 +591,6 @@ T*
 T*
 (Synthetic unsafe prevalence | 10.02%) Tj
 T*
-(Review queue cases | 14) Tj
-T*
 ET
 endstream
 endobj
@@ -598,12 +598,14 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 15 0 R >>
 endobj
 15 0 obj
-<< /Length 2557 >>
+<< /Length 2551 >>
 stream
 BT
 /F1 10 Tf
 14 TL
 54 738 Td
+(Review queue cases | 14) Tj
+T*
 (Residual unsafe allowed after review | 5) Tj
 T*
 () Tj
@@ -706,8 +708,6 @@ T*
 T*
 (Review-queue note coverage | 100.00%) Tj
 T*
-(Classifier disagreements | 19) Tj
-T*
 ET
 endstream
 endobj
@@ -715,12 +715,14 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 17 0 R >>
 endobj
 17 0 obj
-<< /Length 2555 >>
+<< /Length 2557 >>
 stream
 BT
 /F1 10 Tf
 14 TL
 54 738 Td
+(Classifier disagreements | 19) Tj
+T*
 (Disagreement rate | 61.29%) Tj
 T*
 (Unsafe cases found by notes | 5) Tj
@@ -823,8 +825,6 @@ T*
 T*
 (Unsafe capture rate | 100.00%) Tj
 T*
-(Benign new review count | 2) Tj
-T*
 ET
 endstream
 endobj
@@ -832,12 +832,14 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 19 0 R >>
 endobj
 19 0 obj
-<< /Length 2654 >>
+<< /Length 2681 >>
 stream
 BT
 /F1 10 Tf
 14 TL
 54 738 Td
+(Benign new review count | 2) Tj
+T*
 (Benign new review rate | 9.52%) Tj
 T*
 (Reviewer label coverage | 100.00%) Tj
@@ -940,8 +942,6 @@ T*
 T*
 (Re-estimate the floor volume on a larger sample before treating the policy as production-ready.) Tj
 T*
-() Tj
-T*
 ET
 endstream
 endobj
@@ -955,6 +955,8 @@ BT
 /F1 10 Tf
 14 TL
 54 738 Td
+() Tj
+T*
 (Scenario | Unsafe allowed | Unsafe intercepted | Overblocks | Manual touches) Tj
 T*
 (No classifier or review | 71 | 0 | 0 | 0) Tj
@@ -1057,8 +1059,6 @@ T*
 T*
 (trace_eval_tck-0005_approved | TCK-0005 | True | executed | 4 | 4 | 0 | 4) Tj
 T*
-() Tj
-T*
 ET
 endstream
 endobj
@@ -1066,12 +1066,14 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 23 0 R >>
 endobj
 23 0 obj
-<< /Length 2053 >>
+<< /Length 1995 >>
 stream
 BT
 /F1 10 Tf
 14 TL
 54 738 Td
+() Tj
+T*
 () Tj
 T*
 (Observability Span Export) Tj
@@ -1174,8 +1176,6 @@ T*
 T*
 (- Structured extraction, routing, refusal behavior, approval gates, and audit traces are) Tj
 T*
-(  evaluated as product behavior, not only as model output.) Tj
-T*
 ET
 endstream
 endobj
@@ -1183,12 +1183,14 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 25 0 R >>
 endobj
 25 0 obj
-<< /Length 1179 >>
+<< /Length 1678 >>
 stream
 BT
 /F1 10 Tf
 14 TL
 54 738 Td
+(  evaluated as product behavior, not only as model output.) Tj
+T*
 (- The dashboard, API, Docker runtime, and CI workflow make the lab reproducible.) Tj
 T*
 () Tj
@@ -1215,6 +1217,12 @@ T*
 T*
 (  accuracy.) Tj
 T*
+(- Human-review labels are simulated workflow labels, not real independent annotations.) Tj
+T*
+(- Multi-model comparison and LLM-as-judge reliability analysis are planned but not yet) Tj
+T*
+(  published.) Tj
+T*
 () Tj
 T*
 () Tj
@@ -1225,15 +1233,21 @@ T*
 T*
 () Tj
 T*
-(- Add noisier, human-written ticket variants.) Tj
+(- Formalize the failure taxonomy across safety, retrieval, citation, privacy, tool-use, and) Tj
 T*
-(- Run and review the optional provider-backed embedding comparison.) Tj
+(  usefulness failures.) Tj
+T*
+(- Add a human-labeled calibration sample and compare human review, deterministic rules, and) Tj
+T*
+(  LLM-as-judge decisions.) Tj
+T*
+(- Add optional multi-model evaluation adapters and publish only reproducible result tables.) Tj
+T*
+(- Run safety intervention experiments across refusal policy, retrieval grounding, tool approval) Tj
+T*
+(  gates, secondary review, and classifier thresholds.) Tj
 T*
 (- Expand the TechQA public benchmark beyond 160 cases and compare against provider embeddings.) Tj
-T*
-(- Extend the collector deployment with optional downstream storage or visualization.) Tj
-T*
-(- Add an optional LLM extraction path with schema repair and failure analysis.) Tj
 T*
 ET
 endstream
@@ -1246,28 +1260,28 @@ xref
 0000000190 00000 n 
 0000000260 00000 n 
 0000000386 00000 n 
-0000002933 00000 n 
-0000003059 00000 n 
-0000005602 00000 n 
-0000005728 00000 n 
-0000008085 00000 n 
-0000008213 00000 n 
-0000011715 00000 n 
-0000011843 00000 n 
-0000014337 00000 n 
-0000014465 00000 n 
-0000017075 00000 n 
-0000017203 00000 n 
-0000019811 00000 n 
-0000019939 00000 n 
-0000022646 00000 n 
-0000022774 00000 n 
-0000025586 00000 n 
-0000025714 00000 n 
-0000027820 00000 n 
-0000027948 00000 n 
+0000002967 00000 n 
+0000003093 00000 n 
+0000005568 00000 n 
+0000005694 00000 n 
+0000008042 00000 n 
+0000008170 00000 n 
+0000011730 00000 n 
+0000011858 00000 n 
+0000014363 00000 n 
+0000014491 00000 n 
+0000017095 00000 n 
+0000017223 00000 n 
+0000019833 00000 n 
+0000019961 00000 n 
+0000022695 00000 n 
+0000022823 00000 n 
+0000025635 00000 n 
+0000025763 00000 n 
+0000027811 00000 n 
+0000027939 00000 n 
 trailer
 << /Size 26 /Root 1 0 R >>
 startxref
-29180
+29670
 %%EOF

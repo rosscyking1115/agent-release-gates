@@ -1,8 +1,8 @@
-# Internal AI Agent Evaluation Report
+# Agent Safety & Reliability Evaluation Report
 
 ## Executive Summary
 
-This report summarizes a synthetic internal-operations evaluation lab for internal AI agent workflows, with a separate public TechQA retrieval benchmark. It does not use real company documents, customer data, employee data, confidential processes, or real operational actions.
+This report summarizes a public AI-agent safety and reliability evaluation lab. The core benchmark uses a synthetic internal-operations domain, with a separate public TechQA retrieval benchmark. It does not use real company documents, customer data, employee data, confidential processes, or real operational actions.
 
 - Golden retrieval cases: 358
 - Synthetic ticket extraction and agent cases: 180
@@ -479,11 +479,13 @@ The combined export includes workflow-level spans, agent tool/audit spans, case-
 - The embedding-store retriever uses local feature-hashed embeddings, not a paid API.
 - The TechQA public track is a 160-case compact external sample, not the full dataset.
 - Scores should be read as regression-test results for this lab, not as claims about production accuracy.
+- Human-review labels are simulated workflow labels, not real independent annotations.
+- Multi-model comparison and LLM-as-judge reliability analysis are planned but not yet published.
 
 ## Recommended Next Work
 
-- Add noisier, human-written ticket variants.
-- Run and review the optional provider-backed embedding comparison.
+- Formalize the failure taxonomy across safety, retrieval, citation, privacy, tool-use, and usefulness failures.
+- Add a human-labeled calibration sample and compare human review, deterministic rules, and LLM-as-judge decisions.
+- Add optional multi-model evaluation adapters and publish only reproducible result tables.
+- Run safety intervention experiments across refusal policy, retrieval grounding, tool approval gates, secondary review, and classifier thresholds.
 - Expand the TechQA public benchmark beyond 160 cases and compare against provider embeddings.
-- Extend the collector deployment with optional downstream storage or visualization.
-- Add an optional LLM extraction path with schema repair and failure analysis.
