@@ -165,6 +165,9 @@ def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
     assert "| Maintainer-labelled calibration metric | Value |" in report
     assert "| Calibration cases | 24 |" in report
     assert "| Classifier label accuracy |" in report
+    assert "| Judge reliability metric | Value |" in report
+    assert "| Local rubric judge accuracy |" in report
+    assert "| Classifier / rubric judge agreement |" in report
     assert "| Safety retuning metric | Value |" in report
     assert "| False-negative reduction |" in report
     assert "| Human-authored adjudication notes metric | Value |" in report

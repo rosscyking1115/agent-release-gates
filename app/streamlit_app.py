@@ -24,6 +24,9 @@ from internal_ai_agent.dashboard.data import (
     failure_reason_rows,
     human_calibration_case_rows,
     human_calibration_category_rows,
+    judge_reliability_category_rows,
+    judge_reliability_disagreement_rows,
+    judge_reliability_pair_rows,
     load_agent_summary,
     load_agent_trace_examples,
     load_case_rows,
@@ -35,6 +38,7 @@ from internal_ai_agent.dashboard.data import (
     load_extraction_summary,
     load_failure_taxonomy_summary,
     load_human_calibration_summary,
+    load_judge_reliability_summary,
     load_observability_otel_spans,
     load_observability_trace_index,
     load_public_report,
@@ -113,6 +117,7 @@ def main() -> None:
     safety_mitigation_impact = load_safety_mitigation_impact(PROJECT_ROOT)
     safety_threshold_memo = load_safety_threshold_decision_memo(PROJECT_ROOT)
     human_calibration = load_human_calibration_summary(PROJECT_ROOT)
+    judge_reliability = load_judge_reliability_summary(PROJECT_ROOT)
     failure_taxonomy = load_failure_taxonomy_summary(PROJECT_ROOT)
     agent_summary = load_agent_summary(PROJECT_ROOT)
     agent_traces = load_agent_trace_examples(PROJECT_ROOT)
@@ -166,6 +171,7 @@ def main() -> None:
             safety_mitigation_impact,
             safety_threshold_memo,
             human_calibration,
+            judge_reliability,
         )
         _render_extraction_metrics(extraction_summary, extraction_rows)
         _render_security_metrics(security_summary, security_rows)
@@ -745,6 +751,7 @@ def _render_safety_classifier_workflow(
     mitigation_impact: dict[str, object],
     threshold_memo: dict[str, object],
     human_calibration: dict[str, object],
+    judge_reliability: dict[str, object],
 ) -> None:
     st.subheader("Safety Prevalence And Classifier Workflow")
     metrics = classifier["metrics"]
@@ -871,6 +878,55 @@ def _render_safety_classifier_workflow(
             case_df = pd.DataFrame(human_calibration_case_rows(human_calibration))
             if not case_df.empty:
                 st.dataframe(case_df, hide_index=True, use_container_width=True)
+            judge_summary = judge_reliability.get("summary", {})
+            st.markdown("**Judge Reliability**")
+            if not judge_summary:
+                st.info("Judge reliability summary is not available yet.")
+            else:
+                judge_cols = st.columns(5)
+                judge_cols[0].metric(
+                    "Judge accuracy",
+                    f"{judge_summary['judge_label_accuracy'] * 100:.2f}%",
+                )
+                judge_cols[1].metric(
+                    "Classifier accuracy",
+                    f"{judge_summary['classifier_label_accuracy'] * 100:.2f}%",
+                )
+                judge_cols[2].metric(
+                    "Judge kappa",
+                    judge_summary["judge_kappa_vs_human"],
+                )
+                judge_cols[3].metric(
+                    "Classifier/judge agree",
+                    (
+                        f"{judge_summary['classifier_judge_agreement_rate'] * 100:.2f}%"
+                    ),
+                )
+                judge_cols[4].metric(
+                    "Judge disagreements",
+                    judge_summary["judge_disagreement_count"],
+                )
+                pair_df = pd.DataFrame(judge_reliability_pair_rows(judge_reliability))
+                if not pair_df.empty:
+                    st.dataframe(pair_df, hide_index=True, use_container_width=True)
+                judge_category_df = pd.DataFrame(
+                    judge_reliability_category_rows(judge_reliability)
+                )
+                if not judge_category_df.empty:
+                    st.dataframe(
+                        judge_category_df,
+                        hide_index=True,
+                        use_container_width=True,
+                    )
+                judge_disagreement_df = pd.DataFrame(
+                    judge_reliability_disagreement_rows(judge_reliability)
+                )
+                if not judge_disagreement_df.empty:
+                    st.dataframe(
+                        judge_disagreement_df,
+                        hide_index=True,
+                        use_container_width=True,
+                    )
     with tab_review:
         review_cols = st.columns(5)
         review_cols[0].metric(

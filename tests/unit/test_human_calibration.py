@@ -29,3 +29,10 @@ def test_human_calibration_compares_classifier_against_labels(
     )
     assert (tmp_path / "reports/human_calibration_summary.json").exists()
     assert (tmp_path / "reports/human_calibration_cases.jsonl").exists()
+    assert (tmp_path / "reports/judge_reliability_summary.json").exists()
+    assert (tmp_path / "reports/judge_reliability_cases.jsonl").exists()
+
+    judge_report = read_jsonl(tmp_path / "reports/judge_reliability_cases.jsonl")
+    assert len(judge_report) == 24
+    assert all("judge_label" in row for row in judge_report)
+    assert all("judge_confidence" in row for row in judge_report)

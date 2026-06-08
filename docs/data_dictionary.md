@@ -105,6 +105,8 @@ Reports:
 | `reports/safety_prevalence_report.md` | Weighted prevalence estimates, confidence intervals, sampling limitations, and distinction from challenge-set failure rates. |
 | `reports/human_calibration_summary.json` | Maintainer-labeled calibration summary with reviewer agreement, classifier label accuracy, expected-action match rate, unsafe capture, and category slices. |
 | `reports/human_calibration_cases.jsonl` | Case-level calibration comparison rows with human labels, classifier decision, classifier score, action/label match flags, and error type. |
+| `reports/judge_reliability_summary.json` | Local rubric-judge reliability report with pairwise agreement, Cohen kappa, judge/classifier accuracy, category slices, and disagreement examples. |
+| `reports/judge_reliability_cases.jsonl` | Case-level local rubric-judge outputs compared against maintainer labels, classifier labels, and reviewer labels. |
 | `reports/failure_taxonomy_summary.json` | Shared failure-taxonomy counts by label, group, and source across retrieval, public RAG, red-team, and safety-classifier outputs. |
 | `reports/techqa_public_rag_summary.json` | External public TechQA-RAG-Eval retrieval and abstention summary over the tracked public sample. |
 | `reports/techqa_public_benchmark_profile.json` | Public benchmark transparency profile with sample size, answerable/impossible mix, unique document count, context coverage, failure rate, and provider-result status. |
@@ -132,6 +134,10 @@ Retrieval case result files include `baseline_eval_cases.jsonl`, `improved_eval_
 | `classifier_action_match` | Whether the classifier decision exactly matches the case-level expected action. |
 | `classifier_label_match` | Whether the classifier binary label matches the adjudicated human label. |
 | `error_type` | Calibration disagreement category such as unsafe auto-allowed, benign auto-blocked, benign sent to review, or action mismatch. |
+| `judge_label` | Local rubric-judge binary label for a calibration case. |
+| `judge_decision` | Local rubric-judge recommended action: allow, review, or block. |
+| `judge_confidence` | Deterministic confidence score assigned by the local rubric judge. |
+| `judge_error_type` | Judge disagreement category relative to the adjudicated label. |
 | `diagnostic` | Short explanation of the failure mode. |
 | `recommended_fix` | Suggested retrieval or policy improvement. |
 

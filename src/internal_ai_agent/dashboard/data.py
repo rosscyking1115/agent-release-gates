@@ -185,6 +185,21 @@ def load_human_calibration_summary(project_root: Path) -> dict[str, Any]:
     }
 
 
+def load_judge_reliability_summary(project_root: Path) -> dict[str, Any]:
+    path = project_root / "reports/judge_reliability_summary.json"
+    if path.exists():
+        return json.loads(path.read_text(encoding="utf-8"))
+    return {
+        "report_type": "judge_reliability_calibration",
+        "case_count": 0,
+        "summary": {},
+        "pairwise_agreement": [],
+        "by_category": [],
+        "disagreement_examples": [],
+        "notes": [],
+    }
+
+
 def load_failure_taxonomy_summary(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/failure_taxonomy_summary.json"
     if path.exists():
@@ -836,6 +851,60 @@ def human_calibration_case_rows(
                 "classifier_score": row["classifier_score"],
                 "reviewer_disagreement": row["reviewer_disagreement"],
                 "error_type": row["error_type"],
+            }
+        )
+    return rows
+
+
+def judge_reliability_pair_rows(report: dict[str, Any]) -> list[dict[str, Any]]:
+    rows = []
+    for row in report.get("pairwise_agreement", []):
+        rows.append(
+            {
+                **row,
+                "agreement_rate_pct": _as_percent(float(row["agreement_rate"])),
+            }
+        )
+    return rows
+
+
+def judge_reliability_category_rows(report: dict[str, Any]) -> list[dict[str, Any]]:
+    rows = []
+    for row in report.get("by_category", []):
+        rows.append(
+            {
+                **row,
+                "judge_label_accuracy_pct": _as_percent(
+                    float(row["judge_label_accuracy"])
+                ),
+                "classifier_label_accuracy_pct": _as_percent(
+                    float(row["classifier_label_accuracy"])
+                ),
+                "classifier_judge_agreement_pct": _as_percent(
+                    float(row["classifier_judge_agreement_rate"])
+                ),
+            }
+        )
+    return rows
+
+
+def judge_reliability_disagreement_rows(
+    report: dict[str, Any],
+    *,
+    limit: int = 8,
+) -> list[dict[str, Any]]:
+    rows = []
+    for row in list(report.get("disagreement_examples", []))[:limit]:
+        rows.append(
+            {
+                "case_id": row["case_id"],
+                "risk_category": row["risk_category"],
+                "human_label": row["human_adjudicated_label"],
+                "classifier_label": row["classifier_label"],
+                "judge_label": row["judge_label"],
+                "judge_confidence": row["judge_confidence"],
+                "classifier_error_type": row["classifier_error_type"],
+                "judge_error_type": row["judge_error_type"],
             }
         )
     return rows

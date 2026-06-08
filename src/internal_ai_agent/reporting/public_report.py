@@ -93,6 +93,9 @@ def generate_public_report(project_root: Path) -> str:
     human_calibration = _read_optional_json(
         reports_dir / "human_calibration_summary.json"
     )
+    judge_reliability = _read_optional_json(
+        reports_dir / "judge_reliability_summary.json"
+    )
     failure_taxonomy = _read_optional_json(reports_dir / "failure_taxonomy_summary.json")
     agent = _read_json(reports_dir / "agent_eval_summary.json")
 
@@ -193,6 +196,8 @@ def generate_public_report(project_root: Path) -> str:
             "",
             _human_calibration_table(human_calibration),
             "",
+            _judge_reliability_table(judge_reliability),
+            "",
             _safety_threshold_table(safety_threshold_sweep),
             "",
             _safety_retuning_table(safety_threshold_retuning),
@@ -279,6 +284,10 @@ def generate_public_report(project_root: Path) -> str:
                 "- Multi-model comparison and LLM-as-judge reliability analysis are "
                 "planned but not yet published."
             ),
+            (
+                "- The published judge reliability track currently uses a local "
+                "deterministic rubric judge, not a hosted LLM judge."
+            ),
             "",
             "## Recommended Next Work",
             "",
@@ -286,6 +295,8 @@ def generate_public_report(project_root: Path) -> str:
             "privacy, tool-use, and usefulness failures.",
             "- Add independent external human review for the calibration sample "
             "and compare deterministic rules with LLM-as-judge decisions.",
+            "- Run the judge reliability track against hosted model judges and "
+            "publish disagreement slices separately from the local rubric baseline.",
             "- Add optional multi-model evaluation adapters and publish only "
             "reproducible result tables.",
             "- Run safety intervention experiments across refusal policy, retrieval "
@@ -767,6 +778,85 @@ def _human_calibration_table(report: dict[str, Any]) -> str:
             rows.append(
                 "| {case_id} | {human_adjudicated_label} | {expected_action} | "
                 "{classifier_decision} | {reviewer_disagreement} | {error_type} |".format(
+                    **row
+                )
+            )
+    return "\n".join(rows)
+
+
+def _judge_reliability_table(report: dict[str, Any]) -> str:
+    if report.get("report_type") != "judge_reliability_calibration":
+        return "Judge reliability calibration is not configured."
+    summary = report["summary"]
+    rows = [
+        "| Judge reliability metric | Value |",
+        "| --- | ---: |",
+        f"| Calibration cases | {summary['case_count']} |",
+        f"| Local rubric judge accuracy | {_pct(summary['judge_label_accuracy'])} |",
+        f"| Classifier label accuracy | {_pct(summary['classifier_label_accuracy'])} |",
+        (
+            "| Classifier / rubric judge agreement | "
+            f"{_pct(summary['classifier_judge_agreement_rate'])} |"
+        ),
+        f"| Reviewer pair agreement | {_pct(summary['reviewer_pair_agreement_rate'])} |",
+        f"| Rubric judge kappa vs human | {summary['judge_kappa_vs_human']} |",
+        f"| Classifier kappa vs human | {summary['classifier_kappa_vs_human']} |",
+        f"| Classifier / judge kappa | {summary['classifier_judge_kappa']} |",
+        f"| Rubric judge disagreements | {summary['judge_disagreement_count']} |",
+        f"| Classifier disagreements | {summary['classifier_disagreement_count']} |",
+    ]
+    if report["pairwise_agreement"]:
+        rows.extend(
+            [
+                "",
+                "| Rater A | Rater B | Agreement | Cohen kappa | Disagreements |",
+                "| --- | --- | ---: | ---: | ---: |",
+            ]
+        )
+        for row in report["pairwise_agreement"]:
+            rows.append(
+                "| {rater_a} | {rater_b} | {agreement} | {cohen_kappa} | "
+                "{disagreement_count} |".format(
+                    agreement=_pct(row["agreement_rate"]),
+                    **row,
+                )
+            )
+    if report["by_category"]:
+        rows.extend(
+            [
+                "",
+                (
+                    "| Category | Cases | Judge accuracy | Classifier accuracy | "
+                    "Classifier/judge agreement | Top judge error |"
+                ),
+                "| --- | ---: | ---: | ---: | ---: | --- |",
+            ]
+        )
+        for row in report["by_category"]:
+            rows.append(
+                "| {risk_category} | {case_count} | {judge_accuracy} | "
+                "{classifier_accuracy} | {agreement} | {top_judge_error_type} |".format(
+                    judge_accuracy=_pct(row["judge_label_accuracy"]),
+                    classifier_accuracy=_pct(row["classifier_label_accuracy"]),
+                    agreement=_pct(row["classifier_judge_agreement_rate"]),
+                    **row,
+                )
+            )
+    if report["disagreement_examples"]:
+        rows.extend(
+            [
+                "",
+                (
+                    "| Case | Human | Classifier | Rubric judge | Judge confidence | "
+                    "Judge error |"
+                ),
+                "| --- | --- | --- | --- | ---: | --- |",
+            ]
+        )
+        for row in report["disagreement_examples"][:6]:
+            rows.append(
+                "| {case_id} | {human_adjudicated_label} | {classifier_label} | "
+                "{judge_label} | {judge_confidence} | {judge_error_type} |".format(
                     **row
                 )
             )
