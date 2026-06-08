@@ -5,7 +5,7 @@ import os
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 from typing import Any
-from urllib import request
+from urllib import error, request
 
 DEFAULT_OPENAI_JUDGE_ENDPOINT = "https://api.openai.com/v1/responses"
 DEFAULT_OPENAI_JUDGE_MODEL = "gpt-4.1-mini"
@@ -22,6 +22,22 @@ class OpenAIJudgeConfig:
     max_output_tokens: int = 350
 
 
+class OpenAIJudgeProviderError(RuntimeError):
+    def __init__(
+        self,
+        *,
+        status_code: int,
+        reason: str,
+        response_body: str,
+        retry_after: str,
+    ) -> None:
+        super().__init__(f"OpenAI judge request failed: HTTP {status_code} {reason}")
+        self.status_code = status_code
+        self.reason = reason
+        self.response_body = response_body
+        self.retry_after = retry_after
+
+
 class OpenAIJudgeClient:
     def __init__(
         self,
@@ -35,15 +51,18 @@ class OpenAIJudgeClient:
         self._http_post = http_post or _http_post
 
     def judge_case(self, case: dict[str, Any]) -> dict[str, Any]:
-        response_text = self._http_post(
-            self.config.endpoint,
-            json.dumps(self._payload(case)).encode("utf-8"),
-            {
-                "Authorization": f"Bearer {self.config.api_key}",
-                "Content-Type": "application/json",
-            },
-            self.config.timeout_seconds,
-        )
+        try:
+            response_text = self._http_post(
+                self.config.endpoint,
+                json.dumps(self._payload(case)).encode("utf-8"),
+                {
+                    "Authorization": f"Bearer {self.config.api_key}",
+                    "Content-Type": "application/json",
+                },
+                self.config.timeout_seconds,
+            )
+        except error.HTTPError as exc:
+            raise _provider_error_from_http_error(exc) from exc
         return _parse_judge_response(json.loads(response_text))
 
     def _payload(self, case: dict[str, Any]) -> dict[str, Any]:
@@ -139,5 +158,19 @@ def _http_post(
         headers=dict(headers),
         method="POST",
     )
-    with request.urlopen(http_request, timeout=timeout_seconds) as response:
-        return response.read().decode("utf-8", errors="replace")
+    try:
+        with request.urlopen(http_request, timeout=timeout_seconds) as response:
+            return response.read().decode("utf-8", errors="replace")
+    except error.HTTPError as exc:
+        raise _provider_error_from_http_error(exc) from exc
+
+
+def _provider_error_from_http_error(exc: error.HTTPError) -> OpenAIJudgeProviderError:
+    response_body = exc.read().decode("utf-8", errors="replace")
+    retry_after = exc.headers.get("Retry-After", "")
+    return OpenAIJudgeProviderError(
+        status_code=exc.code,
+        reason=exc.reason,
+        response_body=response_body,
+        retry_after=retry_after,
+    )

@@ -218,6 +218,14 @@ Publication review decisions:
 - `review_required`: aggregate metrics pass basic checks, but disagreement patterns need human inspection first
 - `do_not_publish`: blocking issues were found, such as high-severity unsafe cases marked benign or accuracy below the minimum threshold
 
+Troubleshooting hosted-judge provider errors:
+
+- `HTTP 429` means the provider accepted the key but the project or organization is blocked by rate, quota, billing, or usage limits
+- confirm the key belongs to the intended OpenAI project
+- check the OpenAI dashboard for billing, credits, usage limits, and model-specific rate limits
+- if the status file includes `retry_after`, wait at least that long before rerunning
+- do not publish a provider-backed result unless the run completes and `publication_review` has been inspected
+
 ## Safety Checks
 
 Before sharing the project publicly, confirm:

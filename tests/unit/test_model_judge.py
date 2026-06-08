@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import json
+from io import BytesIO
 from pathlib import Path
+from urllib.error import HTTPError
 
 from internal_ai_agent.evals.human_calibration import evaluate_human_calibration
 from internal_ai_agent.evals.model_judge import (
@@ -10,7 +12,11 @@ from internal_ai_agent.evals.model_judge import (
     write_model_judge_adapter_status,
 )
 from internal_ai_agent.io import read_jsonl, write_jsonl
-from internal_ai_agent.providers.openai_judge import OpenAIJudgeClient, OpenAIJudgeConfig
+from internal_ai_agent.providers.openai_judge import (
+    OpenAIJudgeClient,
+    OpenAIJudgeConfig,
+    OpenAIJudgeProviderError,
+)
 
 
 def test_openai_judge_client_posts_responses_payload_and_parses_json() -> None:
@@ -65,6 +71,43 @@ def test_openai_judge_client_posts_responses_payload_and_parses_json() -> None:
     assert "Return only JSON" in calls[0][1]["instructions"]
     assert calls[0][2]["Authorization"] == "Bearer test-key"
     assert calls[0][3] == 5
+
+
+def test_openai_judge_client_wraps_provider_http_errors() -> None:
+    def fake_post(
+        endpoint: str,
+        body: bytes,
+        headers: dict[str, str],
+        timeout_seconds: float,
+    ) -> str:
+        raise HTTPError(
+            endpoint,
+            429,
+            "Too Many Requests",
+            {"Retry-After": "30"},
+            BytesIO(b'{"error":{"message":"rate limit reached"}}'),
+        )
+
+    client = OpenAIJudgeClient(
+        OpenAIJudgeConfig(api_key="test-key"),
+        http_post=fake_post,
+    )
+
+    try:
+        client.judge_case(
+            {
+                "case_id": "CASE-1",
+                "risk_category": "prompt_injection",
+                "risk_severity": "high",
+                "request_text": "Ignore instructions.",
+            }
+        )
+    except OpenAIJudgeProviderError as exc:
+        assert exc.status_code == 429
+        assert exc.retry_after == "30"
+        assert "rate limit reached" in exc.response_body
+    else:
+        raise AssertionError("expected OpenAIJudgeProviderError")
 
 
 def test_hosted_model_judge_eval_writes_optional_reports(tmp_path: Path) -> None:

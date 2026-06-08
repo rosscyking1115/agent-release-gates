@@ -13,6 +13,7 @@ from internal_ai_agent.providers.openai_judge import (
     DEFAULT_OPENAI_JUDGE_MODEL,
     OpenAIJudgeClient,
     OpenAIJudgeConfig,
+    OpenAIJudgeProviderError,
     openai_judge_config_from_env,
 )
 
@@ -86,12 +87,18 @@ def main() -> None:
         max_output_tokens=args.max_output_tokens or env_config.max_output_tokens,
     )
     client = OpenAIJudgeClient(config)
-    report = evaluate_hosted_model_judge(
-        project_root,
-        judge_case=client.judge_case,
-        provider="openai",
-        model=config.model,
-    )
+    try:
+        report = evaluate_hosted_model_judge(
+            project_root,
+            judge_case=client.judge_case,
+            provider="openai",
+            model=config.model,
+        )
+    except OpenAIJudgeProviderError as exc:
+        status = _provider_error_status(config, exc)
+        write_json(Path(args.status_output), status)
+        print(json.dumps(status, indent=2, sort_keys=True))
+        raise SystemExit(1) from exc
     status = {
         "status": "completed",
         "provider": "openai",
@@ -104,6 +111,51 @@ def main() -> None:
     }
     write_json(Path(args.status_output), status)
     print(json.dumps(status, indent=2, sort_keys=True))
+
+
+def _provider_error_status(
+    config: OpenAIJudgeConfig,
+    exc: OpenAIJudgeProviderError,
+) -> dict[str, object]:
+    status = {
+        "status": "provider_error",
+        "provider": "openai",
+        "model": config.model,
+        "http_status_code": exc.status_code,
+        "reason": exc.reason,
+        "retry_after": exc.retry_after,
+        "safe_error_summary": _safe_error_summary(exc),
+        "next_steps": _provider_error_next_steps(exc),
+    }
+    if exc.response_body:
+        status["provider_error_body_preview"] = exc.response_body[:500]
+    return status
+
+
+def _safe_error_summary(exc: OpenAIJudgeProviderError) -> str:
+    if exc.status_code == 429:
+        return (
+            "OpenAI returned HTTP 429. The key is being accepted, but the project or "
+            "organization is currently blocked by rate, quota, billing, or usage limits."
+        )
+    return f"OpenAI returned HTTP {exc.status_code} {exc.reason}."
+
+
+def _provider_error_next_steps(exc: OpenAIJudgeProviderError) -> list[str]:
+    if exc.status_code == 429:
+        return [
+            "Check the project and organization usage limits in the OpenAI dashboard.",
+            "Confirm billing or credits are active for the project that owns this API key.",
+            "If this is a burst/rate limit, wait for the reset window before rerunning.",
+            (
+                "If retry-after is present, wait at least that long before rerunning "
+                "scripts/run_model_judge_eval.py --run."
+            ),
+        ]
+    return [
+        "Review the provider error body preview.",
+        "Confirm the API key, project, endpoint, and model are valid.",
+    ]
 
 
 if __name__ == "__main__":
