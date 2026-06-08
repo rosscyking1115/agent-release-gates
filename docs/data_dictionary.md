@@ -107,6 +107,10 @@ Reports:
 | `reports/human_calibration_cases.jsonl` | Case-level calibration comparison rows with human labels, classifier decision, classifier score, action/label match flags, and error type. |
 | `reports/judge_reliability_summary.json` | Local rubric-judge reliability report with pairwise agreement, Cohen kappa, judge/classifier accuracy, category slices, and disagreement examples. |
 | `reports/judge_reliability_cases.jsonl` | Case-level local rubric-judge outputs compared against maintainer labels, classifier labels, and reviewer labels. |
+| `reports/model_judge_adapter_status.json` | Deterministic dry-run-ready status for the optional hosted model-judge adapter. This is safe to publish because it makes no provider calls. |
+| `reports/model_judge_eval_status.json` | Local-only status file written by the hosted judge script in dry-run, blocked, or completed mode. |
+| `reports/model_judge_eval_summary.json` | Optional local-only hosted model-judge result written only after a credentialed `--run`. |
+| `reports/model_judge_eval_cases.jsonl` | Optional local-only hosted model-judge case outputs with model labels, confidence, rationale, and agreement flags. |
 | `reports/failure_taxonomy_summary.json` | Shared failure-taxonomy counts by label, group, and source across retrieval, public RAG, red-team, and safety-classifier outputs. |
 | `reports/techqa_public_rag_summary.json` | External public TechQA-RAG-Eval retrieval and abstention summary over the tracked public sample. |
 | `reports/techqa_public_benchmark_profile.json` | Public benchmark transparency profile with sample size, answerable/impossible mix, unique document count, context coverage, failure rate, and provider-result status. |

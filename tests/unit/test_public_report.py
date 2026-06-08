@@ -9,6 +9,7 @@ from internal_ai_agent.evals.extraction import evaluate_extraction
 from internal_ai_agent.evals.failure_taxonomy import write_failure_taxonomy_summary
 from internal_ai_agent.evals.gates import write_evaluation_gates
 from internal_ai_agent.evals.human_calibration import evaluate_human_calibration
+from internal_ai_agent.evals.model_judge import write_model_judge_adapter_status
 from internal_ai_agent.evals.runner import (
     evaluate_comparison,
     evaluate_retriever_comparison,
@@ -38,6 +39,7 @@ def _prepare_reports(project_root: Path) -> None:
     security = evaluate_security(project_root)
     evaluate_safety_classifier(project_root)
     evaluate_human_calibration(project_root)
+    write_model_judge_adapter_status(project_root)
     write_failure_taxonomy_summary(project_root)
     agent = evaluate_agent(project_root)
     write_evaluation_history(
@@ -168,6 +170,9 @@ def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
     assert "| Judge reliability metric | Value |" in report
     assert "| Local rubric judge accuracy |" in report
     assert "| Classifier / rubric judge agreement |" in report
+    assert "| Hosted model-judge adapter | Value |" in report
+    assert "| Status | dry_run_ready |" in report
+    assert "| API mode | responses |" in report
     assert "| Safety retuning metric | Value |" in report
     assert "| False-negative reduction |" in report
     assert "| Human-authored adjudication notes metric | Value |" in report

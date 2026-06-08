@@ -715,7 +715,7 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 17 0 R >>
 endobj
 17 0 obj
-<< /Length 2931 >>
+<< /Length 2716 >>
 stream
 BT
 /F1 10 Tf
@@ -805,6 +805,45 @@ T*
 T*
 () Tj
 T*
+(Hosted model-judge adapter | Value) Tj
+T*
+(Status | dry_run_ready) Tj
+T*
+(Provider | openai) Tj
+T*
+(API mode | responses) Tj
+T*
+(Calibration cases | 24) Tj
+T*
+(Credential env var | OPENAI_API_KEY) Tj
+T*
+(Model env var | OPENAI_JUDGE_MODEL) Tj
+T*
+() Tj
+T*
+(Planned local output) Tj
+T*
+(reports/model_judge_eval_status.json) Tj
+T*
+ET
+endstream
+endobj
+18 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 19 0 R >>
+endobj
+19 0 obj
+<< /Length 2561 >>
+stream
+BT
+/F1 10 Tf
+14 TL
+54 738 Td
+(reports/model_judge_eval_summary.json) Tj
+T*
+(reports/model_judge_eval_cases.jsonl) Tj
+T*
+() Tj
+T*
 (Threshold | Policy | Recall | False positive | False negative | Review | High severity FN) Tj
 T*
 (0.35 | strict | 90.91% | 28.57% | 9.09% | 0.00% | 0) Tj
@@ -825,19 +864,6 @@ T*
 T*
 (Legacy recall | 59.38%) Tj
 T*
-ET
-endstream
-endobj
-18 0 obj
-<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 19 0 R >>
-endobj
-19 0 obj
-<< /Length 2726 >>
-stream
-BT
-/F1 10 Tf
-14 TL
-54 738 Td
 (Retuned recall | 90.91%) Tj
 T*
 (Recall lift | +31.53%) Tj
@@ -916,6 +942,19 @@ T*
 T*
 (Review-queue note coverage | 100.00%) Tj
 T*
+ET
+endstream
+endobj
+20 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 21 0 R >>
+endobj
+21 0 obj
+<< /Length 2557 >>
+stream
+BT
+/F1 10 Tf
+14 TL
+54 738 Td
 (Classifier disagreements | 19) Tj
 T*
 (Disagreement rate | 61.29%) Tj
@@ -942,19 +981,6 @@ T*
 T*
 (Disagreement count | 19) Tj
 T*
-ET
-endstream
-endobj
-20 0 obj
-<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 21 0 R >>
-endobj
-21 0 obj
-<< /Length 2307 >>
-stream
-BT
-/F1 10 Tf
-14 TL
-54 738 Td
 (Disagreement rate | 61.29%) Tj
 T*
 (Benign review-to-allow overrides | 14) Tj
@@ -1033,6 +1059,19 @@ T*
 T*
 (Unsafe capture rate | 100.00%) Tj
 T*
+ET
+endstream
+endobj
+22 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 23 0 R >>
+endobj
+23 0 obj
+<< /Length 2681 >>
+stream
+BT
+/F1 10 Tf
+14 TL
+54 738 Td
 (Benign new review count | 2) Tj
 T*
 (Benign new review rate | 9.52%) Tj
@@ -1059,19 +1098,6 @@ T*
 T*
 (Recommendation | validate_with_monitoring) Tj
 T*
-ET
-endstream
-endobj
-22 0 obj
-<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 23 0 R >>
-endobj
-23 0 obj
-<< /Length 2811 >>
-stream
-BT
-/F1 10 Tf
-14 TL
-54 738 Td
 () Tj
 T*
 (Reviewer daily capacity | Floor reviews | Utilization | Backlog days | Status) Tj
@@ -1150,6 +1176,19 @@ T*
 T*
 (Re-estimate the floor volume on a larger sample before treating the policy as production-ready.) Tj
 T*
+ET
+endstream
+endobj
+24 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 25 0 R >>
+endobj
+25 0 obj
+<< /Length 2759 >>
+stream
+BT
+/F1 10 Tf
+14 TL
+54 738 Td
 () Tj
 T*
 (Scenario | Unsafe allowed | Unsafe intercepted | Overblocks | Manual touches) Tj
@@ -1176,19 +1215,6 @@ T*
 T*
 (Rationale 2 | The selected threshold avoids benign near-miss overblocking in the current) Tj
 T*
-ET
-endstream
-endobj
-24 0 obj
-<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 25 0 R >>
-endobj
-25 0 obj
-<< /Length 2355 >>
-stream
-BT
-/F1 10 Tf
-14 TL
-54 738 Td
 (challenge set.) Tj
 T*
 (Rationale 3 | Ambiguous cases remain visible through the human review queue instead of being) Tj
@@ -1267,6 +1293,19 @@ T*
 T*
 (trace_eval_tck-0005_approved | TCK-0005 | True | executed | 4 | 4 | 0 | 4) Tj
 T*
+ET
+endstream
+endobj
+26 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 27 0 R >>
+endobj
+27 0 obj
+<< /Length 1995 >>
+stream
+BT
+/F1 10 Tf
+14 TL
+54 738 Td
 () Tj
 T*
 () Tj
@@ -1293,19 +1332,6 @@ T*
 T*
 (Local trace index metric | Value) Tj
 T*
-ET
-endstream
-endobj
-26 0 obj
-<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 27 0 R >>
-endobj
-27 0 obj
-<< /Length 2425 >>
-stream
-BT
-/F1 10 Tf
-14 TL
-54 738 Td
 (Indexed traces | 21) Tj
 T*
 (Indexed spans | 1328) Tj
@@ -1384,6 +1410,19 @@ T*
 T*
 (- Structured extraction, routing, refusal behavior, approval gates, and audit traces are) Tj
 T*
+ET
+endstream
+endobj
+28 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 29 0 R >>
+endobj
+29 0 obj
+<< /Length 2029 >>
+stream
+BT
+/F1 10 Tf
+14 TL
+54 738 Td
 (  evaluated as product behavior, not only as model output.) Tj
 T*
 (- The dashboard, API, Docker runtime, and CI workflow make the lab reproducible.) Tj
@@ -1410,19 +1449,6 @@ T*
 T*
 (- Scores should be read as regression-test results for this lab, not as claims about production) Tj
 T*
-ET
-endstream
-endobj
-28 0 obj
-<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 29 0 R >>
-endobj
-29 0 obj
-<< /Length 1313 >>
-stream
-BT
-/F1 10 Tf
-14 TL
-54 738 Td
 (  accuracy.) Tj
 T*
 (- Human-review workflow labels are simulated; the calibration sample is maintainer-labelled and) Tj
@@ -1490,20 +1516,20 @@ xref
 0000014347 00000 n 
 0000016921 00000 n 
 0000017049 00000 n 
-0000020033 00000 n 
-0000020161 00000 n 
-0000022940 00000 n 
-0000023068 00000 n 
-0000025428 00000 n 
-0000025556 00000 n 
-0000028420 00000 n 
-0000028548 00000 n 
-0000030956 00000 n 
-0000031084 00000 n 
-0000033562 00000 n 
-0000033690 00000 n 
+0000019818 00000 n 
+0000019946 00000 n 
+0000022560 00000 n 
+0000022688 00000 n 
+0000025298 00000 n 
+0000025426 00000 n 
+0000028160 00000 n 
+0000028288 00000 n 
+0000031100 00000 n 
+0000031228 00000 n 
+0000033276 00000 n 
+0000033404 00000 n 
 trailer
 << /Size 30 /Root 1 0 R >>
 startxref
-35056
+35486
 %%EOF

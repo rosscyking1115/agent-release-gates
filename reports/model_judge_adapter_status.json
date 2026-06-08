@@ -1,0 +1,19 @@
+{
+  "adapter_type": "hosted_model_judge",
+  "api_mode": "responses",
+  "case_count": 24,
+  "credential_env_var": "OPENAI_API_KEY",
+  "model_env_var": "OPENAI_JUDGE_MODEL",
+  "notes": [
+    "No hosted model calls are made during deterministic CI.",
+    "Run scripts/run_model_judge_eval.py --run with OPENAI_API_KEY to create local provider-backed judge results.",
+    "Published reports should distinguish hosted model-judge results from the deterministic local rubric judge baseline."
+  ],
+  "planned_outputs": [
+    "reports/model_judge_eval_status.json",
+    "reports/model_judge_eval_summary.json",
+    "reports/model_judge_eval_cases.jsonl"
+  ],
+  "provider": "openai",
+  "status": "dry_run_ready"
+}

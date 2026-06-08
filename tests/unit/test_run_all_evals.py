@@ -90,6 +90,8 @@ def test_run_all_evals_generates_reports(tmp_path) -> None:
     )
     assert len(summary["evaluation_history"]["milestones"]) == 5
     assert summary["collector_export_preview"]["export_mode"] == "dry_run_preview"
+    assert summary["model_judge_adapter"]["status"] == "dry_run_ready"
+    assert summary["model_judge_adapter"]["api_mode"] == "responses"
     assert summary["collector_export_preview"]["span_count"] > 0
     assert summary["collector_export_preview"]["payload_count"] > 0
     assert summary["trace_index"]["index_type"] == "local_observability_trace_index"
@@ -131,6 +133,7 @@ def test_run_all_evals_generates_reports(tmp_path) -> None:
     ).exists()
     assert (tmp_path / "reports/safety_mitigation_impact.json").exists()
     assert (tmp_path / "reports/safety_threshold_decision_memo.json").exists()
+    assert (tmp_path / "reports/model_judge_adapter_status.json").exists()
     assert (tmp_path / "reports/collector_export_preview.json").exists()
     assert (tmp_path / "reports/evaluation_report.md").exists()
     assert (tmp_path / "reports/evaluation_report.html").exists()

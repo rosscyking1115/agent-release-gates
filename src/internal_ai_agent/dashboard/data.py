@@ -200,6 +200,20 @@ def load_judge_reliability_summary(project_root: Path) -> dict[str, Any]:
     }
 
 
+def load_model_judge_adapter_status(project_root: Path) -> dict[str, Any]:
+    path = project_root / "reports/model_judge_adapter_status.json"
+    if path.exists():
+        return json.loads(path.read_text(encoding="utf-8"))
+    return {
+        "status": "not_configured",
+        "adapter_type": "hosted_model_judge",
+        "provider": "",
+        "case_count": 0,
+        "planned_outputs": [],
+        "notes": [],
+    }
+
+
 def load_failure_taxonomy_summary(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/failure_taxonomy_summary.json"
     if path.exists():
@@ -908,6 +922,20 @@ def judge_reliability_disagreement_rows(
             }
         )
     return rows
+
+
+def model_judge_adapter_rows(status: dict[str, Any]) -> list[dict[str, Any]]:
+    return [
+        {"field": "Status", "value": status.get("status", "")},
+        {"field": "Provider", "value": status.get("provider", "")},
+        {"field": "API mode", "value": status.get("api_mode", "")},
+        {"field": "Calibration cases", "value": status.get("case_count", 0)},
+        {
+            "field": "Credential env var",
+            "value": status.get("credential_env_var", ""),
+        },
+        {"field": "Model env var", "value": status.get("model_env_var", "")},
+    ]
 
 
 def _span_outcome(span: dict[str, Any]) -> str:

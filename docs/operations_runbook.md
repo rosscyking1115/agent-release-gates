@@ -183,6 +183,34 @@ Expected provider-run result:
 - the same citation, abstention, routing, and failure-analysis checks are applied as the local retrievers
 - the report should not be described as a project result until the provider-backed run has actually completed
 
+## Hosted Model-Judge Evaluation
+
+The hosted model-judge comparison is optional and dry-run-first. The default command estimates the calibration run shape without making network calls:
+
+```powershell
+uv run python scripts/run_model_judge_eval.py
+```
+
+Run the hosted judge only after setting a provider key:
+
+```powershell
+$env:OPENAI_API_KEY="..."
+uv run python scripts/run_model_judge_eval.py --run
+```
+
+Optional model override:
+
+```powershell
+uv run python scripts/run_model_judge_eval.py --run --model gpt-4.1-mini
+```
+
+Expected hosted-judge result:
+
+- `reports/model_judge_eval_summary.json` is written locally and ignored by git
+- `reports/model_judge_eval_cases.jsonl` is written locally and ignored by git
+- the model-judge status is written to `reports/model_judge_eval_status.json`
+- the public report should only claim hosted model-judge results after a credentialed run is completed and reviewed
+
 ## Safety Checks
 
 Before sharing the project publicly, confirm:

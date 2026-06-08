@@ -39,6 +39,7 @@ from internal_ai_agent.dashboard.data import (
     load_failure_taxonomy_summary,
     load_human_calibration_summary,
     load_judge_reliability_summary,
+    load_model_judge_adapter_status,
     load_observability_otel_spans,
     load_observability_trace_index,
     load_public_report,
@@ -60,6 +61,7 @@ from internal_ai_agent.dashboard.data import (
     load_security_summary,
     load_techqa_public_summary,
     metric_rows,
+    model_judge_adapter_rows,
     observability_component_rows,
     red_team_coverage_rows,
     retriever_experiment_rows,
@@ -118,6 +120,7 @@ def main() -> None:
     safety_threshold_memo = load_safety_threshold_decision_memo(PROJECT_ROOT)
     human_calibration = load_human_calibration_summary(PROJECT_ROOT)
     judge_reliability = load_judge_reliability_summary(PROJECT_ROOT)
+    model_judge_adapter = load_model_judge_adapter_status(PROJECT_ROOT)
     failure_taxonomy = load_failure_taxonomy_summary(PROJECT_ROOT)
     agent_summary = load_agent_summary(PROJECT_ROOT)
     agent_traces = load_agent_trace_examples(PROJECT_ROOT)
@@ -172,6 +175,7 @@ def main() -> None:
             safety_threshold_memo,
             human_calibration,
             judge_reliability,
+            model_judge_adapter,
         )
         _render_extraction_metrics(extraction_summary, extraction_rows)
         _render_security_metrics(security_summary, security_rows)
@@ -752,6 +756,7 @@ def _render_safety_classifier_workflow(
     threshold_memo: dict[str, object],
     human_calibration: dict[str, object],
     judge_reliability: dict[str, object],
+    model_judge_adapter: dict[str, object],
 ) -> None:
     st.subheader("Safety Prevalence And Classifier Workflow")
     metrics = classifier["metrics"]
@@ -927,6 +932,12 @@ def _render_safety_classifier_workflow(
                         hide_index=True,
                         use_container_width=True,
                     )
+            st.markdown("**Hosted Judge Adapter**")
+            adapter_df = pd.DataFrame(model_judge_adapter_rows(model_judge_adapter))
+            if not adapter_df.empty:
+                st.dataframe(adapter_df, hide_index=True, use_container_width=True)
+            for note in model_judge_adapter.get("notes", []):
+                st.caption(str(note))
     with tab_review:
         review_cols = st.columns(5)
         review_cols[0].metric(

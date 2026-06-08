@@ -38,6 +38,7 @@ When do safety interventions improve agent safety, and when do they reduce usefu
 | Public TechQA retrieval validation | Implemented | 160-case compact NVIDIA TechQA-RAG-Eval sample |
 | Maintainer-labeled calibration | Implemented | 24-case calibration sample, not yet externally reviewed |
 | Local rubric judge reliability | Implemented | Deterministic judge baseline against maintainer labels |
+| Hosted model-judge adapter | Implemented | Dry-run-first OpenAI Responses API adapter; no provider result published |
 | Independent human review | Planned | To be collected and reported separately from maintainer labels |
 | Multi-model comparison | Planned | To be published only after reproducible credentialed runs |
 | Hosted LLM-as-judge reliability | Planned | To be compared against deterministic rules and human review |

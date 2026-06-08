@@ -16,5 +16,8 @@ reports/collector_deployment_check.json
 reports/provider_embedding_eval_status.json
 reports/provider_embedding_eval_summary.json
 reports/provider_embedding_eval_cases.jsonl
+reports/model_judge_eval_status.json
+reports/model_judge_eval_summary.json
+reports/model_judge_eval_cases.jsonl
 data/public/techqa_train.json
 /public/

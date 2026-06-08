@@ -96,6 +96,9 @@ def generate_public_report(project_root: Path) -> str:
     judge_reliability = _read_optional_json(
         reports_dir / "judge_reliability_summary.json"
     )
+    model_judge_adapter = _read_optional_json(
+        reports_dir / "model_judge_adapter_status.json"
+    )
     failure_taxonomy = _read_optional_json(reports_dir / "failure_taxonomy_summary.json")
     agent = _read_json(reports_dir / "agent_eval_summary.json")
 
@@ -197,6 +200,8 @@ def generate_public_report(project_root: Path) -> str:
             _human_calibration_table(human_calibration),
             "",
             _judge_reliability_table(judge_reliability),
+            "",
+            _model_judge_adapter_table(model_judge_adapter),
             "",
             _safety_threshold_table(safety_threshold_sweep),
             "",
@@ -860,6 +865,25 @@ def _judge_reliability_table(report: dict[str, Any]) -> str:
                     **row
                 )
             )
+    return "\n".join(rows)
+
+
+def _model_judge_adapter_table(report: dict[str, Any]) -> str:
+    if report.get("adapter_type") != "hosted_model_judge":
+        return "Hosted model-judge adapter status is not configured."
+    rows = [
+        "| Hosted model-judge adapter | Value |",
+        "| --- | --- |",
+        f"| Status | {report['status']} |",
+        f"| Provider | {report['provider']} |",
+        f"| API mode | {report['api_mode']} |",
+        f"| Calibration cases | {report['case_count']} |",
+        f"| Credential env var | {report['credential_env_var']} |",
+        f"| Model env var | {report['model_env_var']} |",
+    ]
+    rows.extend(["", "| Planned local output |", "| --- |"])
+    for path in report.get("planned_outputs", []):
+        rows.append(f"| {path} |")
     return "\n".join(rows)
 
 
