@@ -141,6 +141,23 @@ def load_public_rag_reranking_opportunity(project_root: Path) -> dict[str, Any]:
     }
 
 
+def load_public_rag_reranker_eval(project_root: Path) -> dict[str, Any]:
+    path = project_root / "reports/public_rag_reranker_eval.json"
+    if path.exists():
+        return json.loads(path.read_text(encoding="utf-8"))
+    return {
+        "report_type": "public_rag_reranker_eval",
+        "status": "not_configured",
+        "summary": {
+            "evaluated_track_count": 0,
+            "total_case_count": 0,
+        },
+        "tracks": [],
+        "findings": [],
+        "recommendations": [],
+    }
+
+
 def load_evaluation_history(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/evaluation_history.json"
     return json.loads(path.read_text(encoding="utf-8"))
@@ -467,6 +484,25 @@ def public_rag_reranking_track_rows(report: dict[str, Any]) -> list[dict[str, An
         }
         for row in report.get("tracks", [])
     ]
+
+
+def public_rag_reranker_track_rows(report: dict[str, Any]) -> list[dict[str, Any]]:
+    rows = []
+    for track in report.get("tracks", []):
+        metrics = track.get("metrics", {})
+        rows.append(
+            {
+                "dataset": track["dataset"],
+                "cases": track["case_count"],
+                "baseline_top1": _as_percent(float(metrics["baseline_top1_accuracy"])),
+                "reranked_top1": _as_percent(float(metrics["reranked_top1_accuracy"])),
+                "top1_delta": _as_signed_percent(float(metrics["top1_accuracy_delta"])),
+                "changed_cases": metrics["changed_case_count"],
+                "improved_cases": metrics["improved_case_count"],
+                "regressed_cases": metrics["regressed_case_count"],
+            }
+        )
+    return rows
 
 
 def evaluation_history_rows(history: dict[str, Any]) -> list[dict[str, Any]]:

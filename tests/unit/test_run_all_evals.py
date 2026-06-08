@@ -35,6 +35,8 @@ def test_run_all_evals_generates_reports(tmp_path) -> None:
     assert summary["public_rag_findings"]["summary"]["evaluated_track_count"] == 0
     assert summary["public_rag_reranking"]["status"] == "not_configured"
     assert summary["public_rag_reranking"]["summary"]["evaluated_track_count"] == 0
+    assert summary["public_rag_reranker"]["status"] == "not_configured"
+    assert summary["public_rag_reranker"]["summary"]["evaluated_track_count"] == 0
     assert summary["extraction"]["metrics"]["schema_validity"] == 1.0
     assert summary["security"]["metrics"]["improved_safe_rate"] == 1.0
     assert summary["security"]["metrics"]["improved_weighted_safe_rate"] == 1.0
@@ -122,6 +124,7 @@ def test_run_all_evals_generates_reports(tmp_path) -> None:
     assert (tmp_path / "reports/wixqa_public_retriever_cases.jsonl").exists()
     assert (tmp_path / "reports/public_rag_findings.json").exists()
     assert (tmp_path / "reports/public_rag_reranking_opportunity.json").exists()
+    assert (tmp_path / "reports/public_rag_reranker_eval.json").exists()
     assert (tmp_path / "reports/retriever_metric_snapshots.json").exists()
     assert (tmp_path / "reports/evaluation_history.json").exists()
     assert (tmp_path / "reports/hybrid_eval_summary.json").exists()

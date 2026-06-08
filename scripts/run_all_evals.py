@@ -13,6 +13,7 @@ from internal_ai_agent.evals.gates import write_evaluation_gates
 from internal_ai_agent.evals.human_calibration import evaluate_human_calibration
 from internal_ai_agent.evals.model_judge import write_model_judge_adapter_status
 from internal_ai_agent.evals.public_rag_findings import write_public_rag_findings
+from internal_ai_agent.evals.public_rag_reranker import write_public_rag_reranker_eval
 from internal_ai_agent.evals.public_rag_reranking import (
     write_public_rag_reranking_opportunity,
 )
@@ -52,6 +53,7 @@ def run_all(project_root: Path) -> dict[str, Any]:
         wixqa_public=wixqa_public,
     )
     public_rag_reranking = write_public_rag_reranking_opportunity(project_root)
+    public_rag_reranker = write_public_rag_reranker_eval(project_root)
     extraction = evaluate_extraction(project_root)
     security = evaluate_security(project_root)
     safety_classifier = evaluate_safety_classifier(project_root)
@@ -98,6 +100,7 @@ def run_all(project_root: Path) -> dict[str, Any]:
         "wixqa_public": wixqa_public,
         "public_rag_findings": public_rag_findings,
         "public_rag_reranking": public_rag_reranking,
+        "public_rag_reranker": public_rag_reranker,
         "extraction": extraction,
         "security": security,
         "safety_classifier": safety_classifier,
@@ -240,6 +243,16 @@ def main() -> None:
         print(
             "- public_rag_rerankable_case_count: "
             f"{reranking_summary['rerankable_case_count']}"
+        )
+    if summary["public_rag_reranker"]["status"] == "evaluated":
+        reranker_summary = summary["public_rag_reranker"]["summary"]
+        print(
+            "- public_rag_reranker_top1_accuracy_delta: "
+            f"{reranker_summary['top1_accuracy_delta']:.4f}"
+        )
+        print(
+            "- public_rag_reranker_regressed_cases: "
+            f"{reranker_summary['regressed_case_count']}"
         )
     print(
         f"- extraction_schema_validity: {summary['extraction']['metrics']['schema_validity']:.4f}"

@@ -70,6 +70,7 @@ def generate_public_report(project_root: Path) -> str:
     public_rag_reranking = _read_optional_json(
         reports_dir / "public_rag_reranking_opportunity.json"
     )
+    public_rag_reranker = _read_optional_json(reports_dir / "public_rag_reranker_eval.json")
     evaluation_history = _read_json(reports_dir / "evaluation_history.json")
     dataset_profile = load_dataset_profile(project_root)
     evaluation_gates = load_evaluation_gates(project_root)
@@ -178,6 +179,10 @@ def generate_public_report(project_root: Path) -> str:
             "## Public RAG Reranking Opportunity",
             "",
             _public_rag_reranking_table(public_rag_reranking),
+            "",
+            "## Public RAG Reranker Evaluation",
+            "",
+            _public_rag_reranker_table(public_rag_reranker),
             "",
             "## Historical Evaluation Snapshots",
             "",
@@ -554,6 +559,35 @@ def _public_rag_reranking_table(report: dict[str, Any]) -> str:
         f"| Residual retrieval gap | {_pct(summary['residual_retrieval_gap'])} |",
         f"| Largest rerankable track | {summary['largest_rerankable_track']} |",
         f"| Largest residual gap track | {summary['largest_residual_gap_track']} |",
+        "",
+        "| Finding |",
+        "| --- |",
+    ]
+    for finding in report.get("findings", []):
+        rows.append(f"| {finding} |")
+    rows.extend(["", "| Recommendation |", "| --- |"])
+    for recommendation in report.get("recommendations", []):
+        rows.append(f"| {recommendation} |")
+    return "\n".join(rows)
+
+
+def _public_rag_reranker_table(report: dict[str, Any]) -> str:
+    if report.get("status") != "evaluated":
+        return "Public RAG reranker evaluation is not configured."
+    summary = report["summary"]
+    reranker = report.get("reranker", {})
+    rows = [
+        "| Reranker evaluation metric | Value |",
+        "| --- | ---: |",
+        f"| Reranker | {reranker.get('label', '')} |",
+        f"| Public answerable cases | {summary['total_case_count']} |",
+        f"| Baseline top-1 citation accuracy | {_pct(summary['baseline_top1_accuracy'])} |",
+        f"| Reranked top-1 citation accuracy | {_pct(summary['reranked_top1_accuracy'])} |",
+        f"| Top-1 accuracy delta | {_signed_pct(summary['top1_accuracy_delta'])} |",
+        f"| Changed cases | {summary['changed_case_count']} |",
+        f"| Improved cases | {summary['improved_case_count']} |",
+        f"| Regressed cases | {summary['regressed_case_count']} |",
+        f"| Regression rate | {_pct(summary['regression_rate'])} |",
         "",
         "| Finding |",
         "| --- |",

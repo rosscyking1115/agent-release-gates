@@ -193,6 +193,32 @@ The retrieval experiment compares a deliberately weak baseline, a lexical retrie
 | Track reranking lift separately from retrieval-hit@3 so ranking gains are not confused with candidate-generation gains. |
 | Prioritize candidate-generation changes alongside reranking because the residual retrieval gap is larger than the rerankable top-1 gap. |
 
+## Public RAG Reranker Evaluation
+
+| Reranker evaluation metric | Value |
+| --- | ---: |
+| Reranker | Conservative lexical overlap reranker |
+| Public answerable cases | 208 |
+| Baseline top-1 citation accuracy | 76.44% |
+| Reranked top-1 citation accuracy | 77.40% |
+| Top-1 accuracy delta | +0.96% |
+| Changed cases | 8 |
+| Improved cases | 3 |
+| Regressed cases | 1 |
+| Regression rate | 0.48% |
+
+| Finding |
+| --- |
+| The conservative deterministic reranker improves weighted top-1 citation accuracy by +0.96%. |
+| It changes 8 cases, improves 3, and regresses 1. |
+| The small lift confirms reranking is useful, but the observed effect is far below the oracle top-3 ceiling and needs stronger model-based scoring. |
+
+| Recommendation |
+| --- |
+| Compare this deterministic reranker against a provider-backed or open-source cross-encoder reranker on the same public candidates. |
+| Keep regression count visible because reranking can trade citation gains for new top-1 mistakes. |
+| Treat this heuristic as a baseline, not a final reranking solution. |
+
 ## Historical Evaluation Snapshots
 
 | Milestone time | Milestone | Citation coverage | Failed cases | Citation delta | Failure delta |

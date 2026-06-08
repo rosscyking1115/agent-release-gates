@@ -43,6 +43,7 @@ from internal_ai_agent.dashboard.data import (
     load_observability_otel_spans,
     load_observability_trace_index,
     load_public_rag_findings,
+    load_public_rag_reranker_eval,
     load_public_rag_reranking_opportunity,
     load_public_report,
     load_public_report_html,
@@ -66,6 +67,7 @@ from internal_ai_agent.dashboard.data import (
     metric_rows,
     model_judge_adapter_rows,
     observability_component_rows,
+    public_rag_reranker_track_rows,
     public_rag_reranking_track_rows,
     public_rag_track_rows,
     red_team_coverage_rows,
@@ -109,6 +111,7 @@ def main() -> None:
     wixqa_public = load_wixqa_public_summary(PROJECT_ROOT)
     public_rag_findings = load_public_rag_findings(PROJECT_ROOT)
     public_rag_reranking = load_public_rag_reranking_opportunity(PROJECT_ROOT)
+    public_rag_reranker = load_public_rag_reranker_eval(PROJECT_ROOT)
     evaluation_history = load_evaluation_history(PROJECT_ROOT)
     evaluation_gates = load_evaluation_gates(PROJECT_ROOT)
     extraction_summary = load_extraction_summary(PROJECT_ROOT)
@@ -168,6 +171,7 @@ def main() -> None:
         _render_wixqa_public_benchmark(wixqa_public)
         _render_public_rag_findings(public_rag_findings)
         _render_public_rag_reranking(public_rag_reranking)
+        _render_public_rag_reranker(public_rag_reranker)
         _render_retriever_snapshots(retriever_snapshots)
         _render_evaluation_history(evaluation_history)
         _render_evaluation_gates(evaluation_gates)
@@ -595,6 +599,38 @@ def _render_public_rag_reranking(report: dict[str, object]) -> None:
     )
 
     track_df = pd.DataFrame(public_rag_reranking_track_rows(report))
+    if not track_df.empty:
+        st.dataframe(track_df, hide_index=True, use_container_width=True)
+
+    finding_df = pd.DataFrame({"Finding": report.get("findings", [])})
+    if not finding_df.empty:
+        st.dataframe(finding_df, hide_index=True, use_container_width=True)
+
+
+def _render_public_rag_reranker(report: dict[str, object]) -> None:
+    st.subheader("Public RAG Reranker Evaluation")
+    if report.get("status") != "evaluated":
+        st.info("Public RAG reranker evaluation is not configured in this runtime.")
+        return
+
+    summary = report["summary"]  # type: ignore[index]
+    cols = st.columns(5)
+    cols[0].metric("Cases", summary["total_case_count"])  # type: ignore[index]
+    cols[1].metric(
+        "Baseline top-1",
+        _format_pct(float(summary["baseline_top1_accuracy"])),  # type: ignore[index]
+    )
+    cols[2].metric(
+        "Reranked top-1",
+        _format_pct(float(summary["reranked_top1_accuracy"])),  # type: ignore[index]
+    )
+    cols[3].metric(
+        "Top-1 delta",
+        _format_signed_pct(float(summary["top1_accuracy_delta"])),  # type: ignore[index]
+    )
+    cols[4].metric("Regressions", summary["regressed_case_count"])  # type: ignore[index]
+
+    track_df = pd.DataFrame(public_rag_reranker_track_rows(report))
     if not track_df.empty:
         st.dataframe(track_df, hide_index=True, use_container_width=True)
 
@@ -1486,6 +1522,11 @@ def _load_eval_summary(filename: str) -> dict[str, object]:
 
 def _format_pct(value: float) -> str:
     return f"{value * 100:.2f}%"
+
+
+def _format_signed_pct(value: float) -> str:
+    sign = "+" if value >= 0 else ""
+    return f"{sign}{value * 100:.2f}%"
 
 
 if __name__ == "__main__":
