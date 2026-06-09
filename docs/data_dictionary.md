@@ -118,6 +118,7 @@ Reports:
 | `reports/model_judge_eval_summary.json` | Optional local-only hosted model-judge result written only after a credentialed `--run`, with aggregate metrics, category slices, disagreement examples, and publication review. |
 | `reports/model_judge_eval_cases.jsonl` | Optional local-only hosted model-judge case outputs with model labels, confidence, rationale, and agreement flags. |
 | `reports/model_judge_reviewed_summary.json` | Sanitized public summary promoted from a reviewed hosted model-judge run, excluding raw response IDs and full provider rationales. |
+| `reports/multi_model_comparison_plan.json` | Provider-neutral comparison plan for future cross-model hosted and local judge runs, including target providers, credential settings, output contract, readiness summary, and publication gates. |
 | `reports/failure_taxonomy_summary.json` | Shared failure-taxonomy counts by label, group, and source across retrieval, public RAG, red-team, and safety-classifier outputs. |
 | `reports/techqa_public_rag_summary.json` | External public TechQA-RAG-Eval retrieval and abstention summary over the tracked public sample. |
 | `reports/techqa_public_benchmark_profile.json` | Public benchmark transparency profile with sample size, answerable/impossible mix, unique document count, context coverage, failure rate, and provider-result status. |

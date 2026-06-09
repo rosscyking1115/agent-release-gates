@@ -102,6 +102,8 @@ def test_run_all_evals_generates_reports(tmp_path) -> None:
     assert summary["collector_export_preview"]["export_mode"] == "dry_run_preview"
     assert summary["model_judge_adapter"]["status"] == "dry_run_ready"
     assert summary["model_judge_adapter"]["api_mode"] == "responses"
+    assert summary["multi_model_comparison"]["status"] == "planned_not_run"
+    assert summary["multi_model_comparison"]["target_model_count"] == 4
     assert summary["collector_export_preview"]["span_count"] > 0
     assert summary["collector_export_preview"]["payload_count"] > 0
     assert summary["trace_index"]["index_type"] == "local_observability_trace_index"
@@ -156,6 +158,7 @@ def test_run_all_evals_generates_reports(tmp_path) -> None:
     assert (tmp_path / "reports/safety_mitigation_impact.json").exists()
     assert (tmp_path / "reports/safety_threshold_decision_memo.json").exists()
     assert (tmp_path / "reports/model_judge_adapter_status.json").exists()
+    assert (tmp_path / "reports/multi_model_comparison_plan.json").exists()
     assert (tmp_path / "reports/collector_export_preview.json").exists()
     assert (tmp_path / "reports/evaluation_report.md").exists()
     assert (tmp_path / "reports/evaluation_report.html").exists()

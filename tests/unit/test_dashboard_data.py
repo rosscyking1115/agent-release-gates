@@ -21,11 +21,13 @@ from internal_ai_agent.dashboard.data import (
     load_dataset_profile,
     load_evaluation_gates,
     load_external_human_review_summary,
+    load_multi_model_comparison_plan,
     load_observability_trace_index,
     load_public_report,
     load_public_report_html,
     load_public_report_pdf,
     metric_rows,
+    multi_model_comparison_target_rows,
     red_team_coverage_rows,
     retriever_experiment_rows,
     retriever_failure_example_rows,
@@ -154,6 +156,46 @@ def test_external_human_review_rows_format_public_metrics(tmp_path) -> None:
     assert category_rows[0]["external_maintainer_agreement_pct"] == "50.00%"
     assert disagreement_rows[0]["case_id"] == "HUMAN-CAL-002"
     assert disagreement_rows[0]["adjudication_required"] is True
+
+
+def test_multi_model_comparison_plan_rows_format_targets(tmp_path) -> None:
+    reports_dir = tmp_path / "reports"
+    reports_dir.mkdir()
+    (reports_dir / "multi_model_comparison_plan.json").write_text(
+        json.dumps(
+            {
+                "report_type": "multi_model_comparison_plan",
+                "status": "planned_not_run",
+                "case_count": 24,
+                "target_model_count": 2,
+                "planned_targets": [
+                    {
+                        "provider": "openai",
+                        "adapter_status": "available",
+                        "credential_env_var": "OPENAI_API_KEY",
+                        "model_env_var": "OPENAI_JUDGE_MODEL",
+                        "result_state": "one_reviewed_result_present",
+                    }
+                ],
+                "readiness_summary": {"adapter_available_count": 1},
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    plan = load_multi_model_comparison_plan(tmp_path)
+    rows = multi_model_comparison_target_rows(plan)
+
+    assert plan["status"] == "planned_not_run"
+    assert rows == [
+        {
+            "provider": "openai",
+            "adapter_status": "Available",
+            "credential_env_var": "OPENAI_API_KEY",
+            "model_env_var": "OPENAI_JUDGE_MODEL",
+            "result_state": "One reviewed result present",
+        }
+    ]
 
 
 def test_dataset_profile_rows_format_coverage_counts() -> None:

@@ -43,6 +43,7 @@ from internal_ai_agent.dashboard.data import (
     load_human_calibration_summary,
     load_judge_reliability_summary,
     load_model_judge_adapter_status,
+    load_multi_model_comparison_plan,
     load_observability_otel_spans,
     load_observability_trace_index,
     load_public_rag_findings,
@@ -70,6 +71,7 @@ from internal_ai_agent.dashboard.data import (
     load_wixqa_public_summary,
     metric_rows,
     model_judge_adapter_rows,
+    multi_model_comparison_target_rows,
     observability_component_rows,
     public_rag_model_reranker_adapter_rows,
     public_rag_reranker_track_rows,
@@ -142,6 +144,7 @@ def main() -> None:
     external_human_review = load_external_human_review_summary(PROJECT_ROOT)
     judge_reliability = load_judge_reliability_summary(PROJECT_ROOT)
     model_judge_adapter = load_model_judge_adapter_status(PROJECT_ROOT)
+    multi_model_comparison = load_multi_model_comparison_plan(PROJECT_ROOT)
     failure_taxonomy = load_failure_taxonomy_summary(PROJECT_ROOT)
     agent_summary = load_agent_summary(PROJECT_ROOT)
     agent_traces = load_agent_trace_examples(PROJECT_ROOT)
@@ -175,6 +178,7 @@ def main() -> None:
             human_calibration,
             external_human_review,
             model_judge_adapter,
+            multi_model_comparison,
         )
         _render_summary(
             comparison,
@@ -218,6 +222,7 @@ def main() -> None:
             external_human_review,
             judge_reliability,
             model_judge_adapter,
+            multi_model_comparison,
         )
         _render_extraction_metrics(extraction_summary, extraction_rows)
         _render_security_metrics(security_summary, security_rows)
@@ -313,6 +318,7 @@ def _render_reviewer_summary(
     human_calibration: dict[str, object],
     external_human_review: dict[str, object],
     model_judge_adapter: dict[str, object],
+    multi_model_comparison: dict[str, object],
 ) -> None:
     st.subheader("Reviewer Summary")
     st.markdown(
@@ -379,6 +385,8 @@ def _render_reviewer_summary(
           {_format_status(external_human_review.get("status", "not_configured"))}.
         - Hosted model judge status:
           {_format_status(model_judge_adapter.get("status", "not_configured"))}.
+        - Multi-model comparison status:
+          {_format_status(multi_model_comparison.get("status", "not_configured"))}.
         - Hosted public RAG reranker status:
           {_format_status(public_rag_model_reranker.get("status", "not_configured"))}.
         """
@@ -1067,6 +1075,7 @@ def _render_safety_classifier_workflow(
     external_human_review: dict[str, object],
     judge_reliability: dict[str, object],
     model_judge_adapter: dict[str, object],
+    multi_model_comparison: dict[str, object],
 ) -> None:
     st.subheader("Safety Prevalence And Classifier Workflow")
     metrics = classifier["metrics"]
@@ -1307,6 +1316,35 @@ def _render_safety_classifier_workflow(
                 st.dataframe(adapter_df, hide_index=True, use_container_width=True)
             for note in model_judge_adapter.get("notes", []):
                 st.caption(str(note))
+            st.markdown("**Multi-Model Comparison Plan**")
+            readiness = multi_model_comparison.get("readiness_summary", {})
+            if not readiness:
+                st.info("Multi-model comparison plan is not configured yet.")
+            else:
+                plan_cols = st.columns(4)
+                plan_cols[0].metric(
+                    "Status",
+                    _format_status(multi_model_comparison.get("status", "")),
+                )
+                plan_cols[1].metric(
+                    "Target models",
+                    multi_model_comparison.get("target_model_count", 0),
+                )
+                plan_cols[2].metric(
+                    "Adapters available",
+                    readiness["adapter_available_count"],
+                )
+                plan_cols[3].metric(
+                    "Credentialed results",
+                    readiness["credentialed_result_count"],
+                )
+                target_df = pd.DataFrame(
+                    multi_model_comparison_target_rows(multi_model_comparison)
+                )
+                if not target_df.empty:
+                    st.dataframe(target_df, hide_index=True, use_container_width=True)
+                for gate in multi_model_comparison.get("publication_gates", []):
+                    st.caption(str(gate))
     with tab_review:
         review_cols = st.columns(5)
         review_cols[0].metric(

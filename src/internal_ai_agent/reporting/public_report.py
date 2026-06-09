@@ -111,6 +111,9 @@ def generate_public_report(project_root: Path) -> str:
     model_judge_adapter = _read_optional_json(
         reports_dir / "model_judge_adapter_status.json"
     )
+    multi_model_comparison = _read_optional_json(
+        reports_dir / "multi_model_comparison_plan.json"
+    )
     model_judge_reviewed = _read_optional_json(
         reports_dir / "model_judge_reviewed_summary.json"
     )
@@ -239,6 +242,8 @@ def generate_public_report(project_root: Path) -> str:
             _judge_reliability_table(judge_reliability),
             "",
             _model_judge_adapter_table(model_judge_adapter),
+            "",
+            _multi_model_comparison_table(multi_model_comparison),
             "",
             _model_judge_reviewed_table(model_judge_reviewed),
             "",
@@ -1159,6 +1164,40 @@ def _model_judge_adapter_table(report: dict[str, Any]) -> str:
     rows.extend(["", "| Planned local output |", "| --- |"])
     for path in report.get("planned_outputs", []):
         rows.append(f"| {path} |")
+    return "\n".join(rows)
+
+
+def _multi_model_comparison_table(report: dict[str, Any]) -> str:
+    if report.get("report_type") != "multi_model_comparison_plan":
+        return "Multi-model comparison plan is not configured."
+    readiness = report["readiness_summary"]
+    rows = [
+        "| Multi-model comparison plan | Value |",
+        "| --- | --- |",
+        f"| Status | {_display_status(report['status'])} |",
+        f"| Benchmark track | {report['benchmark_track']} |",
+        f"| Calibration cases | {report['case_count']} |",
+        f"| Target model count | {report['target_model_count']} |",
+        f"| Adapters available | {readiness['adapter_available_count']} |",
+        f"| Adapters planned | {readiness['adapter_planned_count']} |",
+        f"| Credentialed reviewed results | {readiness['credentialed_result_count']} |",
+        (
+            "| Ready for cross-provider publication | "
+            f"{readiness['ready_for_cross_provider_publication']} |"
+        ),
+    ]
+    rows.extend(
+        [
+            "",
+            "| Provider | Adapter status | Credential | Model setting | Result state |",
+            "| --- | --- | --- | --- | --- |",
+        ]
+    )
+    for target in report["planned_targets"]:
+        rows.append(
+            "| {provider} | {adapter_status} | {credential_env_var} | "
+            "{model_env_var} | {result_state} |".format(**target)
+        )
     return "\n".join(rows)
 
 

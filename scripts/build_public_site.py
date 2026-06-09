@@ -115,6 +115,11 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
             reports_dir / "external_human_review_manifest.json",
             public_dir / "external_human_review_manifest.json",
         )
+    if (reports_dir / "multi_model_comparison_plan.json").exists():
+        shutil.copyfile(
+            reports_dir / "multi_model_comparison_plan.json",
+            public_dir / "multi_model_comparison_plan.json",
+        )
     if (project_root / "data/review/external_human_review_packet.csv").exists():
         shutil.copyfile(
             project_root / "data/review/external_human_review_packet.csv",
@@ -667,6 +672,11 @@ def _public_artifact_links() -> list[tuple[str, str, str]]:
             "public_rag_model_reranker_adapter_status.json",
         ),
         ("Public RAG", "Hosted reranker packet", "public_rag_model_reranker_packet.jsonl"),
+        (
+            "Model comparison",
+            "Multi-model comparison plan",
+            "multi_model_comparison_plan.json",
+        ),
         (
             "Safety evaluation",
             "Safety classifier summary",

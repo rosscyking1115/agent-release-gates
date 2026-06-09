@@ -1,0 +1,91 @@
+{
+  "benchmark_track": "human_calibration_safety_judge",
+  "case_count": 24,
+  "next_steps": [
+    "Repeat the OpenAI run when quota is available and promote only reviewed output.",
+    "Add Anthropic, Google, and local open-source judge adapters behind dry-run-first scripts.",
+    "Compare model disagreement by category, severity, and error type.",
+    "Add human external labels before treating model agreement as validation evidence."
+  ],
+  "notes": [
+    "This artifact is a comparison plan, not a multi-model result table.",
+    "The project currently has one reviewed hosted OpenAI judge result; cross-provider comparison remains planned until credentialed runs exist."
+  ],
+  "output_contract": {
+    "case_level_fields": [
+      "case_id",
+      "risk_category",
+      "risk_severity",
+      "human_adjudicated_label",
+      "classifier_label",
+      "model_judge_label",
+      "model_judge_decision",
+      "model_judge_confidence",
+      "model_judge_error_type"
+    ],
+    "per_model_summary_fields": [
+      "provider",
+      "model",
+      "case_count",
+      "model_judge_label_accuracy",
+      "classifier_model_judge_agreement_rate",
+      "unsafe_miss_count",
+      "benign_auto_block_count",
+      "average_model_judge_confidence",
+      "publication_decision"
+    ],
+    "public_result_policy": "Publish only reviewed summaries and sanitized disagreement examples; keep raw provider response ids and full rationales out of public artifacts."
+  },
+  "planned_targets": [
+    {
+      "adapter_status": "available",
+      "credential_env_var": "OPENAI_API_KEY",
+      "model_env_var": "OPENAI_JUDGE_MODEL",
+      "provider": "openai",
+      "result_state": "one_reviewed_result_present",
+      "runner": "scripts/run_model_judge_eval.py --run"
+    },
+    {
+      "adapter_status": "planned",
+      "credential_env_var": "ANTHROPIC_API_KEY",
+      "model_env_var": "ANTHROPIC_JUDGE_MODEL",
+      "provider": "anthropic",
+      "result_state": "not_run",
+      "runner": "planned"
+    },
+    {
+      "adapter_status": "planned",
+      "credential_env_var": "GOOGLE_API_KEY",
+      "model_env_var": "GOOGLE_JUDGE_MODEL",
+      "provider": "google",
+      "result_state": "not_run",
+      "runner": "planned"
+    },
+    {
+      "adapter_status": "planned",
+      "credential_env_var": "not_required_for_local_runtime",
+      "model_env_var": "LOCAL_JUDGE_MODEL",
+      "provider": "local_open_source",
+      "result_state": "not_run",
+      "runner": "planned"
+    }
+  ],
+  "publication_gates": [
+    "Evaluate every target on the same calibration case set.",
+    "Include provider, model, run timestamp, and case count in every result.",
+    "Do not publish a model row if provider errors or parse errors affected the run.",
+    "Require manual review before publishing any unsafe miss or benign auto-block pattern.",
+    "Report disagreement slices instead of ranking models by a single aggregate score."
+  ],
+  "readiness_summary": {
+    "adapter_available_count": 1,
+    "adapter_planned_count": 3,
+    "credentialed_result_count": 1,
+    "ready_for_cross_provider_publication": false,
+    "ready_for_openai_repeat_run": true
+  },
+  "report_type": "multi_model_comparison_plan",
+  "reviewed_hosted_result_present": true,
+  "status": "planned_not_run",
+  "target_model_count": 4
+}

@@ -317,6 +317,23 @@ def load_model_judge_adapter_status(project_root: Path) -> dict[str, Any]:
     }
 
 
+def load_multi_model_comparison_plan(project_root: Path) -> dict[str, Any]:
+    path = project_root / "reports/multi_model_comparison_plan.json"
+    if path.exists():
+        return json.loads(path.read_text(encoding="utf-8"))
+    return {
+        "report_type": "multi_model_comparison_plan",
+        "status": "not_configured",
+        "case_count": 0,
+        "target_model_count": 0,
+        "planned_targets": [],
+        "publication_gates": [],
+        "readiness_summary": {},
+        "next_steps": [],
+        "notes": [],
+    }
+
+
 def load_failure_taxonomy_summary(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/failure_taxonomy_summary.json"
     if path.exists():
@@ -1193,6 +1210,19 @@ def model_judge_adapter_rows(status: dict[str, Any]) -> list[dict[str, Any]]:
     ]
 
 
+def multi_model_comparison_target_rows(plan: dict[str, Any]) -> list[dict[str, Any]]:
+    return [
+        {
+            "provider": row["provider"],
+            "adapter_status": _display_status(row["adapter_status"]),
+            "credential_env_var": row["credential_env_var"],
+            "model_env_var": row["model_env_var"],
+            "result_state": _display_status(row["result_state"]),
+        }
+        for row in plan.get("planned_targets", [])
+    ]
+
+
 def _span_outcome(span: dict[str, Any]) -> str:
     attributes = span.get("attributes", {})
     return str(
@@ -1392,8 +1422,11 @@ def _display_status(status: object) -> str:
         "not_recommended_capacity_breach": "Not recommended: capacity breach",
         "recommended_minimum": "Recommended minimum",
         "acceptable_extra_buffer": "Acceptable extra buffer",
+        "available": "Available",
         "completed": "Completed",
         "evaluated": "Evaluated",
+        "planned": "Planned",
+        "one_reviewed_result_present": "One reviewed result present",
     }
     value = str(status)
     if "_" not in value:

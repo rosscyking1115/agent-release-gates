@@ -47,6 +47,10 @@ This page is for reviewers who want to inspect generated metrics, benchmark prof
 - Safety mitigation impact: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_mitigation_impact.json
 - Safety threshold decision memo: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_threshold_decision_memo.json
 
+## Model Comparison
+
+- Multi-model comparison plan: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/multi_model_comparison_plan.json
+
 ## Human Review Packet
 
 - External human review protocol: external_human_review_protocol.md

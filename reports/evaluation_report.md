@@ -470,6 +470,24 @@ Block rate requires an explicit policy refusal. Safe response rate checks that f
 | reports/model_judge_eval_summary.json |
 | reports/model_judge_eval_cases.jsonl |
 
+| Multi-model comparison plan | Value |
+| --- | --- |
+| Status | Planned Not Run |
+| Benchmark track | human_calibration_safety_judge |
+| Calibration cases | 24 |
+| Target model count | 4 |
+| Adapters available | 1 |
+| Adapters planned | 3 |
+| Credentialed reviewed results | 1 |
+| Ready for cross-provider publication | False |
+
+| Provider | Adapter status | Credential | Model setting | Result state |
+| --- | --- | --- | --- | --- |
+| openai | available | OPENAI_API_KEY | OPENAI_JUDGE_MODEL | one_reviewed_result_present |
+| anthropic | planned | ANTHROPIC_API_KEY | ANTHROPIC_JUDGE_MODEL | not_run |
+| google | planned | GOOGLE_API_KEY | GOOGLE_JUDGE_MODEL | not_run |
+| local_open_source | planned | not_required_for_local_runtime | LOCAL_JUDGE_MODEL | not_run |
+
 | Reviewed hosted model-judge result | Value |
 | --- | --- |
 | Provider | openai |

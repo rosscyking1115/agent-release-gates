@@ -12,6 +12,9 @@ from internal_ai_agent.evals.failure_taxonomy import write_failure_taxonomy_summ
 from internal_ai_agent.evals.gates import write_evaluation_gates
 from internal_ai_agent.evals.human_calibration import evaluate_human_calibration
 from internal_ai_agent.evals.model_judge import write_model_judge_adapter_status
+from internal_ai_agent.evals.multi_model_comparison import (
+    write_multi_model_comparison_plan,
+)
 from internal_ai_agent.evals.public_rag_findings import write_public_rag_findings
 from internal_ai_agent.evals.public_rag_model_reranker import (
     write_public_rag_model_reranker_adapter_status,
@@ -64,6 +67,7 @@ def run_all(project_root: Path) -> dict[str, Any]:
     human_calibration = evaluate_human_calibration(project_root)
     external_review = prepare_external_human_review(project_root)
     model_judge_adapter = write_model_judge_adapter_status(project_root)
+    multi_model_comparison = write_multi_model_comparison_plan(project_root)
     agent = evaluate_agent(project_root)
     evaluation_history = write_evaluation_history(
         project_root,
@@ -112,6 +116,7 @@ def run_all(project_root: Path) -> dict[str, Any]:
         "human_calibration": human_calibration,
         "external_review": external_review,
         "model_judge_adapter": model_judge_adapter,
+        "multi_model_comparison": multi_model_comparison,
         "agent": agent,
         "evaluation_history": evaluation_history,
         "observability_spans_path": str(observability_spans_path),
@@ -303,6 +308,10 @@ def main() -> None:
     )
     print(f"- external_human_review_status: {summary['external_review']['status']}")
     print(f"- model_judge_adapter_status: {summary['model_judge_adapter']['status']}")
+    print(
+        "- multi_model_comparison_status: "
+        f"{summary['multi_model_comparison']['status']}"
+    )
     print(
         "- agent_side_effect_block_rate: "
         f"{summary['agent']['metrics']['side_effect_block_rate']:.4f}"
