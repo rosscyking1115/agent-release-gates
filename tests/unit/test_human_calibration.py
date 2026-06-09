@@ -57,7 +57,15 @@ def test_external_human_review_packet_is_prepared_without_labels(
     assert (
         tmp_path / "data/review/external_human_review_label_template.csv"
     ).exists()
+    assert (
+        tmp_path / "data/review/external_human_review_reviewer_guide.md"
+    ).exists()
+    assert (tmp_path / "reports/external_human_review_manifest.json").exists()
     assert (tmp_path / "reports/external_human_review_summary.json").exists()
+    assert report["review_workflow"]["target_reviewer_count"] == 2
+    assert report["review_workflow"]["target_label_rows"] == 48
+    assert report["reviewer_guide_path"].endswith("external_human_review_reviewer_guide.md")
+    assert report["manifest_path"].endswith("external_human_review_manifest.json")
 
 
 def test_external_human_review_evaluates_completed_labels(
@@ -93,6 +101,8 @@ def test_external_human_review_evaluates_completed_labels(
     assert report["summary"]["pairwise_agreement_rate"] == 0.5
     assert report["summary"]["adjudication_required_count"] == 1
     assert report["summary"]["external_maintainer_agreement_rate"] == 1.0
+    assert report["review_workflow"]["minimum_publish_label_coverage"] == 1.0
+    assert (tmp_path / "reports/external_human_review_manifest.json").exists()
     assert (tmp_path / "reports/external_human_review_cases.jsonl").exists()
 
 

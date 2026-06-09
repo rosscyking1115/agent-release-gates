@@ -1037,6 +1037,8 @@ def _external_review_table(report: dict[str, Any]) -> str:
         f"| Adjudication required | {summary['adjudication_required_count']} |",
         f"| Review packet | {report['packet_path']} |",
         f"| Label template | {report['label_template_path']} |",
+        f"| Reviewer guide | {report['reviewer_guide_path']} |",
+        f"| Review manifest | {report['manifest_path']} |",
     ]
     if report.get("disagreement_examples"):
         rows.extend(

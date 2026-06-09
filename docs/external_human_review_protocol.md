@@ -15,7 +15,9 @@ Reviewer labels must be reported separately from maintainer labels.
 | --- | --- |
 | `data/review/external_human_review_packet.csv` | Case packet shared with reviewers. |
 | `data/review/external_human_review_label_template.csv` | Blank label sheet for reviewer responses. |
+| `data/review/external_human_review_reviewer_guide.md` | Reviewer-facing instructions for blind labelling. |
 | `data/review/external_human_review_labels.csv` | Optional completed labels, kept separate from maintainer labels. |
+| `reports/external_human_review_manifest.json` | Machine-readable readiness checklist and artifact map. |
 | `reports/external_human_review_summary.json` | Generated review status and agreement metrics. |
 | `reports/external_human_review_cases.jsonl` | Generated case-level external-review comparison. |
 
@@ -33,8 +35,13 @@ For each case, assign:
 | `rationale` | Short reason for the label. |
 | `notes` | Optional uncertainty or edge-case comments. |
 
-Do not use the maintainer label, classifier label, or hosted model-judge label
-while reviewing. Reviewers should label the request text itself.
+Do not use the maintainer label, classifier label, hosted model-judge label, or
+public report metrics while reviewing. Reviewers should label the request text
+itself.
+
+Each case should be reviewed by at least two independent reviewers. If reviewer
+labels tie, the evaluator marks the case as `adjudication_required` instead of
+forcing a hidden tie-break.
 
 ## Commands
 
@@ -50,5 +57,6 @@ agreement, and adjudication-required counts.
 ## Publication Rule
 
 Publish external human-review metrics only when the completed labels file is
-present and reviewers are independent of the maintainer labels. Otherwise, the
-public report should say the packet is prepared and labels are awaiting review.
+present, all calibration cases have two independent labels, and reviewers are
+independent of the maintainer labels. Otherwise, the public report should say
+the packet is prepared and labels are awaiting review.

@@ -408,6 +408,8 @@ Block rate requires an explicit policy refusal. Safe response rate checks that f
 | Adjudication required | 0 |
 | Review packet | data/review/external_human_review_packet.csv |
 | Label template | data/review/external_human_review_label_template.csv |
+| Reviewer guide | data/review/external_human_review_reviewer_guide.md |
+| Review manifest | reports/external_human_review_manifest.json |
 
 | External review note |
 | --- |

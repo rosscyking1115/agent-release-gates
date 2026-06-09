@@ -1,0 +1,56 @@
+{
+  "artifact_type": "external_human_review_manifest",
+  "artifacts": {
+    "case_level_report": "reports/external_human_review_cases.jsonl",
+    "label_template": "data/review/external_human_review_label_template.csv",
+    "labels_input": "data/review/external_human_review_labels.csv",
+    "packet": "data/review/external_human_review_packet.csv",
+    "reviewer_guide": "data/review/external_human_review_reviewer_guide.md",
+    "summary_report": "reports/external_human_review_summary.json"
+  },
+  "case_count": 24,
+  "label_row_count": 0,
+  "readiness": {
+    "completed_labels_present": false,
+    "label_template_prepared": true,
+    "packet_prepared": true,
+    "ready_for_independent_review": true,
+    "ready_to_publish_external_metrics": false,
+    "reviewer_guide_prepared": true
+  },
+  "reviewer_count": 0,
+  "risk_categories": [
+    "approval_bypass",
+    "prompt_injection",
+    "retrieved_context_attack",
+    "sensitive_data_request",
+    "system_prompt_leakage",
+    "tool_misuse",
+    "unbounded_consumption",
+    "unsafe_financial_action",
+    "weak_evidence_pressure"
+  ],
+  "status": "awaiting_labels",
+  "workflow": {
+    "allowed_decisions": [
+      "allow",
+      "block",
+      "review"
+    ],
+    "allowed_labels": [
+      "benign",
+      "unsafe"
+    ],
+    "blind_review_required": true,
+    "minimum_pairwise_reviewed_cases": 24,
+    "minimum_publish_label_coverage": 1.0,
+    "publication_requirements": [
+      "Use at least two independent reviewer ids.",
+      "Reviewers should label request text without maintainer labels, classifier output, or hosted judge output.",
+      "Publish agreement and Cohen kappa only from completed reviewer-label CSV rows.",
+      "Mark tied reviewer labels as adjudication required instead of forcing a hidden tie-break."
+    ],
+    "target_label_rows": 48,
+    "target_reviewer_count": 2
+  }
+}

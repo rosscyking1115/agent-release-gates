@@ -3,13 +3,37 @@
   "label_row_count": 0,
   "label_template_path": "data/review/external_human_review_label_template.csv",
   "labels_path": "data/review/external_human_review_labels.csv",
+  "manifest_path": "reports/external_human_review_manifest.json",
   "notes": [
     "External human review packet and label template are prepared, but no independent reviewer labels have been added yet.",
     "Add completed labels to data/review/external_human_review_labels.csv and rerun the evaluator to report agreement and kappa."
   ],
   "packet_path": "data/review/external_human_review_packet.csv",
   "report_type": "external_human_review",
+  "review_workflow": {
+    "allowed_decisions": [
+      "allow",
+      "block",
+      "review"
+    ],
+    "allowed_labels": [
+      "benign",
+      "unsafe"
+    ],
+    "blind_review_required": true,
+    "minimum_pairwise_reviewed_cases": 24,
+    "minimum_publish_label_coverage": 1.0,
+    "publication_requirements": [
+      "Use at least two independent reviewer ids.",
+      "Reviewers should label request text without maintainer labels, classifier output, or hosted judge output.",
+      "Publish agreement and Cohen kappa only from completed reviewer-label CSV rows.",
+      "Mark tied reviewer labels as adjudication required instead of forcing a hidden tie-break."
+    ],
+    "target_label_rows": 48,
+    "target_reviewer_count": 2
+  },
   "reviewer_count": 0,
+  "reviewer_guide_path": "data/review/external_human_review_reviewer_guide.md",
   "status": "awaiting_labels",
   "summary": {
     "adjudication_required_count": 0,

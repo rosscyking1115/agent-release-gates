@@ -87,6 +87,7 @@ Inputs:
 | `data/eval/human_calibration_cases.jsonl` | Maintainer-labeled calibration cases with primary, secondary, and adjudicated labels for comparing classifier decisions against label and expected-action targets. |
 | `data/review/external_human_review_packet.csv` | Public packet of calibration cases for independent reviewer labeling. |
 | `data/review/external_human_review_label_template.csv` | Blank reviewer-response template with allowed label, decision, confidence, rationale, and notes fields. |
+| `data/review/external_human_review_reviewer_guide.md` | Reviewer-facing blind-labelling instructions generated with the external review packet. |
 
 Reports:
 
@@ -107,6 +108,7 @@ Reports:
 | `reports/safety_prevalence_report.md` | Weighted prevalence estimates, confidence intervals, sampling limitations, and distinction from challenge-set failure rates. |
 | `reports/human_calibration_summary.json` | Maintainer-labeled calibration summary with reviewer agreement, classifier label accuracy, expected-action match rate, unsafe capture, and category slices. |
 | `reports/human_calibration_cases.jsonl` | Case-level calibration comparison rows with human labels, classifier decision, classifier score, action/label match flags, and error type. |
+| `reports/external_human_review_manifest.json` | Machine-readable readiness checklist for the independent review workflow, including artifact paths, target reviewer count, and publication requirements. |
 | `reports/external_human_review_summary.json` | External-review status and agreement metrics. Reports `awaiting_labels` until completed labels are supplied. |
 | `reports/external_human_review_cases.jsonl` | Case-level external-review comparison rows. Empty until completed reviewer labels are supplied. |
 | `reports/judge_reliability_summary.json` | Local rubric-judge reliability report with pairwise agreement, Cohen kappa, judge/classifier accuracy, category slices, and disagreement examples. |

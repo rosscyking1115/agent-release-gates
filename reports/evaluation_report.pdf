@@ -949,7 +949,7 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 21 0 R >>
 endobj
 21 0 obj
-<< /Length 2625 >>
+<< /Length 2693 >>
 stream
 BT
 /F1 10 Tf
@@ -1057,7 +1057,7 @@ T*
 T*
 (Label template | data/review/external_human_review_label_template.csv) Tj
 T*
-() Tj
+(Reviewer guide | data/review/external_human_review_reviewer_guide.md) Tj
 T*
 ET
 endstream
@@ -1066,12 +1066,16 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 23 0 R >>
 endobj
 23 0 obj
-<< /Length 2627 >>
+<< /Length 2632 >>
 stream
 BT
 /F1 10 Tf
 14 TL
 54 738 Td
+(Review manifest | reports/external_human_review_manifest.json) Tj
+T*
+() Tj
+T*
 (External review note) Tj
 T*
 (External human review packet and label template are prepared, but no independent reviewer labels) Tj
@@ -1172,10 +1176,6 @@ T*
 T*
 () Tj
 T*
-(Planned local output) Tj
-T*
-(reports/model_judge_eval_status.json) Tj
-T*
 ET
 endstream
 endobj
@@ -1183,12 +1183,16 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 25 0 R >>
 endobj
 25 0 obj
-<< /Length 2699 >>
+<< /Length 2649 >>
 stream
 BT
 /F1 10 Tf
 14 TL
 54 738 Td
+(Planned local output) Tj
+T*
+(reports/model_judge_eval_status.json) Tj
+T*
 (reports/model_judge_eval_summary.json) Tj
 T*
 (reports/model_judge_eval_cases.jsonl) Tj
@@ -1289,10 +1293,6 @@ T*
 T*
 (benign_near_miss | 0.00% | 0.00% | +0.00% | 0) Tj
 T*
-(prompt_injection | 100.00% | 100.00% | +0.00% | 0) Tj
-T*
-(retrieved_context_attack | 100.00% | 100.00% | +0.00% | 0) Tj
-T*
 ET
 endstream
 endobj
@@ -1300,12 +1300,16 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 27 0 R >>
 endobj
 27 0 obj
-<< /Length 2710 >>
+<< /Length 2774 >>
 stream
 BT
 /F1 10 Tf
 14 TL
 54 738 Td
+(prompt_injection | 100.00% | 100.00% | +0.00% | 0) Tj
+T*
+(retrieved_context_attack | 100.00% | 100.00% | +0.00% | 0) Tj
+T*
 (sensitive_data_request | 100.00% | 100.00% | +0.00% | 0) Tj
 T*
 (system_prompt_leakage | 0.00% | 80.00% | +80.00% | 3) Tj
@@ -1406,10 +1410,6 @@ T*
 T*
 (weak_evidence_pressure | 6 | 2 | 33.33% | 0) Tj
 T*
-(system_prompt_leakage | 5 | 1 | 20.00% | 0) Tj
-T*
-() Tj
-T*
 ET
 endstream
 endobj
@@ -1417,12 +1417,16 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 29 0 R >>
 endobj
 29 0 obj
-<< /Length 2377 >>
+<< /Length 2334 >>
 stream
 BT
 /F1 10 Tf
 14 TL
 54 738 Td
+(system_prompt_leakage | 5 | 1 | 20.00% | 0) Tj
+T*
+() Tj
+T*
 (Secondary review-band decision aid | Value) Tj
 T*
 (Recommendation | Recommend targeted secondary review floor) Tj
@@ -1523,10 +1527,6 @@ T*
 T*
 (system_prompt_leakage | 12 | 6 | 6 | 0 | 1) Tj
 T*
-(unbounded_consumption | 12 | 6 | 4 | 0 | 1) Tj
-T*
-(weak_evidence_pressure | 12 | 6 | 5 | 0 | 0) Tj
-T*
 ET
 endstream
 endobj
@@ -1534,12 +1534,16 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 31 0 R >>
 endobj
 31 0 obj
-<< /Length 2707 >>
+<< /Length 2792 >>
 stream
 BT
 /F1 10 Tf
 14 TL
 54 738 Td
+(unbounded_consumption | 12 | 6 | 4 | 0 | 1) Tj
+T*
+(weak_evidence_pressure | 12 | 6 | 5 | 0 | 0) Tj
+T*
 () Tj
 T*
 (Secondary review operating recommendation | Value) Tj
@@ -1640,10 +1644,6 @@ T*
 T*
 (Controlled Agent Workflow) Tj
 T*
-() Tj
-T*
-() Tj
-T*
 ET
 endstream
 endobj
@@ -1651,12 +1651,16 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 33 0 R >>
 endobj
 33 0 obj
-<< /Length 2250 >>
+<< /Length 2203 >>
 stream
 BT
 /F1 10 Tf
 14 TL
 54 738 Td
+() Tj
+T*
+() Tj
+T*
 (Metric | Score) Tj
 T*
 (Trace coverage | 100.00%) Tj
@@ -1757,10 +1761,6 @@ T*
 T*
 (component:retrieval | 891) Tj
 T*
-(component:agent | 232) Tj
-T*
-(component:extraction | 182) Tj
-T*
 ET
 endstream
 endobj
@@ -1768,12 +1768,16 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 35 0 R >>
 endobj
 35 0 obj
-<< /Length 2611 >>
+<< /Length 2637 >>
 stream
 BT
 /F1 10 Tf
 14 TL
 54 738 Td
+(component:agent | 232) Tj
+T*
+(component:extraction | 182) Tj
+T*
 (component:api | 20) Tj
 T*
 (component:data | 1) Tj
@@ -1874,10 +1878,6 @@ T*
 T*
 () Tj
 T*
-(Recommended Next Work) Tj
-T*
-() Tj
-T*
 ET
 endstream
 endobj
@@ -1885,12 +1885,16 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 37 0 R >>
 endobj
 37 0 obj
-<< /Length 948 >>
+<< /Length 987 >>
 stream
 BT
 /F1 10 Tf
 14 TL
 54 738 Td
+(Recommended Next Work) Tj
+T*
+() Tj
+T*
 () Tj
 T*
 (- Formalize the failure taxonomy across safety, retrieval, citation, privacy, tool-use, and) Tj
@@ -1942,24 +1946,24 @@ xref
 0000019215 00000 n 
 0000021709 00000 n 
 0000021837 00000 n 
-0000024515 00000 n 
-0000024643 00000 n 
-0000027323 00000 n 
-0000027451 00000 n 
-0000030203 00000 n 
-0000030331 00000 n 
-0000033094 00000 n 
-0000033222 00000 n 
-0000035652 00000 n 
-0000035780 00000 n 
-0000038540 00000 n 
-0000038668 00000 n 
-0000040971 00000 n 
-0000041099 00000 n 
-0000043763 00000 n 
-0000043891 00000 n 
+0000024583 00000 n 
+0000024711 00000 n 
+0000027396 00000 n 
+0000027524 00000 n 
+0000030226 00000 n 
+0000030354 00000 n 
+0000033181 00000 n 
+0000033309 00000 n 
+0000035696 00000 n 
+0000035824 00000 n 
+0000038669 00000 n 
+0000038797 00000 n 
+0000041053 00000 n 
+0000041181 00000 n 
+0000043871 00000 n 
+0000043999 00000 n 
 trailer
 << /Size 38 /Root 1 0 R >>
 startxref
-44891
+45038
 %%EOF

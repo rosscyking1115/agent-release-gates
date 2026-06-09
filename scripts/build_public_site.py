@@ -110,6 +110,11 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
             reports_dir / "external_human_review_summary.json",
             public_dir / "external_human_review_summary.json",
         )
+    if (reports_dir / "external_human_review_manifest.json").exists():
+        shutil.copyfile(
+            reports_dir / "external_human_review_manifest.json",
+            public_dir / "external_human_review_manifest.json",
+        )
     if (project_root / "data/review/external_human_review_packet.csv").exists():
         shutil.copyfile(
             project_root / "data/review/external_human_review_packet.csv",
@@ -119,6 +124,11 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
         shutil.copyfile(
             project_root / "data/review/external_human_review_label_template.csv",
             public_dir / "external_human_review_label_template.csv",
+        )
+    if (project_root / "data/review/external_human_review_reviewer_guide.md").exists():
+        shutil.copyfile(
+            project_root / "data/review/external_human_review_reviewer_guide.md",
+            public_dir / "external_human_review_reviewer_guide.md",
         )
     if (reports_dir / "techqa_public_rag_summary.json").exists():
         shutil.copyfile(
@@ -298,8 +308,10 @@ def _index_html(
         ("Safety mitigation impact", "safety_mitigation_impact.json"),
         ("Safety threshold decision memo", "safety_threshold_decision_memo.json"),
         ("External human review summary", "external_human_review_summary.json"),
+        ("External human review manifest", "external_human_review_manifest.json"),
         ("External review packet", "external_human_review_packet.csv"),
         ("External review label template", "external_human_review_label_template.csv"),
+        ("External reviewer guide", "external_human_review_reviewer_guide.md"),
         ("Observability trace index", "observability_trace_index.json"),
     ]
     artifacts = "\n".join(

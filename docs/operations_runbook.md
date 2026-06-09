@@ -196,12 +196,15 @@ Generated files:
 
 - `data/review/external_human_review_packet.csv`
 - `data/review/external_human_review_label_template.csv`
+- `data/review/external_human_review_reviewer_guide.md`
+- `reports/external_human_review_manifest.json`
 - `reports/external_human_review_summary.json`
 - `reports/external_human_review_cases.jsonl`
 
-To collect labels, give reviewers the packet and ask them to complete the label
-template without looking at maintainer labels, classifier labels, or hosted
-judge labels. Save completed labels as:
+To collect labels, give reviewers the packet, label template, and reviewer
+guide. Ask them to complete the label template without looking at maintainer
+labels, classifier labels, hosted judge labels, or public report metrics. Save
+completed labels as:
 
 ```text
 data/review/external_human_review_labels.csv
@@ -216,9 +219,9 @@ uv run python scripts/build_public_site.py
 ```
 
 The public report should only claim independent human-review results after the
-completed label file is present and the reviewers are independent of the
-maintainer labels. Until then, the external-review status should remain
-`awaiting_labels`.
+completed label file is present, all calibration cases have two independent
+labels, and the reviewers are independent of the maintainer labels. Until then,
+the external-review status should remain `awaiting_labels`.
 
 ## Hosted Model-Judge Evaluation
 

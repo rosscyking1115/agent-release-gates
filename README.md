@@ -263,6 +263,8 @@ The public project page keeps the main experience focused on the dashboard and e
 - External human review protocol: https://github.com/rosscyking1115/internal-ai-agent-eval-lab/blob/main/docs/external_human_review_protocol.md
 - External review packet: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/external_human_review_packet.csv
 - External review label template: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/external_human_review_label_template.csv
+- External reviewer guide: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/external_human_review_reviewer_guide.md
+- External review manifest: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/external_human_review_manifest.json
 - External human review summary: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/external_human_review_summary.json
 - TechQA public RAG summary: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/techqa_public_rag_summary.json
 - TechQA public benchmark profile: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/techqa_public_benchmark_profile.json
