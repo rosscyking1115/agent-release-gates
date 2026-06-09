@@ -213,6 +213,10 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
         ),
         encoding="utf-8",
     )
+    (public_dir / "artifacts.html").write_text(
+        _artifact_index_html(_public_artifact_links()),
+        encoding="utf-8",
+    )
     return public_dir
 
 
@@ -247,13 +251,6 @@ def _index_html(
     security_metrics = security["metrics"]
     safety_metrics = safety_classifier["metrics"]
     safety_prevalence = safety_classifier["weighted_prevalence"]
-    retuning_summary = safety_retuning["summary"]
-    review_summary = safety_review["summary"]
-    mitigation_summary = safety_mitigation["summary"]
-    operating_summary = safety_operating_recommendation["summary"]
-    operating_capacity_label = (
-        f"{operating_summary['minimum_reviewer_daily_capacity']} / reviewer / day"
-    )
     external_status = _display_status(external_review.get("status", "not_configured"))
     risk_labels = "\n".join(
         f"<li>{escape(_humanize_label(label))}</li>" for label in profile["risk_labels"]
@@ -261,63 +258,7 @@ def _index_html(
     recommendations = "\n".join(
         f"<li>{escape(item)}</li>" for item in profile["recommended_next_data_work"]
     )
-    artifact_links = [
-        ("Dataset profile", "dataset_profile.json"),
-        ("Evaluation gates", "evaluation_gates.json"),
-        ("TechQA public RAG summary", "techqa_public_rag_summary.json"),
-        ("TechQA public benchmark profile", "techqa_public_benchmark_profile.json"),
-        (
-            "TechQA public retriever comparison",
-            "techqa_public_retriever_comparison.json",
-        ),
-        ("WixQA public RAG summary", "wixqa_public_rag_summary.json"),
-        ("WixQA public benchmark profile", "wixqa_public_benchmark_profile.json"),
-        (
-            "WixQA public retriever comparison",
-            "wixqa_public_retriever_comparison.json",
-        ),
-        ("Cross-public RAG findings", "public_rag_findings.json"),
-        ("Public RAG reranking opportunity", "public_rag_reranking_opportunity.json"),
-        ("Public RAG reranker evaluation", "public_rag_reranker_eval.json"),
-        (
-            "Hosted public RAG reranker adapter",
-            "public_rag_model_reranker_adapter_status.json",
-        ),
-        ("Hosted reranker packet", "public_rag_model_reranker_packet.jsonl"),
-        ("Safety classifier summary", "safety_classifier_eval_summary.json"),
-        ("Safety threshold sweep", "safety_threshold_sweep.json"),
-        ("Safety threshold retuning", "safety_threshold_retuning.json"),
-        ("Safety human review simulation", "safety_human_review_simulation.json"),
-        ("Safety adjudication notes", "safety_adjudication_notes.json"),
-        (
-            "Safety reviewer disagreement slices",
-            "safety_reviewer_disagreement_slices.json",
-        ),
-        (
-            "Safety secondary review-band analysis",
-            "safety_secondary_review_band_analysis.json",
-        ),
-        (
-            "Safety secondary review-floor validation",
-            "safety_secondary_review_floor_validation.json",
-        ),
-        (
-            "Safety secondary review operating recommendation",
-            "safety_secondary_review_operating_recommendation.json",
-        ),
-        ("Safety mitigation impact", "safety_mitigation_impact.json"),
-        ("Safety threshold decision memo", "safety_threshold_decision_memo.json"),
-        ("External human review summary", "external_human_review_summary.json"),
-        ("External human review manifest", "external_human_review_manifest.json"),
-        ("External review packet", "external_human_review_packet.csv"),
-        ("External review label template", "external_human_review_label_template.csv"),
-        ("External reviewer guide", "external_human_review_reviewer_guide.md"),
-        ("Observability trace index", "observability_trace_index.json"),
-    ]
-    artifacts = "\n".join(
-        f'<li><a href="{href}">{escape(label)}</a></li>'
-        for label, href in artifact_links
-    )
+    artifact_count = len(_public_artifact_links())
     repo_url = "https://github.com/rosscyking1115/internal-ai-agent-eval-lab"
     streamlit_url = "https://agent-evaluation-lab.streamlit.app/"
 
@@ -509,199 +450,401 @@ def _index_html(
     </header>
 
     <section>
-      <h2>Reviewer Summary</h2>
+      <h2>At A Glance</h2>
       <div class="summary-grid">
         <div class="summary-card">
-          <h3>What was built</h3>
+          <h3>What it is</h3>
           <p>
-            A reproducible AI-agent evaluation harness covering retrieval,
-            safe refusal, approval-gated mock tool use, safety classifier
-            trade-offs, release gates, and traceable observability.
+            A reproducible benchmark and dashboard for evaluating grounded
+            retrieval, safe refusal, approval-gated tools, and auditability in
+            AI-agent workflows.
           </p>
         </div>
         <div class="summary-card">
-          <h3>Evidence available now</h3>
+          <h3>Why it matters</h3>
           <p>
-            Synthetic operations metrics, public TechQA and WixQA RAG results,
-            hosted judge evidence, human-review simulation, mitigation impact,
-            and downloadable reports are published for inspection.
+            Agent safety work needs measurement that reports both unsafe misses
+            and usefulness costs, not only a single headline safety score.
           </p>
         </div>
         <div class="summary-card">
-          <h3>Current validation boundary</h3>
+          <h3>Evidence available</h3>
           <p>
-            Internal operations data is synthetic by design. Independent human
-            labels, broader model comparisons, and credentialed hosted reranker
-            runs remain the main validation work.
+            Controlled synthetic operations tests are paired with public TechQA
+            and WixQA RAG validation, safety trade-off analysis, and release
+            gates.
+          </p>
+        </div>
+        <div class="summary-card">
+          <h3>Validation boundary</h3>
+          <p>
+            The controlled operations benchmark is synthetic. Independent human
+            labels and broader multi-model comparison are the next validation
+            steps.
           </p>
         </div>
       </div>
     </section>
 
     <section class="section">
-      <h2>Current Finding</h2>
-      <p>
-        The lab shows that safety controls can improve unsafe-request capture
-        and side-effect governance, but the measurement only becomes useful when
-        over-review cost, benign near-misses, unsupported answers, and public
-        retrieval performance are reported beside the headline safety scores.
-      </p>
-      <div class="grid">
-        {_metric("Synthetic citation coverage", _pct(metrics["citation_coverage"]["improved"]))}
-        {_metric("Synthetic abstention accuracy", _pct(metrics["abstention_accuracy"]["improved"]))}
-        {_metric("Safety recall", _pct(safety_metrics["recall"]))}
-        {_metric("Improved red-team safe rate", _pct(security_metrics["improved_safe_rate"]))}
-        {_metric(
-            "Public RAG cases",
-            _public_rag_summary_value(public_rag_findings, "total_case_count"),
-        )}
-        {_metric(
-            "Public RAG weighted RAG@3",
-            _public_rag_metric(
-                public_rag_findings,
-                "weighted_retrieval_hit_rate_at_3",
-            ),
-        )}
+      <h2>Key Findings</h2>
+      <div class="summary-grid">
+        <div class="summary-card">
+          <h3>Safety needs trade-off reporting</h3>
+          <p>
+            Unsafe-request capture is useful only when reviewed alongside
+            benign blocks, review load, weak-evidence handling, and false
+            negative risk.
+          </p>
+        </div>
+        <div class="summary-card">
+          <h3>Public RAG checks strengthen the lab</h3>
+          <p>
+            TechQA and WixQA results show that retrieval evaluation is not
+            limited to the controlled synthetic environment.
+          </p>
+        </div>
+        <div class="summary-card">
+          <h3>Auditability is part of reliability</h3>
+          <p>
+            The project publishes release gates, trace summaries, and generated
+            artifacts so reviewers can inspect how results were produced.
+          </p>
+        </div>
       </div>
     </section>
 
-    <section>
-      <h2>Current Synthetic Benchmark</h2>
+    <section class="section">
+      <h2>Evidence Snapshot</h2>
       <div class="grid">
-        {_metric("Runbook sections", counts["runbooks"])}
-        {_metric("Synthetic tickets", counts["tickets"])}
-        {_metric("Golden cases", counts["golden_cases"])}
+        {_metric("Synthetic golden cases", counts["golden_cases"])}
         {_metric("Red-team cases", counts["red_team_cases"])}
-        {_metric("Safety challenge cases", safety_classifier["challenge_case_count"])}
-        {_metric("Safety sampled cases", safety_classifier["prevalence_case_count"])}
-        {_metric("Manual golden cases", mix["manual_cases"])}
-        {_metric("Manual share", _pct(mix["manual_share"]))}
-        {_metric("Expected abstentions", mix["expected_abstentions"])}
-        {_metric("Noise types", mix["noise_type_count"])}
-      </div>
-    </section>
-
-    <section class="section">
-      <h2>Evaluation Snapshot</h2>
-      <div class="grid">
-        {_metric("Baseline citation coverage", _pct(metrics["citation_coverage"]["baseline"]))}
-        {_metric("Improved citation coverage", _pct(metrics["citation_coverage"]["improved"]))}
-        {_metric("Improved abstention accuracy", _pct(metrics["abstention_accuracy"]["improved"]))}
-        {_metric("Improved red-team safe rate", _pct(security_metrics["improved_safe_rate"]))}
-        {_metric("Safety classifier recall", _pct(safety_metrics["recall"]))}
-        {_metric("Retuned recall lift", _pct(retuning_summary["recall_delta"]))}
-        {_metric("Synthetic unsafe prevalence", _pct(safety_prevalence["unsafe_prevalence"]))}
-        {_metric("High-severity FN count", safety_metrics["high_severity_false_negative_count"])}
-        {_metric("Safety review queue", review_summary["queue_count"])}
-        {_metric("External review status", external_status)}
-        {_metric("Safety min review capacity", operating_capacity_label)}
-        {_metric("Unsafe reduction", _pct(mitigation_summary["unsafe_allowed_reduction_rate"]))}
-        {_metric("Indexed traces", trace_index["trace_count"])}
-        {_metric("Release gate status", _display_status(gates["overall_status"]))}
-        {_metric("Release gate failures", gates["fail_count"])}
-        {_metric("TechQA public cases", _techqa_profile_value(techqa_profile, "sample_case_count"))}
-        {_metric("TechQA public RAG@3", _techqa_metric(techqa_public, "retrieval_hit_rate_at_3"))}
-        {_metric("WixQA public cases", _wixqa_profile_value(wixqa_profile, "sample_case_count"))}
-        {_metric("WixQA public RAG@3", _wixqa_metric(wixqa_public, "retrieval_hit_rate_at_3"))}
+        {_metric("Manual golden-case share", _pct(mix["manual_share"]))}
         {_metric(
             "Public RAG cases",
             _public_rag_summary_value(public_rag_findings, "total_case_count"),
         )}
         {_metric(
-            "Public RAG weighted RAG@3",
+            "Public weighted RAG@3",
             _public_rag_metric(public_rag_findings, "weighted_retrieval_hit_rate_at_3"),
         )}
+        {_metric("TechQA public RAG@3", _techqa_metric(techqa_public, "retrieval_hit_rate_at_3"))}
+        {_metric("WixQA public RAG@3", _wixqa_metric(wixqa_public, "retrieval_hit_rate_at_3"))}
+        {_metric("Synthetic citation coverage", _pct(metrics["citation_coverage"]["improved"]))}
+        {_metric("Synthetic abstention accuracy", _pct(metrics["abstention_accuracy"]["improved"]))}
+        {_metric("Safety classifier recall", _pct(safety_metrics["recall"]))}
         {_metric(
-            "Rerankable public cases",
-            _public_reranking_summary_value(public_rag_reranking, "rerankable_case_count"),
+            "High-severity unsafe misses",
+            safety_metrics["high_severity_false_negative_count"],
         )}
-        {_metric(
-            "Rerank ceiling top-1",
-            _public_reranking_metric(public_rag_reranking, "oracle_top3_rerank_ceiling"),
-        )}
-        {_metric(
-            "Reranker top-1 delta",
-            _public_reranker_signed_metric(public_rag_reranker, "top1_accuracy_delta"),
-        )}
-        {_metric(
-            "Hosted reranker readiness",
-            _hosted_reranker_status(public_rag_model_reranker),
-        )}
-        {_metric(
-            "Hosted reranker packet",
-            _hosted_reranker_case_count(public_rag_model_reranker),
-        )}
+        {_metric("Synthetic unsafe prevalence", _pct(safety_prevalence["unsafe_prevalence"]))}
+        {_metric("Red-team safe response rate", _pct(security_metrics["improved_safe_rate"]))}
+        {_metric("Indexed observability traces", trace_index["trace_count"])}
+        {_metric("Release gate status", _display_status(gates["overall_status"]))}
+        {_metric("External review status", external_status)}
+      </div>
+      <p>
+        These are engineering checks over controlled benchmarks. They should be
+        read with the benchmark cards, dataset boundaries, and full report.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Explore The Project</h2>
+      <div class="summary-grid">
+        <div class="summary-card">
+          <h3>Interactive dashboard</h3>
+          <p>
+            Explore metrics, cases, safety analysis, retrieval comparisons, and
+            observability views in Streamlit.
+          </p>
+          <p><a href="{streamlit_url}">Open dashboard</a></p>
+        </div>
+        <div class="summary-card">
+          <h3>Full evaluation report</h3>
+          <p>
+            Read the deeper method, metrics, limitations, and generated
+            evaluation narrative.
+          </p>
+          <p><a href="evaluation_report.html">Open report</a></p>
+        </div>
+        <div class="summary-card">
+          <h3>Reviewer handoff</h3>
+          <p>
+            Inspect the external-review packet, labelling workflow, and
+            reviewer-facing instructions.
+          </p>
+          <p>
+            <a href="{repo_url}/blob/main/docs/reviewer_handoff_pack.md">
+              Open reviewer handoff
+            </a>
+          </p>
+        </div>
+        <div class="summary-card">
+          <h3>Technical artifacts</h3>
+          <p>
+            View {artifact_count} generated JSON, CSV, report, and reproducibility
+            artifacts on a separate technical page.
+          </p>
+          <p><a href="artifacts.html">Open artifact index</a></p>
+        </div>
       </div>
     </section>
 
     <section class="section">
       <h2>Benchmark Transparency</h2>
       <p>
-        The lab reports benchmark-quality risks alongside model and retriever
-        scores. That is deliberate: high scores on synthetic data are only useful
-        when the data mix is inspectable.
+        High scores on synthetic cases are useful only when the benchmark mix is
+        visible. This project keeps the synthetic benchmark, public RAG tracks,
+        and remaining validation gaps separate.
       </p>
-      <div class="warning">
-        <strong>Current data-quality labels</strong>
+      <details>
+        <summary>Current benchmark-quality labels</summary>
         <ul>{risk_labels}</ul>
-      </div>
-      <h2>Recommended Next Data Work</h2>
-      <ul>{recommendations}</ul>
+      </details>
+      <details>
+        <summary>Recommended next data work</summary>
+        <ul>{recommendations}</ul>
+      </details>
     </section>
 
     <section class="section">
-      <h2>Use The Interactive Lab</h2>
+      <h2>Run Locally</h2>
       <p>
-        The Streamlit dashboard is deployed publicly for exploration. The
-        FastAPI service and dashboard are also containerized so the full stack
-        can be run locally from the public repo.
+        The FastAPI service and dashboard are containerized so the full stack
+        can be run from the public repository.
       </p>
-      <p><a href="{streamlit_url}">Open the public Streamlit dashboard</a></p>
       <p><code>docker compose up --build</code></p>
       <p>
         Then open <code>http://localhost:8510</code> for the dashboard and
         <code>http://localhost:8000/health</code> for the API.
       </p>
     </section>
+  </main>
+</body>
+</html>
+"""
 
-    <section class="section">
-      <h2>Public Review Docs</h2>
-      <p>
-        These documents explain the benchmark scope, dataset boundary, failure
-        taxonomy, contribution path, and research-grade roadmap.
-      </p>
-      <ul>
-        <li><a href="{repo_url}/blob/main/docs/benchmark_card.md">Benchmark card</a></li>
-        <li><a href="{repo_url}/blob/main/docs/dataset_card.md">Dataset card</a></li>
-        <li>
-          <a href="{repo_url}/blob/main/docs/external_human_review_protocol.md">
-            External human review protocol
-          </a>
-        </li>
-        <li><a href="{repo_url}/blob/main/docs/failure_taxonomy.md">Failure taxonomy</a></li>
-        <li><a href="{repo_url}/blob/main/docs/research_roadmap.md">Research roadmap</a></li>
-        <li>
-          <a href="{repo_url}/blob/main/docs/reviewer_handoff_pack.md">
-            External reviewer handoff pack
-          </a>
-        </li>
-        <li><a href="{repo_url}/blob/main/CONTRIBUTING.md">Contributing guide</a></li>
-      </ul>
-    </section>
 
-    <section class="section">
-      <h2>Technical Artifact Index</h2>
+def _public_artifact_links() -> list[tuple[str, str, str]]:
+    return [
+        ("Primary reports", "Full evaluation report", "evaluation_report.html"),
+        ("Primary reports", "PDF evaluation report", "evaluation_report.pdf"),
+        ("Primary reports", "Evaluation gates", "evaluation_gates.json"),
+        ("Benchmark profile", "Dataset profile", "dataset_profile.json"),
+        ("Public RAG", "TechQA public RAG summary", "techqa_public_rag_summary.json"),
+        (
+            "Public RAG",
+            "TechQA public benchmark profile",
+            "techqa_public_benchmark_profile.json",
+        ),
+        (
+            "Public RAG",
+            "TechQA public retriever comparison",
+            "techqa_public_retriever_comparison.json",
+        ),
+        ("Public RAG", "WixQA public RAG summary", "wixqa_public_rag_summary.json"),
+        (
+            "Public RAG",
+            "WixQA public benchmark profile",
+            "wixqa_public_benchmark_profile.json",
+        ),
+        (
+            "Public RAG",
+            "WixQA public retriever comparison",
+            "wixqa_public_retriever_comparison.json",
+        ),
+        ("Public RAG", "Cross-public RAG findings", "public_rag_findings.json"),
+        (
+            "Public RAG",
+            "Public RAG reranking opportunity",
+            "public_rag_reranking_opportunity.json",
+        ),
+        ("Public RAG", "Public RAG reranker evaluation", "public_rag_reranker_eval.json"),
+        (
+            "Public RAG",
+            "Hosted public RAG reranker adapter",
+            "public_rag_model_reranker_adapter_status.json",
+        ),
+        ("Public RAG", "Hosted reranker packet", "public_rag_model_reranker_packet.jsonl"),
+        (
+            "Safety evaluation",
+            "Safety classifier summary",
+            "safety_classifier_eval_summary.json",
+        ),
+        ("Safety evaluation", "Safety threshold sweep", "safety_threshold_sweep.json"),
+        (
+            "Safety evaluation",
+            "Safety threshold retuning",
+            "safety_threshold_retuning.json",
+        ),
+        (
+            "Safety evaluation",
+            "Safety human review simulation",
+            "safety_human_review_simulation.json",
+        ),
+        (
+            "Safety evaluation",
+            "Safety adjudication notes",
+            "safety_adjudication_notes.json",
+        ),
+        (
+            "Safety evaluation",
+            "Safety reviewer disagreement slices",
+            "safety_reviewer_disagreement_slices.json",
+        ),
+        (
+            "Safety evaluation",
+            "Safety secondary review-band analysis",
+            "safety_secondary_review_band_analysis.json",
+        ),
+        (
+            "Safety evaluation",
+            "Safety secondary review-floor validation",
+            "safety_secondary_review_floor_validation.json",
+        ),
+        (
+            "Safety evaluation",
+            "Safety secondary review operating recommendation",
+            "safety_secondary_review_operating_recommendation.json",
+        ),
+        ("Safety evaluation", "Safety mitigation impact", "safety_mitigation_impact.json"),
+        (
+            "Safety evaluation",
+            "Safety threshold decision memo",
+            "safety_threshold_decision_memo.json",
+        ),
+        (
+            "Human review",
+            "External human review summary",
+            "external_human_review_summary.json",
+        ),
+        (
+            "Human review",
+            "External human review manifest",
+            "external_human_review_manifest.json",
+        ),
+        ("Human review", "External review packet", "external_human_review_packet.csv"),
+        (
+            "Human review",
+            "External review label template",
+            "external_human_review_label_template.csv",
+        ),
+        ("Human review", "External reviewer guide", "external_human_review_reviewer_guide.md"),
+        ("Observability", "Observability trace index", "observability_trace_index.json"),
+    ]
+
+
+def _artifact_index_html(artifact_links: list[tuple[str, str, str]]) -> str:
+    grouped: dict[str, list[tuple[str, str]]] = {}
+    for category, label, href in artifact_links:
+        grouped.setdefault(category, []).append((label, href))
+
+    sections = "\n".join(
+        f"""
+        <section class="section">
+          <h2>{escape(category)}</h2>
+          <ul>
+            {"".join(
+                f'<li><a href="{escape(href)}">{escape(label)}</a></li>'
+                for label, href in links
+            )}
+          </ul>
+        </section>
+        """
+        for category, links in grouped.items()
+    )
+
+    repo_url = "https://github.com/rosscyking1115/internal-ai-agent-eval-lab"
+    return f"""<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Technical Artifacts - Agent Safety & Reliability Evaluation Lab</title>
+  <style>
+    :root {{
+      color-scheme: light;
+      --ink: #172033;
+      --muted: #5f6b7a;
+      --line: #d8dee8;
+      --panel: #f7f9fc;
+      --accent: #0f766e;
+      --bg: #ffffff;
+    }}
+    * {{ box-sizing: border-box; }}
+    body {{
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system,
+        BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
+    }}
+    main {{
+      width: min(980px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 42px 0 64px;
+    }}
+    header {{
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 24px;
+      margin-bottom: 24px;
+    }}
+    h1 {{
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      line-height: 1.06;
+      margin: 0 0 14px;
+      letter-spacing: 0;
+    }}
+    h2 {{
+      font-size: 1.15rem;
+      margin: 0 0 10px;
+    }}
+    p {{
+      max-width: 760px;
+      margin: 0 0 14px;
+      color: var(--muted);
+    }}
+    a {{ color: var(--accent); font-weight: 650; }}
+    .section {{
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      padding: 16px;
+      margin: 14px 0;
+    }}
+    ul {{
+      margin: 0;
+      padding-left: 20px;
+      columns: 2;
+      column-gap: 32px;
+      color: var(--muted);
+    }}
+    li {{
+      break-inside: avoid;
+      margin-bottom: 8px;
+    }}
+    @media (max-width: 720px) {{
+      ul {{ columns: 1; }}
+    }}
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <p><a href="index.html">Back to project overview</a></p>
+      <h1>Technical Artifact Index</h1>
       <p>
-        These JSON artifacts are published for technical reviewers who want to
-        inspect the generated metrics and safety workflow details. They are
-        collapsed by default so the public page keeps the research narrative
-        first.
+        Generated reports and machine-readable outputs for reviewers who want
+        to inspect the evidence behind the public summary.
       </p>
-      <details>
-        <summary>Show reproducibility artifacts</summary>
-        <ul class="artifact-list">{artifacts}</ul>
-      </details>
-    </section>
+      <p>
+        Source documentation lives in the
+        <a href="{repo_url}/tree/main/docs">repository docs folder</a>.
+      </p>
+    </header>
+    {sections}
   </main>
 </body>
 </html>

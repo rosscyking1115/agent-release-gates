@@ -197,7 +197,7 @@ def main() -> None:
         _render_evaluation_gates(evaluation_gates)
         _render_retriever_error_analysis(retriever_cases)
         _render_error_analysis(failure_taxonomy)
-    elif section == "Safety And Extraction":
+    elif section == "Safety & Extraction":
         _render_safety_classifier_workflow(
             safety_classifier,
             safety_threshold_sweep,
@@ -272,7 +272,7 @@ def _render_sidebar() -> str:
             "Overview",
             "Dataset Profile",
             "Retrieval Evaluation",
-            "Safety And Extraction",
+            "Safety & Extraction",
             "Agent Observability",
             "Evaluation Report",
             "Case Review",
