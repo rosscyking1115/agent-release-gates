@@ -120,6 +120,11 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
             reports_dir / "multi_model_comparison_plan.json",
             public_dir / "multi_model_comparison_plan.json",
         )
+    if (reports_dir / "model_judge_provider_comparison.json").exists():
+        shutil.copyfile(
+            reports_dir / "model_judge_provider_comparison.json",
+            public_dir / "model_judge_provider_comparison.json",
+        )
     for reviewed_summary_path in reports_dir.glob("model_judge_reviewed_summary*.json"):
         shutil.copyfile(
             reviewed_summary_path,
@@ -681,6 +686,11 @@ def _public_artifact_links() -> list[tuple[str, str, str]]:
             "Model comparison",
             "Multi-model comparison plan",
             "multi_model_comparison_plan.json",
+        ),
+        (
+            "Model comparison",
+            "Reviewed provider comparison",
+            "model_judge_provider_comparison.json",
         ),
         (
             "Model comparison",

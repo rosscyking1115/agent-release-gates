@@ -119,6 +119,7 @@ Reports:
 | `reports/model_judge_eval_cases.jsonl` | Optional local-only hosted model-judge case outputs with model labels, confidence, rationale, and agreement flags. |
 | `reports/model_judge_reviewed_summary.json` | Sanitized public summary promoted from the reviewed OpenAI hosted model-judge run, excluding raw response IDs and full provider rationales. |
 | `reports/model_judge_reviewed_summary_anthropic.json` | Sanitized public summary promoted from the reviewed Anthropic hosted model-judge run, excluding raw response IDs and full provider rationales. |
+| `reports/model_judge_provider_comparison.json` | Public-safe reviewed provider comparison derived from sanitized hosted-judge summaries and calibration metadata, including provider agreement rates, cross-provider disagreement cases, and publication policy. |
 | `reports/multi_model_comparison_plan.json` | Provider-neutral comparison plan for cross-model hosted and local judge runs, including target providers, credential settings, output contract, readiness summary, reviewed-provider count, and publication gates. |
 | `reports/failure_taxonomy_summary.json` | Shared failure-taxonomy counts by label, group, and source across retrieval, public RAG, red-team, and safety-classifier outputs. |
 | `reports/techqa_public_rag_summary.json` | External public TechQA-RAG-Eval retrieval and abstention summary over the tracked public sample. |

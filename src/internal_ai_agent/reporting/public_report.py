@@ -115,6 +115,9 @@ def generate_public_report(project_root: Path) -> str:
         reports_dir / "multi_model_comparison_plan.json"
     )
     model_judge_reviewed = _read_reviewed_model_judge_summaries(reports_dir)
+    model_judge_provider_comparison = _read_optional_json(
+        reports_dir / "model_judge_provider_comparison.json"
+    )
     failure_taxonomy = _read_optional_json(reports_dir / "failure_taxonomy_summary.json")
     agent = _read_json(reports_dir / "agent_eval_summary.json")
 
@@ -244,6 +247,8 @@ def generate_public_report(project_root: Path) -> str:
             _multi_model_comparison_table(multi_model_comparison),
             "",
             _model_judge_reviewed_table(model_judge_reviewed),
+            "",
+            _model_judge_provider_comparison_table(model_judge_provider_comparison),
             "",
             _safety_threshold_table(safety_threshold_sweep),
             "",
@@ -1283,6 +1288,86 @@ def _model_judge_reviewed_table(reports: list[dict[str, Any]]) -> str:
     return "\n".join(rows)
 
 
+def _model_judge_provider_comparison_table(report: dict[str, Any]) -> str:
+    if report.get("report_type") != "reviewed_model_judge_provider_comparison":
+        return "Reviewed model-judge provider comparison is not configured."
+    metrics = report["comparison_metrics"]
+    rows = [
+        "| Reviewed provider comparison | Value |",
+        "| --- | --- |",
+        f"| Status | {_display_status(report['status'])} |",
+        f"| Providers | {', '.join(report['providers'])} |",
+        f"| Comparable cases | {report['case_count']} |",
+        (
+            "| Provider label agreement | "
+            f"{_pct(metrics['provider_label_agreement_rate'])} |"
+        ),
+        (
+            "| Provider decision agreement | "
+            f"{_pct(metrics['provider_decision_agreement_rate'])} |"
+        ),
+        (
+            "| Cross-provider label disagreements | "
+            f"{metrics['cross_provider_label_disagreement_count']} |"
+        ),
+        (
+            "| Any provider unsafe misses | "
+            f"{metrics['any_provider_unsafe_miss_count']} |"
+        ),
+        (
+            "| Any provider benign auto-blocks | "
+            f"{metrics['any_provider_benign_auto_block_count']} |"
+        ),
+    ]
+    rows.extend(
+        [
+            "",
+            "| Provider | Model | Accuracy | Classifier agreement | Confidence | "
+            "Unsafe misses | Benign auto-blocks |",
+            "| --- | --- | ---: | ---: | ---: | ---: | ---: |",
+        ]
+    )
+    for summary in report["provider_summaries"]:
+        rows.append(
+            "| {provider} | {model} | {accuracy} | {agreement} | {confidence} | "
+            "{unsafe_miss_count} | {benign_auto_block_count} |".format(
+                accuracy=_pct(summary["model_judge_label_accuracy"]),
+                agreement=_pct(
+                    summary["classifier_model_judge_agreement_rate"]
+                ),
+                confidence=_pct(summary["average_model_judge_confidence"]),
+                **summary,
+            )
+        )
+    if report["cross_provider_disagreement_cases"]:
+        rows.extend(
+            [
+                "",
+                "| Case | Category | Human | Classifier | Provider labels | Error pattern |",
+                "| --- | --- | --- | --- | --- | --- |",
+            ]
+        )
+        for row in report["cross_provider_disagreement_cases"][:8]:
+            provider_labels = ", ".join(
+                f"{result['provider']}={result['model_judge_label']}"
+                for result in row["provider_results"]
+            )
+            error_pattern = ", ".join(
+                f"{result['provider']}={result['model_judge_error_type']}"
+                for result in row["provider_results"]
+            )
+            rows.append(
+                "| {case_id} | {risk_category} | {human_label} | "
+                "{classifier_label} | {provider_labels} | {error_pattern} |".format(
+                    provider_labels=provider_labels,
+                    error_pattern=error_pattern,
+                    **row,
+                )
+            )
+    rows.extend(["", f"Publication policy: {report['publication_policy']}"])
+    return "\n".join(rows)
+
+
 def _safety_threshold_table(report: dict[str, Any]) -> str:
     rows = [
         (
@@ -1882,6 +1967,7 @@ def _display_status(status: object) -> str:
         "not_recommended_capacity_breach": "Not recommended: capacity breach",
         "recommended_minimum": "Recommended minimum",
         "acceptable_extra_buffer": "Acceptable extra buffer",
+        "ready": "Ready",
         "completed": "Completed",
         "evaluated": "Evaluated",
     }
