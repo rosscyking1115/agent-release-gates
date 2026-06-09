@@ -256,6 +256,7 @@ The public project page keeps the main experience focused on the dashboard and e
 - Dataset card: https://github.com/rosscyking1115/internal-ai-agent-eval-lab/blob/main/docs/dataset_card.md
 - Failure taxonomy: https://github.com/rosscyking1115/internal-ai-agent-eval-lab/blob/main/docs/failure_taxonomy.md
 - Research roadmap: https://github.com/rosscyking1115/internal-ai-agent-eval-lab/blob/main/docs/research_roadmap.md
+- External reviewer handoff pack: https://github.com/rosscyking1115/internal-ai-agent-eval-lab/blob/main/docs/reviewer_handoff_pack.md
 - Contributing guide: https://github.com/rosscyking1115/internal-ai-agent-eval-lab/blob/main/CONTRIBUTING.md
 
 - Dataset profile: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/dataset_profile.json

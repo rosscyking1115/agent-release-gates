@@ -680,6 +680,11 @@ def _index_html(
         </li>
         <li><a href="{repo_url}/blob/main/docs/failure_taxonomy.md">Failure taxonomy</a></li>
         <li><a href="{repo_url}/blob/main/docs/research_roadmap.md">Research roadmap</a></li>
+        <li>
+          <a href="{repo_url}/blob/main/docs/reviewer_handoff_pack.md">
+            External reviewer handoff pack
+          </a>
+        </li>
         <li><a href="{repo_url}/blob/main/CONTRIBUTING.md">Contributing guide</a></li>
       </ul>
     </section>
