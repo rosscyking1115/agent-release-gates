@@ -403,6 +403,26 @@ def _index_html(
       font-size: 1.55rem;
       line-height: 1.2;
     }}
+    .summary-grid {{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+      margin: 18px 0 28px;
+    }}
+    .summary-card {{
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+      background: var(--panel);
+    }}
+    .summary-card h3 {{
+      margin: 0 0 8px;
+      font-size: 1rem;
+    }}
+    .summary-card p {{
+      margin: 0;
+      color: var(--muted);
+    }}
     .section {{
       border-top: 1px solid var(--line);
       padding-top: 22px;
@@ -440,6 +460,17 @@ def _index_html(
       margin-top: 18px;
       max-width: 900px;
     }}
+    details {{
+      max-width: 940px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px 16px;
+      background: var(--panel);
+    }}
+    summary {{
+      cursor: pointer;
+      font-weight: 700;
+    }}
   </style>
 </head>
 <body>
@@ -464,6 +495,63 @@ def _index_html(
         <a class="button" href="{repo_url}">GitHub Repo</a>
       </div>
     </header>
+
+    <section>
+      <h2>Reviewer Summary</h2>
+      <div class="summary-grid">
+        <div class="summary-card">
+          <h3>What was built</h3>
+          <p>
+            A reproducible AI-agent evaluation harness covering retrieval,
+            safe refusal, approval-gated mock tool use, safety classifier
+            trade-offs, release gates, and traceable observability.
+          </p>
+        </div>
+        <div class="summary-card">
+          <h3>Evidence available now</h3>
+          <p>
+            Synthetic operations metrics, public TechQA and WixQA RAG results,
+            hosted judge evidence, human-review simulation, mitigation impact,
+            and downloadable reports are published for inspection.
+          </p>
+        </div>
+        <div class="summary-card">
+          <h3>Current validation boundary</h3>
+          <p>
+            Internal operations data is synthetic by design. Independent human
+            labels, broader model comparisons, and credentialed hosted reranker
+            runs remain the main validation work.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Current Finding</h2>
+      <p>
+        The lab shows that safety controls can improve unsafe-request capture
+        and side-effect governance, but the measurement only becomes useful when
+        over-review cost, benign near-misses, unsupported answers, and public
+        retrieval performance are reported beside the headline safety scores.
+      </p>
+      <div class="grid">
+        {_metric("Synthetic citation coverage", _pct(metrics["citation_coverage"]["improved"]))}
+        {_metric("Synthetic abstention accuracy", _pct(metrics["abstention_accuracy"]["improved"]))}
+        {_metric("Safety recall", _pct(safety_metrics["recall"]))}
+        {_metric("Improved red-team safe rate", _pct(security_metrics["improved_safe_rate"]))}
+        {_metric(
+            "Public RAG cases",
+            _public_rag_summary_value(public_rag_findings, "total_case_count"),
+        )}
+        {_metric(
+            "Public RAG weighted RAG@3",
+            _public_rag_metric(
+                public_rag_findings,
+                "weighted_retrieval_hit_rate_at_3",
+            ),
+        )}
+      </div>
+    </section>
 
     <section>
       <h2>Current Synthetic Benchmark</h2>
@@ -588,9 +676,14 @@ def _index_html(
       <h2>Technical Artifact Index</h2>
       <p>
         These JSON artifacts are published for technical reviewers who want to
-        inspect the generated metrics and safety workflow details.
+        inspect the generated metrics and safety workflow details. They are
+        collapsed by default so the public page keeps the research narrative
+        first.
       </p>
-      <ul class="artifact-list">{artifacts}</ul>
+      <details>
+        <summary>Show reproducibility artifacts</summary>
+        <ul class="artifact-list">{artifacts}</ul>
+      </details>
     </section>
   </main>
 </body>

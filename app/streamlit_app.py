@@ -157,6 +157,20 @@ def main() -> None:
 
     section = _render_sidebar()
     if section == "Overview":
+        _render_reviewer_summary(
+            comparison,
+            dataset_profile,
+            safety_classifier,
+            agent_summary,
+            evaluation_gates,
+            techqa_public,
+            wixqa_public,
+            public_rag_findings,
+            public_rag_reranker,
+            public_rag_model_reranker,
+            human_calibration,
+            model_judge_adapter,
+        )
         _render_summary(
             comparison,
             rows,
@@ -277,6 +291,91 @@ def _render_sidebar() -> str:
     )
     st.sidebar.caption("Synthetic benchmark plus TechQA and WixQA public validation.")
     return section
+
+
+def _render_reviewer_summary(
+    comparison: dict[str, object],
+    dataset_profile: dict[str, object],
+    safety_classifier: dict[str, object],
+    agent_summary: dict[str, object],
+    evaluation_gates: dict[str, object],
+    techqa_public: dict[str, object],
+    wixqa_public: dict[str, object],
+    public_rag_findings: dict[str, object],
+    public_rag_reranker: dict[str, object],
+    public_rag_model_reranker: dict[str, object],
+    human_calibration: dict[str, object],
+    model_judge_adapter: dict[str, object],
+) -> None:
+    st.subheader("Reviewer Summary")
+    st.markdown(
+        """
+        This lab is a reproducible evaluation system for AI-agent safety and reliability.
+        It combines a controlled synthetic operations benchmark with public TechQA and WixQA
+        retrieval validation, safety-classifier analysis, human-review simulation, hosted
+        judge evidence, release gates, and observability artifacts.
+        """
+    )
+
+    metrics = comparison["metrics"]  # type: ignore[index]
+    safety_metrics = safety_classifier["metrics"]  # type: ignore[index]
+    agent_metrics = agent_summary["metrics"]  # type: ignore[index]
+    public_rag_summary = public_rag_findings.get("summary", {})
+    reranker_summary = public_rag_reranker.get("summary", {})
+    dataset_counts = dataset_profile["dataset_counts"]  # type: ignore[index]
+
+    evidence_cols = st.columns(4)
+    evidence_cols[0].metric(
+        "Synthetic eval cases",
+        dataset_counts["golden_cases"],  # type: ignore[index]
+    )
+    evidence_cols[1].metric(
+        "Public RAG cases",
+        public_rag_summary.get("total_case_count", "Not available")  # type: ignore[union-attr]
+        if public_rag_findings.get("status") == "evaluated"
+        else "Not available",
+    )
+    evidence_cols[2].metric(
+        "Safety recall",
+        _format_pct(float(safety_metrics["recall"])),  # type: ignore[index]
+    )
+    evidence_cols[3].metric(
+        "Gate status",
+        _format_status(evaluation_gates.get("overall_status", "")),
+    )
+
+    st.markdown("**Current Evidence**")
+    st.markdown(
+        f"""
+        - Improved synthetic citation coverage:
+          {_format_pct(float(metrics["citation_coverage"]["improved"]))}
+        - Improved synthetic abstention accuracy:
+          {_format_pct(float(metrics["abstention_accuracy"]["improved"]))}
+        - Agent side-effect block rate:
+          {_format_pct(float(agent_metrics["side_effect_block_rate"]))}
+        - Public TechQA retrieval@3:
+          {_public_metric_text(techqa_public, "retrieval_hit_rate_at_3")}
+        - Public WixQA retrieval@3:
+          {_public_metric_text(wixqa_public, "retrieval_hit_rate_at_3")}
+        - Local public reranker top-1 delta:
+          {_public_signed_metric_text(reranker_summary, "top1_accuracy_delta")}
+        """
+    )
+
+    st.markdown("**Validation Boundary**")
+    st.markdown(
+        f"""
+        - Synthetic operations data is generated and intentionally contains no real
+          company, customer, employee, runbook, or ticket data.
+        - Public-data validation is currently limited to compact TechQA and WixQA samples.
+        - Independent external human-review labels are still pending:
+          {_format_status(human_calibration.get("external_review_status", "awaiting_labels"))}.
+        - Hosted model judge status:
+          {_format_status(model_judge_adapter.get("status", "not_configured"))}.
+        - Hosted public RAG reranker status:
+          {_format_status(public_rag_model_reranker.get("status", "not_configured"))}.
+        """
+    )
 
 
 def _render_summary(
@@ -1562,6 +1661,21 @@ def _format_pct(value: float) -> str:
 def _format_signed_pct(value: float) -> str:
     sign = "+" if value >= 0 else ""
     return f"{sign}{value * 100:.2f}%"
+
+
+def _public_metric_text(report: dict[str, object], metric: str) -> str:
+    if report.get("status") != "evaluated":
+        return "Not available"
+    metrics = report.get("metrics", {})
+    if not isinstance(metrics, dict) or metric not in metrics:
+        return "Not available"
+    return _format_pct(float(metrics[metric]))
+
+
+def _public_signed_metric_text(summary: object, metric: str) -> str:
+    if not isinstance(summary, dict) or metric not in summary:
+        return "Not available"
+    return _format_signed_pct(float(summary[metric]))
 
 
 def _format_status(status: object) -> str:

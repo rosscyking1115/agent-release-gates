@@ -11,6 +11,14 @@ The core benchmark uses a fully synthetic internal-operations environment so saf
 - Full evaluation report: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/evaluation_report.html
 - PDF report: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/evaluation_report.pdf
 
+## Reviewer Summary
+
+This repository is a production-style evaluation artifact for AI-agent safety and reliability. It includes a deterministic evaluation harness, a public Streamlit dashboard, a GitHub Pages report site, CI checks, Dockerized local execution, generated reports, and reproducibility artifacts.
+
+The current evidence combines synthetic internal-operations cases with public TechQA and WixQA RAG validation. The synthetic benchmark is used for controlled safety, tool-governance, weak-evidence, and observability tests; the public datasets are used to show that the retrieval evaluation is not only self-contained.
+
+The main remaining validation work is independent human labelling, broader multi-model comparison, and credentialed hosted reranker runs. Those gaps are tracked explicitly rather than hidden behind headline scores.
+
 ## What This Project Demonstrates
 
 AI agents are only useful when their answers are grounded, measurable, access-aware, safe, and auditable. This lab treats the agent as an operational system rather than a generic chatbot:
