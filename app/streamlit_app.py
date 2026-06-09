@@ -18,6 +18,8 @@ from internal_ai_agent.dashboard.data import (
     error_analysis_rows,
     evaluation_gate_rows,
     evaluation_history_rows,
+    external_human_review_category_rows,
+    external_human_review_disagreement_rows,
     extraction_metric_rows,
     failed_case_rows,
     failure_example_rows,
@@ -35,6 +37,7 @@ from internal_ai_agent.dashboard.data import (
     load_dataset_profile,
     load_evaluation_gates,
     load_evaluation_history,
+    load_external_human_review_summary,
     load_extraction_summary,
     load_failure_taxonomy_summary,
     load_human_calibration_summary,
@@ -136,6 +139,7 @@ def main() -> None:
     safety_mitigation_impact = load_safety_mitigation_impact(PROJECT_ROOT)
     safety_threshold_memo = load_safety_threshold_decision_memo(PROJECT_ROOT)
     human_calibration = load_human_calibration_summary(PROJECT_ROOT)
+    external_human_review = load_external_human_review_summary(PROJECT_ROOT)
     judge_reliability = load_judge_reliability_summary(PROJECT_ROOT)
     model_judge_adapter = load_model_judge_adapter_status(PROJECT_ROOT)
     failure_taxonomy = load_failure_taxonomy_summary(PROJECT_ROOT)
@@ -169,6 +173,7 @@ def main() -> None:
             public_rag_reranker,
             public_rag_model_reranker,
             human_calibration,
+            external_human_review,
             model_judge_adapter,
         )
         _render_summary(
@@ -210,6 +215,7 @@ def main() -> None:
             safety_mitigation_impact,
             safety_threshold_memo,
             human_calibration,
+            external_human_review,
             judge_reliability,
             model_judge_adapter,
         )
@@ -305,6 +311,7 @@ def _render_reviewer_summary(
     public_rag_reranker: dict[str, object],
     public_rag_model_reranker: dict[str, object],
     human_calibration: dict[str, object],
+    external_human_review: dict[str, object],
     model_judge_adapter: dict[str, object],
 ) -> None:
     st.subheader("Reviewer Summary")
@@ -369,7 +376,7 @@ def _render_reviewer_summary(
           company, customer, employee, runbook, or ticket data.
         - Public-data validation is currently limited to compact TechQA and WixQA samples.
         - Independent external human-review labels are still pending:
-          {_format_status(human_calibration.get("external_review_status", "awaiting_labels"))}.
+          {_format_status(external_human_review.get("status", "not_configured"))}.
         - Hosted model judge status:
           {_format_status(model_judge_adapter.get("status", "not_configured"))}.
         - Hosted public RAG reranker status:
@@ -1057,6 +1064,7 @@ def _render_safety_classifier_workflow(
     mitigation_impact: dict[str, object],
     threshold_memo: dict[str, object],
     human_calibration: dict[str, object],
+    external_human_review: dict[str, object],
     judge_reliability: dict[str, object],
     model_judge_adapter: dict[str, object],
 ) -> None:
@@ -1185,6 +1193,65 @@ def _render_safety_classifier_workflow(
             case_df = pd.DataFrame(human_calibration_case_rows(human_calibration))
             if not case_df.empty:
                 st.dataframe(case_df, hide_index=True, use_container_width=True)
+            external_summary = external_human_review.get("summary", {})
+            st.markdown("**External Human Review**")
+            if not external_summary:
+                st.info("External human-review summary is not available yet.")
+            else:
+                external_cols = st.columns(5)
+                external_cols[0].metric(
+                    "Status",
+                    _format_status(external_human_review.get("status", "")),
+                )
+                external_cols[1].metric(
+                    "Reviewers",
+                    external_human_review.get("reviewer_count", 0),
+                )
+                external_cols[2].metric(
+                    "Coverage",
+                    _format_pct(float(external_summary["external_label_coverage"])),
+                )
+                external_cols[3].metric(
+                    "Pairwise agreement",
+                    _format_pct(float(external_summary["pairwise_agreement_rate"])),
+                )
+                external_cols[4].metric(
+                    "Adjudication needed",
+                    external_summary["adjudication_required_count"],
+                )
+                external_detail_cols = st.columns(3)
+                external_detail_cols[0].metric(
+                    "Two-reviewer cases",
+                    external_summary["cases_with_two_or_more_reviewers"],
+                )
+                external_detail_cols[1].metric(
+                    "Cohen kappa",
+                    external_summary["pairwise_cohen_kappa"],
+                )
+                external_detail_cols[2].metric(
+                    "Maintainer disagreements",
+                    external_summary["external_maintainer_disagreement_count"],
+                )
+                external_category_df = pd.DataFrame(
+                    external_human_review_category_rows(external_human_review)
+                )
+                if not external_category_df.empty:
+                    st.dataframe(
+                        external_category_df,
+                        hide_index=True,
+                        use_container_width=True,
+                    )
+                external_disagreement_df = pd.DataFrame(
+                    external_human_review_disagreement_rows(external_human_review)
+                )
+                if not external_disagreement_df.empty:
+                    st.dataframe(
+                        external_disagreement_df,
+                        hide_index=True,
+                        use_container_width=True,
+                    )
+                for note in external_human_review.get("notes", []):
+                    st.caption(str(note))
             judge_summary = judge_reliability.get("summary", {})
             st.markdown("**Judge Reliability**")
             if not judge_summary:

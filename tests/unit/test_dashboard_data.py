@@ -1,3 +1,5 @@
+import json
+
 from internal_ai_agent.dashboard.data import (
     agent_metric_rows,
     agent_otel_span_rows,
@@ -9,6 +11,8 @@ from internal_ai_agent.dashboard.data import (
     error_analysis_rows,
     evaluation_gate_rows,
     evaluation_history_rows,
+    external_human_review_category_rows,
+    external_human_review_disagreement_rows,
     extraction_metric_rows,
     failed_case_rows,
     failure_example_rows,
@@ -16,6 +20,7 @@ from internal_ai_agent.dashboard.data import (
     load_collector_export_preview,
     load_dataset_profile,
     load_evaluation_gates,
+    load_external_human_review_summary,
     load_observability_trace_index,
     load_public_report,
     load_public_report_html,
@@ -93,6 +98,62 @@ def test_load_dataset_profile_reads_json(tmp_path) -> None:
 
     assert profile["profile_type"] == "synthetic_dataset_profile"
     assert profile["golden_case_mix"]["manual_cases"] == 2
+
+
+def test_external_human_review_rows_format_public_metrics(tmp_path) -> None:
+    reports_dir = tmp_path / "reports"
+    reports_dir.mkdir()
+    (reports_dir / "external_human_review_summary.json").write_text(
+        json.dumps(
+            {
+                "report_type": "external_human_review",
+                "status": "evaluated",
+                "case_count": 2,
+                "label_row_count": 4,
+                "reviewer_count": 2,
+                "summary": {
+                    "external_label_coverage": 1.0,
+                    "cases_with_two_or_more_reviewers": 2,
+                    "pairwise_agreement_rate": 0.5,
+                    "pairwise_cohen_kappa": 0.0,
+                    "external_maintainer_agreement_rate": 1.0,
+                    "external_maintainer_disagreement_count": 0,
+                    "adjudication_required_count": 1,
+                },
+                "by_category": [
+                    {
+                        "risk_category": "tool_misuse",
+                        "case_count": 2,
+                        "reviewed_case_count": 2,
+                        "external_maintainer_agreement_rate": 0.5,
+                        "adjudication_required_count": 1,
+                    }
+                ],
+                "disagreement_examples": [
+                    {
+                        "case_id": "HUMAN-CAL-002",
+                        "risk_category": "tool_misuse",
+                        "risk_severity": "medium",
+                        "maintainer_label": "benign",
+                        "external_reviewer_count": 2,
+                        "external_consensus_label": "adjudication_required",
+                        "external_maintainer_agree": None,
+                        "adjudication_required": True,
+                    }
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    report = load_external_human_review_summary(tmp_path)
+    category_rows = external_human_review_category_rows(report)
+    disagreement_rows = external_human_review_disagreement_rows(report)
+
+    assert report["status"] == "evaluated"
+    assert category_rows[0]["external_maintainer_agreement_pct"] == "50.00%"
+    assert disagreement_rows[0]["case_id"] == "HUMAN-CAL-002"
+    assert disagreement_rows[0]["adjudication_required"] is True
 
 
 def test_dataset_profile_rows_format_coverage_counts() -> None:

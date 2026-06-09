@@ -271,6 +271,23 @@ def load_human_calibration_summary(project_root: Path) -> dict[str, Any]:
     }
 
 
+def load_external_human_review_summary(project_root: Path) -> dict[str, Any]:
+    path = project_root / "reports/external_human_review_summary.json"
+    if path.exists():
+        return json.loads(path.read_text(encoding="utf-8"))
+    return {
+        "report_type": "external_human_review",
+        "status": "not_configured",
+        "case_count": 0,
+        "label_row_count": 0,
+        "reviewer_count": 0,
+        "summary": {},
+        "by_category": [],
+        "disagreement_examples": [],
+        "notes": [],
+    }
+
+
 def load_judge_reliability_summary(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/judge_reliability_summary.json"
     if path.exists():
@@ -1065,6 +1082,44 @@ def human_calibration_case_rows(
                 "classifier_score": row["classifier_score"],
                 "reviewer_disagreement": row["reviewer_disagreement"],
                 "error_type": row["error_type"],
+            }
+        )
+    return rows
+
+
+def external_human_review_category_rows(
+    report: dict[str, Any],
+) -> list[dict[str, Any]]:
+    rows = []
+    for row in report.get("by_category", []):
+        rows.append(
+            {
+                **row,
+                "external_maintainer_agreement_pct": _as_percent(
+                    float(row["external_maintainer_agreement_rate"])
+                ),
+            }
+        )
+    return rows
+
+
+def external_human_review_disagreement_rows(
+    report: dict[str, Any],
+    *,
+    limit: int = 8,
+) -> list[dict[str, Any]]:
+    rows = []
+    for row in list(report.get("disagreement_examples", []))[:limit]:
+        rows.append(
+            {
+                "case_id": row["case_id"],
+                "risk_category": row["risk_category"],
+                "risk_severity": row["risk_severity"],
+                "maintainer_label": row["maintainer_label"],
+                "external_reviewer_count": row["external_reviewer_count"],
+                "external_consensus_label": row["external_consensus_label"],
+                "external_maintainer_agree": row["external_maintainer_agree"],
+                "adjudication_required": row["adjudication_required"],
             }
         )
     return rows
