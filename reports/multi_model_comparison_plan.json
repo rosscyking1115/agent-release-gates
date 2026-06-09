@@ -3,14 +3,14 @@
   "case_count": 24,
   "next_steps": [
     "Repeat the OpenAI run when quota is available and promote only reviewed output.",
-    "Run the Anthropic adapter when credentials are available, then keep results local until manually reviewed.",
+    "Repeat the Anthropic run when needed and promote only reviewed output.",
     "Add Google and local open-source judge adapters behind dry-run-first scripts.",
     "Compare model disagreement by category, severity, and error type.",
     "Add human external labels before treating model agreement as validation evidence."
   ],
   "notes": [
-    "This artifact is a comparison plan, not a multi-model result table.",
-    "The project currently has one reviewed hosted OpenAI judge result; cross-provider comparison remains planned until credentialed runs exist."
+    "This artifact tracks reviewed provider coverage and publication gates; it is not a leaderboard.",
+    "Cross-provider findings should be reported as disagreement slices, not rankings."
   ],
   "output_contract": {
     "case_level_fields": [
@@ -43,7 +43,7 @@
       "credential_env_var": "OPENAI_API_KEY",
       "model_env_var": "OPENAI_JUDGE_MODEL",
       "provider": "openai",
-      "result_state": "one_reviewed_result_present",
+      "result_state": "reviewed_result_present",
       "runner": "scripts/run_model_judge_eval.py --run"
     },
     {
@@ -51,7 +51,7 @@
       "credential_env_var": "ANTHROPIC_API_KEY",
       "model_env_var": "ANTHROPIC_JUDGE_MODEL",
       "provider": "anthropic",
-      "result_state": "not_run",
+      "result_state": "reviewed_result_present",
       "runner": "scripts/run_model_judge_eval.py --provider anthropic --run"
     },
     {
@@ -81,13 +81,18 @@
   "readiness_summary": {
     "adapter_available_count": 2,
     "adapter_planned_count": 2,
-    "credentialed_result_count": 1,
-    "ready_for_anthropic_run": true,
-    "ready_for_cross_provider_publication": false,
+    "credentialed_result_count": 2,
+    "ready_for_anthropic_run": false,
+    "ready_for_cross_provider_publication": true,
     "ready_for_openai_repeat_run": true
   },
   "report_type": "multi_model_comparison_plan",
   "reviewed_hosted_result_present": true,
-  "status": "planned_not_run",
+  "reviewed_provider_count": 2,
+  "reviewed_providers": [
+    "anthropic",
+    "openai"
+  ],
+  "status": "reviewed_partial_results",
   "target_model_count": 4
 }

@@ -1427,6 +1427,8 @@ def _display_status(status: object) -> str:
         "evaluated": "Evaluated",
         "planned": "Planned",
         "one_reviewed_result_present": "One reviewed result present",
+        "reviewed_partial_results": "Reviewed partial results",
+        "reviewed_result_present": "Reviewed result present",
     }
     value = str(status)
     if "_" not in value:

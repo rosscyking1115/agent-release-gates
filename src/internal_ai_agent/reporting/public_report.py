@@ -114,9 +114,7 @@ def generate_public_report(project_root: Path) -> str:
     multi_model_comparison = _read_optional_json(
         reports_dir / "multi_model_comparison_plan.json"
     )
-    model_judge_reviewed = _read_optional_json(
-        reports_dir / "model_judge_reviewed_summary.json"
-    )
+    model_judge_reviewed = _read_reviewed_model_judge_summaries(reports_dir)
     failure_taxonomy = _read_optional_json(reports_dir / "failure_taxonomy_summary.json")
     agent = _read_json(reports_dir / "agent_eval_summary.json")
 
@@ -392,6 +390,18 @@ def _read_optional_json(path: Path) -> dict[str, Any]:
     if path.exists():
         return _read_json(path)
     return {"status": "not_configured", "metrics": {}, "case_count": 0}
+
+
+def _read_reviewed_model_judge_summaries(reports_dir: Path) -> list[dict[str, Any]]:
+    summaries = []
+    for path in sorted(reports_dir.glob("model_judge_reviewed_summary*.json")):
+        summary = _read_json(path)
+        if summary.get("report_type") == "reviewed_hosted_model_judge_result":
+            summaries.append(summary)
+    return sorted(
+        summaries,
+        key=lambda row: (str(row.get("provider", "")), str(row.get("model", ""))),
+    )
 
 
 def _retriever_table(report: dict[str, Any]) -> str:
@@ -1194,53 +1204,82 @@ def _multi_model_comparison_table(report: dict[str, Any]) -> str:
         ]
     )
     for target in report["planned_targets"]:
+        row = {**target, "result_state": _display_status(target["result_state"])}
         rows.append(
             "| {provider} | {adapter_status} | {credential_env_var} | "
-            "{model_env_var} | {result_state} |".format(**target)
+            "{model_env_var} | {result_state} |".format(**row)
         )
     return "\n".join(rows)
 
 
-def _model_judge_reviewed_table(report: dict[str, Any]) -> str:
-    if report.get("report_type") != "reviewed_hosted_model_judge_result":
+def _model_judge_reviewed_table(reports: list[dict[str, Any]]) -> str:
+    if not reports:
         return "Reviewed hosted model-judge result is not published."
-    metrics = report["metrics"]
-    review = report["publication_review"]
     rows = [
-        "| Reviewed hosted model-judge result | Value |",
-        "| --- | --- |",
-        f"| Provider | {report['provider']} |",
-        f"| Model | {report['model']} |",
-        (
-            "| Manual publication decision | "
-            f"{_display_status(report['manual_publication_decision'])} |"
-        ),
-        f"| Review note | {report['review_note']} |",
-        f"| Calibration cases | {report['case_count']} |",
-        f"| Model-judge label accuracy | {_pct(metrics['model_judge_label_accuracy'])} |",
-        (
-            "| Classifier / hosted judge agreement | "
-            f"{_pct(metrics['classifier_model_judge_agreement_rate'])} |"
-        ),
-        (
-            "| Average hosted judge confidence | "
-            f"{_pct(metrics['average_model_judge_confidence'])} |"
-        ),
-        f"| Hosted judge disagreement count | {metrics['model_judge_disagreement_count']} |",
-        f"| Publication gate decision | {_display_status(review['decision'])} |",
-        f"| Unsafe misses | {review['unsafe_miss_count']} |",
-        f"| Benign auto-blocks | {review['benign_auto_block_count']} |",
+        "| Reviewed hosted model-judge results | Provider | Model | Value |",
+        "| --- | --- | --- | --- |",
     ]
-    rows.extend(["", "| Public disagreement case | Category | Human | Hosted judge | Error |"])
-    rows.append("| --- | --- | --- | --- | --- |")
-    for example in report.get("public_disagreement_examples", [])[:8]:
-        rows.append(
-            "| {case_id} | {risk_category} | {human_label} | "
-            "{model_judge_label} | {model_judge_error_type} |".format(**example)
+    for report in reports:
+        metrics = report["metrics"]
+        review = report["publication_review"]
+        rows.extend(
+            [
+                f"| Manual publication decision | {report['provider']} | {report['model']} | "
+                f"{_display_status(report['manual_publication_decision'])} |",
+                f"| Review note | {report['provider']} | {report['model']} | "
+                f"{report['review_note']} |",
+                f"| Calibration cases | {report['provider']} | {report['model']} | "
+                f"{report['case_count']} |",
+                f"| Model-judge label accuracy | {report['provider']} | {report['model']} | "
+                f"{_pct(metrics['model_judge_label_accuracy'])} |",
+                (
+                    f"| Classifier / hosted judge agreement | {report['provider']} | "
+                    f"{report['model']} | "
+                    f"{_pct(metrics['classifier_model_judge_agreement_rate'])} |"
+                ),
+                (
+                    f"| Average hosted judge confidence | {report['provider']} | "
+                    f"{report['model']} | "
+                    f"{_pct(metrics['average_model_judge_confidence'])} |"
+                ),
+                f"| Hosted judge disagreement count | {report['provider']} | {report['model']} | "
+                f"{metrics['model_judge_disagreement_count']} |",
+                f"| Publication gate decision | {report['provider']} | {report['model']} | "
+                f"{_display_status(review['decision'])} |",
+                f"| Unsafe misses | {report['provider']} | {report['model']} | "
+                f"{review['unsafe_miss_count']} |",
+                f"| Benign auto-blocks | {report['provider']} | {report['model']} | "
+                f"{review['benign_auto_block_count']} |",
+            ]
         )
+    examples = [
+        (
+            report["provider"],
+            example,
+        )
+        for report in reports
+        for example in report.get("public_disagreement_examples", [])[:8]
+    ]
+    if examples:
+        rows.extend(
+            [
+                "",
+                "| Provider | Public disagreement case | Category | Human | Hosted judge | Error |",
+                "| --- | --- | --- | --- | --- | --- |",
+            ]
+        )
+        for provider, example in examples[:12]:
+            rows.append(
+                "| {provider} | {case_id} | {risk_category} | {human_label} | "
+                "{model_judge_label} | {model_judge_error_type} |".format(
+                    provider=provider,
+                    **example,
+                )
+            )
     rows.extend(["", "| Hosted judge limitation |", "| --- |"])
-    for limitation in report.get("limitations", []):
-        rows.append(f"| {limitation} |")
+    for report in reports:
+        for limitation in report.get("limitations", []):
+            rows.append(f"| {report['provider']}: {limitation} |")
     return "\n".join(rows)
 
 
@@ -1825,6 +1864,10 @@ def _display_status(status: object) -> str:
         "blocking": "Blocking",
         "non_blocking": "Non-blocking",
         "publish_with_limitations": "Publish with limitations",
+        "publish": "Publish",
+        "publishable": "Publishable",
+        "reviewed_partial_results": "Reviewed partial results",
+        "reviewed_result_present": "Reviewed result present",
         "review_required": "Review required",
         "recommend_targeted_secondary_review_floor": (
             "Recommend targeted secondary review floor"

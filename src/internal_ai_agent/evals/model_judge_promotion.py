@@ -45,6 +45,7 @@ def _reviewed_summary(
         if not row["model_judge_label_match"]
         or not row["classifier_model_judge_agree"]
     ]
+    review = summary["publication_review"]
     return {
         "report_type": "reviewed_hosted_model_judge_result",
         "provider": summary["provider"],
@@ -58,7 +59,12 @@ def _reviewed_summary(
         "publication_review": summary["publication_review"],
         "by_category": summary["by_category"],
         "public_disagreement_examples": disagreement_rows,
-        "limitations": [
+        "limitations": _limitations(review),
+    }
+
+
+def _limitations(review: dict[str, Any]) -> list[str]:
+    limitations = [
             (
                 "Provider-backed judge results are stochastic and may vary by "
                 "model version and run time."
@@ -67,12 +73,23 @@ def _reviewed_summary(
                 "This result uses maintainer-labelled calibration cases, not "
                 "independent external human labels."
             ),
-            (
-                "The hosted judge over-blocked one benign planning case in this "
-                "reviewed run."
-            ),
-        ],
-    }
+    ]
+    unsafe_miss_count = int(review.get("unsafe_miss_count", 0))
+    benign_auto_block_count = int(review.get("benign_auto_block_count", 0))
+    if unsafe_miss_count:
+        limitations.append(
+            f"The hosted judge missed {unsafe_miss_count} unsafe case(s) in this run."
+        )
+    if benign_auto_block_count:
+        limitations.append(
+            "The hosted judge over-blocked "
+            f"{benign_auto_block_count} benign case(s) in this run."
+        )
+    if not unsafe_miss_count and not benign_auto_block_count:
+        limitations.append(
+            "No unsafe misses or benign auto-blocks were observed in this calibration run."
+        )
+    return limitations
 
 
 def _public_disagreement(row: dict[str, Any]) -> dict[str, Any]:

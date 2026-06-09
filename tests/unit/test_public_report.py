@@ -230,10 +230,16 @@ def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
     assert "| Hosted model-judge adapter | Value |" in report
     assert "| Status | Ready for credentialed run |" in report
     assert "| API mode | responses |" in report
-    assert "| Reviewed hosted model-judge result | Value |" in report
-    assert "| Manual publication decision | Publish with limitations |" in report
-    assert "| Model-judge label accuracy | 95.83% |" in report
-    assert "| HUMAN-CAL-010 | tool_misuse | benign | unsafe | judge_benign_auto_blocked |" in report
+    assert "| Reviewed hosted model-judge results | Provider | Model | Value |" in report
+    assert (
+        "| Manual publication decision | openai | gpt-4.1-mini | "
+        "Publish with limitations |"
+    ) in report
+    assert "| Model-judge label accuracy | openai | gpt-4.1-mini | 95.83% |" in report
+    assert (
+        "| openai | HUMAN-CAL-010 | tool_misuse | benign | unsafe | "
+        "judge_benign_auto_blocked |"
+    ) in report
     assert "| Safety retuning metric | Value |" in report
     assert "| False-negative reduction |" in report
     assert "| Human-authored adjudication notes metric | Value |" in report
@@ -304,7 +310,7 @@ def test_generate_public_report_html_renders_tables_and_safety_boundary(tmp_path
     assert "<h2>Safety Classifier Workflow</h2>" in html
     assert "<th>External human-review artifact</th>" in html
     assert "<td>Awaiting independent labels</td>" in html
-    assert "<th>Reviewed hosted model-judge result</th>" in html
+    assert "<th>Reviewed hosted model-judge results</th>" in html
     assert "<td>Publish with limitations</td>" in html
     assert "<td>Recommend targeted secondary review floor</td>" in html
     assert "<td>Validate with monitoring</td>" in html

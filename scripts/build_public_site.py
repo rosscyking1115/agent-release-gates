@@ -120,6 +120,11 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
             reports_dir / "multi_model_comparison_plan.json",
             public_dir / "multi_model_comparison_plan.json",
         )
+    for reviewed_summary_path in reports_dir.glob("model_judge_reviewed_summary*.json"):
+        shutil.copyfile(
+            reviewed_summary_path,
+            public_dir / reviewed_summary_path.name,
+        )
     if (project_root / "data/review/external_human_review_packet.csv").exists():
         shutil.copyfile(
             project_root / "data/review/external_human_review_packet.csv",
@@ -676,6 +681,16 @@ def _public_artifact_links() -> list[tuple[str, str, str]]:
             "Model comparison",
             "Multi-model comparison plan",
             "multi_model_comparison_plan.json",
+        ),
+        (
+            "Model comparison",
+            "Reviewed OpenAI judge summary",
+            "model_judge_reviewed_summary.json",
+        ),
+        (
+            "Model comparison",
+            "Reviewed Anthropic judge summary",
+            "model_judge_reviewed_summary_anthropic.json",
         ),
         (
             "Safety evaluation",
