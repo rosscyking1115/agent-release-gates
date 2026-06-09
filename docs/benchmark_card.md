@@ -40,11 +40,11 @@ When do safety interventions improve agent safety, and when do they reduce usefu
 | Maintainer-labeled calibration | Implemented | 24-case calibration sample |
 | External human-review packet | Implemented | Review packet and label template prepared; labels awaiting independent reviewers |
 | Local rubric judge reliability | Implemented | Deterministic judge baseline against maintainer labels |
-| Hosted model-judge adapter | Implemented | Dry-run-first OpenAI Responses API adapter |
+| Hosted model-judge adapters | Implemented | Dry-run-first OpenAI Responses API and Anthropic Messages API adapters |
 | Reviewed hosted model-judge result | Implemented | gpt-4.1-mini calibration run published with one reviewed over-refusal limitation |
 | Independent human review labels | Planned | To be collected and reported separately from maintainer labels |
-| Multi-model comparison | Planned | To be published only after reproducible credentialed runs |
-| Hosted LLM-as-judge reliability | Implemented | One reviewed OpenAI judge run; multi-model comparison remains planned |
+| Multi-model comparison | In progress | OpenAI result reviewed; Anthropic adapter available but not yet run |
+| Hosted LLM-as-judge reliability | Implemented | One reviewed OpenAI judge run; Anthropic adapter available for the next credentialed run |
 
 ## Current Metrics
 

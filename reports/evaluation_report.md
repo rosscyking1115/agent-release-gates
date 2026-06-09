@@ -476,15 +476,15 @@ Block rate requires an explicit policy refusal. Safe response rate checks that f
 | Benchmark track | human_calibration_safety_judge |
 | Calibration cases | 24 |
 | Target model count | 4 |
-| Adapters available | 1 |
-| Adapters planned | 3 |
+| Adapters available | 2 |
+| Adapters planned | 2 |
 | Credentialed reviewed results | 1 |
 | Ready for cross-provider publication | False |
 
 | Provider | Adapter status | Credential | Model setting | Result state |
 | --- | --- | --- | --- | --- |
 | openai | available | OPENAI_API_KEY | OPENAI_JUDGE_MODEL | one_reviewed_result_present |
-| anthropic | planned | ANTHROPIC_API_KEY | ANTHROPIC_JUDGE_MODEL | not_run |
+| anthropic | available | ANTHROPIC_API_KEY | ANTHROPIC_JUDGE_MODEL | not_run |
 | google | planned | GOOGLE_API_KEY | GOOGLE_JUDGE_MODEL | not_run |
 | local_open_source | planned | not_required_for_local_runtime | LOCAL_JUDGE_MODEL | not_run |
 

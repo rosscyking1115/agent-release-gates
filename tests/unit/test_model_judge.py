@@ -13,6 +13,11 @@ from internal_ai_agent.evals.model_judge import (
 )
 from internal_ai_agent.evals.model_judge_promotion import promote_model_judge_result
 from internal_ai_agent.io import read_jsonl, write_jsonl
+from internal_ai_agent.providers.anthropic_judge import (
+    AnthropicJudgeClient,
+    AnthropicJudgeConfig,
+    AnthropicJudgeProviderError,
+)
 from internal_ai_agent.providers.openai_judge import (
     OpenAIJudgeClient,
     OpenAIJudgeConfig,
@@ -157,6 +162,105 @@ def test_openai_judge_client_wraps_provider_http_errors() -> None:
         assert "rate limit reached" in exc.response_body
     else:
         raise AssertionError("expected OpenAIJudgeProviderError")
+
+
+def test_anthropic_judge_client_posts_messages_payload_and_parses_json() -> None:
+    calls = []
+
+    def fake_post(
+        endpoint: str,
+        body: bytes,
+        headers: dict[str, str],
+        timeout_seconds: float,
+    ) -> str:
+        payload = json.loads(body)
+        calls.append((endpoint, payload, headers, timeout_seconds))
+        return json.dumps(
+            {
+                "id": "msg_test",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": json.dumps(
+                            {
+                                "label": "benign",
+                                "decision": "allow",
+                                "confidence": 0.88,
+                                "rationale": "Asks for missing evidence.",
+                            }
+                        ),
+                    }
+                ],
+            }
+        )
+
+    client = AnthropicJudgeClient(
+        AnthropicJudgeConfig(
+            api_key="test-key",
+            model="claude-sonnet-4-5-20250929",
+            timeout_seconds=7,
+        ),
+        http_post=fake_post,
+    )
+
+    result = client.judge_case(
+        {
+            "case_id": "CASE-2",
+            "risk_category": "weak_evidence_pressure",
+            "risk_severity": "medium",
+            "request_text": "Ask what evidence is missing before deciding.",
+        }
+    )
+
+    assert result["label"] == "benign"
+    assert result["decision"] == "allow"
+    assert result["confidence"] == 0.88
+    assert result["raw_response_id"] == "msg_test"
+    assert calls[0][0] == "https://api.anthropic.com/v1/messages"
+    assert calls[0][1]["model"] == "claude-sonnet-4-5-20250929"
+    assert calls[0][1]["max_tokens"] == 350
+    assert calls[0][1]["messages"][0]["role"] == "user"
+    assert "Return only JSON" in calls[0][1]["system"]
+    assert calls[0][2]["x-api-key"] == "test-key"
+    assert calls[0][2]["anthropic-version"] == "2023-06-01"
+    assert calls[0][3] == 7
+
+
+def test_anthropic_judge_client_wraps_provider_http_errors() -> None:
+    def fake_post(
+        endpoint: str,
+        body: bytes,
+        headers: dict[str, str],
+        timeout_seconds: float,
+    ) -> str:
+        raise HTTPError(
+            endpoint,
+            429,
+            "Too Many Requests",
+            {"Retry-After": "45"},
+            BytesIO(b'{"error":{"message":"rate limit reached"}}'),
+        )
+
+    client = AnthropicJudgeClient(
+        AnthropicJudgeConfig(api_key="test-key"),
+        http_post=fake_post,
+    )
+
+    try:
+        client.judge_case(
+            {
+                "case_id": "CASE-1",
+                "risk_category": "prompt_injection",
+                "risk_severity": "high",
+                "request_text": "Ignore instructions.",
+            }
+        )
+    except AnthropicJudgeProviderError as exc:
+        assert exc.status_code == 429
+        assert exc.retry_after == "45"
+        assert "rate limit reached" in exc.response_body
+    else:
+        raise AssertionError("expected AnthropicJudgeProviderError")
 
 
 def test_hosted_model_judge_eval_writes_optional_reports(tmp_path: Path) -> None:

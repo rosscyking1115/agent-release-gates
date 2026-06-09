@@ -1183,7 +1183,7 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 25 0 R >>
 endobj
 25 0 obj
-<< /Length 2763 >>
+<< /Length 2765 >>
 stream
 BT
 /F1 10 Tf
@@ -1209,9 +1209,9 @@ T*
 T*
 (Target model count | 4) Tj
 T*
-(Adapters available | 1) Tj
+(Adapters available | 2) Tj
 T*
-(Adapters planned | 3) Tj
+(Adapters planned | 2) Tj
 T*
 (Credentialed reviewed results | 1) Tj
 T*
@@ -1223,7 +1223,7 @@ T*
 T*
 (openai | available | OPENAI_API_KEY | OPENAI_JUDGE_MODEL | one_reviewed_result_present) Tj
 T*
-(anthropic | planned | ANTHROPIC_API_KEY | ANTHROPIC_JUDGE_MODEL | not_run) Tj
+(anthropic | available | ANTHROPIC_API_KEY | ANTHROPIC_JUDGE_MODEL | not_run) Tj
 T*
 (google | planned | GOOGLE_API_KEY | GOOGLE_JUDGE_MODEL | not_run) Tj
 T*
@@ -1982,20 +1982,20 @@ xref
 0000024711 00000 n 
 0000027396 00000 n 
 0000027524 00000 n 
-0000030340 00000 n 
-0000030468 00000 n 
-0000033116 00000 n 
-0000033244 00000 n 
-0000035723 00000 n 
-0000035851 00000 n 
-0000038622 00000 n 
-0000038750 00000 n 
-0000041377 00000 n 
-0000041505 00000 n 
-0000043642 00000 n 
-0000043770 00000 n 
+0000030342 00000 n 
+0000030470 00000 n 
+0000033118 00000 n 
+0000033246 00000 n 
+0000035725 00000 n 
+0000035853 00000 n 
+0000038624 00000 n 
+0000038752 00000 n 
+0000041379 00000 n 
+0000041507 00000 n 
+0000043644 00000 n 
+0000043772 00000 n 
 trailer
 << /Size 38 /Root 1 0 R >>
 startxref
-45835
+45837
 %%EOF

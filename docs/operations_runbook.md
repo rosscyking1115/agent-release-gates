@@ -244,6 +244,20 @@ Optional model override:
 uv run python scripts/run_model_judge_eval.py --run --model gpt-4.1-mini
 ```
 
+Run the Anthropic hosted judge only after setting a provider key:
+
+```powershell
+uv run python scripts/run_model_judge_eval.py --provider anthropic
+uv run python scripts/run_model_judge_eval.py --provider anthropic --run
+```
+
+Optional Anthropic settings:
+
+```powershell
+$env:ANTHROPIC_JUDGE_MODEL="claude-sonnet-4-5-20250929"
+uv run python scripts/run_model_judge_eval.py --provider anthropic --run
+```
+
 Expected hosted-judge result:
 
 - `reports/model_judge_eval_summary.json` is written locally and ignored by git

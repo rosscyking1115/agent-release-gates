@@ -59,18 +59,20 @@ def write_multi_model_comparison_plan(project_root: Path) -> dict[str, Any]:
             "Report disagreement slices instead of ranking models by a single aggregate score.",
         ],
         "readiness_summary": {
-            "adapter_available_count": 1,
-            "adapter_planned_count": 3,
+            "adapter_available_count": 2,
+            "adapter_planned_count": 2,
             "credentialed_result_count": 1 if reviewed_summary_path.exists() else 0,
             "ready_for_openai_repeat_run": True,
+            "ready_for_anthropic_run": True,
             "ready_for_cross_provider_publication": False,
         },
         "next_steps": [
             "Repeat the OpenAI run when quota is available and promote only reviewed output.",
             (
-                "Add Anthropic, Google, and local open-source judge adapters behind "
-                "dry-run-first scripts."
+                "Run the Anthropic adapter when credentials are available, then keep "
+                "results local until manually reviewed."
             ),
+            "Add Google and local open-source judge adapters behind dry-run-first scripts.",
             "Compare model disagreement by category, severity, and error type.",
             "Add human external labels before treating model agreement as validation evidence.",
         ],
@@ -98,10 +100,10 @@ def _planned_targets() -> list[dict[str, Any]]:
         },
         {
             "provider": "anthropic",
-            "adapter_status": "planned",
+            "adapter_status": "available",
             "credential_env_var": "ANTHROPIC_API_KEY",
             "model_env_var": "ANTHROPIC_JUDGE_MODEL",
-            "runner": "planned",
+            "runner": "scripts/run_model_judge_eval.py --provider anthropic --run",
             "result_state": "not_run",
         },
         {
