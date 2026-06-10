@@ -47,6 +47,17 @@ This page is for reviewers who want to inspect generated metrics, benchmark prof
 - Safety mitigation impact: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_mitigation_impact.json
 - Safety threshold decision memo: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_threshold_decision_memo.json
 
+## Agent Safety Intervention Study
+
+- Baseline v1 summary: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/baseline_v1_summary.json
+- Agent safety intervention study: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/agent_safety_intervention_study.json
+- Instruction hierarchy intervention: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/instruction_hierarchy_intervention.json
+- Instruction hierarchy report: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/instruction_hierarchy_intervention.md
+- Action gate intervention: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/action_gate_intervention.json
+- Action gate report: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/action_gate_intervention.md
+- Safety classifier intervention study: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_classifier_intervention_study.json
+- Safety classifier intervention report: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_classifier_intervention_study.md
+
 ## Model Comparison
 
 - Multi-model comparison plan: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/multi_model_comparison_plan.json

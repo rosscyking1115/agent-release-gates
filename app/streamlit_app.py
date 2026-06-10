@@ -26,6 +26,7 @@ from internal_ai_agent.dashboard.data import (
     failure_reason_rows,
     human_calibration_case_rows,
     human_calibration_category_rows,
+    intervention_experiment_rows,
     judge_reliability_category_rows,
     judge_reliability_disagreement_rows,
     judge_reliability_pair_rows,
@@ -41,6 +42,7 @@ from internal_ai_agent.dashboard.data import (
     load_extraction_summary,
     load_failure_taxonomy_summary,
     load_human_calibration_summary,
+    load_intervention_study,
     load_judge_reliability_summary,
     load_model_judge_adapter_status,
     load_multi_model_comparison_plan,
@@ -140,6 +142,7 @@ def main() -> None:
     )
     safety_mitigation_impact = load_safety_mitigation_impact(PROJECT_ROOT)
     safety_threshold_memo = load_safety_threshold_decision_memo(PROJECT_ROOT)
+    intervention_study = load_intervention_study(PROJECT_ROOT)
     human_calibration = load_human_calibration_summary(PROJECT_ROOT)
     external_human_review = load_external_human_review_summary(PROJECT_ROOT)
     judge_reliability = load_judge_reliability_summary(PROJECT_ROOT)
@@ -226,6 +229,8 @@ def main() -> None:
         )
         _render_extraction_metrics(extraction_summary, extraction_rows)
         _render_security_metrics(security_summary, security_rows)
+    elif section == "Intervention Study":
+        _render_intervention_study(intervention_study)
     elif section == "Agent Observability":
         _render_agent_metrics(
             agent_summary,
@@ -284,6 +289,7 @@ def _render_sidebar() -> str:
             "Dataset Profile",
             "Retrieval Evaluation",
             "Safety & Extraction",
+            "Intervention Study",
             "Agent Observability",
             "Evaluation Report",
             "Case Review",
@@ -1508,6 +1514,76 @@ def _render_security_breakdown(rows: list[dict[str, object]]) -> None:
         "Residual risk",
     ]
     st.dataframe(display_df, hide_index=True, use_container_width=True)
+
+
+def _render_intervention_study(report: dict[str, object]) -> None:
+    st.subheader("Safety Intervention Results")
+    if report.get("status") == "not_configured":
+        st.info("Agent safety intervention study has not been generated yet.")
+        return
+
+    st.markdown(str(report["main_finding"]))
+    cols = st.columns(3)
+    cols[0].metric("Experiments", int(report["experiment_count"]))
+    cols[1].metric("Baseline", str(report["baseline_label"]))
+    cols[2].metric("Status", str(report["status"]).replace("_", " ").title())
+
+    rows = intervention_experiment_rows(report)
+    if rows:
+        df = pd.DataFrame(rows)
+        display_df = df[
+            [
+                "experiment",
+                "cases",
+                "recommended_variant",
+                "baseline_value",
+                "recommended_value",
+                "absolute_improvement",
+                "review_burden_per_100",
+            ]
+        ].rename(
+            columns={
+                "experiment": "Experiment",
+                "cases": "Cases",
+                "recommended_variant": "Recommended variant",
+                "baseline_value": "Baseline",
+                "recommended_value": "Recommended",
+                "absolute_improvement": "Delta",
+                "review_burden_per_100": "Review burden / 100",
+            }
+        )
+        st.dataframe(display_df, hide_index=True, use_container_width=True)
+
+        chart_df = df.melt(
+            id_vars=["experiment"],
+            value_vars=["absolute_improvement", "review_burden_per_100"],
+            var_name="measure",
+            value_name="value",
+        )
+        chart = (
+            alt.Chart(chart_df)
+            .mark_bar()
+            .encode(
+                x=alt.X("experiment:N", title="Experiment", sort=None),
+                y=alt.Y("value:Q", title="Value"),
+                color=alt.Color("measure:N", title="Measure"),
+                tooltip=["experiment", "measure", "value"],
+            )
+            .properties(height=320)
+        )
+        st.altair_chart(chart, use_container_width=True)
+
+        with st.expander("Headline findings", expanded=True):
+            for row in rows:
+                st.markdown(f"- {row['headline']}")
+
+    st.subheader("Evaluation Reliability")
+    st.markdown(str(report["responsible_release_boundary"]))
+    next_steps = report.get("next_steps", [])
+    if next_steps:
+        st.markdown("**Next validation work**")
+        for item in next_steps:
+            st.markdown(f"- {item}")
 
 
 def _render_agent_metrics(

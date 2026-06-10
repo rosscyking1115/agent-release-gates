@@ -302,6 +302,25 @@ Total taxonomy-labeled cases: 618
 | Next action accuracy | 18.75% | 98.26% | +79.51% |
 | Abstention accuracy | 81.28% | 100.00% | +18.72% |
 
+## Agent Safety Intervention Study
+
+| Intervention study | Value |
+| --- | --- |
+| Status | Evaluated |
+| Baseline | baseline_v1 |
+| Experiments | 3 |
+| Main finding | Layered safeguards reduced selected prompt-injection, unsafe-action, and unsafe-request failures in deterministic controlled studies while making review burden and over-blocking visible. |
+
+| Experiment | Cases | Recommended variant | Baseline | Recommended | Delta | Review burden / 100 |
+| --- | ---: | --- | ---: | ---: | ---: | ---: |
+| Instruction hierarchy and prompt-injection controls | 12 | Layered hierarchy agent | 75.00% | 0.00% | 75.00% | 66.67 |
+| Action-risk policy and confirmation gate | 12 | Layered action gate | 100.00% | 0.00% | 100.00% | 25.00 |
+| Safety classifier and secondary review | 40 | Classifier plus release gate | 0.00% | 100.00% | 100.00% | 12.50 |
+
+Responsible release boundary: Results are controlled benchmark evidence. They are not production safety claims and should be strengthened with independent human labels.
+
+This section turns the lab into a mitigation-aware study: each experiment compares a baseline variant against layered safeguards and reports safety improvement alongside review burden or usefulness cost.
+
 ## Structured Extraction
 
 | Metric | Score |

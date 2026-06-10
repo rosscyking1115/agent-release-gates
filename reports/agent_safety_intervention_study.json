@@ -1,0 +1,55 @@
+{
+  "baseline_label": "baseline_v1",
+  "definition_of_done_status": "partial_research_upgrade_complete",
+  "experiment_count": 3,
+  "experiments": [
+    {
+      "absolute_improvement": 0.75,
+      "baseline_value": 0.75,
+      "baseline_variant": "Baseline agent",
+      "case_count": 12,
+      "experiment_id": "instruction_hierarchy",
+      "headline": "Layered hierarchy controls reduced prompt-injection attack success from 75.00% to 0.00%.",
+      "primary_metric": "prompt_injection_attack_success_rate",
+      "recommended_value": 0.0,
+      "recommended_variant": "Layered hierarchy agent",
+      "review_burden_per_100": 66.67,
+      "title": "Instruction hierarchy and prompt-injection controls"
+    },
+    {
+      "absolute_improvement": 1.0,
+      "baseline_value": 1.0,
+      "baseline_variant": "Baseline tool router",
+      "case_count": 12,
+      "experiment_id": "action_gate",
+      "headline": "Layered action gating reduced unsafe action execution from 100.00% to 0.00%.",
+      "primary_metric": "unsafe_action_attempt_rate",
+      "recommended_value": 0.0,
+      "recommended_variant": "Layered action gate",
+      "review_burden_per_100": 25.0,
+      "title": "Action-risk policy and confirmation gate"
+    },
+    {
+      "absolute_improvement": 1.0,
+      "baseline_value": 0.0,
+      "baseline_variant": "No classifier",
+      "case_count": 40,
+      "experiment_id": "safety_classifier",
+      "headline": "Classifier plus secondary review improved unsafe capture from 0.00% to 100.00%.",
+      "primary_metric": "unsafe_recall",
+      "recommended_value": 1.0,
+      "recommended_variant": "Classifier plus release gate",
+      "review_burden_per_100": 12.5,
+      "title": "Safety classifier and secondary review"
+    }
+  ],
+  "main_finding": "Layered safeguards reduced selected prompt-injection, unsafe-action, and unsafe-request failures in deterministic controlled studies while making review burden and over-blocking visible.",
+  "next_steps": [
+    "Collect independent labels for the prepared external review packet.",
+    "Expand the intervention studies with repeated hosted model runs.",
+    "Add grounding/abstention and memory-pollution intervention tracks."
+  ],
+  "report_type": "agent_safety_intervention_study",
+  "responsible_release_boundary": "Results are controlled benchmark evidence. They are not production safety claims and should be strengthened with independent human labels.",
+  "status": "evaluated"
+}

@@ -85,9 +85,11 @@ Inputs:
 | `data/eval/safety_secondary_review_validation_cases.jsonl` | Separate ambiguous medium-severity validation slice used to test the targeted secondary review floor without changing challenge or prevalence metrics. |
 | `data/eval/safety_prevalence_cases.jsonl` | Weighted sampled synthetic request stream used for prevalence estimation. |
 | `data/eval/human_calibration_cases.jsonl` | Maintainer-labeled calibration cases with primary, secondary, and adjudicated labels for comparing classifier decisions against label and expected-action targets. |
+| `data/eval_cases/instruction_hierarchy_cases.jsonl` | Synthetic intervention-study cases where lower-priority instructions appear in retrieved text, tool outputs, ticket comments, stale memory, or user text. |
 | `data/review/external_human_review_packet.csv` | Public packet of calibration cases for independent reviewer labeling. |
 | `data/review/external_human_review_label_template.csv` | Blank reviewer-response template with allowed label, decision, confidence, rationale, and notes fields. |
 | `data/review/external_human_review_reviewer_guide.md` | Reviewer-facing blind-labelling instructions generated with the external review packet. |
+| `config/action_risk_policy.yaml` | Synthetic mock-action risk policy for low, medium, high, and blocked tool actions used by the action-gate intervention study. |
 
 Reports:
 
@@ -105,6 +107,11 @@ Reports:
 | `reports/safety_secondary_review_operating_recommendation.json` | Staffing and capacity recommendation for adopting the targeted secondary review floor under explicit reviewer-throughput assumptions. |
 | `reports/safety_mitigation_impact.json` | Scenario comparison for no classifier, classifier-only hold, and classifier plus simulated human review. |
 | `reports/safety_threshold_decision_memo.json` | Selected threshold, review band, decision rationale, decision metrics, and next threshold-tuning work. |
+| `reports/baseline_v1_summary.json` | Frozen deterministic pre-intervention baseline summary used as the comparison point for new intervention studies. |
+| `reports/agent_safety_intervention_study.json` | Aggregate before/after study covering instruction hierarchy, action gates, and safety classifier secondary review. |
+| `reports/instruction_hierarchy_intervention.json` | Deterministic prompt-injection intervention comparison across baseline, hierarchy prompt, validator, and layered controls. |
+| `reports/action_gate_intervention.json` | Deterministic action-risk gate comparison across baseline routing, confirmation, risk classification, and layered controls. |
+| `reports/safety_classifier_intervention_study.json` | Formal safety-classifier mitigation study comparing no classifier, thresholding, severity-aware routing, secondary review, and release gate variants. |
 | `reports/safety_prevalence_report.md` | Weighted prevalence estimates, confidence intervals, sampling limitations, and distinction from challenge-set failure rates. |
 | `reports/human_calibration_summary.json` | Maintainer-labeled calibration summary with reviewer agreement, classifier label accuracy, expected-action match rate, unsafe capture, and category slices. |
 | `reports/human_calibration_cases.jsonl` | Case-level calibration comparison rows with human labels, classifier decision, classifier score, action/label match flags, and error type. |

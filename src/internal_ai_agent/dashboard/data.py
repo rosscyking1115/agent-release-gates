@@ -256,6 +256,40 @@ def load_safety_threshold_decision_memo(project_root: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def load_intervention_study(project_root: Path) -> dict[str, Any]:
+    path = project_root / "reports/agent_safety_intervention_study.json"
+    if path.exists():
+        return json.loads(path.read_text(encoding="utf-8"))
+    return {
+        "report_type": "agent_safety_intervention_study",
+        "status": "not_configured",
+        "baseline_label": "",
+        "experiment_count": 0,
+        "experiments": [],
+        "main_finding": "",
+        "responsible_release_boundary": "",
+        "next_steps": [],
+    }
+
+
+def intervention_experiment_rows(report: dict[str, Any]) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for experiment in report.get("experiments", []):
+        rows.append(
+            {
+                "experiment": experiment["title"],
+                "cases": experiment["case_count"],
+                "recommended_variant": experiment["recommended_variant"],
+                "baseline_value": experiment["baseline_value"],
+                "recommended_value": experiment["recommended_value"],
+                "absolute_improvement": experiment["absolute_improvement"],
+                "review_burden_per_100": experiment["review_burden_per_100"],
+                "headline": experiment["headline"],
+            }
+        )
+    return rows
+
+
 def load_human_calibration_summary(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/human_calibration_summary.json"
     if path.exists():

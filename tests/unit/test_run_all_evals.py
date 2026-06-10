@@ -95,6 +95,8 @@ def test_run_all_evals_generates_reports(tmp_path) -> None:
     assert summary["safety_classifier"]["mitigation_impact"]["unsafe_allowed_reduction"] > 0
     assert summary["safety_classifier"]["threshold_retuning"]["false_negative_reduction"] > 0
     assert summary["agent"]["metrics"]["side_effect_block_rate"] == 1.0
+    assert summary["intervention_study"]["experiment_count"] == 3
+    assert summary["intervention_study"]["status"] == "evaluated"
     assert summary["evaluation_history"]["current_summary"]["best_retriever"] == (
         "Local TF-IDF vector"
     )
@@ -139,6 +141,13 @@ def test_run_all_evals_generates_reports(tmp_path) -> None:
     assert (tmp_path / "reports/vector_eval_summary.json").exists()
     assert (tmp_path / "reports/embedding_eval_summary.json").exists()
     assert (tmp_path / "reports/agent_eval_summary.json").exists()
+    assert (tmp_path / "reports/baseline_v1_summary.json").exists()
+    assert (tmp_path / "reports/agent_safety_intervention_study.json").exists()
+    assert (tmp_path / "reports/instruction_hierarchy_intervention.json").exists()
+    assert (tmp_path / "reports/action_gate_intervention.json").exists()
+    assert (tmp_path / "reports/safety_classifier_intervention_study.json").exists()
+    assert (tmp_path / "data/eval_cases/instruction_hierarchy_cases.jsonl").exists()
+    assert (tmp_path / "config/action_risk_policy.yaml").exists()
     assert (tmp_path / "reports/agent_otel_spans.jsonl").exists()
     assert (tmp_path / "reports/observability_otel_spans.jsonl").exists()
     assert (tmp_path / "reports/observability_trace_index.json").exists()

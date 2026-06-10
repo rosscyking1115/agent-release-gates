@@ -118,6 +118,9 @@ def generate_public_report(project_root: Path) -> str:
     model_judge_provider_comparison = _read_optional_json(
         reports_dir / "model_judge_provider_comparison.json"
     )
+    intervention_study = _read_optional_json(
+        reports_dir / "agent_safety_intervention_study.json"
+    )
     failure_taxonomy = _read_optional_json(reports_dir / "failure_taxonomy_summary.json")
     agent = _read_json(reports_dir / "agent_eval_summary.json")
 
@@ -212,6 +215,17 @@ def generate_public_report(project_root: Path) -> str:
             "## Baseline To Improved Delta",
             "",
             _before_after_table(comparison),
+            "",
+            "## Agent Safety Intervention Study",
+            "",
+            _agent_safety_intervention_table(intervention_study),
+            "",
+            (
+                "This section turns the lab into a mitigation-aware study: each "
+                "experiment compares a baseline variant against layered safeguards "
+                "and reports safety improvement alongside review burden or "
+                "usefulness cost."
+            ),
             "",
             "## Structured Extraction",
             "",
@@ -895,6 +909,39 @@ def _before_after_table(report: dict[str, Any]) -> str:
             f"| {label} | {_pct(values['baseline'])} | {_pct(values['improved'])} | "
             f"{_signed_pct(values['delta'])} |"
         )
+    return "\n".join(rows)
+
+
+def _agent_safety_intervention_table(report: dict[str, Any]) -> str:
+    if not report or report.get("status") == "not_configured":
+        return "Agent safety intervention study is not configured."
+    rows = [
+        "| Intervention study | Value |",
+        "| --- | --- |",
+        f"| Status | {_display_status(report['status'])} |",
+        f"| Baseline | {report['baseline_label']} |",
+        f"| Experiments | {report['experiment_count']} |",
+        f"| Main finding | {report['main_finding']} |",
+        "",
+        "| Experiment | Cases | Recommended variant | Baseline | "
+        "Recommended | Delta | Review burden / 100 |",
+        "| --- | ---: | --- | ---: | ---: | ---: | ---: |",
+    ]
+    for experiment in report["experiments"]:
+        rows.append(
+            f"| {experiment['title']} | {experiment['case_count']} | "
+            f"{experiment['recommended_variant']} | "
+            f"{_display_metric(experiment['baseline_value'])} | "
+            f"{_display_metric(experiment['recommended_value'])} | "
+            f"{_display_metric(experiment['absolute_improvement'])} | "
+            f"{float(experiment['review_burden_per_100']):.2f} |"
+        )
+    rows.extend(
+        [
+            "",
+            f"Responsible release boundary: {report['responsible_release_boundary']}",
+        ]
+    )
     return "\n".join(rows)
 
 
@@ -1934,6 +1981,16 @@ def _pct(value: float) -> str:
 def _signed_pct(value: float) -> str:
     sign = "+" if value >= 0 else ""
     return f"{sign}{value * 100:.2f}%"
+
+
+def _display_metric(value: object) -> str:
+    if isinstance(value, int):
+        return str(value)
+    if isinstance(value, float):
+        if 0 <= value <= 1:
+            return _pct(value)
+        return f"{value:.2f}"
+    return str(value)
 
 
 def _display_status(status: object) -> str:

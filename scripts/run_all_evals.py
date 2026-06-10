@@ -11,6 +11,9 @@ from internal_ai_agent.evals.extraction import evaluate_extraction
 from internal_ai_agent.evals.failure_taxonomy import write_failure_taxonomy_summary
 from internal_ai_agent.evals.gates import write_evaluation_gates
 from internal_ai_agent.evals.human_calibration import evaluate_human_calibration
+from internal_ai_agent.evals.intervention_study import (
+    write_agent_safety_intervention_study,
+)
 from internal_ai_agent.evals.model_judge import write_model_judge_adapter_status
 from internal_ai_agent.evals.multi_model_comparison import (
     write_model_judge_provider_comparison,
@@ -73,6 +76,14 @@ def run_all(project_root: Path) -> dict[str, Any]:
         project_root
     )
     agent = evaluate_agent(project_root)
+    intervention_study = write_agent_safety_intervention_study(
+        project_root,
+        comparison=comparison,
+        retriever_comparison=retriever_comparison,
+        safety_classifier=safety_classifier,
+        security=security,
+        agent=agent,
+    )
     evaluation_history = write_evaluation_history(
         project_root,
         retriever_report=retriever_comparison,
@@ -123,6 +134,7 @@ def run_all(project_root: Path) -> dict[str, Any]:
         "multi_model_comparison": multi_model_comparison,
         "model_judge_provider_comparison": model_judge_provider_comparison,
         "agent": agent,
+        "intervention_study": intervention_study,
         "evaluation_history": evaluation_history,
         "observability_spans_path": str(observability_spans_path),
         "trace_index": trace_index,
@@ -324,6 +336,10 @@ def main() -> None:
     print(
         "- agent_side_effect_block_rate: "
         f"{summary['agent']['metrics']['side_effect_block_rate']:.4f}"
+    )
+    print(
+        "- intervention_study_experiments: "
+        f"{summary['intervention_study']['experiment_count']}"
     )
     print(
         "- historical_snapshot_latest: "

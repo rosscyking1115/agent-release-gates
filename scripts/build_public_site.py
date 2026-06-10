@@ -52,6 +52,9 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
     external_review = _read_optional_json(
         reports_dir / "external_human_review_summary.json"
     )
+    intervention_study = _read_optional_json(
+        reports_dir / "agent_safety_intervention_study.json"
+    )
 
     shutil.copyfile(reports_dir / "evaluation_report.html", public_dir / "evaluation_report.html")
     shutil.copyfile(reports_dir / "evaluation_report.pdf", public_dir / "evaluation_report.pdf")
@@ -125,6 +128,21 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
             reports_dir / "model_judge_provider_comparison.json",
             public_dir / "model_judge_provider_comparison.json",
         )
+    for intervention_artifact in [
+        "baseline_v1_summary.json",
+        "agent_safety_intervention_study.json",
+        "instruction_hierarchy_intervention.json",
+        "instruction_hierarchy_intervention.md",
+        "action_gate_intervention.json",
+        "action_gate_intervention.md",
+        "safety_classifier_intervention_study.json",
+        "safety_classifier_intervention_study.md",
+    ]:
+        if (reports_dir / intervention_artifact).exists():
+            shutil.copyfile(
+                reports_dir / intervention_artifact,
+                public_dir / intervention_artifact,
+            )
     for reviewed_summary_path in reports_dir.glob("model_judge_reviewed_summary*.json"):
         shutil.copyfile(
             reviewed_summary_path,
@@ -225,6 +243,7 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
             safety_mitigation=safety_mitigation,
             safety_operating_recommendation=safety_operating_recommendation,
             external_review=external_review,
+            intervention_study=intervention_study,
         ),
         encoding="utf-8",
     )
@@ -259,6 +278,7 @@ def _index_html(
     safety_mitigation: dict[str, Any],
     safety_operating_recommendation: dict[str, Any],
     external_review: dict[str, Any],
+    intervention_study: dict[str, Any],
 ) -> str:
     counts = profile["dataset_counts"]
     mix = profile["golden_case_mix"]
@@ -267,6 +287,7 @@ def _index_html(
     safety_metrics = safety_classifier["metrics"]
     safety_prevalence = safety_classifier["weighted_prevalence"]
     external_status = _display_status(external_review.get("status", "not_configured"))
+    intervention_count = intervention_study.get("experiment_count", 0)
     risk_labels = "\n".join(
         f"<li>{escape(_humanize_label(label))}</li>" for label in profile["risk_labels"]
     )
@@ -478,8 +499,9 @@ def _index_html(
         <div class="summary-card">
           <h3>Why it matters</h3>
           <p>
-            Agent safety work needs measurement that reports both unsafe misses
-            and usefulness costs, not only a single headline safety score.
+            Agent safety work needs mitigation-aware measurement that reports
+            both unsafe misses and usefulness costs, not only a single headline
+            safety score.
           </p>
         </div>
         <div class="summary-card">
@@ -520,6 +542,14 @@ def _index_html(
           </p>
         </div>
         <div class="summary-card">
+          <h3>Intervention evidence</h3>
+          <p>
+            The current study compares frozen baseline behavior against layered
+            safeguards for prompt injection, action gating, and safety
+            classification.
+          </p>
+        </div>
+        <div class="summary-card">
           <h3>Auditability is part of reliability</h3>
           <p>
             The project publishes release gates, trace summaries, and generated
@@ -534,6 +564,7 @@ def _index_html(
       <div class="grid">
         {_metric("Synthetic golden cases", counts["golden_cases"])}
         {_metric("Red-team cases", counts["red_team_cases"])}
+        {_metric("Intervention experiments", intervention_count)}
         {_metric("Manual golden-case share", _pct(mix["manual_share"]))}
         {_metric(
             "Public RAG cases",
@@ -646,6 +677,42 @@ def _public_artifact_links() -> list[tuple[str, str, str]]:
         ("Primary reports", "Full evaluation report", "evaluation_report.html"),
         ("Primary reports", "PDF evaluation report", "evaluation_report.pdf"),
         ("Primary reports", "Evaluation gates", "evaluation_gates.json"),
+        ("Intervention study", "Baseline v1 summary", "baseline_v1_summary.json"),
+        (
+            "Intervention study",
+            "Agent safety intervention study",
+            "agent_safety_intervention_study.json",
+        ),
+        (
+            "Intervention study",
+            "Instruction hierarchy intervention",
+            "instruction_hierarchy_intervention.json",
+        ),
+        (
+            "Intervention study",
+            "Instruction hierarchy report",
+            "instruction_hierarchy_intervention.md",
+        ),
+        (
+            "Intervention study",
+            "Action gate intervention",
+            "action_gate_intervention.json",
+        ),
+        (
+            "Intervention study",
+            "Action gate report",
+            "action_gate_intervention.md",
+        ),
+        (
+            "Intervention study",
+            "Safety classifier intervention study",
+            "safety_classifier_intervention_study.json",
+        ),
+        (
+            "Intervention study",
+            "Safety classifier intervention report",
+            "safety_classifier_intervention_study.md",
+        ),
         ("Benchmark profile", "Dataset profile", "dataset_profile.json"),
         ("Public RAG", "TechQA public RAG summary", "techqa_public_rag_summary.json"),
         (
