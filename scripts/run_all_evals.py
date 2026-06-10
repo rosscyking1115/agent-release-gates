@@ -27,6 +27,9 @@ from internal_ai_agent.evals.public_rag_reranker import write_public_rag_reranke
 from internal_ai_agent.evals.public_rag_reranking import (
     write_public_rag_reranking_opportunity,
 )
+from internal_ai_agent.evals.rag_grounding_intervention import (
+    write_rag_grounding_intervention,
+)
 from internal_ai_agent.evals.runner import (
     evaluate_comparison,
     evaluate_retriever_comparison,
@@ -65,6 +68,7 @@ def run_all(project_root: Path) -> dict[str, Any]:
     public_rag_reranking = write_public_rag_reranking_opportunity(project_root)
     public_rag_reranker = write_public_rag_reranker_eval(project_root)
     public_rag_model_reranker = write_public_rag_model_reranker_adapter_status(project_root)
+    rag_grounding_intervention = write_rag_grounding_intervention(project_root)
     extraction = evaluate_extraction(project_root)
     security = evaluate_security(project_root)
     safety_classifier = evaluate_safety_classifier(project_root)
@@ -125,6 +129,7 @@ def run_all(project_root: Path) -> dict[str, Any]:
         "public_rag_reranking": public_rag_reranking,
         "public_rag_reranker": public_rag_reranker,
         "public_rag_model_reranker": public_rag_model_reranker,
+        "rag_grounding_intervention": rag_grounding_intervention,
         "extraction": extraction,
         "security": security,
         "safety_classifier": safety_classifier,
@@ -289,6 +294,20 @@ def main() -> None:
         "- public_rag_model_reranker_packet_cases: "
         f"{summary['public_rag_model_reranker']['candidate_case_count']}"
     )
+    print(
+        "- rag_grounding_intervention_status: "
+        f"{summary['rag_grounding_intervention']['status']}"
+    )
+    if summary["rag_grounding_intervention"]["status"] == "evaluated":
+        grounding_summary = summary["rag_grounding_intervention"]["summary"]
+        print(
+            "- rag_grounding_moderate_unsupported_answer_rate: "
+            f"{grounding_summary['moderate_unsupported_answer_rate']:.4f}"
+        )
+        print(
+            "- rag_grounding_strict_review_burden_per_100: "
+            f"{grounding_summary['strict_review_burden_per_100']:.2f}"
+        )
     print(
         f"- extraction_schema_validity: {summary['extraction']['metrics']['schema_validity']:.4f}"
     )

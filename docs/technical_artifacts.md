@@ -30,6 +30,8 @@ This page is for reviewers who want to inspect generated metrics, benchmark prof
 - Cross-public RAG findings: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/public_rag_findings.json
 - Public RAG reranking opportunity: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/public_rag_reranking_opportunity.json
 - Public RAG reranker evaluation: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/public_rag_reranker_eval.json
+- RAG grounding intervention study: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/rag_grounding_intervention.json
+- RAG grounding intervention report: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/rag_grounding_intervention.md
 - Hosted public RAG reranker adapter status: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/public_rag_model_reranker_adapter_status.json
 - Hosted reranker packet: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/public_rag_model_reranker_packet.jsonl
 

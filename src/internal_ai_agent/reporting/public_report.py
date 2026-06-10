@@ -74,6 +74,9 @@ def generate_public_report(project_root: Path) -> str:
     public_rag_model_reranker = _read_optional_json(
         reports_dir / "public_rag_model_reranker_adapter_status.json"
     )
+    rag_grounding_intervention = _read_optional_json(
+        reports_dir / "rag_grounding_intervention.json"
+    )
     evaluation_history = _read_json(reports_dir / "evaluation_history.json")
     dataset_profile = load_dataset_profile(project_root)
     evaluation_gates = load_evaluation_gates(project_root)
@@ -198,6 +201,10 @@ def generate_public_report(project_root: Path) -> str:
             "",
             _public_rag_model_reranker_table(public_rag_model_reranker),
             "",
+            "## RAG Grounding Intervention Study",
+            "",
+            _rag_grounding_intervention_table(rag_grounding_intervention),
+            "",
             "## Historical Evaluation Snapshots",
             "",
             _evaluation_history_table(evaluation_history),
@@ -319,6 +326,10 @@ def generate_public_report(project_root: Path) -> str:
             "- The project can generate synthetic enterprise operations data safely.",
             "- The retrieval harness can also run against selected public technical-support data.",
             (
+                "- Public RAG grounding interventions report unsupported-answer "
+                "reduction alongside abstention and review cost."
+            ),
+            (
                 "- Retrieval quality can be measured across exact, paraphrased, noisy, "
                 "conflicting, and adversarial cases."
             ),
@@ -371,6 +382,7 @@ def generate_public_report(project_root: Path) -> str:
             "reproducible result tables.",
             "- Run safety intervention experiments across refusal policy, retrieval "
             "grounding, tool approval gates, secondary review, and classifier thresholds.",
+            "- Validate the public RAG grounding thresholds with a provider-backed reranker.",
             (
                 "- Expand the TechQA public benchmark beyond 160 cases and compare "
                 "against provider embeddings."
@@ -673,6 +685,56 @@ def _public_rag_model_reranker_table(report: dict[str, Any]) -> str:
         f"| Packet path | {report.get('packet_path', '')} |",
         f"| Publication rule | {report.get('publication_rule', '')} |",
     ]
+    return "\n".join(rows)
+
+
+def _rag_grounding_intervention_table(report: dict[str, Any]) -> str:
+    if report.get("status") != "evaluated":
+        return "RAG grounding intervention study is not configured."
+    summary = report["summary"]
+    rows = [
+        "| RAG grounding intervention metric | Value |",
+        "| --- | ---: |",
+        f"| Public RAG cases | {summary['case_count']} |",
+        f"| Answerable cases | {summary['answerable_case_count']} |",
+        f"| Impossible cases | {summary['impossible_case_count']} |",
+        (
+            "| Baseline unsupported answer rate | "
+            f"{_pct(summary['baseline_unsupported_answer_rate'])} |"
+        ),
+        (
+            "| Moderate unsupported answer rate | "
+            f"{_pct(summary['moderate_unsupported_answer_rate'])} |"
+        ),
+        (
+            "| Strict unsupported answer rate | "
+            f"{_pct(summary['strict_unsupported_answer_rate'])} |"
+        ),
+        (
+            "| Strict review burden / 100 | "
+            f"{float(summary['strict_review_burden_per_100']):.2f} |"
+        ),
+        f"| Recommended variant | {summary['recommended_variant']} |",
+        "",
+        "| Variant | Unsupported answer | Useful answer | False abstention/review | "
+        "Impossible intercept | Review burden / 100 |",
+        "| --- | ---: | ---: | ---: | ---: | ---: |",
+    ]
+    for variant in report["variants"]:
+        metrics = variant["metrics"]
+        rows.append(
+            f"| {variant['label']} | {_pct(metrics['unsupported_answer_rate'])} | "
+            f"{_pct(metrics['useful_answer_rate'])} | "
+            f"{_pct(metrics['false_abstention_or_review_rate'])} | "
+            f"{_pct(metrics['impossible_intercept_rate'])} | "
+            f"{float(metrics['review_burden_per_100_cases']):.2f} |"
+        )
+    rows.extend(["", "| Finding |", "| --- |"])
+    for finding in report.get("findings", []):
+        rows.append(f"| {finding} |")
+    rows.extend(["", "| Recommendation |", "| --- |"])
+    for recommendation in report.get("recommendations", []):
+        rows.append(f"| {recommendation} |")
     return "\n".join(rows)
 
 

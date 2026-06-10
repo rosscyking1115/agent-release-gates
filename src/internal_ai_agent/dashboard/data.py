@@ -177,6 +177,21 @@ def load_public_rag_model_reranker_adapter_status(project_root: Path) -> dict[st
     }
 
 
+def load_rag_grounding_intervention(project_root: Path) -> dict[str, Any]:
+    path = project_root / "reports/rag_grounding_intervention.json"
+    if path.exists():
+        return json.loads(path.read_text(encoding="utf-8"))
+    return {
+        "report_type": "rag_grounding_intervention",
+        "status": "not_configured",
+        "case_count": 0,
+        "variants": [],
+        "summary": {},
+        "findings": [],
+        "recommendations": [],
+    }
+
+
 def load_evaluation_history(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/evaluation_history.json"
     return json.loads(path.read_text(encoding="utf-8"))
@@ -954,6 +969,38 @@ def safety_operating_recommendation_rows(
         }
         for row in report.get("scenarios", [])
     ]
+
+
+def rag_grounding_variant_rows(report: dict[str, Any]) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for variant in report.get("variants", []):
+        metrics = variant["metrics"]
+        rows.append(
+            {
+                "variant": variant["label"],
+                "cases": variant["case_count"],
+                "unsupported_answer_rate": metrics["unsupported_answer_rate"],
+                "useful_answer_rate": metrics["useful_answer_rate"],
+                "false_abstention_or_review_rate": metrics[
+                    "false_abstention_or_review_rate"
+                ],
+                "impossible_intercept_rate": metrics["impossible_intercept_rate"],
+                "review_burden_per_100": metrics["review_burden_per_100_cases"],
+                "unsupported_answer_rate_pct": _as_percent(
+                    float(metrics["unsupported_answer_rate"])
+                ),
+                "useful_answer_rate_pct": _as_percent(
+                    float(metrics["useful_answer_rate"])
+                ),
+                "false_abstention_or_review_rate_pct": _as_percent(
+                    float(metrics["false_abstention_or_review_rate"])
+                ),
+                "impossible_intercept_rate_pct": _as_percent(
+                    float(metrics["impossible_intercept_rate"])
+                ),
+            }
+        )
+    return rows
 
 
 def agent_metric_rows(summary: dict[str, Any]) -> list[dict[str, Any]]:

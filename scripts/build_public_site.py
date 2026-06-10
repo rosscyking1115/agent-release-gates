@@ -38,6 +38,9 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
     public_rag_model_reranker = _read_optional_json(
         reports_dir / "public_rag_model_reranker_adapter_status.json"
     )
+    rag_grounding_intervention = _read_optional_json(
+        reports_dir / "rag_grounding_intervention.json"
+    )
     safety_classifier = _read_json(reports_dir / "safety_classifier_eval_summary.json")
     safety_retuning = _read_json(reports_dir / "safety_threshold_retuning.json")
     safety_review = _read_json(reports_dir / "safety_human_review_simulation.json")
@@ -218,6 +221,16 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
             reports_dir / "public_rag_model_reranker_packet.jsonl",
             public_dir / "public_rag_model_reranker_packet.jsonl",
         )
+    if (reports_dir / "rag_grounding_intervention.json").exists():
+        shutil.copyfile(
+            reports_dir / "rag_grounding_intervention.json",
+            public_dir / "rag_grounding_intervention.json",
+        )
+    if (reports_dir / "rag_grounding_intervention.md").exists():
+        shutil.copyfile(
+            reports_dir / "rag_grounding_intervention.md",
+            public_dir / "rag_grounding_intervention.md",
+        )
 
     (public_dir / "index.html").write_text(
         _index_html(
@@ -235,6 +248,7 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
             public_rag_reranking=public_rag_reranking,
             public_rag_reranker=public_rag_reranker,
             public_rag_model_reranker=public_rag_model_reranker,
+            rag_grounding_intervention=rag_grounding_intervention,
             safety_classifier=safety_classifier,
             safety_retuning=safety_retuning,
             safety_review=safety_review,
@@ -270,6 +284,7 @@ def _index_html(
     public_rag_reranking: dict[str, Any],
     public_rag_reranker: dict[str, Any],
     public_rag_model_reranker: dict[str, Any],
+    rag_grounding_intervention: dict[str, Any],
     safety_classifier: dict[str, Any],
     safety_retuning: dict[str, Any],
     safety_review: dict[str, Any],
@@ -288,6 +303,7 @@ def _index_html(
     safety_prevalence = safety_classifier["weighted_prevalence"]
     external_status = _display_status(external_review.get("status", "not_configured"))
     intervention_count = intervention_study.get("experiment_count", 0)
+    grounding_summary = rag_grounding_intervention.get("summary", {})
     risk_labels = "\n".join(
         f"<li>{escape(_humanize_label(label))}</li>" for label in profile["risk_labels"]
     )
@@ -576,6 +592,17 @@ def _index_html(
         )}
         {_metric("TechQA public RAG@3", _techqa_metric(techqa_public, "retrieval_hit_rate_at_3"))}
         {_metric("WixQA public RAG@3", _wixqa_metric(wixqa_public, "retrieval_hit_rate_at_3"))}
+        {_metric(
+            "Moderate grounding unsupported",
+            _rag_grounding_metric(
+                rag_grounding_intervention,
+                "moderate_unsupported_answer_rate",
+            ),
+        )}
+        {_metric(
+            "Strict grounding review / 100",
+            grounding_summary.get("strict_review_burden_per_100", "Not available"),
+        )}
         {_metric("Synthetic citation coverage", _pct(metrics["citation_coverage"]["improved"]))}
         {_metric("Synthetic abstention accuracy", _pct(metrics["abstention_accuracy"]["improved"]))}
         {_metric("Safety classifier recall", _pct(safety_metrics["recall"]))}
@@ -743,6 +770,12 @@ def _public_artifact_links() -> list[tuple[str, str, str]]:
             "public_rag_reranking_opportunity.json",
         ),
         ("Public RAG", "Public RAG reranker evaluation", "public_rag_reranker_eval.json"),
+        (
+            "Public RAG",
+            "RAG grounding intervention study",
+            "rag_grounding_intervention.json",
+        ),
+        ("Public RAG", "RAG grounding intervention report", "rag_grounding_intervention.md"),
         (
             "Public RAG",
             "Hosted public RAG reranker adapter",
@@ -1005,6 +1038,12 @@ def _wixqa_profile_value(report: dict[str, Any], key: str) -> object:
 
 
 def _public_rag_metric(report: dict[str, Any], metric: str) -> str:
+    if report.get("status") != "evaluated":
+        return "Not configured"
+    return _pct(float(report.get("summary", {}).get(metric, 0.0)))
+
+
+def _rag_grounding_metric(report: dict[str, Any], metric: str) -> str:
     if report.get("status") != "evaluated":
         return "Not configured"
     return _pct(float(report.get("summary", {}).get(metric, 0.0)))

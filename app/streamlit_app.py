@@ -55,6 +55,7 @@ from internal_ai_agent.dashboard.data import (
     load_public_report,
     load_public_report_html,
     load_public_report_pdf,
+    load_rag_grounding_intervention,
     load_retriever_case_rows,
     load_retriever_comparison,
     load_retriever_snapshots,
@@ -79,6 +80,7 @@ from internal_ai_agent.dashboard.data import (
     public_rag_reranker_track_rows,
     public_rag_reranking_track_rows,
     public_rag_track_rows,
+    rag_grounding_variant_rows,
     red_team_coverage_rows,
     retriever_experiment_rows,
     retriever_failure_example_rows,
@@ -124,6 +126,7 @@ def main() -> None:
     public_rag_model_reranker = load_public_rag_model_reranker_adapter_status(
         PROJECT_ROOT
     )
+    rag_grounding_intervention = load_rag_grounding_intervention(PROJECT_ROOT)
     evaluation_history = load_evaluation_history(PROJECT_ROOT)
     evaluation_gates = load_evaluation_gates(PROJECT_ROOT)
     extraction_summary = load_extraction_summary(PROJECT_ROOT)
@@ -230,7 +233,7 @@ def main() -> None:
         _render_extraction_metrics(extraction_summary, extraction_rows)
         _render_security_metrics(security_summary, security_rows)
     elif section == "Intervention Study":
-        _render_intervention_study(intervention_study)
+        _render_intervention_study(intervention_study, rag_grounding_intervention)
     elif section == "Agent Observability":
         _render_agent_metrics(
             agent_summary,
@@ -1516,7 +1519,10 @@ def _render_security_breakdown(rows: list[dict[str, object]]) -> None:
     st.dataframe(display_df, hide_index=True, use_container_width=True)
 
 
-def _render_intervention_study(report: dict[str, object]) -> None:
+def _render_intervention_study(
+    report: dict[str, object],
+    rag_grounding_report: dict[str, object],
+) -> None:
     st.subheader("Safety Intervention Results")
     if report.get("status") == "not_configured":
         st.info("Agent safety intervention study has not been generated yet.")
@@ -1583,6 +1589,85 @@ def _render_intervention_study(report: dict[str, object]) -> None:
     if next_steps:
         st.markdown("**Next validation work**")
         for item in next_steps:
+            st.markdown(f"- {item}")
+
+    _render_rag_grounding_intervention(rag_grounding_report)
+
+
+def _render_rag_grounding_intervention(report: dict[str, object]) -> None:
+    st.subheader("RAG Grounding And Abstention")
+    if report.get("status") != "evaluated":
+        st.info("RAG grounding intervention study is not configured in this runtime.")
+        return
+
+    summary = report.get("summary", {})
+    cols = st.columns(4)
+    cols[0].metric("Public RAG cases", int(summary.get("case_count", 0)))
+    cols[1].metric(
+        "Baseline unsupported",
+        _format_pct(float(summary.get("baseline_unsupported_answer_rate", 0.0))),
+    )
+    cols[2].metric(
+        "Moderate unsupported",
+        _format_pct(float(summary.get("moderate_unsupported_answer_rate", 0.0))),
+    )
+    cols[3].metric(
+        "Strict review / 100",
+        f"{float(summary.get('strict_review_burden_per_100', 0.0)):.2f}",
+    )
+
+    rows = rag_grounding_variant_rows(report)
+    if not rows:
+        return
+    df = pd.DataFrame(rows)
+    display_df = df[
+        [
+            "variant",
+            "cases",
+            "unsupported_answer_rate_pct",
+            "useful_answer_rate_pct",
+            "false_abstention_or_review_rate_pct",
+            "impossible_intercept_rate_pct",
+            "review_burden_per_100",
+        ]
+    ].rename(
+        columns={
+            "variant": "Variant",
+            "cases": "Cases",
+            "unsupported_answer_rate_pct": "Unsupported answer",
+            "useful_answer_rate_pct": "Useful answer",
+            "false_abstention_or_review_rate_pct": "False abstention/review",
+            "impossible_intercept_rate_pct": "Impossible intercept",
+            "review_burden_per_100": "Review burden / 100",
+        }
+    )
+    st.dataframe(display_df, hide_index=True, use_container_width=True)
+
+    chart_df = df.melt(
+        id_vars=["variant"],
+        value_vars=[
+            "unsupported_answer_rate",
+            "useful_answer_rate",
+            "false_abstention_or_review_rate",
+        ],
+        var_name="metric",
+        value_name="value",
+    )
+    chart = (
+        alt.Chart(chart_df)
+        .mark_bar()
+        .encode(
+            x=alt.X("variant:N", title="Variant", sort=None),
+            y=alt.Y("value:Q", title="Rate"),
+            color=alt.Color("metric:N", title="Metric"),
+            tooltip=["variant", "metric", "value"],
+        )
+        .properties(height=320)
+    )
+    st.altair_chart(chart, use_container_width=True)
+
+    with st.expander("Grounding findings", expanded=True):
+        for item in report.get("findings", []):
             st.markdown(f"- {item}")
 
 

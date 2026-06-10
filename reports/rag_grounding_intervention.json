@@ -1,0 +1,593 @@
+{
+  "case_count": 240,
+  "datasets": {
+    "Wix/WixQA expert-written": 80,
+    "nvidia/TechQA-RAG-Eval": 160
+  },
+  "decision_policy": {
+    "baseline_public_retriever": "Use the existing public retriever decision threshold.",
+    "citation_required_answering": "Do not publish an answer unless a retriever citation is present.",
+    "moderate_evidence_gate": "Raise the evidence threshold modestly before answering.",
+    "strict_gate_with_review": "Route low-confidence evidence to review rather than publishing.",
+    "strict_grounding_gate": "Abstain on low-confidence retrieved evidence."
+  },
+  "findings": [
+    "A moderate evidence gate reduces unsupported public-RAG answer attempts by 4.32% absolute while keeping useful-answer rate at 72.60%.",
+    "A stricter grounding gate reduces unsupported answer attempts by 11.05% absolute but increases false abstention/review to 26.92%.",
+    "Routing strict low-evidence cases to review makes the operational cost explicit: 30.83 reviews per 100 public-RAG cases."
+  ],
+  "limitations": [
+    "The intervention is deterministic and uses public benchmark labels only for scoring, not for making decisions.",
+    "The study measures answer/citation decisions, not natural-language answer quality.",
+    "Thresholds are intentionally simple so the result is reproducible in CI and public deployment."
+  ],
+  "notes": [
+    "This report combines only public TechQA and WixQA retriever case files.",
+    "It is separate from synthetic internal-operations safety and tool-use results.",
+    "No paid provider calls are used."
+  ],
+  "recommendations": [
+    "Use the moderate evidence gate as the default public-RAG release guard until a stronger reranker or model judge is validated.",
+    "Keep the strict gate as a high-risk mode where unsupported answers are more costly than manual review or abstention.",
+    "Evaluate the same thresholds against a provider-backed reranker before claiming model-level improvements."
+  ],
+  "report_type": "rag_grounding_intervention",
+  "status": "evaluated",
+  "summary": {
+    "answerable_case_count": 208,
+    "baseline_unsupported_answer_rate": 0.2067,
+    "case_count": 240,
+    "dataset_count": 2,
+    "impossible_case_count": 32,
+    "moderate_unsupported_answer_rate": 0.1635,
+    "moderate_useful_answer_rate": 0.726,
+    "recommended_variant": "moderate_evidence_gate",
+    "strict_review_burden_per_100": 30.83,
+    "strict_unsupported_answer_rate": 0.0962,
+    "strict_useful_answer_rate": 0.6346
+  },
+  "thresholds": {
+    "baseline_public_retriever": {
+      "techqa": 15.0,
+      "wixqa": 0.0
+    },
+    "citation_required_answering": {
+      "techqa": 15.0,
+      "wixqa": 0.0
+    },
+    "moderate_evidence_gate": {
+      "techqa": 20.0,
+      "wixqa": 12.0
+    },
+    "strict_gate_with_review": {
+      "techqa": 25.0,
+      "wixqa": 18.0
+    },
+    "strict_grounding_gate": {
+      "techqa": 25.0,
+      "wixqa": 18.0
+    }
+  },
+  "variants": [
+    {
+      "case_count": 240,
+      "dataset_metrics": [
+        {
+          "abstention_burden_per_100_cases": 0.0,
+          "answer_attempt_rate": 1.0,
+          "answerable_case_count": 80,
+          "case_count": 80,
+          "dataset": "Wix/WixQA expert-written",
+          "false_abstention_or_review_count": 0,
+          "false_abstention_or_review_rate": 0.0,
+          "impossible_case_count": 0,
+          "impossible_intercept_rate": 0.0,
+          "impossible_miss_count": 0,
+          "review_burden_per_100_cases": 0.0,
+          "unsupported_answer_count": 20,
+          "unsupported_answer_rate": 0.25,
+          "useful_answer_rate": 0.75
+        },
+        {
+          "abstention_burden_per_100_cases": 11.25,
+          "answer_attempt_rate": 0.8875,
+          "answerable_case_count": 128,
+          "case_count": 160,
+          "dataset": "nvidia/TechQA-RAG-Eval",
+          "false_abstention_or_review_count": 7,
+          "false_abstention_or_review_rate": 0.0547,
+          "impossible_case_count": 32,
+          "impossible_intercept_rate": 0.3438,
+          "impossible_miss_count": 21,
+          "review_burden_per_100_cases": 0.0,
+          "unsupported_answer_count": 23,
+          "unsupported_answer_rate": 0.1797,
+          "useful_answer_rate": 0.7656
+        }
+      ],
+      "failure_examples": [
+        {
+          "case_id": "TRAIN_Q015",
+          "dataset": "nvidia/TechQA-RAG-Eval",
+          "decision": "answer",
+          "failure_type": "unsupported_answer_attempt",
+          "threshold": 15.0,
+          "top_score": 321.142
+        },
+        {
+          "case_id": "TRAIN_Q016",
+          "dataset": "nvidia/TechQA-RAG-Eval",
+          "decision": "answer",
+          "failure_type": "unsupported_answer_attempt",
+          "threshold": 15.0,
+          "top_score": 71.1317
+        },
+        {
+          "case_id": "TRAIN_Q017",
+          "dataset": "nvidia/TechQA-RAG-Eval",
+          "decision": "answer",
+          "failure_type": "unsupported_answer_attempt",
+          "threshold": 15.0,
+          "top_score": 21.5374
+        },
+        {
+          "case_id": "TRAIN_Q020",
+          "dataset": "nvidia/TechQA-RAG-Eval",
+          "decision": "answer",
+          "failure_type": "unsupported_answer_attempt",
+          "threshold": 15.0,
+          "top_score": 68.7803
+        },
+        {
+          "case_id": "TRAIN_Q024",
+          "dataset": "nvidia/TechQA-RAG-Eval",
+          "decision": "answer",
+          "failure_type": "unsupported_answer_attempt",
+          "threshold": 15.0,
+          "top_score": 44.1336
+        },
+        {
+          "case_id": "TRAIN_Q029",
+          "dataset": "nvidia/TechQA-RAG-Eval",
+          "decision": "answer",
+          "failure_type": "unsupported_answer_attempt",
+          "threshold": 15.0,
+          "top_score": 43.2497
+        }
+      ],
+      "label": "Baseline public retriever",
+      "metrics": {
+        "abstention_burden_per_100_cases": 7.5,
+        "answer_attempt_rate": 0.925,
+        "answerable_case_count": 208,
+        "case_count": 240,
+        "false_abstention_or_review_count": 7,
+        "false_abstention_or_review_rate": 0.0337,
+        "impossible_case_count": 32,
+        "impossible_intercept_rate": 0.3438,
+        "impossible_miss_count": 21,
+        "review_burden_per_100_cases": 0.0,
+        "unsupported_answer_count": 43,
+        "unsupported_answer_rate": 0.2067,
+        "useful_answer_rate": 0.7596
+      },
+      "variant_id": "baseline_public_retriever"
+    },
+    {
+      "case_count": 240,
+      "dataset_metrics": [
+        {
+          "abstention_burden_per_100_cases": 0.0,
+          "answer_attempt_rate": 1.0,
+          "answerable_case_count": 80,
+          "case_count": 80,
+          "dataset": "Wix/WixQA expert-written",
+          "false_abstention_or_review_count": 0,
+          "false_abstention_or_review_rate": 0.0,
+          "impossible_case_count": 0,
+          "impossible_intercept_rate": 0.0,
+          "impossible_miss_count": 0,
+          "review_burden_per_100_cases": 0.0,
+          "unsupported_answer_count": 20,
+          "unsupported_answer_rate": 0.25,
+          "useful_answer_rate": 0.75
+        },
+        {
+          "abstention_burden_per_100_cases": 11.25,
+          "answer_attempt_rate": 0.8875,
+          "answerable_case_count": 128,
+          "case_count": 160,
+          "dataset": "nvidia/TechQA-RAG-Eval",
+          "false_abstention_or_review_count": 7,
+          "false_abstention_or_review_rate": 0.0547,
+          "impossible_case_count": 32,
+          "impossible_intercept_rate": 0.3438,
+          "impossible_miss_count": 21,
+          "review_burden_per_100_cases": 0.0,
+          "unsupported_answer_count": 23,
+          "unsupported_answer_rate": 0.1797,
+          "useful_answer_rate": 0.7656
+        }
+      ],
+      "failure_examples": [
+        {
+          "case_id": "TRAIN_Q015",
+          "dataset": "nvidia/TechQA-RAG-Eval",
+          "decision": "answer",
+          "failure_type": "unsupported_answer_attempt",
+          "threshold": 15.0,
+          "top_score": 321.142
+        },
+        {
+          "case_id": "TRAIN_Q016",
+          "dataset": "nvidia/TechQA-RAG-Eval",
+          "decision": "answer",
+          "failure_type": "unsupported_answer_attempt",
+          "threshold": 15.0,
+          "top_score": 71.1317
+        },
+        {
+          "case_id": "TRAIN_Q017",
+          "dataset": "nvidia/TechQA-RAG-Eval",
+          "decision": "answer",
+          "failure_type": "unsupported_answer_attempt",
+          "threshold": 15.0,
+          "top_score": 21.5374
+        },
+        {
+          "case_id": "TRAIN_Q020",
+          "dataset": "nvidia/TechQA-RAG-Eval",
+          "decision": "answer",
+          "failure_type": "unsupported_answer_attempt",
+          "threshold": 15.0,
+          "top_score": 68.7803
+        },
+        {
+          "case_id": "TRAIN_Q024",
+          "dataset": "nvidia/TechQA-RAG-Eval",
+          "decision": "answer",
+          "failure_type": "unsupported_answer_attempt",
+          "threshold": 15.0,
+          "top_score": 44.1336
+        },
+        {
+          "case_id": "TRAIN_Q029",
+          "dataset": "nvidia/TechQA-RAG-Eval",
+          "decision": "answer",
+          "failure_type": "unsupported_answer_attempt",
+          "threshold": 15.0,
+          "top_score": 43.2497
+        }
+      ],
+      "label": "Citation-required answering",
+      "metrics": {
+        "abstention_burden_per_100_cases": 7.5,
+        "answer_attempt_rate": 0.925,
+        "answerable_case_count": 208,
+        "case_count": 240,
+        "false_abstention_or_review_count": 7,
+        "false_abstention_or_review_rate": 0.0337,
+        "impossible_case_count": 32,
+        "impossible_intercept_rate": 0.3438,
+        "impossible_miss_count": 21,
+        "review_burden_per_100_cases": 0.0,
+        "unsupported_answer_count": 43,
+        "unsupported_answer_rate": 0.2067,
+        "useful_answer_rate": 0.7596
+      },
+      "variant_id": "citation_required_answering"
+    },
+    {
+      "case_count": 240,
+      "dataset_metrics": [
+        {
+          "abstention_burden_per_100_cases": 7.5,
+          "answer_attempt_rate": 0.925,
+          "answerable_case_count": 80,
+          "case_count": 80,
+          "dataset": "Wix/WixQA expert-written",
+          "false_abstention_or_review_count": 6,
+          "false_abstention_or_review_rate": 0.075,
+          "impossible_case_count": 0,
+          "impossible_intercept_rate": 0.0,
+          "impossible_miss_count": 0,
+          "review_burden_per_100_cases": 0.0,
+          "unsupported_answer_count": 16,
+          "unsupported_answer_rate": 0.2,
+          "useful_answer_rate": 0.725
+        },
+        {
+          "abstention_burden_per_100_cases": 20.0,
+          "answer_attempt_rate": 0.8,
+          "answerable_case_count": 128,
+          "case_count": 160,
+          "dataset": "nvidia/TechQA-RAG-Eval",
+          "false_abstention_or_review_count": 17,
+          "false_abstention_or_review_rate": 0.1328,
+          "impossible_case_count": 32,
+          "impossible_intercept_rate": 0.4688,
+          "impossible_miss_count": 17,
+          "review_burden_per_100_cases": 0.0,
+          "unsupported_answer_count": 18,
+          "unsupported_answer_rate": 0.1406,
+          "useful_answer_rate": 0.7266
+        }
+      ],
+      "failure_examples": [
+        {
+          "case_id": "TRAIN_Q015",
+          "dataset": "nvidia/TechQA-RAG-Eval",
+          "decision": "answer",
+          "failure_type": "unsupported_answer_attempt",
+          "threshold": 20.0,
+          "top_score": 321.142
+        },
+        {
+          "case_id": "TRAIN_Q016",
+          "dataset": "nvidia/TechQA-RAG-Eval",
+          "decision": "answer",
+          "failure_type": "unsupported_answer_attempt",
+          "threshold": 20.0,
+          "top_score": 71.1317
+        },
+        {
+          "case_id": "TRAIN_Q017",
+          "dataset": "nvidia/TechQA-RAG-Eval",
+          "decision": "answer",
+          "failure_type": "unsupported_answer_attempt",
+          "threshold": 20.0,
+          "top_score": 21.5374
+        },
+        {
+          "case_id": "TRAIN_Q020",
+          "dataset": "nvidia/TechQA-RAG-Eval",
+          "decision": "answer",
+          "failure_type": "unsupported_answer_attempt",
+          "threshold": 20.0,
+          "top_score": 68.7803
+        },
+        {
+          "case_id": "TRAIN_Q024",
+          "dataset": "nvidia/TechQA-RAG-Eval",
+          "decision": "answer",
+          "failure_type": "unsupported_answer_attempt",
+          "threshold": 20.0,
+          "top_score": 44.1336
+        },
+        {
+          "case_id": "TRAIN_Q029",
+          "dataset": "nvidia/TechQA-RAG-Eval",
+          "decision": "answer",
+          "failure_type": "unsupported_answer_attempt",
+          "threshold": 20.0,
+          "top_score": 43.2497
+        }
+      ],
+      "label": "Moderate evidence gate",
+      "metrics": {
+        "abstention_burden_per_100_cases": 15.83,
+        "answer_attempt_rate": 0.8417,
+        "answerable_case_count": 208,
+        "case_count": 240,
+        "false_abstention_or_review_count": 23,
+        "false_abstention_or_review_rate": 0.1106,
+        "impossible_case_count": 32,
+        "impossible_intercept_rate": 0.4688,
+        "impossible_miss_count": 17,
+        "review_burden_per_100_cases": 0.0,
+        "unsupported_answer_count": 34,
+        "unsupported_answer_rate": 0.1635,
+        "useful_answer_rate": 0.726
+      },
+      "variant_id": "moderate_evidence_gate"
+    },
+    {
+      "case_count": 240,
+      "dataset_metrics": [
+        {
+          "abstention_burden_per_100_cases": 31.25,
+          "answer_attempt_rate": 0.6875,
+          "answerable_case_count": 80,
+          "case_count": 80,
+          "dataset": "Wix/WixQA expert-written",
+          "false_abstention_or_review_count": 25,
+          "false_abstention_or_review_rate": 0.3125,
+          "impossible_case_count": 0,
+          "impossible_intercept_rate": 0.0,
+          "impossible_miss_count": 0,
+          "review_burden_per_100_cases": 0.0,
+          "unsupported_answer_count": 8,
+          "unsupported_answer_rate": 0.1,
+          "useful_answer_rate": 0.5875
+        },
+        {
+          "abstention_burden_per_100_cases": 30.63,
+          "answer_attempt_rate": 0.6937,
+          "answerable_case_count": 128,
+          "case_count": 160,
+          "dataset": "nvidia/TechQA-RAG-Eval",
+          "false_abstention_or_review_count": 31,
+          "false_abstention_or_review_rate": 0.2422,
+          "impossible_case_count": 32,
+          "impossible_intercept_rate": 0.5625,
+          "impossible_miss_count": 14,
+          "review_burden_per_100_cases": 0.0,
+          "unsupported_answer_count": 12,
+          "unsupported_answer_rate": 0.0938,
+          "useful_answer_rate": 0.6641
+        }
+      ],
+      "failure_examples": [
+        {
+          "case_id": "TRAIN_Q012",
+          "dataset": "nvidia/TechQA-RAG-Eval",
+          "decision": "abstain",
+          "failure_type": "answerable_low_evidence_intercepted",
+          "threshold": 25.0,
+          "top_score": 20.8675
+        },
+        {
+          "case_id": "TRAIN_Q015",
+          "dataset": "nvidia/TechQA-RAG-Eval",
+          "decision": "answer",
+          "failure_type": "unsupported_answer_attempt",
+          "threshold": 25.0,
+          "top_score": 321.142
+        },
+        {
+          "case_id": "TRAIN_Q016",
+          "dataset": "nvidia/TechQA-RAG-Eval",
+          "decision": "answer",
+          "failure_type": "unsupported_answer_attempt",
+          "threshold": 25.0,
+          "top_score": 71.1317
+        },
+        {
+          "case_id": "TRAIN_Q017",
+          "dataset": "nvidia/TechQA-RAG-Eval",
+          "decision": "abstain",
+          "failure_type": "answerable_low_evidence_intercepted",
+          "threshold": 25.0,
+          "top_score": 21.5374
+        },
+        {
+          "case_id": "TRAIN_Q020",
+          "dataset": "nvidia/TechQA-RAG-Eval",
+          "decision": "answer",
+          "failure_type": "unsupported_answer_attempt",
+          "threshold": 25.0,
+          "top_score": 68.7803
+        },
+        {
+          "case_id": "TRAIN_Q024",
+          "dataset": "nvidia/TechQA-RAG-Eval",
+          "decision": "answer",
+          "failure_type": "unsupported_answer_attempt",
+          "threshold": 25.0,
+          "top_score": 44.1336
+        }
+      ],
+      "label": "Strict grounding gate",
+      "metrics": {
+        "abstention_burden_per_100_cases": 30.83,
+        "answer_attempt_rate": 0.6917,
+        "answerable_case_count": 208,
+        "case_count": 240,
+        "false_abstention_or_review_count": 56,
+        "false_abstention_or_review_rate": 0.2692,
+        "impossible_case_count": 32,
+        "impossible_intercept_rate": 0.5625,
+        "impossible_miss_count": 14,
+        "review_burden_per_100_cases": 0.0,
+        "unsupported_answer_count": 20,
+        "unsupported_answer_rate": 0.0962,
+        "useful_answer_rate": 0.6346
+      },
+      "variant_id": "strict_grounding_gate"
+    },
+    {
+      "case_count": 240,
+      "dataset_metrics": [
+        {
+          "abstention_burden_per_100_cases": 0.0,
+          "answer_attempt_rate": 0.6875,
+          "answerable_case_count": 80,
+          "case_count": 80,
+          "dataset": "Wix/WixQA expert-written",
+          "false_abstention_or_review_count": 25,
+          "false_abstention_or_review_rate": 0.3125,
+          "impossible_case_count": 0,
+          "impossible_intercept_rate": 0.0,
+          "impossible_miss_count": 0,
+          "review_burden_per_100_cases": 31.25,
+          "unsupported_answer_count": 8,
+          "unsupported_answer_rate": 0.1,
+          "useful_answer_rate": 0.5875
+        },
+        {
+          "abstention_burden_per_100_cases": 0.0,
+          "answer_attempt_rate": 0.6937,
+          "answerable_case_count": 128,
+          "case_count": 160,
+          "dataset": "nvidia/TechQA-RAG-Eval",
+          "false_abstention_or_review_count": 31,
+          "false_abstention_or_review_rate": 0.2422,
+          "impossible_case_count": 32,
+          "impossible_intercept_rate": 0.5625,
+          "impossible_miss_count": 14,
+          "review_burden_per_100_cases": 30.63,
+          "unsupported_answer_count": 12,
+          "unsupported_answer_rate": 0.0938,
+          "useful_answer_rate": 0.6641
+        }
+      ],
+      "failure_examples": [
+        {
+          "case_id": "TRAIN_Q012",
+          "dataset": "nvidia/TechQA-RAG-Eval",
+          "decision": "review",
+          "failure_type": "answerable_low_evidence_intercepted",
+          "threshold": 25.0,
+          "top_score": 20.8675
+        },
+        {
+          "case_id": "TRAIN_Q015",
+          "dataset": "nvidia/TechQA-RAG-Eval",
+          "decision": "answer",
+          "failure_type": "unsupported_answer_attempt",
+          "threshold": 25.0,
+          "top_score": 321.142
+        },
+        {
+          "case_id": "TRAIN_Q016",
+          "dataset": "nvidia/TechQA-RAG-Eval",
+          "decision": "answer",
+          "failure_type": "unsupported_answer_attempt",
+          "threshold": 25.0,
+          "top_score": 71.1317
+        },
+        {
+          "case_id": "TRAIN_Q017",
+          "dataset": "nvidia/TechQA-RAG-Eval",
+          "decision": "review",
+          "failure_type": "answerable_low_evidence_intercepted",
+          "threshold": 25.0,
+          "top_score": 21.5374
+        },
+        {
+          "case_id": "TRAIN_Q020",
+          "dataset": "nvidia/TechQA-RAG-Eval",
+          "decision": "answer",
+          "failure_type": "unsupported_answer_attempt",
+          "threshold": 25.0,
+          "top_score": 68.7803
+        },
+        {
+          "case_id": "TRAIN_Q024",
+          "dataset": "nvidia/TechQA-RAG-Eval",
+          "decision": "answer",
+          "failure_type": "unsupported_answer_attempt",
+          "threshold": 25.0,
+          "top_score": 44.1336
+        }
+      ],
+      "label": "Strict gate with review",
+      "metrics": {
+        "abstention_burden_per_100_cases": 0.0,
+        "answer_attempt_rate": 0.6917,
+        "answerable_case_count": 208,
+        "case_count": 240,
+        "false_abstention_or_review_count": 56,
+        "false_abstention_or_review_rate": 0.2692,
+        "impossible_case_count": 32,
+        "impossible_intercept_rate": 0.5625,
+        "impossible_miss_count": 14,
+        "review_burden_per_100_cases": 30.83,
+        "unsupported_answer_count": 20,
+        "unsupported_answer_rate": 0.0962,
+        "useful_answer_rate": 0.6346
+      },
+      "variant_id": "strict_gate_with_review"
+    }
+  ]
+}

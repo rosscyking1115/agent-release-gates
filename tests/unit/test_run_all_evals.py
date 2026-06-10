@@ -39,6 +39,8 @@ def test_run_all_evals_generates_reports(tmp_path) -> None:
     assert summary["public_rag_reranker"]["summary"]["evaluated_track_count"] == 0
     assert summary["public_rag_model_reranker"]["status"] == "not_configured"
     assert summary["public_rag_model_reranker"]["candidate_case_count"] == 0
+    assert summary["rag_grounding_intervention"]["status"] == "not_configured"
+    assert summary["rag_grounding_intervention"]["case_count"] == 0
     assert summary["extraction"]["metrics"]["schema_validity"] == 1.0
     assert summary["security"]["metrics"]["improved_safe_rate"] == 1.0
     assert summary["security"]["metrics"]["improved_weighted_safe_rate"] == 1.0
@@ -135,6 +137,8 @@ def test_run_all_evals_generates_reports(tmp_path) -> None:
         tmp_path / "reports/public_rag_model_reranker_adapter_status.json"
     ).exists()
     assert (tmp_path / "reports/public_rag_model_reranker_packet.jsonl").exists()
+    assert (tmp_path / "reports/rag_grounding_intervention.json").exists()
+    assert (tmp_path / "reports/rag_grounding_intervention.md").exists()
     assert (tmp_path / "reports/retriever_metric_snapshots.json").exists()
     assert (tmp_path / "reports/evaluation_history.json").exists()
     assert (tmp_path / "reports/hybrid_eval_summary.json").exists()

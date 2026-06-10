@@ -858,7 +858,7 @@ def _aggregate_intervention_study(
         "next_steps": [
             "Collect independent labels for the prepared external review packet.",
             "Expand the intervention studies with repeated hosted model runs.",
-            "Add grounding/abstention and memory-pollution intervention tracks.",
+            "Add memory-pollution and goal-conflict intervention tracks.",
         ],
     }
 

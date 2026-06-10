@@ -237,6 +237,39 @@ The retrieval experiment compares a deliberately weak baseline, a lexical retrie
 | Packet path | reports/public_rag_model_reranker_packet.jsonl |
 | Publication rule | Publish hosted reranker scores only after reviewing model ID, run date, cost, changed cases, improved cases, and regressions. |
 
+## RAG Grounding Intervention Study
+
+| RAG grounding intervention metric | Value |
+| --- | ---: |
+| Public RAG cases | 240 |
+| Answerable cases | 208 |
+| Impossible cases | 32 |
+| Baseline unsupported answer rate | 20.67% |
+| Moderate unsupported answer rate | 16.35% |
+| Strict unsupported answer rate | 9.62% |
+| Strict review burden / 100 | 30.83 |
+| Recommended variant | moderate_evidence_gate |
+
+| Variant | Unsupported answer | Useful answer | False abstention/review | Impossible intercept | Review burden / 100 |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Baseline public retriever | 20.67% | 75.96% | 3.37% | 34.38% | 0.00 |
+| Citation-required answering | 20.67% | 75.96% | 3.37% | 34.38% | 0.00 |
+| Moderate evidence gate | 16.35% | 72.60% | 11.06% | 46.88% | 0.00 |
+| Strict grounding gate | 9.62% | 63.46% | 26.92% | 56.25% | 0.00 |
+| Strict gate with review | 9.62% | 63.46% | 26.92% | 56.25% | 30.83 |
+
+| Finding |
+| --- |
+| A moderate evidence gate reduces unsupported public-RAG answer attempts by 4.32% absolute while keeping useful-answer rate at 72.60%. |
+| A stricter grounding gate reduces unsupported answer attempts by 11.05% absolute but increases false abstention/review to 26.92%. |
+| Routing strict low-evidence cases to review makes the operational cost explicit: 30.83 reviews per 100 public-RAG cases. |
+
+| Recommendation |
+| --- |
+| Use the moderate evidence gate as the default public-RAG release guard until a stronger reranker or model judge is validated. |
+| Keep the strict gate as a high-risk mode where unsupported answers are more costly than manual review or abstention. |
+| Evaluate the same thresholds against a provider-backed reranker before claiming model-level improvements. |
+
 ## Historical Evaluation Snapshots
 
 | Milestone time | Milestone | Citation coverage | Failed cases | Citation delta | Failure delta |
@@ -828,6 +861,7 @@ The combined export includes workflow-level spans, agent tool/audit spans, case-
 
 - The project can generate synthetic enterprise operations data safely.
 - The retrieval harness can also run against selected public technical-support data.
+- Public RAG grounding interventions report unsupported-answer reduction alongside abstention and review cost.
 - Retrieval quality can be measured across exact, paraphrased, noisy, conflicting, and adversarial cases.
 - Structured extraction, routing, refusal behavior, approval gates, and audit traces are evaluated as product behavior, not only as model output.
 - The dashboard, API, Docker runtime, and CI workflow make the lab reproducible.
@@ -852,5 +886,6 @@ The combined export includes workflow-level spans, agent tool/audit spans, case-
 - Extend the reviewed hosted judge track beyond the first OpenAI run and publish disagreement slices separately from the local rubric baseline.
 - Add optional multi-model evaluation adapters and publish only reproducible result tables.
 - Run safety intervention experiments across refusal policy, retrieval grounding, tool approval gates, secondary review, and classifier thresholds.
+- Validate the public RAG grounding thresholds with a provider-backed reranker.
 - Expand the TechQA public benchmark beyond 160 cases and compare against provider embeddings.
 - Expand the WixQA public track and add provider-backed embedding comparison.
