@@ -124,6 +124,9 @@ def generate_public_report(project_root: Path) -> str:
     intervention_study = _read_optional_json(
         reports_dir / "agent_safety_intervention_study.json"
     )
+    memory_context_intervention = _read_optional_json(
+        reports_dir / "memory_context_intervention.json"
+    )
     failure_taxonomy = _read_optional_json(reports_dir / "failure_taxonomy_summary.json")
     agent = _read_json(reports_dir / "agent_eval_summary.json")
 
@@ -226,6 +229,10 @@ def generate_public_report(project_root: Path) -> str:
             "## Agent Safety Intervention Study",
             "",
             _agent_safety_intervention_table(intervention_study),
+            "",
+            "## Memory Context Intervention Study",
+            "",
+            _memory_context_intervention_table(memory_context_intervention),
             "",
             (
                 "This section turns the lab into a mitigation-aware study: each "
@@ -330,6 +337,10 @@ def generate_public_report(project_root: Path) -> str:
                 "reduction alongside abstention and review cost."
             ),
             (
+                "- Memory/context pollution controls test whether stale, cross-user, "
+                "or injected memory is ignored in favor of current evidence."
+            ),
+            (
                 "- Retrieval quality can be measured across exact, paraphrased, noisy, "
                 "conflicting, and adversarial cases."
             ),
@@ -383,6 +394,7 @@ def generate_public_report(project_root: Path) -> str:
             "- Run safety intervention experiments across refusal policy, retrieval "
             "grounding, tool approval gates, secondary review, and classifier thresholds.",
             "- Validate the public RAG grounding thresholds with a provider-backed reranker.",
+            "- Collect external labels for memory/context pollution cases.",
             (
                 "- Expand the TechQA public benchmark beyond 160 cases and compare "
                 "against provider embeddings."
@@ -1004,6 +1016,67 @@ def _agent_safety_intervention_table(report: dict[str, Any]) -> str:
             f"Responsible release boundary: {report['responsible_release_boundary']}",
         ]
     )
+    return "\n".join(rows)
+
+
+def _memory_context_intervention_table(report: dict[str, Any]) -> str:
+    if not report or report.get("status") != "evaluated":
+        return "Memory context intervention study is not configured."
+    summary = report["summary"]
+    rows = [
+        "| Memory/context intervention metric | Value |",
+        "| --- | ---: |",
+        f"| Cases | {report['case_count']} |",
+        f"| Polluted cases | {report['polluted_case_count']} |",
+        f"| Benign controls | {report['benign_case_count']} |",
+        (
+            "| Baseline polluted-memory follow rate | "
+            f"{_pct(summary['baseline_polluted_memory_follow_rate'])} |"
+        ),
+        (
+            "| Scoped-review polluted-memory follow rate | "
+            f"{_pct(summary['scoped_review_polluted_memory_follow_rate'])} |"
+        ),
+        (
+            "| Scoped-review current-evidence priority rate | "
+            f"{_pct(summary['scoped_review_current_evidence_priority_rate'])} |"
+        ),
+        (
+            "| Scoped-review cross-user leak rate | "
+            f"{_pct(summary['scoped_review_cross_user_leak_rate'])} |"
+        ),
+        (
+            "| Scoped-review benign-memory usefulness | "
+            f"{_pct(summary['scoped_review_benign_memory_usefulness_rate'])} |"
+        ),
+        (
+            "| Scoped-review review burden / 100 | "
+            f"{float(summary['scoped_review_review_burden_per_100_cases']):.2f} |"
+        ),
+        f"| Recommended variant | {summary['recommended_variant']} |",
+        "",
+        "| Variant | Polluted memory followed | Pollution detected | "
+        "Current evidence prioritized | Cross-user leak | Benign memory useful | "
+        "Review burden / 100 |",
+        "| --- | ---: | ---: | ---: | ---: | ---: | ---: |",
+    ]
+    for variant in report["variants"]:
+        metrics = variant["metrics"]
+        rows.append(
+            f"| {variant['label']} | "
+            f"{_pct(metrics['polluted_memory_follow_rate'])} | "
+            f"{_pct(metrics['pollution_detection_rate'])} | "
+            f"{_pct(metrics['current_evidence_priority_rate'])} | "
+            f"{_pct(metrics['cross_user_leak_rate'])} | "
+            f"{_pct(metrics['benign_memory_usefulness_rate'])} | "
+            f"{float(metrics['review_burden_per_100_cases']):.2f} |"
+        )
+    rows.extend(["", "| Finding |", "| --- |"])
+    for finding in report.get("findings", []):
+        rows.append(f"| {finding} |")
+    rows.extend(["", "| Recommendation |", "| --- |"])
+    for recommendation in report.get("recommendations", []):
+        rows.append(f"| {recommendation} |")
     return "\n".join(rows)
 
 

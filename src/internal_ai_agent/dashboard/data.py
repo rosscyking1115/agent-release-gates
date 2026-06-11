@@ -287,6 +287,21 @@ def load_intervention_study(project_root: Path) -> dict[str, Any]:
     }
 
 
+def load_memory_context_intervention(project_root: Path) -> dict[str, Any]:
+    path = project_root / "reports/memory_context_intervention.json"
+    if path.exists():
+        return json.loads(path.read_text(encoding="utf-8"))
+    return {
+        "report_type": "memory_context_intervention",
+        "status": "not_configured",
+        "case_count": 0,
+        "variants": [],
+        "summary": {},
+        "findings": [],
+        "recommendations": [],
+    }
+
+
 def intervention_experiment_rows(report: dict[str, Any]) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
     for experiment in report.get("experiments", []):
@@ -300,6 +315,44 @@ def intervention_experiment_rows(report: dict[str, Any]) -> list[dict[str, Any]]
                 "absolute_improvement": experiment["absolute_improvement"],
                 "review_burden_per_100": experiment["review_burden_per_100"],
                 "headline": experiment["headline"],
+            }
+        )
+    return rows
+
+
+def memory_context_variant_rows(report: dict[str, Any]) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for variant in report.get("variants", []):
+        metrics = variant["metrics"]
+        rows.append(
+            {
+                "variant": variant["label"],
+                "cases": variant["case_count"],
+                "polluted_memory_follow_rate": metrics["polluted_memory_follow_rate"],
+                "pollution_detection_rate": metrics["pollution_detection_rate"],
+                "current_evidence_priority_rate": metrics[
+                    "current_evidence_priority_rate"
+                ],
+                "cross_user_leak_rate": metrics["cross_user_leak_rate"],
+                "benign_memory_usefulness_rate": metrics[
+                    "benign_memory_usefulness_rate"
+                ],
+                "review_burden_per_100": metrics["review_burden_per_100_cases"],
+                "polluted_memory_follow_rate_pct": _as_percent(
+                    float(metrics["polluted_memory_follow_rate"])
+                ),
+                "pollution_detection_rate_pct": _as_percent(
+                    float(metrics["pollution_detection_rate"])
+                ),
+                "current_evidence_priority_rate_pct": _as_percent(
+                    float(metrics["current_evidence_priority_rate"])
+                ),
+                "cross_user_leak_rate_pct": _as_percent(
+                    float(metrics["cross_user_leak_rate"])
+                ),
+                "benign_memory_usefulness_rate_pct": _as_percent(
+                    float(metrics["benign_memory_usefulness_rate"])
+                ),
             }
         )
     return rows

@@ -31,7 +31,7 @@ The result is a reproducible evaluation artifact rather than a one-off dashboard
 | Public RAG validation | 160 TechQA cases and 80 WixQA cases evaluated separately from the synthetic benchmark |
 | Safety | 90.91% classifier recall, 0 high-severity false negatives in the current challenge set |
 | Agent governance | 100.00% mock side-effect block rate and approval audit rate |
-| Intervention study | 3 deterministic safety studies plus a public RAG grounding/abstention study |
+| Intervention study | 3 deterministic safety studies plus public RAG grounding and memory/context studies |
 | Hosted judge calibration | Reviewed OpenAI and Anthropic judge runs with public-safe provider comparison |
 
 These results are engineering evidence over controlled benchmarks. They are not claims of real-world production performance.
@@ -42,6 +42,7 @@ These results are engineering evidence over controlled benchmarks. They are not 
 - Layered safeguards reduce selected prompt-injection, unsafe-action, and unsafe-request failures in controlled studies while making review burden visible.
 - Public TechQA and WixQA retrieval tracks help test whether the RAG harness works beyond self-contained synthetic data.
 - Public RAG grounding thresholds reduce unsupported answer attempts while making abstention and review cost visible.
+- Memory/context controls reduce polluted-memory following while preserving benign memory usefulness.
 - Synthetic operations data remains useful for controlled tests that would be unsafe or impractical to run on confidential real workflows.
 - The next strongest validation step is independent human labelling, followed by broader multi-model comparison.
 
@@ -50,6 +51,7 @@ These results are engineering evidence over controlled benchmarks. They are not 
 - Evaluation runners for retrieval, extraction, safety classification, controlled-agent behavior, and observability.
 - Baseline-vs-intervention studies for instruction hierarchy, action-risk gates, and safety classifier review policy.
 - Public RAG grounding and abstention intervention study over TechQA and WixQA.
+- Memory/context pollution intervention study covering stale, injected, and cross-user memory.
 - Public benchmark documentation, dataset boundaries, failure taxonomy, and external-review packet.
 - Streamlit dashboard for interactive inspection.
 - GitHub Pages report and PDF for public review.
@@ -99,6 +101,7 @@ CI runs linting, tests, deterministic report checks, local OpenTelemetry smoke t
 - Benchmark card: [docs/benchmark_card.md](docs/benchmark_card.md)
 - Agent safety intervention study: [docs/agent_safety_intervention_study.md](docs/agent_safety_intervention_study.md)
 - RAG grounding intervention report: [reports/rag_grounding_intervention.md](reports/rag_grounding_intervention.md)
+- Memory context intervention report: [reports/memory_context_intervention.md](reports/memory_context_intervention.md)
 - Dataset card: [docs/dataset_card.md](docs/dataset_card.md)
 - Failure taxonomy: [docs/failure_taxonomy.md](docs/failure_taxonomy.md)
 - External reviewer handoff pack: [docs/reviewer_handoff_pack.md](docs/reviewer_handoff_pack.md)
@@ -116,7 +119,7 @@ CI runs linting, tests, deterministic report checks, local OpenTelemetry smoke t
 
 - Collect independent human labels using the prepared review packet.
 - Add reproducible multi-model comparison across hosted and open-source models.
-- Extend intervention studies to memory/context pollution and goal-conflict scenarios.
+- Extend intervention studies to goal-conflict scenarios.
 - Expand public RAG validation beyond the current compact TechQA and WixQA samples.
 - Expand the paper-style intervention report with external reviewer disagreement analysis.
 - Invite external review through issues and contribution guidelines.

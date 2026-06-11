@@ -44,6 +44,7 @@ from internal_ai_agent.dashboard.data import (
     load_human_calibration_summary,
     load_intervention_study,
     load_judge_reliability_summary,
+    load_memory_context_intervention,
     load_model_judge_adapter_status,
     load_multi_model_comparison_plan,
     load_observability_otel_spans,
@@ -72,6 +73,7 @@ from internal_ai_agent.dashboard.data import (
     load_security_summary,
     load_techqa_public_summary,
     load_wixqa_public_summary,
+    memory_context_variant_rows,
     metric_rows,
     model_judge_adapter_rows,
     multi_model_comparison_target_rows,
@@ -146,6 +148,7 @@ def main() -> None:
     safety_mitigation_impact = load_safety_mitigation_impact(PROJECT_ROOT)
     safety_threshold_memo = load_safety_threshold_decision_memo(PROJECT_ROOT)
     intervention_study = load_intervention_study(PROJECT_ROOT)
+    memory_context_intervention = load_memory_context_intervention(PROJECT_ROOT)
     human_calibration = load_human_calibration_summary(PROJECT_ROOT)
     external_human_review = load_external_human_review_summary(PROJECT_ROOT)
     judge_reliability = load_judge_reliability_summary(PROJECT_ROOT)
@@ -233,7 +236,11 @@ def main() -> None:
         _render_extraction_metrics(extraction_summary, extraction_rows)
         _render_security_metrics(security_summary, security_rows)
     elif section == "Intervention Study":
-        _render_intervention_study(intervention_study, rag_grounding_intervention)
+        _render_intervention_study(
+            intervention_study,
+            rag_grounding_intervention,
+            memory_context_intervention,
+        )
     elif section == "Agent Observability":
         _render_agent_metrics(
             agent_summary,
@@ -1522,6 +1529,7 @@ def _render_security_breakdown(rows: list[dict[str, object]]) -> None:
 def _render_intervention_study(
     report: dict[str, object],
     rag_grounding_report: dict[str, object],
+    memory_context_report: dict[str, object],
 ) -> None:
     st.subheader("Safety Intervention Results")
     if report.get("status") == "not_configured":
@@ -1592,6 +1600,7 @@ def _render_intervention_study(
             st.markdown(f"- {item}")
 
     _render_rag_grounding_intervention(rag_grounding_report)
+    _render_memory_context_intervention(memory_context_report)
 
 
 def _render_rag_grounding_intervention(report: dict[str, object]) -> None:
@@ -1667,6 +1676,87 @@ def _render_rag_grounding_intervention(report: dict[str, object]) -> None:
     st.altair_chart(chart, use_container_width=True)
 
     with st.expander("Grounding findings", expanded=True):
+        for item in report.get("findings", []):
+            st.markdown(f"- {item}")
+
+
+def _render_memory_context_intervention(report: dict[str, object]) -> None:
+    st.subheader("Memory And Context Pollution")
+    if report.get("status") != "evaluated":
+        st.info("Memory/context intervention study is not configured in this runtime.")
+        return
+
+    summary = report.get("summary", {})
+    cols = st.columns(4)
+    cols[0].metric("Cases", int(report.get("case_count", 0)))
+    cols[1].metric(
+        "Baseline polluted follow",
+        _format_pct(float(summary.get("baseline_polluted_memory_follow_rate", 0.0))),
+    )
+    cols[2].metric(
+        "Scoped review follow",
+        _format_pct(
+            float(summary.get("scoped_review_polluted_memory_follow_rate", 0.0))
+        ),
+    )
+    cols[3].metric(
+        "Review / 100",
+        f"{float(summary.get('scoped_review_review_burden_per_100_cases', 0.0)):.2f}",
+    )
+
+    rows = memory_context_variant_rows(report)
+    if not rows:
+        return
+    df = pd.DataFrame(rows)
+    display_df = df[
+        [
+            "variant",
+            "cases",
+            "polluted_memory_follow_rate_pct",
+            "pollution_detection_rate_pct",
+            "current_evidence_priority_rate_pct",
+            "cross_user_leak_rate_pct",
+            "benign_memory_usefulness_rate_pct",
+            "review_burden_per_100",
+        ]
+    ].rename(
+        columns={
+            "variant": "Variant",
+            "cases": "Cases",
+            "polluted_memory_follow_rate_pct": "Polluted memory followed",
+            "pollution_detection_rate_pct": "Pollution detected",
+            "current_evidence_priority_rate_pct": "Current evidence prioritized",
+            "cross_user_leak_rate_pct": "Cross-user leak",
+            "benign_memory_usefulness_rate_pct": "Benign memory useful",
+            "review_burden_per_100": "Review burden / 100",
+        }
+    )
+    st.dataframe(display_df, hide_index=True, use_container_width=True)
+
+    chart_df = df.melt(
+        id_vars=["variant"],
+        value_vars=[
+            "polluted_memory_follow_rate",
+            "current_evidence_priority_rate",
+            "benign_memory_usefulness_rate",
+        ],
+        var_name="metric",
+        value_name="value",
+    )
+    chart = (
+        alt.Chart(chart_df)
+        .mark_bar()
+        .encode(
+            x=alt.X("variant:N", title="Variant", sort=None),
+            y=alt.Y("value:Q", title="Rate"),
+            color=alt.Color("metric:N", title="Metric"),
+            tooltip=["variant", "metric", "value"],
+        )
+        .properties(height=320)
+    )
+    st.altair_chart(chart, use_container_width=True)
+
+    with st.expander("Memory/context findings", expanded=True):
         for item in report.get("findings", []):
             st.markdown(f"- {item}")
 

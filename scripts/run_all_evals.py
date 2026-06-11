@@ -14,6 +14,9 @@ from internal_ai_agent.evals.human_calibration import evaluate_human_calibration
 from internal_ai_agent.evals.intervention_study import (
     write_agent_safety_intervention_study,
 )
+from internal_ai_agent.evals.memory_context_intervention import (
+    write_memory_context_intervention,
+)
 from internal_ai_agent.evals.model_judge import write_model_judge_adapter_status
 from internal_ai_agent.evals.multi_model_comparison import (
     write_model_judge_provider_comparison,
@@ -88,6 +91,7 @@ def run_all(project_root: Path) -> dict[str, Any]:
         security=security,
         agent=agent,
     )
+    memory_context_intervention = write_memory_context_intervention(project_root)
     evaluation_history = write_evaluation_history(
         project_root,
         retriever_report=retriever_comparison,
@@ -140,6 +144,7 @@ def run_all(project_root: Path) -> dict[str, Any]:
         "model_judge_provider_comparison": model_judge_provider_comparison,
         "agent": agent,
         "intervention_study": intervention_study,
+        "memory_context_intervention": memory_context_intervention,
         "evaluation_history": evaluation_history,
         "observability_spans_path": str(observability_spans_path),
         "trace_index": trace_index,
@@ -359,6 +364,18 @@ def main() -> None:
     print(
         "- intervention_study_experiments: "
         f"{summary['intervention_study']['experiment_count']}"
+    )
+    print(
+        "- memory_context_intervention_status: "
+        f"{summary['memory_context_intervention']['status']}"
+    )
+    print(
+        "- memory_context_polluted_follow_rate: "
+        f"{summary['memory_context_intervention']['summary']['scoped_review_polluted_memory_follow_rate']:.4f}"
+    )
+    print(
+        "- memory_context_review_burden_per_100: "
+        f"{summary['memory_context_intervention']['summary']['scoped_review_review_burden_per_100_cases']:.2f}"
     )
     print(
         "- historical_snapshot_latest: "

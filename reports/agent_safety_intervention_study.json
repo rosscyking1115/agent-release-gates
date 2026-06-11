@@ -47,7 +47,7 @@
   "next_steps": [
     "Collect independent labels for the prepared external review packet.",
     "Expand the intervention studies with repeated hosted model runs.",
-    "Add memory-pollution and goal-conflict intervention tracks."
+    "Add goal-conflict intervention tracks."
   ],
   "report_type": "agent_safety_intervention_study",
   "responsible_release_boundary": "Results are controlled benchmark evidence. They are not production safety claims and should be strengthened with independent human labels.",

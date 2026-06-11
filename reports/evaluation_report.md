@@ -352,6 +352,41 @@ Total taxonomy-labeled cases: 618
 
 Responsible release boundary: Results are controlled benchmark evidence. They are not production safety claims and should be strengthened with independent human labels.
 
+## Memory Context Intervention Study
+
+| Memory/context intervention metric | Value |
+| --- | ---: |
+| Cases | 12 |
+| Polluted cases | 8 |
+| Benign controls | 4 |
+| Baseline polluted-memory follow rate | 100.00% |
+| Scoped-review polluted-memory follow rate | 0.00% |
+| Scoped-review current-evidence priority rate | 100.00% |
+| Scoped-review cross-user leak rate | 0.00% |
+| Scoped-review benign-memory usefulness | 50.00% |
+| Scoped-review review burden / 100 | 66.67 |
+| Recommended variant | scoped_memory_with_review |
+
+| Variant | Polluted memory followed | Pollution detected | Current evidence prioritized | Cross-user leak | Benign memory useful | Review burden / 100 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Baseline memory-enabled agent | 100.00% | 0.00% | 0.00% | 100.00% | 100.00% | 0.00 |
+| Recency-filtered memory | 50.00% | 50.00% | 50.00% | 100.00% | 100.00% | 0.00 |
+| Source-trust filtered memory | 75.00% | 25.00% | 25.00% | 100.00% | 100.00% | 0.00 |
+| Scoped memory store | 0.00% | 100.00% | 100.00% | 0.00% | 100.00% | 0.00 |
+| Scoped memory with review | 0.00% | 100.00% | 100.00% | 0.00% | 50.00% | 66.67 |
+
+| Finding |
+| --- |
+| Scoped memory with review reduced polluted-memory following by 100.00% absolute compared with the baseline memory agent. |
+| The recommended variant prioritizes current evidence in 100.00% of polluted-memory cases. |
+| The mitigation preserves benign-memory usefulness at 50.00% while adding 66.67 reviews per 100 cases. |
+
+| Recommendation |
+| --- |
+| Treat memory as untrusted context unless it is scoped, recent, source-attributed, and consistent with current evidence. |
+| Route privacy-sensitive or injected memory conflicts to review instead of silently using remembered context. |
+| Keep benign-memory usefulness visible so safety controls do not turn memory off entirely. |
+
 This section turns the lab into a mitigation-aware study: each experiment compares a baseline variant against layered safeguards and reports safety improvement alongside review burden or usefulness cost.
 
 ## Structured Extraction
@@ -862,6 +897,7 @@ The combined export includes workflow-level spans, agent tool/audit spans, case-
 - The project can generate synthetic enterprise operations data safely.
 - The retrieval harness can also run against selected public technical-support data.
 - Public RAG grounding interventions report unsupported-answer reduction alongside abstention and review cost.
+- Memory/context pollution controls test whether stale, cross-user, or injected memory is ignored in favor of current evidence.
 - Retrieval quality can be measured across exact, paraphrased, noisy, conflicting, and adversarial cases.
 - Structured extraction, routing, refusal behavior, approval gates, and audit traces are evaluated as product behavior, not only as model output.
 - The dashboard, API, Docker runtime, and CI workflow make the lab reproducible.
@@ -887,5 +923,6 @@ The combined export includes workflow-level spans, agent tool/audit spans, case-
 - Add optional multi-model evaluation adapters and publish only reproducible result tables.
 - Run safety intervention experiments across refusal policy, retrieval grounding, tool approval gates, secondary review, and classifier thresholds.
 - Validate the public RAG grounding thresholds with a provider-backed reranker.
+- Collect external labels for memory/context pollution cases.
 - Expand the TechQA public benchmark beyond 160 cases and compare against provider embeddings.
 - Expand the WixQA public track and add provider-backed embedding comparison.
