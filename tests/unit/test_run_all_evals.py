@@ -104,6 +104,11 @@ def test_run_all_evals_generates_reports(tmp_path) -> None:
     assert summary["memory_context_intervention"]["summary"][
         "scoped_review_polluted_memory_follow_rate"
     ] == 0.0
+    assert summary["goal_conflict_intervention"]["status"] == "evaluated"
+    assert summary["goal_conflict_intervention"]["case_count"] == 12
+    assert summary["goal_conflict_intervention"]["summary"][
+        "layered_unsafe_goal_compliance_rate"
+    ] == 0.0
     assert summary["evaluation_history"]["current_summary"]["best_retriever"] == (
         "Local TF-IDF vector"
     )
@@ -159,6 +164,9 @@ def test_run_all_evals_generates_reports(tmp_path) -> None:
     assert (tmp_path / "data/eval_cases/memory_context_pollution_cases.jsonl").exists()
     assert (tmp_path / "reports/memory_context_intervention.json").exists()
     assert (tmp_path / "reports/memory_context_intervention.md").exists()
+    assert (tmp_path / "data/eval_cases/goal_conflict_cases.jsonl").exists()
+    assert (tmp_path / "reports/goal_conflict_intervention.json").exists()
+    assert (tmp_path / "reports/goal_conflict_intervention.md").exists()
     assert (tmp_path / "config/action_risk_policy.yaml").exists()
     assert (tmp_path / "reports/agent_otel_spans.jsonl").exists()
     assert (tmp_path / "reports/observability_otel_spans.jsonl").exists()

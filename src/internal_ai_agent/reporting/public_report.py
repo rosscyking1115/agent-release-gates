@@ -127,6 +127,9 @@ def generate_public_report(project_root: Path) -> str:
     memory_context_intervention = _read_optional_json(
         reports_dir / "memory_context_intervention.json"
     )
+    goal_conflict_intervention = _read_optional_json(
+        reports_dir / "goal_conflict_intervention.json"
+    )
     failure_taxonomy = _read_optional_json(reports_dir / "failure_taxonomy_summary.json")
     agent = _read_json(reports_dir / "agent_eval_summary.json")
 
@@ -233,6 +236,10 @@ def generate_public_report(project_root: Path) -> str:
             "## Memory Context Intervention Study",
             "",
             _memory_context_intervention_table(memory_context_intervention),
+            "",
+            "## Goal Conflict Intervention Study",
+            "",
+            _goal_conflict_intervention_table(goal_conflict_intervention),
             "",
             (
                 "This section turns the lab into a mitigation-aware study: each "
@@ -1069,6 +1076,66 @@ def _memory_context_intervention_table(report: dict[str, Any]) -> str:
             f"{_pct(metrics['current_evidence_priority_rate'])} | "
             f"{_pct(metrics['cross_user_leak_rate'])} | "
             f"{_pct(metrics['benign_memory_usefulness_rate'])} | "
+            f"{float(metrics['review_burden_per_100_cases']):.2f} |"
+        )
+    rows.extend(["", "| Finding |", "| --- |"])
+    for finding in report.get("findings", []):
+        rows.append(f"| {finding} |")
+    rows.extend(["", "| Recommendation |", "| --- |"])
+    for recommendation in report.get("recommendations", []):
+        rows.append(f"| {recommendation} |")
+    return "\n".join(rows)
+
+
+def _goal_conflict_intervention_table(report: dict[str, Any]) -> str:
+    if not report or report.get("status") != "evaluated":
+        return "Goal conflict intervention study is not configured."
+    summary = report["summary"]
+    rows = [
+        "| Goal-conflict intervention metric | Value |",
+        "| --- | ---: |",
+        f"| Cases | {report['case_count']} |",
+        f"| Conflict cases | {report['conflict_case_count']} |",
+        f"| Benign controls | {report['benign_case_count']} |",
+        (
+            "| Baseline unsafe-goal compliance rate | "
+            f"{_pct(summary['baseline_unsafe_goal_compliance_rate'])} |"
+        ),
+        (
+            "| Layered unsafe-goal compliance rate | "
+            f"{_pct(summary['layered_unsafe_goal_compliance_rate'])} |"
+        ),
+        (
+            "| Layered conflict-detection rate | "
+            f"{_pct(summary['layered_conflict_detection_rate'])} |"
+        ),
+        (
+            "| Layered safe-alternative rate | "
+            f"{_pct(summary['layered_safe_alternative_rate'])} |"
+        ),
+        (
+            "| Layered benign-goal completion | "
+            f"{_pct(summary['layered_benign_completion_rate'])} |"
+        ),
+        (
+            "| Layered review burden / 100 | "
+            f"{float(summary['layered_review_burden_per_100_cases']):.2f} |"
+        ),
+        f"| Recommended variant | {summary['recommended_variant']} |",
+        "",
+        "| Variant | Unsafe goal complied | Conflict detected | Safe alternative | "
+        "High-risk action blocked | Benign goal completed | Review burden / 100 |",
+        "| --- | ---: | ---: | ---: | ---: | ---: | ---: |",
+    ]
+    for variant in report["variants"]:
+        metrics = variant["metrics"]
+        rows.append(
+            f"| {variant['label']} | "
+            f"{_pct(metrics['unsafe_goal_compliance_rate'])} | "
+            f"{_pct(metrics['conflict_detection_rate'])} | "
+            f"{_pct(metrics['safe_alternative_rate'])} | "
+            f"{_pct(metrics['high_risk_action_block_rate'])} | "
+            f"{_pct(metrics['benign_completion_rate'])} | "
             f"{float(metrics['review_burden_per_100_cases']):.2f} |"
         )
     rows.extend(["", "| Finding |", "| --- |"])

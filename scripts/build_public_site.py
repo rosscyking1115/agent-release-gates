@@ -61,6 +61,9 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
     memory_context_intervention = _read_optional_json(
         reports_dir / "memory_context_intervention.json"
     )
+    goal_conflict_intervention = _read_optional_json(
+        reports_dir / "goal_conflict_intervention.json"
+    )
 
     shutil.copyfile(reports_dir / "evaluation_report.html", public_dir / "evaluation_report.html")
     shutil.copyfile(reports_dir / "evaluation_report.pdf", public_dir / "evaluation_report.pdf")
@@ -145,6 +148,8 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
         "safety_classifier_intervention_study.md",
         "memory_context_intervention.json",
         "memory_context_intervention.md",
+        "goal_conflict_intervention.json",
+        "goal_conflict_intervention.md",
     ]:
         if (reports_dir / intervention_artifact).exists():
             shutil.copyfile(
@@ -264,6 +269,7 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
             external_review=external_review,
             intervention_study=intervention_study,
             memory_context_intervention=memory_context_intervention,
+            goal_conflict_intervention=goal_conflict_intervention,
         ),
         encoding="utf-8",
     )
@@ -301,6 +307,7 @@ def _index_html(
     external_review: dict[str, Any],
     intervention_study: dict[str, Any],
     memory_context_intervention: dict[str, Any],
+    goal_conflict_intervention: dict[str, Any],
 ) -> str:
     counts = profile["dataset_counts"]
     mix = profile["golden_case_mix"]
@@ -311,6 +318,7 @@ def _index_html(
     external_status = _display_status(external_review.get("status", "not_configured"))
     intervention_count = intervention_study.get("experiment_count", 0)
     memory_summary = memory_context_intervention.get("summary", {})
+    goal_summary = goal_conflict_intervention.get("summary", {})
     grounding_summary = rag_grounding_intervention.get("summary", {})
     risk_labels = "\n".join(
         f"<li>{escape(_humanize_label(label))}</li>" for label in profile["risk_labels"]
@@ -574,6 +582,13 @@ def _index_html(
           </p>
         </div>
         <div class="summary-card">
+          <h3>Goal-conflict arbitration</h3>
+          <p>
+            The lab now measures when agents should redirect user goals that
+            conflict with safety, evidence, privacy, or tool-risk boundaries.
+          </p>
+        </div>
+        <div class="summary-card">
           <h3>Auditability is part of reliability</h3>
           <p>
             The project publishes release gates, trace summaries, and generated
@@ -624,6 +639,20 @@ def _index_html(
             "Memory review / 100",
             memory_summary.get(
                 "scoped_review_review_burden_per_100_cases",
+                "Not configured",
+            ),
+        )}
+        {_metric(
+            "Goal conflict unsafe compliance",
+            _goal_conflict_metric(
+                goal_conflict_intervention,
+                "layered_unsafe_goal_compliance_rate",
+            ),
+        )}
+        {_metric(
+            "Goal conflict review / 100",
+            goal_summary.get(
+                "layered_review_burden_per_100_cases",
                 "Not configured",
             ),
         )}
@@ -771,6 +800,16 @@ def _public_artifact_links() -> list[tuple[str, str, str]]:
             "Intervention study",
             "Memory context intervention report",
             "memory_context_intervention.md",
+        ),
+        (
+            "Intervention study",
+            "Goal conflict intervention study",
+            "goal_conflict_intervention.json",
+        ),
+        (
+            "Intervention study",
+            "Goal conflict intervention report",
+            "goal_conflict_intervention.md",
         ),
         ("Benchmark profile", "Dataset profile", "dataset_profile.json"),
         ("Public RAG", "TechQA public RAG summary", "techqa_public_rag_summary.json"),
@@ -1082,6 +1121,12 @@ def _rag_grounding_metric(report: dict[str, Any], metric: str) -> str:
 
 
 def _memory_context_metric(report: dict[str, Any], metric: str) -> str:
+    if report.get("status") != "evaluated":
+        return "Not configured"
+    return _pct(float(report.get("summary", {}).get(metric, 0.0)))
+
+
+def _goal_conflict_metric(report: dict[str, Any], metric: str) -> str:
     if report.get("status") != "evaluated":
         return "Not configured"
     return _pct(float(report.get("summary", {}).get(metric, 0.0)))

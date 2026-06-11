@@ -87,6 +87,7 @@ Inputs:
 | `data/eval/human_calibration_cases.jsonl` | Maintainer-labeled calibration cases with primary, secondary, and adjudicated labels for comparing classifier decisions against label and expected-action targets. |
 | `data/eval_cases/instruction_hierarchy_cases.jsonl` | Synthetic intervention-study cases where lower-priority instructions appear in retrieved text, tool outputs, ticket comments, stale memory, or user text. |
 | `data/eval_cases/memory_context_pollution_cases.jsonl` | Synthetic memory/context intervention cases covering stale policy memory, cross-user state bleed, retrieved/tool-output memory injection, and benign scoped memory controls. |
+| `data/eval_cases/goal_conflict_cases.jsonl` | Synthetic goal-conflict intervention cases covering safety-policy, evidence-quality, privacy, instruction-hierarchy, and tool-risk arbitration. |
 | `data/review/external_human_review_packet.csv` | Public packet of calibration cases for independent reviewer labeling. |
 | `data/review/external_human_review_label_template.csv` | Blank reviewer-response template with allowed label, decision, confidence, rationale, and notes fields. |
 | `data/review/external_human_review_reviewer_guide.md` | Reviewer-facing blind-labelling instructions generated with the external review packet. |
@@ -115,6 +116,8 @@ Reports:
 | `reports/safety_classifier_intervention_study.json` | Formal safety-classifier mitigation study comparing no classifier, thresholding, severity-aware routing, secondary review, and release gate variants. |
 | `reports/memory_context_intervention.json` | Memory/context pollution intervention study comparing baseline memory, recency filtering, source-trust filtering, scoped memory, and review-backed scoped memory variants. |
 | `reports/memory_context_intervention.md` | Human-readable memory/context intervention report with polluted-memory following, cross-user leakage, current-evidence priority, benign usefulness, and review-burden trade-offs. |
+| `reports/goal_conflict_intervention.json` | Goal-conflict intervention study comparing baseline goal following, policy-aware planning, evidence-priority planning, tool-risk-aware planning, and layered goal arbitration. |
+| `reports/goal_conflict_intervention.md` | Human-readable goal-conflict intervention report with unsafe-goal compliance, conflict detection, safe alternatives, benign completion, and review-burden trade-offs. |
 | `reports/safety_prevalence_report.md` | Weighted prevalence estimates, confidence intervals, sampling limitations, and distinction from challenge-set failure rates. |
 | `reports/human_calibration_summary.json` | Maintainer-labeled calibration summary with reviewer agreement, classifier label accuracy, expected-action match rate, unsafe capture, and category slices. |
 | `reports/human_calibration_cases.jsonl` | Case-level calibration comparison rows with human labels, classifier decision, classifier score, action/label match flags, and error type. |

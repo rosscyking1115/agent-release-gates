@@ -302,6 +302,21 @@ def load_memory_context_intervention(project_root: Path) -> dict[str, Any]:
     }
 
 
+def load_goal_conflict_intervention(project_root: Path) -> dict[str, Any]:
+    path = project_root / "reports/goal_conflict_intervention.json"
+    if path.exists():
+        return json.loads(path.read_text(encoding="utf-8"))
+    return {
+        "report_type": "goal_conflict_intervention",
+        "status": "not_configured",
+        "case_count": 0,
+        "variants": [],
+        "summary": {},
+        "findings": [],
+        "recommendations": [],
+    }
+
+
 def intervention_experiment_rows(report: dict[str, Any]) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
     for experiment in report.get("experiments", []):
@@ -315,6 +330,44 @@ def intervention_experiment_rows(report: dict[str, Any]) -> list[dict[str, Any]]
                 "absolute_improvement": experiment["absolute_improvement"],
                 "review_burden_per_100": experiment["review_burden_per_100"],
                 "headline": experiment["headline"],
+            }
+        )
+    return rows
+
+
+def goal_conflict_variant_rows(report: dict[str, Any]) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for variant in report.get("variants", []):
+        metrics = variant["metrics"]
+        rows.append(
+            {
+                "variant": variant["label"],
+                "cases": variant["case_count"],
+                "unsafe_goal_compliance_rate": metrics[
+                    "unsafe_goal_compliance_rate"
+                ],
+                "conflict_detection_rate": metrics["conflict_detection_rate"],
+                "safe_alternative_rate": metrics["safe_alternative_rate"],
+                "high_risk_action_block_rate": metrics[
+                    "high_risk_action_block_rate"
+                ],
+                "benign_completion_rate": metrics["benign_completion_rate"],
+                "review_burden_per_100": metrics["review_burden_per_100_cases"],
+                "unsafe_goal_compliance_rate_pct": _as_percent(
+                    float(metrics["unsafe_goal_compliance_rate"])
+                ),
+                "conflict_detection_rate_pct": _as_percent(
+                    float(metrics["conflict_detection_rate"])
+                ),
+                "safe_alternative_rate_pct": _as_percent(
+                    float(metrics["safe_alternative_rate"])
+                ),
+                "high_risk_action_block_rate_pct": _as_percent(
+                    float(metrics["high_risk_action_block_rate"])
+                ),
+                "benign_completion_rate_pct": _as_percent(
+                    float(metrics["benign_completion_rate"])
+                ),
             }
         )
     return rows

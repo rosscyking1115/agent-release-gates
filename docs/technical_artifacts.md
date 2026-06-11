@@ -61,6 +61,8 @@ This page is for reviewers who want to inspect generated metrics, benchmark prof
 - Safety classifier intervention report: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/safety_classifier_intervention_study.md
 - Memory context intervention study: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/memory_context_intervention.json
 - Memory context intervention report: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/memory_context_intervention.md
+- Goal conflict intervention study: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/goal_conflict_intervention.json
+- Goal conflict intervention report: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/goal_conflict_intervention.md
 
 ## Model Comparison
 

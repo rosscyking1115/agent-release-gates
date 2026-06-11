@@ -43,6 +43,7 @@ These results are engineering evidence over controlled benchmarks. They are not 
 - Public TechQA and WixQA retrieval tracks help test whether the RAG harness works beyond self-contained synthetic data.
 - Public RAG grounding thresholds reduce unsupported answer attempts while making abstention and review cost visible.
 - Memory/context controls reduce polluted-memory following while preserving benign memory usefulness.
+- Goal-conflict arbitration reduces unsafe goal-following while preserving benign task completion.
 - Synthetic operations data remains useful for controlled tests that would be unsafe or impractical to run on confidential real workflows.
 - The next strongest validation step is independent human labelling, followed by broader multi-model comparison.
 
@@ -52,6 +53,7 @@ These results are engineering evidence over controlled benchmarks. They are not 
 - Baseline-vs-intervention studies for instruction hierarchy, action-risk gates, and safety classifier review policy.
 - Public RAG grounding and abstention intervention study over TechQA and WixQA.
 - Memory/context pollution intervention study covering stale, injected, and cross-user memory.
+- Goal-conflict intervention study covering safety, evidence, privacy, and tool-risk arbitration.
 - Public benchmark documentation, dataset boundaries, failure taxonomy, and external-review packet.
 - Streamlit dashboard for interactive inspection.
 - GitHub Pages report and PDF for public review.
@@ -102,6 +104,7 @@ CI runs linting, tests, deterministic report checks, local OpenTelemetry smoke t
 - Agent safety intervention study: [docs/agent_safety_intervention_study.md](docs/agent_safety_intervention_study.md)
 - RAG grounding intervention report: [reports/rag_grounding_intervention.md](reports/rag_grounding_intervention.md)
 - Memory context intervention report: [reports/memory_context_intervention.md](reports/memory_context_intervention.md)
+- Goal conflict intervention report: [reports/goal_conflict_intervention.md](reports/goal_conflict_intervention.md)
 - Dataset card: [docs/dataset_card.md](docs/dataset_card.md)
 - Failure taxonomy: [docs/failure_taxonomy.md](docs/failure_taxonomy.md)
 - External reviewer handoff pack: [docs/reviewer_handoff_pack.md](docs/reviewer_handoff_pack.md)
@@ -119,7 +122,6 @@ CI runs linting, tests, deterministic report checks, local OpenTelemetry smoke t
 
 - Collect independent human labels using the prepared review packet.
 - Add reproducible multi-model comparison across hosted and open-source models.
-- Extend intervention studies to goal-conflict scenarios.
 - Expand public RAG validation beyond the current compact TechQA and WixQA samples.
 - Expand the paper-style intervention report with external reviewer disagreement analysis.
 - Invite external review through issues and contribution guidelines.

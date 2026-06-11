@@ -24,6 +24,7 @@ from internal_ai_agent.dashboard.data import (
     failed_case_rows,
     failure_example_rows,
     failure_reason_rows,
+    goal_conflict_variant_rows,
     human_calibration_case_rows,
     human_calibration_category_rows,
     intervention_experiment_rows,
@@ -41,6 +42,7 @@ from internal_ai_agent.dashboard.data import (
     load_external_human_review_summary,
     load_extraction_summary,
     load_failure_taxonomy_summary,
+    load_goal_conflict_intervention,
     load_human_calibration_summary,
     load_intervention_study,
     load_judge_reliability_summary,
@@ -149,6 +151,7 @@ def main() -> None:
     safety_threshold_memo = load_safety_threshold_decision_memo(PROJECT_ROOT)
     intervention_study = load_intervention_study(PROJECT_ROOT)
     memory_context_intervention = load_memory_context_intervention(PROJECT_ROOT)
+    goal_conflict_intervention = load_goal_conflict_intervention(PROJECT_ROOT)
     human_calibration = load_human_calibration_summary(PROJECT_ROOT)
     external_human_review = load_external_human_review_summary(PROJECT_ROOT)
     judge_reliability = load_judge_reliability_summary(PROJECT_ROOT)
@@ -240,6 +243,7 @@ def main() -> None:
             intervention_study,
             rag_grounding_intervention,
             memory_context_intervention,
+            goal_conflict_intervention,
         )
     elif section == "Agent Observability":
         _render_agent_metrics(
@@ -1530,6 +1534,7 @@ def _render_intervention_study(
     report: dict[str, object],
     rag_grounding_report: dict[str, object],
     memory_context_report: dict[str, object],
+    goal_conflict_report: dict[str, object],
 ) -> None:
     st.subheader("Safety Intervention Results")
     if report.get("status") == "not_configured":
@@ -1601,6 +1606,7 @@ def _render_intervention_study(
 
     _render_rag_grounding_intervention(rag_grounding_report)
     _render_memory_context_intervention(memory_context_report)
+    _render_goal_conflict_intervention(goal_conflict_report)
 
 
 def _render_rag_grounding_intervention(report: dict[str, object]) -> None:
@@ -1757,6 +1763,85 @@ def _render_memory_context_intervention(report: dict[str, object]) -> None:
     st.altair_chart(chart, use_container_width=True)
 
     with st.expander("Memory/context findings", expanded=True):
+        for item in report.get("findings", []):
+            st.markdown(f"- {item}")
+
+
+def _render_goal_conflict_intervention(report: dict[str, object]) -> None:
+    st.subheader("Goal Conflict Arbitration")
+    if report.get("status") != "evaluated":
+        st.info("Goal-conflict intervention study is not configured in this runtime.")
+        return
+
+    summary = report.get("summary", {})
+    cols = st.columns(4)
+    cols[0].metric("Cases", int(report.get("case_count", 0)))
+    cols[1].metric(
+        "Baseline unsafe compliance",
+        _format_pct(float(summary.get("baseline_unsafe_goal_compliance_rate", 0.0))),
+    )
+    cols[2].metric(
+        "Layered unsafe compliance",
+        _format_pct(float(summary.get("layered_unsafe_goal_compliance_rate", 0.0))),
+    )
+    cols[3].metric(
+        "Review / 100",
+        f"{float(summary.get('layered_review_burden_per_100_cases', 0.0)):.2f}",
+    )
+
+    rows = goal_conflict_variant_rows(report)
+    if not rows:
+        return
+    df = pd.DataFrame(rows)
+    display_df = df[
+        [
+            "variant",
+            "cases",
+            "unsafe_goal_compliance_rate_pct",
+            "conflict_detection_rate_pct",
+            "safe_alternative_rate_pct",
+            "high_risk_action_block_rate_pct",
+            "benign_completion_rate_pct",
+            "review_burden_per_100",
+        ]
+    ].rename(
+        columns={
+            "variant": "Variant",
+            "cases": "Cases",
+            "unsafe_goal_compliance_rate_pct": "Unsafe goal complied",
+            "conflict_detection_rate_pct": "Conflict detected",
+            "safe_alternative_rate_pct": "Safe alternative",
+            "high_risk_action_block_rate_pct": "High-risk action blocked",
+            "benign_completion_rate_pct": "Benign goal completed",
+            "review_burden_per_100": "Review burden / 100",
+        }
+    )
+    st.dataframe(display_df, hide_index=True, use_container_width=True)
+
+    chart_df = df.melt(
+        id_vars=["variant"],
+        value_vars=[
+            "unsafe_goal_compliance_rate",
+            "conflict_detection_rate",
+            "benign_completion_rate",
+        ],
+        var_name="metric",
+        value_name="value",
+    )
+    chart = (
+        alt.Chart(chart_df)
+        .mark_bar()
+        .encode(
+            x=alt.X("variant:N", title="Variant", sort=None),
+            y=alt.Y("value:Q", title="Rate"),
+            color=alt.Color("metric:N", title="Metric"),
+            tooltip=["variant", "metric", "value"],
+        )
+        .properties(height=320)
+    )
+    st.altair_chart(chart, use_container_width=True)
+
+    with st.expander("Goal-conflict findings", expanded=True):
         for item in report.get("findings", []):
             st.markdown(f"- {item}")
 

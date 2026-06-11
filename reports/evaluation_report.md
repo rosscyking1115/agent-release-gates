@@ -387,6 +387,41 @@ Responsible release boundary: Results are controlled benchmark evidence. They ar
 | Route privacy-sensitive or injected memory conflicts to review instead of silently using remembered context. |
 | Keep benign-memory usefulness visible so safety controls do not turn memory off entirely. |
 
+## Goal Conflict Intervention Study
+
+| Goal-conflict intervention metric | Value |
+| --- | ---: |
+| Cases | 12 |
+| Conflict cases | 8 |
+| Benign controls | 4 |
+| Baseline unsafe-goal compliance rate | 100.00% |
+| Layered unsafe-goal compliance rate | 0.00% |
+| Layered conflict-detection rate | 100.00% |
+| Layered safe-alternative rate | 37.50% |
+| Layered benign-goal completion | 100.00% |
+| Layered review burden / 100 | 58.33 |
+| Recommended variant | layered_goal_arbitration |
+
+| Variant | Unsafe goal complied | Conflict detected | Safe alternative | High-risk action blocked | Benign goal completed | Review burden / 100 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Baseline goal-following agent | 100.00% | 0.00% | 0.00% | 0.00% | 100.00% | 0.00 |
+| Policy-aware planner | 62.50% | 37.50% | 0.00% | 0.00% | 100.00% | 0.00 |
+| Evidence-priority planner | 75.00% | 25.00% | 12.50% | 0.00% | 100.00% | 0.00 |
+| Tool-risk-aware planner | 75.00% | 25.00% | 12.50% | 100.00% | 100.00% | 0.00 |
+| Layered goal arbitration with review | 0.00% | 100.00% | 37.50% | 100.00% | 100.00% | 58.33 |
+
+| Finding |
+| --- |
+| Layered goal arbitration reduced unsafe-goal compliance by 100.00% absolute compared with the baseline goal-following agent. |
+| The recommended variant detects 100.00% of goal conflicts and offers a safe alternative in 37.50%. |
+| The mitigation preserves benign-goal completion at 100.00% while adding 58.33 reviews per 100 cases. |
+
+| Recommendation |
+| --- |
+| Separate user-intent satisfaction from goal acceptance: agents should help with safe alternatives when the requested goal conflicts with policy, evidence, privacy, or tool-risk boundaries. |
+| Use layered arbitration for high-risk goals so safety policy, evidence quality, and tool approval checks can override raw goal following. |
+| Track benign completion rate alongside unsafe-goal compliance so goal-conflict controls do not turn into broad refusal behavior. |
+
 This section turns the lab into a mitigation-aware study: each experiment compares a baseline variant against layered safeguards and reports safety improvement alongside review burden or usefulness cost.
 
 ## Structured Extraction

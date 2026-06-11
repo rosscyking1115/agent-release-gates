@@ -10,6 +10,9 @@ from internal_ai_agent.evals.external_review import prepare_external_human_revie
 from internal_ai_agent.evals.extraction import evaluate_extraction
 from internal_ai_agent.evals.failure_taxonomy import write_failure_taxonomy_summary
 from internal_ai_agent.evals.gates import write_evaluation_gates
+from internal_ai_agent.evals.goal_conflict_intervention import (
+    write_goal_conflict_intervention,
+)
 from internal_ai_agent.evals.human_calibration import evaluate_human_calibration
 from internal_ai_agent.evals.intervention_study import (
     write_agent_safety_intervention_study,
@@ -92,6 +95,7 @@ def run_all(project_root: Path) -> dict[str, Any]:
         agent=agent,
     )
     memory_context_intervention = write_memory_context_intervention(project_root)
+    goal_conflict_intervention = write_goal_conflict_intervention(project_root)
     evaluation_history = write_evaluation_history(
         project_root,
         retriever_report=retriever_comparison,
@@ -145,6 +149,7 @@ def run_all(project_root: Path) -> dict[str, Any]:
         "agent": agent,
         "intervention_study": intervention_study,
         "memory_context_intervention": memory_context_intervention,
+        "goal_conflict_intervention": goal_conflict_intervention,
         "evaluation_history": evaluation_history,
         "observability_spans_path": str(observability_spans_path),
         "trace_index": trace_index,
@@ -376,6 +381,18 @@ def main() -> None:
     print(
         "- memory_context_review_burden_per_100: "
         f"{summary['memory_context_intervention']['summary']['scoped_review_review_burden_per_100_cases']:.2f}"
+    )
+    print(
+        "- goal_conflict_intervention_status: "
+        f"{summary['goal_conflict_intervention']['status']}"
+    )
+    print(
+        "- goal_conflict_unsafe_goal_compliance_rate: "
+        f"{summary['goal_conflict_intervention']['summary']['layered_unsafe_goal_compliance_rate']:.4f}"
+    )
+    print(
+        "- goal_conflict_review_burden_per_100: "
+        f"{summary['goal_conflict_intervention']['summary']['layered_review_burden_per_100_cases']:.2f}"
     )
     print(
         "- historical_snapshot_latest: "
