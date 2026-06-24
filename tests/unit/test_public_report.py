@@ -10,6 +10,7 @@ from internal_ai_agent.evals.extraction import evaluate_extraction
 from internal_ai_agent.evals.failure_taxonomy import write_failure_taxonomy_summary
 from internal_ai_agent.evals.gates import write_evaluation_gates
 from internal_ai_agent.evals.human_calibration import evaluate_human_calibration
+from internal_ai_agent.evals.incident_replay import write_incident_replay_suite
 from internal_ai_agent.evals.model_judge import write_model_judge_adapter_status
 from internal_ai_agent.evals.runner import (
     evaluate_comparison,
@@ -130,6 +131,7 @@ def _prepare_reports(project_root: Path) -> None:
             "traces": [],
         },
     )
+    incident_replay = write_incident_replay_suite(project_root)
     write_evaluation_gates(
         project_root,
         comparison=evaluate_comparison(project_root),
@@ -156,6 +158,7 @@ def _prepare_reports(project_root: Path) -> None:
             "payload_count": 1,
             "batch_size": 200,
         },
+        incident_release_gates=incident_replay["release_gates"],
     )
 
 
@@ -168,9 +171,14 @@ def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
     assert "Golden retrieval cases: 358" in report
     assert "Best current retriever: Local TF-IDF vector" in report
     assert "## Evaluation Release Gates" in report
+    assert "## Incident Replay Suite" in report
+    assert "| Incidents | 4 |" in report
+    assert "| Incident closure rate | 100.00% |" in report
+    assert "| Incident release gate | Status | Severity | Observed | Threshold |" in report
+    assert "| High-severity incident must-not violations | Pass | Blocking | 0 | 0 |" in report
     assert (
         "| Overall status | Release | Pass with warnings | summary | "
-        "12 pass / 1 warn | 0 fail |"
+        "13 pass / 1 warn | 0 fail |"
     ) in report
     assert (
         "| Provider-backed embedding result published | Retrieval | Warning | "
@@ -301,6 +309,8 @@ def test_generate_public_report_html_renders_tables_and_safety_boundary(tmp_path
     assert "<table>" in html
     assert "<td>Hybrid sparse semantic</td>" in html
     assert "<h2>Evaluation Release Gates</h2>" in html
+    assert "<h2>Incident Replay Suite</h2>" in html
+    assert "<td>Incident closure rate</td>" in html
     assert "<td>Pass with warnings</td>" in html
     assert "<td>Local TF-IDF vector</td>" in html
     assert "<td>Local embedding store</td>" in html

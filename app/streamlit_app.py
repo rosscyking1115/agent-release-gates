@@ -27,6 +27,7 @@ from internal_ai_agent.dashboard.data import (
     goal_conflict_variant_rows,
     human_calibration_case_rows,
     human_calibration_category_rows,
+    incident_replay_run_rows,
     intervention_experiment_rows,
     judge_reliability_category_rows,
     judge_reliability_disagreement_rows,
@@ -44,6 +45,9 @@ from internal_ai_agent.dashboard.data import (
     load_failure_taxonomy_summary,
     load_goal_conflict_intervention,
     load_human_calibration_summary,
+    load_incident_release_gates,
+    load_incident_replay_runs,
+    load_incident_replay_summary,
     load_intervention_study,
     load_judge_reliability_summary,
     load_memory_context_intervention,
@@ -133,6 +137,9 @@ def main() -> None:
     rag_grounding_intervention = load_rag_grounding_intervention(PROJECT_ROOT)
     evaluation_history = load_evaluation_history(PROJECT_ROOT)
     evaluation_gates = load_evaluation_gates(PROJECT_ROOT)
+    incident_replay = load_incident_replay_summary(PROJECT_ROOT)
+    incident_replay_runs = load_incident_replay_runs(PROJECT_ROOT)
+    incident_release_gates = load_incident_release_gates(PROJECT_ROOT)
     extraction_summary = load_extraction_summary(PROJECT_ROOT)
     security_summary = load_security_summary(PROJECT_ROOT)
     safety_classifier = load_safety_classifier_summary(PROJECT_ROOT)
@@ -245,6 +252,12 @@ def main() -> None:
             memory_context_intervention,
             goal_conflict_intervention,
         )
+    elif section == "Incident Replay":
+        _render_incident_replay(
+            incident_replay,
+            incident_replay_runs,
+            incident_release_gates,
+        )
     elif section == "Agent Observability":
         _render_agent_metrics(
             agent_summary,
@@ -304,6 +317,7 @@ def _render_sidebar() -> str:
             "Retrieval Evaluation",
             "Safety & Extraction",
             "Intervention Study",
+            "Incident Replay",
             "Agent Observability",
             "Evaluation Report",
             "Case Review",
@@ -1843,6 +1857,99 @@ def _render_goal_conflict_intervention(report: dict[str, object]) -> None:
 
     with st.expander("Goal-conflict findings", expanded=True):
         for item in report.get("findings", []):
+            st.markdown(f"- {item}")
+
+
+def _render_incident_replay(
+    summary: dict[str, object],
+    replay_runs: list[dict[str, object]],
+    release_gates: dict[str, object],
+) -> None:
+    st.subheader("Incident Replay Suite")
+    if summary.get("status") != "evaluated":
+        st.info("Incident replay suite has not been generated yet.")
+        return
+
+    metrics = summary.get("summary", {})
+    cols = st.columns(4)
+    cols[0].metric("Incidents", int(summary.get("case_count", 0)))
+    cols[1].metric(
+        "Gate status",
+        _format_status(metrics.get("release_gate_status", "not_configured")),  # type: ignore[union-attr]
+    )
+    cols[2].metric(
+        "Closure rate",
+        _format_pct(float(metrics.get("incident_closure_rate", 0.0))),  # type: ignore[union-attr]
+    )
+    cols[3].metric(
+        "Must-not violations",
+        int(metrics.get("must_not_violation_count", 0)),  # type: ignore[union-attr]
+    )
+
+    st.markdown(
+        """
+        The incident replay suite turns redacted, synthetic incident fixtures into
+        deterministic regression checks. Each replay asks whether the current
+        controlled agent blocks or holds behavior that previously would have
+        violated a release rule.
+        """
+    )
+
+    run_rows = incident_replay_run_rows(replay_runs)
+    if run_rows:
+        run_df = pd.DataFrame(run_rows)
+        display_df = run_df[
+            [
+                "incident_id",
+                "severity",
+                "original_decision",
+                "decision",
+                "expected_behavior_match",
+                "closed_by_replay",
+                "must_not_violations",
+                "risk_categories",
+                "regression_case",
+            ]
+        ].rename(
+            columns={
+                "incident_id": "Incident",
+                "severity": "Severity",
+                "original_decision": "Original",
+                "decision": "Replay",
+                "expected_behavior_match": "Expected match",
+                "closed_by_replay": "Closed",
+                "must_not_violations": "Replay violations",
+                "risk_categories": "Risk categories",
+                "regression_case": "Regression fixture",
+            }
+        )
+        st.dataframe(display_df, hide_index=True, use_container_width=True)
+
+        with st.expander("Replay summaries", expanded=False):
+            for row in run_rows:
+                st.markdown(f"- **{row['incident_id']}**: {row['diff_summary']}")
+
+    if release_gates:
+        st.subheader("Incident Release Gates")
+        gate_cols = st.columns(4)
+        gate_cols[0].metric("Overall", _format_status(release_gates["overall_status"]))
+        gate_cols[1].metric("Pass", release_gates["pass_count"])
+        gate_cols[2].metric("Warn", release_gates["warn_count"])
+        gate_cols[3].metric("Fail", release_gates["fail_count"])
+        gate_df = pd.DataFrame(evaluation_gate_rows(release_gates))
+        if not gate_df.empty:
+            st.dataframe(gate_df, hide_index=True, use_container_width=True)
+
+    memo_paths = summary.get("memo_paths", [])
+    if memo_paths:
+        st.subheader("Generated Memos")
+        for path in memo_paths:
+            st.markdown(f"- `{path}`")
+
+    with st.expander("Findings and recommendations", expanded=True):
+        for item in summary.get("findings", []):
+            st.markdown(f"- {item}")
+        for item in summary.get("recommendations", []):
             st.markdown(f"- {item}")
 
 

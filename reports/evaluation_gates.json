@@ -1,6 +1,6 @@
 {
   "fail_count": 0,
-  "gate_count": 13,
+  "gate_count": 14,
   "gate_set_type": "deterministic_evaluation_release_gates",
   "gates": [
     {
@@ -144,9 +144,20 @@
       "severity": "non_blocking",
       "status": "warn",
       "threshold": "optional credentialed run"
+    },
+    {
+      "area": "Incident replay",
+      "gate_id": "incident.replay_release_gates",
+      "label": "Incident replay release gates",
+      "observed": "pass",
+      "rationale": "Known incident replays must pass before the overall release gate can pass.",
+      "severity": "blocking",
+      "status": "pass",
+      "threshold": "pass",
+      "value_format": "status"
     }
   ],
   "overall_status": "pass_with_warnings",
-  "pass_count": 12,
+  "pass_count": 13,
   "warn_count": 1
 }

@@ -22,6 +22,12 @@ The lab evaluates an AI-agent workflow across four reliability questions:
 
 The result is a reproducible evaluation artifact rather than a one-off dashboard: deterministic eval runners, generated reports, CI checks, Dockerized local execution, a public Streamlit dashboard, and a GitHub Pages report site.
 
+## Product Direction
+
+The project is evolving toward **Agent Release Safety Gates**: a release-readiness workflow for replaying known agent incidents, applying policy gates, and producing evidence before a changed agent, prompt, model, or tool policy ships. The current lab remains the benchmark and evidence layer behind that workflow.
+
+The first module is an Incident Replay Suite that turns redacted synthetic incidents into regression fixtures, replay results, release gates, and incident memos.
+
 ## Current Evidence Snapshot
 
 | Area | Current result |
@@ -31,6 +37,7 @@ The result is a reproducible evaluation artifact rather than a one-off dashboard
 | Public RAG validation | 160 TechQA cases and 80 WixQA cases evaluated separately from the synthetic benchmark |
 | Safety | 90.91% classifier recall, 0 high-severity false negatives in the current challenge set |
 | Agent governance | 100.00% mock side-effect block rate and approval audit rate |
+| Incident replay | 4 seeded synthetic incidents replayed, 100.00% closure rate, 0 replay must-not violations |
 | Intervention study | 3 deterministic safety studies plus public RAG grounding and memory/context studies |
 | Hosted judge calibration | Reviewed OpenAI and Anthropic judge runs with public-safe provider comparison |
 
@@ -54,6 +61,7 @@ These results are engineering evidence over controlled benchmarks. They are not 
 - Public RAG grounding and abstention intervention study over TechQA and WixQA.
 - Memory/context pollution intervention study covering stale, injected, and cross-user memory.
 - Goal-conflict intervention study covering safety, evidence, privacy, and tool-risk arbitration.
+- Incident replay suite with seeded incidents, replay matrix, release gates, regression fixtures, and generated memos.
 - Public benchmark documentation, dataset boundaries, failure taxonomy, and external-review packet.
 - Streamlit dashboard for interactive inspection.
 - GitHub Pages report and PDF for public review.
@@ -105,6 +113,8 @@ CI runs linting, tests, deterministic report checks, local OpenTelemetry smoke t
 - RAG grounding intervention report: [reports/rag_grounding_intervention.md](reports/rag_grounding_intervention.md)
 - Memory context intervention report: [reports/memory_context_intervention.md](reports/memory_context_intervention.md)
 - Goal conflict intervention report: [reports/goal_conflict_intervention.md](reports/goal_conflict_intervention.md)
+- Product pivot plan: [docs/product_pivot_plan.md](docs/product_pivot_plan.md)
+- Incident replay summary: [reports/incident_replay_summary.json](reports/incident_replay_summary.json)
 - Dataset card: [docs/dataset_card.md](docs/dataset_card.md)
 - Failure taxonomy: [docs/failure_taxonomy.md](docs/failure_taxonomy.md)
 - External reviewer handoff pack: [docs/reviewer_handoff_pack.md](docs/reviewer_handoff_pack.md)
@@ -122,6 +132,7 @@ CI runs linting, tests, deterministic report checks, local OpenTelemetry smoke t
 ## Roadmap
 
 - Collect independent human labels using the prepared review packet.
+- Add a command-line release gate for incident replay and policy-as-code thresholds.
 - Add reproducible multi-model comparison across hosted and open-source models.
 - Expand public RAG validation beyond the current compact TechQA and WixQA samples.
 - Expand the paper-style intervention report with external reviewer disagreement analysis.

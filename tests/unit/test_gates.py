@@ -81,3 +81,45 @@ def test_evaluation_gates_fail_when_blocking_threshold_is_missed() -> None:
     assert report["fail_count"] == 1
     failed_gate = next(gate for gate in report["gates"] if gate["status"] == "fail")
     assert failed_gate["gate_id"] == "retrieval.local_embedding_store_citation"
+
+
+def test_evaluation_gates_fail_when_incident_replay_gate_fails() -> None:
+    report = evaluation_gates(
+        comparison={
+            "metrics": {
+                "abstention_accuracy": {"improved": 1.0},
+            }
+        },
+        retriever_comparison={
+            "systems": [
+                {"label": "Local TF-IDF vector", "citation_coverage": 1.0},
+                {"label": "Local embedding store", "citation_coverage": 1.0},
+            ]
+        },
+        extraction={"metrics": {"schema_validity": 1.0}},
+        security={
+            "metrics": {
+                "improved_weighted_safe_rate": 1.0,
+                "improved_residual_risk_score": 0,
+            }
+        },
+        agent={
+            "metrics": {
+                "side_effect_block_rate": 1.0,
+                "approval_audit_rate": 1.0,
+            }
+        },
+        dataset_profile={
+            "dataset_counts": {"golden_cases": 350},
+            "golden_case_mix": {"manual_share": 0.2686},
+        },
+        trace_index={"trace_count": 21, "span_count": 1306},
+        collector_export_preview={"span_count": 1306},
+        incident_release_gates={"overall_status": "fail"},
+    )
+
+    assert report["overall_status"] == "fail"
+    failed_gate = next(
+        gate for gate in report["gates"] if gate["gate_id"] == "incident.replay_release_gates"
+    )
+    assert failed_gate["status"] == "fail"

@@ -22,6 +22,10 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
     collector = _read_json(reports_dir / "collector_export_preview.json")
     trace_index = _read_json(reports_dir / "observability_trace_index.json")
     gates = _read_json(reports_dir / "evaluation_gates.json")
+    incident_replay = _read_optional_json(reports_dir / "incident_replay_summary.json")
+    incident_release_gates = _read_optional_json(
+        reports_dir / "incident_release_gates.json"
+    )
     techqa_public = _read_optional_json(reports_dir / "techqa_public_rag_summary.json")
     techqa_profile = _read_optional_json(
         reports_dir / "techqa_public_benchmark_profile.json"
@@ -117,6 +121,21 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
         reports_dir / "observability_trace_index.json",
         public_dir / "observability_trace_index.json",
     )
+    for incident_artifact in [
+        "incident_replay_summary.json",
+        "incident_replay_runs.jsonl",
+        "incident_release_gates.json",
+    ]:
+        if (reports_dir / incident_artifact).exists():
+            shutil.copyfile(
+                reports_dir / incident_artifact,
+                public_dir / incident_artifact,
+            )
+    for incident_memo_path in reports_dir.glob("incident_memo_INC-*.md"):
+        shutil.copyfile(
+            incident_memo_path,
+            public_dir / incident_memo_path.name,
+        )
     if (reports_dir / "external_human_review_summary.json").exists():
         shutil.copyfile(
             reports_dir / "external_human_review_summary.json",
@@ -242,6 +261,8 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
             public_dir / "rag_grounding_intervention.md",
         )
 
+    artifact_links = _public_artifact_links(project_root)
+
     (public_dir / "index.html").write_text(
         _index_html(
             profile=profile,
@@ -250,6 +271,8 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
             collector=collector,
             trace_index=trace_index,
             gates=gates,
+            incident_replay=incident_replay,
+            incident_release_gates=incident_release_gates,
             techqa_public=techqa_public,
             techqa_profile=techqa_profile,
             wixqa_public=wixqa_public,
@@ -270,11 +293,12 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
             intervention_study=intervention_study,
             memory_context_intervention=memory_context_intervention,
             goal_conflict_intervention=goal_conflict_intervention,
+            artifact_links=artifact_links,
         ),
         encoding="utf-8",
     )
     (public_dir / "artifacts.html").write_text(
-        _artifact_index_html(_public_artifact_links()),
+        _artifact_index_html(artifact_links),
         encoding="utf-8",
     )
     return public_dir
@@ -288,6 +312,8 @@ def _index_html(
     collector: dict[str, Any],
     trace_index: dict[str, Any],
     gates: dict[str, Any],
+    incident_replay: dict[str, Any],
+    incident_release_gates: dict[str, Any],
     techqa_public: dict[str, Any],
     techqa_profile: dict[str, Any],
     wixqa_public: dict[str, Any],
@@ -308,6 +334,7 @@ def _index_html(
     intervention_study: dict[str, Any],
     memory_context_intervention: dict[str, Any],
     goal_conflict_intervention: dict[str, Any],
+    artifact_links: list[tuple[str, str, str]],
 ) -> str:
     counts = profile["dataset_counts"]
     mix = profile["golden_case_mix"]
@@ -315,6 +342,13 @@ def _index_html(
     security_metrics = security["metrics"]
     safety_metrics = safety_classifier["metrics"]
     safety_prevalence = safety_classifier["weighted_prevalence"]
+    incident_summary = incident_replay.get("summary", {})
+    incident_gate_status = _display_status(
+        incident_summary.get(
+            "release_gate_status",
+            incident_release_gates.get("overall_status", "not_configured"),
+        )
+    )
     external_status = _display_status(external_review.get("status", "not_configured"))
     intervention_count = intervention_study.get("experiment_count", 0)
     memory_summary = memory_context_intervention.get("summary", {})
@@ -326,7 +360,7 @@ def _index_html(
     recommendations = "\n".join(
         f"<li>{escape(item)}</li>" for item in profile["recommended_next_data_work"]
     )
-    artifact_count = len(_public_artifact_links())
+    artifact_count = len(artifact_links)
     repo_url = "https://github.com/rosscyking1115/internal-ai-agent-eval-lab"
     streamlit_url = "https://agent-evaluation-lab.streamlit.app/"
 
@@ -589,6 +623,13 @@ def _index_html(
           </p>
         </div>
         <div class="summary-card">
+          <h3>Incident replay</h3>
+          <p>
+            Redacted synthetic incidents are replayed as regression tests before
+            a release gate can pass.
+          </p>
+        </div>
+        <div class="summary-card">
           <h3>Auditability is part of reliability</h3>
           <p>
             The project publishes release gates, trace summaries, and generated
@@ -604,6 +645,12 @@ def _index_html(
         {_metric("Synthetic golden cases", counts["golden_cases"])}
         {_metric("Red-team cases", counts["red_team_cases"])}
         {_metric("Intervention experiments", intervention_count)}
+        {_metric("Incident replay cases", incident_replay.get("case_count", "Not configured"))}
+        {_metric(
+            "Incident closure rate",
+            _incident_replay_metric(incident_replay, "incident_closure_rate"),
+        )}
+        {_metric("Incident gate status", incident_gate_status)}
         {_metric("Manual golden-case share", _pct(mix["manual_share"]))}
         {_metric(
             "Public RAG cases",
@@ -750,8 +797,8 @@ def _index_html(
 """
 
 
-def _public_artifact_links() -> list[tuple[str, str, str]]:
-    return [
+def _public_artifact_links(project_root: Path = PROJECT_ROOT) -> list[tuple[str, str, str]]:
+    artifact_links = [
         ("Primary reports", "Full evaluation report", "evaluation_report.html"),
         ("Primary reports", "PDF evaluation report", "evaluation_report.pdf"),
         ("Primary reports", "Evaluation gates", "evaluation_gates.json"),
@@ -938,7 +985,21 @@ def _public_artifact_links() -> list[tuple[str, str, str]]:
         ),
         ("Human review", "External reviewer guide", "external_human_review_reviewer_guide.md"),
         ("Observability", "Observability trace index", "observability_trace_index.json"),
+        ("Incident replay", "Incident replay summary", "incident_replay_summary.json"),
+        ("Incident replay", "Incident replay runs", "incident_replay_runs.jsonl"),
+        ("Incident replay", "Incident release gates", "incident_release_gates.json"),
     ]
+    reports_dir = project_root / "reports"
+    for memo_path in sorted(reports_dir.glob("incident_memo_INC-*.md")):
+        incident_id = memo_path.stem.replace("incident_memo_", "")
+        artifact_links.append(
+            (
+                "Incident replay",
+                f"Incident memo {incident_id}",
+                memo_path.name,
+            )
+        )
+    return artifact_links
 
 
 def _artifact_index_html(artifact_links: list[tuple[str, str, str]]) -> str:
@@ -1127,6 +1188,12 @@ def _memory_context_metric(report: dict[str, Any], metric: str) -> str:
 
 
 def _goal_conflict_metric(report: dict[str, Any], metric: str) -> str:
+    if report.get("status") != "evaluated":
+        return "Not configured"
+    return _pct(float(report.get("summary", {}).get(metric, 0.0)))
+
+
+def _incident_replay_metric(report: dict[str, Any], metric: str) -> str:
     if report.get("status") != "evaluated":
         return "Not configured"
     return _pct(float(report.get("summary", {}).get(metric, 0.0)))

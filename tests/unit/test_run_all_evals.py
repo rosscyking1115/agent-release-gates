@@ -109,6 +109,11 @@ def test_run_all_evals_generates_reports(tmp_path) -> None:
     assert summary["goal_conflict_intervention"]["summary"][
         "layered_unsafe_goal_compliance_rate"
     ] == 0.0
+    assert summary["incident_replay"]["status"] == "evaluated"
+    assert summary["incident_replay"]["case_count"] == 4
+    assert summary["incident_replay"]["summary"]["release_gate_status"] == "pass"
+    assert summary["incident_replay"]["summary"]["must_not_violation_count"] == 0
+    assert summary["incident_replay"]["summary"]["incident_closure_rate"] == 1.0
     assert summary["evaluation_history"]["current_summary"]["best_retriever"] == (
         "Local TF-IDF vector"
     )
@@ -167,6 +172,13 @@ def test_run_all_evals_generates_reports(tmp_path) -> None:
     assert (tmp_path / "data/eval_cases/goal_conflict_cases.jsonl").exists()
     assert (tmp_path / "reports/goal_conflict_intervention.json").exists()
     assert (tmp_path / "reports/goal_conflict_intervention.md").exists()
+    assert (tmp_path / "data/incidents/incident_cases.jsonl").exists()
+    assert (tmp_path / "data/incidents/trace_events.jsonl").exists()
+    assert (tmp_path / "reports/incident_replay_summary.json").exists()
+    assert (tmp_path / "reports/incident_replay_runs.jsonl").exists()
+    assert (tmp_path / "reports/incident_release_gates.json").exists()
+    assert (tmp_path / "data/eval_cases/incident_regression_cases.jsonl").exists()
+    assert (tmp_path / "reports/incident_memo_INC-2026-0001.md").exists()
     assert (tmp_path / "config/action_risk_policy.yaml").exists()
     assert (tmp_path / "reports/agent_otel_spans.jsonl").exists()
     assert (tmp_path / "reports/observability_otel_spans.jsonl").exists()

@@ -12,9 +12,13 @@ from internal_ai_agent.dashboard.data import (
     coverage_count_rows,
     evaluation_gate_rows,
     evaluation_history_rows,
+    incident_replay_run_rows,
     load_agent_trace_examples,
     load_dataset_profile,
     load_evaluation_gates,
+    load_incident_release_gates,
+    load_incident_replay_runs,
+    load_incident_replay_summary,
     load_observability_otel_spans,
     load_observability_trace_index,
     load_retriever_case_rows,
@@ -80,6 +84,9 @@ def generate_public_report(project_root: Path) -> str:
     evaluation_history = _read_json(reports_dir / "evaluation_history.json")
     dataset_profile = load_dataset_profile(project_root)
     evaluation_gates = load_evaluation_gates(project_root)
+    incident_replay_summary = load_incident_replay_summary(project_root)
+    incident_replay_runs = load_incident_replay_runs(project_root)
+    incident_release_gates = load_incident_release_gates(project_root)
     collector_preview = _read_json(reports_dir / "collector_export_preview.json")
     extraction = _read_json(reports_dir / "extraction_eval_summary.json")
     security = _read_json(reports_dir / "security_eval_summary.json")
@@ -158,6 +165,12 @@ def generate_public_report(project_root: Path) -> str:
             "## Evaluation Release Gates",
             "",
             _evaluation_gate_table(evaluation_gates),
+            "",
+            "## Incident Replay Suite",
+            "",
+            _incident_replay_table(incident_replay_summary, incident_replay_runs),
+            "",
+            _incident_release_gate_table(incident_release_gates),
             "",
             "## Dataset Profile",
             "",
@@ -452,6 +465,59 @@ def _read_reviewed_model_judge_summaries(reports_dir: Path) -> list[dict[str, An
         summaries,
         key=lambda row: (str(row.get("provider", "")), str(row.get("model", ""))),
     )
+
+
+def _incident_replay_table(
+    summary: dict[str, Any],
+    replay_runs: list[dict[str, Any]],
+) -> str:
+    if summary.get("status") != "evaluated":
+        return "Incident replay suite is not configured."
+    metrics = summary["summary"]
+    rows = [
+        "| Incident replay metric | Value |",
+        "| --- | ---: |",
+        f"| Incidents | {summary['case_count']} |",
+        f"| Trace events | {summary['trace_event_count']} |",
+        f"| Regression fixtures | {summary['regression_case_count']} |",
+        (
+            "| High or critical incidents | "
+            f"{metrics['high_or_critical_incident_count']} |"
+        ),
+        f"| Expected behavior match | {_pct(metrics['expected_behavior_match_rate'])} |",
+        f"| Incident closure rate | {_pct(metrics['incident_closure_rate'])} |",
+        f"| Replay must-not violations | {metrics['must_not_violation_count']} |",
+        f"| Release gate status | {_display_status(metrics['release_gate_status'])} |",
+        "",
+        (
+            "| Incident | Severity | Original | Replay | Expected match | "
+            "Closed | Replay violations | Regression fixture |"
+        ),
+        "| --- | --- | --- | --- | --- | --- | --- | --- |",
+    ]
+    for row in incident_replay_run_rows(replay_runs):
+        rows.append(
+            "| {incident_id} | {severity} | {original_decision} | {decision} | "
+            "{expected_behavior_match} | {closed_by_replay} | "
+            "{must_not_violations} | {regression_case} |".format(**row)
+        )
+    return "\n".join(rows)
+
+
+def _incident_release_gate_table(gates: dict[str, Any]) -> str:
+    if not gates:
+        return "Incident release gates are not configured."
+    rows = [
+        "| Incident release gate | Status | Severity | Observed | Threshold |",
+        "| --- | --- | --- | ---: | ---: |",
+    ]
+    for row in evaluation_gate_rows(gates):
+        rows.append(
+            "| {label} | {status} | {severity} | {observed} | {threshold} |".format(
+                **row
+            )
+        )
+    return "\n".join(rows)
 
 
 def _retriever_table(report: dict[str, Any]) -> str:

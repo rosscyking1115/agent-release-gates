@@ -18,6 +18,7 @@ def evaluation_gates(
     dataset_profile: dict[str, Any],
     trace_index: dict[str, Any],
     collector_export_preview: dict[str, Any],
+    incident_release_gates: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     systems = {system["label"]: system for system in retriever_comparison["systems"]}
     gates: list[Gate] = [
@@ -139,6 +140,20 @@ def evaluation_gates(
             ),
         },
     ]
+    if incident_release_gates is not None:
+        gates.append(
+            _status_gate(
+                gate_id="incident.replay_release_gates",
+                area="Incident replay",
+                label="Incident replay release gates",
+                observed=str(incident_release_gates.get("overall_status", "not_configured")),
+                expected="pass",
+                rationale=(
+                    "Known incident replays must pass before the overall release "
+                    "gate can pass."
+                ),
+            )
+        )
     fail_count = sum(1 for gate in gates if gate["status"] == "fail")
     warn_count = sum(1 for gate in gates if gate["status"] == "warn")
     pass_count = sum(1 for gate in gates if gate["status"] == "pass")
@@ -165,6 +180,7 @@ def write_evaluation_gates(
     dataset_profile: dict[str, Any],
     trace_index: dict[str, Any],
     collector_export_preview: dict[str, Any],
+    incident_release_gates: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     report = evaluation_gates(
         comparison=comparison,
@@ -175,6 +191,7 @@ def write_evaluation_gates(
         dataset_profile=dataset_profile,
         trace_index=trace_index,
         collector_export_preview=collector_export_preview,
+        incident_release_gates=incident_release_gates,
     )
     write_json(project_root / "reports/evaluation_gates.json", report)
     return report
@@ -221,5 +238,27 @@ def _equals_gate(
         "observed": observed,
         "threshold": expected,
         "value_format": "number",
+        "rationale": rationale,
+    }
+
+
+def _status_gate(
+    *,
+    gate_id: str,
+    area: str,
+    label: str,
+    observed: str,
+    expected: str,
+    rationale: str,
+) -> Gate:
+    return {
+        "gate_id": gate_id,
+        "area": area,
+        "label": label,
+        "status": "pass" if observed == expected else "fail",
+        "severity": "blocking",
+        "observed": observed,
+        "threshold": expected,
+        "value_format": "status",
         "rationale": rationale,
     }

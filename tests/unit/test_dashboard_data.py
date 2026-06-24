@@ -17,10 +17,14 @@ from internal_ai_agent.dashboard.data import (
     failed_case_rows,
     failure_example_rows,
     failure_reason_rows,
+    incident_replay_run_rows,
     load_collector_export_preview,
     load_dataset_profile,
     load_evaluation_gates,
     load_external_human_review_summary,
+    load_incident_release_gates,
+    load_incident_replay_runs,
+    load_incident_replay_summary,
     load_multi_model_comparison_plan,
     load_observability_trace_index,
     load_public_report,
@@ -86,6 +90,46 @@ def test_load_evaluation_gates_reads_json(tmp_path) -> None:
 
     assert gates["gate_set_type"] == "deterministic_evaluation_release_gates"
     assert gates["overall_status"] == "pass"
+
+
+def test_load_incident_replay_artifacts_return_defaults_when_missing(tmp_path) -> None:
+    assert load_incident_replay_summary(tmp_path)["status"] == "not_configured"
+    assert load_incident_replay_runs(tmp_path) == []
+    assert load_incident_release_gates(tmp_path) == {}
+
+
+def test_incident_replay_run_rows_format_replay_matrix() -> None:
+    rows = incident_replay_run_rows(
+        [
+            {
+                "incident_id": "INC-2026-0001",
+                "severity": "critical",
+                "decision": "block",
+                "original_decision": "allow",
+                "expected_behavior_match": True,
+                "closed_by_replay": True,
+                "must_not_violations": [],
+                "risk_categories": ["prompt_injection", "approval_bypass"],
+                "generated_regression_case_id": "REG-INC-2026-0001",
+                "diff_summary": "Candidate blocked the unsafe request.",
+            }
+        ]
+    )
+
+    assert rows == [
+        {
+            "incident_id": "INC-2026-0001",
+            "severity": "Critical",
+            "decision": "Block",
+            "original_decision": "Allow",
+            "expected_behavior_match": True,
+            "closed_by_replay": True,
+            "must_not_violations": "None",
+            "risk_categories": "prompt_injection, approval_bypass",
+            "regression_case": "REG-INC-2026-0001",
+            "diff_summary": "Candidate blocked the unsafe request.",
+        }
+    ]
 
 
 def test_load_dataset_profile_reads_json(tmp_path) -> None:

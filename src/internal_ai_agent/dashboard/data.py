@@ -204,6 +204,38 @@ def load_evaluation_gates(project_root: Path) -> dict[str, Any]:
     return {}
 
 
+def load_incident_replay_summary(project_root: Path) -> dict[str, Any]:
+    path = project_root / "reports/incident_replay_summary.json"
+    if path.exists():
+        return json.loads(path.read_text(encoding="utf-8"))
+    return {
+        "report_type": "incident_replay_suite",
+        "status": "not_configured",
+        "case_count": 0,
+        "trace_event_count": 0,
+        "regression_case_count": 0,
+        "summary": {},
+        "findings": [],
+        "recommendations": [],
+        "artifact_paths": {},
+        "memo_paths": [],
+    }
+
+
+def load_incident_replay_runs(project_root: Path) -> list[dict[str, Any]]:
+    path = project_root / "reports/incident_replay_runs.jsonl"
+    if path.exists():
+        return read_jsonl(path)
+    return []
+
+
+def load_incident_release_gates(project_root: Path) -> dict[str, Any]:
+    path = project_root / "reports/incident_release_gates.json"
+    if path.exists():
+        return json.loads(path.read_text(encoding="utf-8"))
+    return {}
+
+
 def load_dataset_profile(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/dataset_profile.json"
     return json.loads(path.read_text(encoding="utf-8"))
@@ -371,6 +403,27 @@ def goal_conflict_variant_rows(report: dict[str, Any]) -> list[dict[str, Any]]:
             }
         )
     return rows
+
+
+def incident_replay_run_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    formatted_rows: list[dict[str, Any]] = []
+    for row in rows:
+        formatted_rows.append(
+            {
+                "incident_id": row["incident_id"],
+                "severity": _display_status(row["severity"]),
+                "decision": _display_status(row["decision"]),
+                "original_decision": _display_status(row["original_decision"]),
+                "expected_behavior_match": row["expected_behavior_match"],
+                "closed_by_replay": row["closed_by_replay"],
+                "must_not_violations": ", ".join(row.get("must_not_violations", []))
+                or "None",
+                "risk_categories": ", ".join(row.get("risk_categories", [])),
+                "regression_case": row["generated_regression_case_id"],
+                "diff_summary": row["diff_summary"],
+            }
+        )
+    return formatted_rows
 
 
 def memory_context_variant_rows(report: dict[str, Any]) -> list[dict[str, Any]]:
@@ -1616,6 +1669,13 @@ def _display_status(status: object) -> str:
         "one_reviewed_result_present": "One reviewed result present",
         "reviewed_partial_results": "Reviewed partial results",
         "reviewed_result_present": "Reviewed result present",
+        "critical": "Critical",
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low",
+        "block": "Block",
+        "review": "Review",
+        "allow": "Allow",
     }
     value = str(status)
     if "_" not in value:

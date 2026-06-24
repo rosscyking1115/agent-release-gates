@@ -14,6 +14,7 @@ from internal_ai_agent.evals.goal_conflict_intervention import (
     write_goal_conflict_intervention,
 )
 from internal_ai_agent.evals.human_calibration import evaluate_human_calibration
+from internal_ai_agent.evals.incident_replay import write_incident_replay_suite
 from internal_ai_agent.evals.intervention_study import (
     write_agent_safety_intervention_study,
 )
@@ -96,6 +97,7 @@ def run_all(project_root: Path) -> dict[str, Any]:
     )
     memory_context_intervention = write_memory_context_intervention(project_root)
     goal_conflict_intervention = write_goal_conflict_intervention(project_root)
+    incident_replay = write_incident_replay_suite(project_root)
     evaluation_history = write_evaluation_history(
         project_root,
         retriever_report=retriever_comparison,
@@ -124,6 +126,7 @@ def run_all(project_root: Path) -> dict[str, Any]:
         dataset_profile=dataset_profile,
         trace_index=trace_index,
         collector_export_preview=collector_export_preview,
+        incident_release_gates=incident_replay["release_gates"],
     )
     public_report_path = write_public_report(project_root)
     return {
@@ -150,6 +153,7 @@ def run_all(project_root: Path) -> dict[str, Any]:
         "intervention_study": intervention_study,
         "memory_context_intervention": memory_context_intervention,
         "goal_conflict_intervention": goal_conflict_intervention,
+        "incident_replay": incident_replay,
         "evaluation_history": evaluation_history,
         "observability_spans_path": str(observability_spans_path),
         "trace_index": trace_index,
@@ -393,6 +397,14 @@ def main() -> None:
     print(
         "- goal_conflict_review_burden_per_100: "
         f"{summary['goal_conflict_intervention']['summary']['layered_review_burden_per_100_cases']:.2f}"
+    )
+    print(
+        "- incident_replay_gate_status: "
+        f"{summary['incident_replay']['summary']['release_gate_status']}"
+    )
+    print(
+        "- incident_replay_closure_rate: "
+        f"{summary['incident_replay']['summary']['incident_closure_rate']:.4f}"
     )
     print(
         "- historical_snapshot_latest: "
