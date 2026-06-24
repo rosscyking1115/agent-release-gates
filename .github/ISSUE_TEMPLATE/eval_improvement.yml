@@ -1,0 +1,51 @@
+name: Benchmark or evaluation improvement
+description: Suggest a dataset, metric, failure mode, intervention, or documentation improvement.
+title: "[Eval improvement]: "
+labels: ["evaluation", "enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this for benchmark-quality improvements. Please keep the project boundary conservative: no private company documents, credentials, production logs, customer data, employee data, or confidential workflows.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Retrieval or RAG grounding
+        - Safety classifier or prevalence estimation
+        - Agent/tool governance
+        - Memory/context pollution
+        - Goal-conflict arbitration
+        - Multi-model comparison
+        - Human review or judge reliability
+        - Public report or dashboard
+        - Documentation
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: What should change, and why would it improve evaluation quality?
+      placeholder: "Describe the failure mode, metric, dataset, or report improvement."
+    validations:
+      required: true
+  - type: textarea
+    id: reproducibility
+    attributes:
+      label: Reproducibility plan
+      description: How could the change be tested or regenerated?
+      placeholder: "Example: add cases, update expected metrics, run scripts/run_all_evals.py and pytest."
+    validations:
+      required: false
+  - type: checkboxes
+    id: data_boundary
+    attributes:
+      label: Data boundary
+      options:
+        - label: This suggestion does not require private, confidential, personal, or production data.
+          required: true
+        - label: If using a public dataset, I can provide source, license, and sampling details.
+          required: false

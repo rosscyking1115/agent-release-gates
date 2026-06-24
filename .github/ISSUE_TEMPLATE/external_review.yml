@@ -1,0 +1,47 @@
+name: External review volunteer
+description: Volunteer to independently review calibration cases or benchmark claims.
+title: "[External review]: "
+labels: ["external-review"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for helping review the Agent Safety & Reliability Evaluation Lab.
+
+        Please do not paste completed labels, personal information, credentials, private documents, or confidential examples into a public issue. This issue is only for volunteering, clarifying scope, or reporting review-process questions.
+  - type: dropdown
+    id: review_type
+    attributes:
+      label: Review type
+      options:
+        - Safety-label calibration cases
+        - Report or benchmark-methodology review
+        - Dataset-boundary review
+        - Reproducibility review
+        - Other review
+    validations:
+      required: true
+  - type: checkboxes
+    id: independence
+    attributes:
+      label: Independence check
+      options:
+        - label: I have not inspected maintainer labels, classifier outputs, hosted judge outputs, or source code for the cases I plan to label.
+          required: false
+        - label: I can use a pseudonymous reviewer id and avoid sharing personal information in label files.
+          required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Relevant context
+      description: Briefly describe your review background or what you want to review. Do not include private data.
+      placeholder: "Example: I can independently label the 24 safety calibration cases this week."
+    validations:
+      required: true
+  - type: textarea
+    id: questions
+    attributes:
+      label: Questions or constraints
+      description: Add any process questions or availability constraints.
+    validations:
+      required: false

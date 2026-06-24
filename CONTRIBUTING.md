@@ -15,6 +15,16 @@ This project is intended to be a public benchmark-style artifact. Contributions 
 - report, dashboard, or documentation improvements that make results easier to inspect
 - tests that prevent benchmark or reporting regressions
 
+## Opening Issues
+
+Use GitHub issues for public, non-sensitive project discussion:
+
+- External review volunteer: use this to offer independent labels, methodology review, reproducibility review, or dataset-boundary review.
+- Benchmark or evaluation improvement: use this for proposed datasets, metrics, failure modes, interventions, or report improvements.
+- Bug or reproducibility issue: use this for failing commands, broken artifacts, dashboard problems, or unclear setup.
+
+Do not paste completed reviewer labels, credentials, personal data, private company data, production logs, or confidential examples into public issues.
+
 ## Data Rules
 
 - Use synthetic internal-operations data unless a public dataset is explicitly documented.

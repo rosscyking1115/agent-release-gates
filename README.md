@@ -109,6 +109,7 @@ CI runs linting, tests, deterministic report checks, local OpenTelemetry smoke t
 - Failure taxonomy: [docs/failure_taxonomy.md](docs/failure_taxonomy.md)
 - External reviewer handoff pack: [docs/reviewer_handoff_pack.md](docs/reviewer_handoff_pack.md)
 - Technical artifact index: [docs/technical_artifacts.md](docs/technical_artifacts.md)
+- Contribution guide: [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## Current Limitations
 

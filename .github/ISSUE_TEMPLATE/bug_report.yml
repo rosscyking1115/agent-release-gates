@@ -1,0 +1,46 @@
+name: Bug or reproducibility issue
+description: Report a failing command, broken artifact, dashboard issue, or reproducibility problem.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please include enough context to reproduce the issue. Do not include API keys, credentials, private data, production logs, or confidential examples.
+  - type: textarea
+    id: what_happened
+    attributes:
+      label: What happened?
+      description: Describe the failure or unexpected behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: Command or page
+      description: Paste the command, URL, or page where the issue occurred. Redact secrets.
+      placeholder: "uv run python scripts/run_all_evals.py"
+    validations:
+      required: false
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What did you expect to happen?
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, Python version, browser, or relevant setup detail.
+      placeholder: "Windows 11, Python 3.12, uv installed"
+    validations:
+      required: false
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Safety check
+      options:
+        - label: I have removed credentials, personal data, private company data, and confidential logs.
+          required: true

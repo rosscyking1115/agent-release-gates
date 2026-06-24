@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Reviewer handoff pack
+    url: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/reviewer_handoff_pack.md
+    about: Read the external-review instructions before volunteering to label cases.
+  - name: Public dashboard
+    url: https://agent-evaluation-lab.streamlit.app/
+    about: Explore the interactive evaluation dashboard.
+  - name: Full public report
+    url: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/evaluation_report.html
+    about: Review the generated evaluation report and current limitations.
