@@ -96,12 +96,12 @@ Completed:
 1. Build Incident Replay Suite v0 with seeded synthetic incident fixtures.
 2. Add an `agent-safety` CLI entry point for release-gate runs.
 3. Add validated policy-as-code thresholds for incident gates.
+4. Add Streamlit incident queue, trace timeline, replay matrix, and memo views.
 
 Next:
 
-1. Add Streamlit incident queue, trace timeline, replay matrix, and memo views.
-2. Reframe README, GitHub Pages, and Streamlit around release readiness once the name is final.
-3. Add public or human-labelled incident-style cases where licensing and privacy are suitable.
+1. Reframe README, GitHub Pages, and Streamlit around release readiness once the name is final.
+2. Add public or human-labelled incident-style cases where licensing and privacy are suitable.
 
 ## Success Criteria
 

@@ -18,6 +18,7 @@ from internal_ai_agent.dashboard.data import (
     failure_example_rows,
     failure_reason_rows,
     incident_replay_run_rows,
+    incident_trace_event_rows,
     load_collector_export_preview,
     load_dataset_profile,
     load_evaluation_gates,
@@ -25,6 +26,7 @@ from internal_ai_agent.dashboard.data import (
     load_incident_release_gates,
     load_incident_replay_runs,
     load_incident_replay_summary,
+    load_incident_trace_events,
     load_multi_model_comparison_plan,
     load_observability_trace_index,
     load_public_report,
@@ -95,6 +97,7 @@ def test_load_evaluation_gates_reads_json(tmp_path) -> None:
 def test_load_incident_replay_artifacts_return_defaults_when_missing(tmp_path) -> None:
     assert load_incident_replay_summary(tmp_path)["status"] == "not_configured"
     assert load_incident_replay_runs(tmp_path) == []
+    assert load_incident_trace_events(tmp_path) == []
     assert load_incident_release_gates(tmp_path) == {}
 
 
@@ -128,6 +131,48 @@ def test_incident_replay_run_rows_format_replay_matrix() -> None:
             "risk_categories": "prompt_injection, approval_bypass",
             "regression_case": "REG-INC-2026-0001",
             "diff_summary": "Candidate blocked the unsafe request.",
+        }
+    ]
+
+
+def test_incident_trace_event_rows_format_replay_evidence(tmp_path) -> None:
+    incident_dir = tmp_path / "data/incidents"
+    incident_dir.mkdir(parents=True)
+    (incident_dir / "trace_events.jsonl").write_text(
+        json.dumps(
+            {
+                "incident_id": "INC-2026-0001",
+                "trace_id": "original_INC-2026-0001",
+                "event_seq": 1,
+                "actor": "assistant",
+                "event_type": "tool_call",
+                "content": "Original behavior attempted a side effect.",
+                "tool_name": "route_ticket_mock",
+                "tool_args": {},
+                "tool_result": {},
+                "timestamp_utc": "2026-06-24T09:00:03Z",
+                "annotations": {"risk_score": 1.0, "requires_approval": True},
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+    events = load_incident_trace_events(tmp_path)
+    rows = incident_trace_event_rows(events)
+
+    assert rows == [
+        {
+            "incident_id": "INC-2026-0001",
+            "trace_id": "original_INC-2026-0001",
+            "event_seq": 1,
+            "actor": "Assistant",
+            "event_type": "Tool Call",
+            "content": "Original behavior attempted a side effect.",
+            "tool_name": "route_ticket_mock",
+            "risk_score": 1.0,
+            "requires_approval": True,
+            "timestamp_utc": "2026-06-24T09:00:03Z",
         }
     ]
 

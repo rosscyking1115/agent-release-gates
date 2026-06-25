@@ -229,6 +229,13 @@ def load_incident_replay_runs(project_root: Path) -> list[dict[str, Any]]:
     return []
 
 
+def load_incident_trace_events(project_root: Path) -> list[dict[str, Any]]:
+    path = project_root / "data/incidents/trace_events.jsonl"
+    if path.exists():
+        return read_jsonl(path)
+    return []
+
+
 def load_incident_release_gates(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/incident_release_gates.json"
     if path.exists():
@@ -424,6 +431,31 @@ def incident_replay_run_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]
             }
         )
     return formatted_rows
+
+
+def incident_trace_event_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    formatted_rows: list[dict[str, Any]] = []
+    for row in rows:
+        annotations = row.get("annotations", {})
+        formatted_rows.append(
+            {
+                "incident_id": row.get("incident_id", ""),
+                "trace_id": row.get("trace_id", ""),
+                "event_seq": row.get("event_seq", 0),
+                "actor": _display_status_label(str(row.get("actor", ""))),
+                "event_type": _display_status_label(str(row.get("event_type", ""))),
+                "content": row.get("content", ""),
+                "tool_name": row.get("tool_name", "") or "None",
+                "risk_score": float(annotations.get("risk_score", 0.0)),
+                "requires_approval": bool(annotations.get("requires_approval", False)),
+                "timestamp_utc": row.get("timestamp_utc", ""),
+            }
+        )
+    return formatted_rows
+
+
+def _display_status_label(value: str) -> str:
+    return value.replace("_", " ").title()
 
 
 def memory_context_variant_rows(report: dict[str, Any]) -> list[dict[str, Any]]:

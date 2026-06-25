@@ -28,6 +28,7 @@ from internal_ai_agent.dashboard.data import (
     human_calibration_case_rows,
     human_calibration_category_rows,
     incident_replay_run_rows,
+    incident_trace_event_rows,
     intervention_experiment_rows,
     judge_reliability_category_rows,
     judge_reliability_disagreement_rows,
@@ -48,6 +49,7 @@ from internal_ai_agent.dashboard.data import (
     load_incident_release_gates,
     load_incident_replay_runs,
     load_incident_replay_summary,
+    load_incident_trace_events,
     load_intervention_study,
     load_judge_reliability_summary,
     load_memory_context_intervention,
@@ -139,6 +141,7 @@ def main() -> None:
     evaluation_gates = load_evaluation_gates(PROJECT_ROOT)
     incident_replay = load_incident_replay_summary(PROJECT_ROOT)
     incident_replay_runs = load_incident_replay_runs(PROJECT_ROOT)
+    incident_trace_events = load_incident_trace_events(PROJECT_ROOT)
     incident_release_gates = load_incident_release_gates(PROJECT_ROOT)
     extraction_summary = load_extraction_summary(PROJECT_ROOT)
     security_summary = load_security_summary(PROJECT_ROOT)
@@ -256,6 +259,7 @@ def main() -> None:
         _render_incident_replay(
             incident_replay,
             incident_replay_runs,
+            incident_trace_events,
             incident_release_gates,
         )
     elif section == "Agent Observability":
@@ -1863,52 +1867,159 @@ def _render_goal_conflict_intervention(report: dict[str, object]) -> None:
 def _render_incident_replay(
     summary: dict[str, object],
     replay_runs: list[dict[str, object]],
+    trace_events: list[dict[str, object]],
     release_gates: dict[str, object],
 ) -> None:
-    st.subheader("Incident Replay Suite")
+    st.subheader("Incident Replay Workspace")
     if summary.get("status") != "evaluated":
         st.info("Incident replay suite has not been generated yet.")
         return
 
-    metrics = summary.get("summary", {})
-    cols = st.columns(4)
+    metrics_obj = summary.get("summary", {})
+    metrics = metrics_obj if isinstance(metrics_obj, dict) else {}
+    cols = st.columns(5)
     cols[0].metric("Incidents", int(summary.get("case_count", 0)))
     cols[1].metric(
         "Gate status",
-        _format_status(metrics.get("release_gate_status", "not_configured")),  # type: ignore[union-attr]
+        _format_status(metrics.get("release_gate_status", "not_configured")),
     )
     cols[2].metric(
         "Closure rate",
-        _format_pct(float(metrics.get("incident_closure_rate", 0.0))),  # type: ignore[union-attr]
+        _format_pct(float(metrics.get("incident_closure_rate", 0.0))),
     )
     cols[3].metric(
         "Must-not violations",
-        int(metrics.get("must_not_violation_count", 0)),  # type: ignore[union-attr]
+        int(metrics.get("must_not_violation_count", 0)),
+    )
+    cols[4].metric(
+        "Trace coverage",
+        _format_pct(float(metrics.get("trace_event_coverage_rate", 0.0))),
     )
 
     st.markdown(
         """
-        The incident replay suite turns redacted, synthetic incident fixtures into
-        deterministic regression checks. Each replay asks whether the current
-        controlled agent blocks or holds behavior that previously would have
-        violated a release rule.
+        Replay redacted incident fixtures against the current controlled agent,
+        inspect the original trace evidence, and decide whether the release gate
+        should stay open.
         """
     )
 
     run_rows = incident_replay_run_rows(replay_runs)
-    if run_rows:
-        run_df = pd.DataFrame(run_rows)
-        display_df = run_df[
+    if not run_rows:
+        st.info("No incident replay runs are available.")
+        return
+
+    selected_label = st.selectbox(
+        "Incident",
+        [
+            (
+                f"{row['incident_id']} | {row['severity']} | "
+                f"{row['original_decision']} -> {row['decision']}"
+            )
+            for row in run_rows
+        ],
+    )
+    selected_incident_id = selected_label.split(" | ", maxsplit=1)[0]
+    selected_run = next(
+        row for row in replay_runs if row["incident_id"] == selected_incident_id
+    )
+    selected_display = next(
+        row for row in run_rows if row["incident_id"] == selected_incident_id
+    )
+    selected_trace_rows = [
+        row
+        for row in incident_trace_event_rows(trace_events)
+        if row["incident_id"] == selected_incident_id
+    ]
+
+    tabs = st.tabs(
+        [
+            "Incident queue",
+            "Replay matrix",
+            "Trace timeline",
+            "Decision memo",
+            "Release gates",
+        ]
+    )
+
+    with tabs[0]:
+        _render_incident_queue(run_rows, selected_display)
+
+    with tabs[1]:
+        _render_incident_replay_matrix(selected_run, run_rows)
+
+    with tabs[2]:
+        _render_incident_trace_timeline(selected_run, selected_trace_rows)
+
+    with tabs[3]:
+        _render_incident_decision_memo(summary, selected_incident_id)
+
+    with tabs[4]:
+        _render_incident_release_gates(summary, release_gates)
+
+
+def _render_incident_queue(
+    run_rows: list[dict[str, object]],
+    selected_display: dict[str, object],
+) -> None:
+    selected_cols = st.columns(4)
+    selected_cols[0].metric("Selected", selected_display["incident_id"])
+    selected_cols[1].metric("Severity", selected_display["severity"])
+    selected_cols[2].metric("Replay decision", selected_display["decision"])
+    selected_cols[3].metric(
+        "Status",
+        "Closed" if selected_display["closed_by_replay"] else "Review",
+    )
+
+    queue_df = pd.DataFrame(run_rows)
+    queue_df["review_status"] = queue_df.apply(
+        lambda row: "Closed"
+        if bool(row["closed_by_replay"])
+        else "Review required",
+        axis=1,
+    )
+    display_df = queue_df[
+        [
+            "incident_id",
+            "severity",
+            "review_status",
+            "original_decision",
+            "decision",
+            "expected_behavior_match",
+            "must_not_violations",
+            "risk_categories",
+            "regression_case",
+        ]
+    ].rename(
+        columns={
+            "incident_id": "Incident",
+            "severity": "Severity",
+            "review_status": "Queue status",
+            "original_decision": "Original",
+            "decision": "Replay",
+            "expected_behavior_match": "Expected match",
+            "must_not_violations": "Replay violations",
+            "risk_categories": "Risk categories",
+            "regression_case": "Regression fixture",
+        }
+    )
+    st.dataframe(display_df, hide_index=True, use_container_width=True)
+
+
+def _render_incident_replay_matrix(
+    selected_run: dict[str, object],
+    run_rows: list[dict[str, object]],
+) -> None:
+    matrix_df = pd.DataFrame(run_rows)
+    st.dataframe(
+        matrix_df[
             [
                 "incident_id",
                 "severity",
                 "original_decision",
                 "decision",
-                "expected_behavior_match",
                 "closed_by_replay",
-                "must_not_violations",
-                "risk_categories",
-                "regression_case",
+                "diff_summary",
             ]
         ].rename(
             columns={
@@ -1916,21 +2027,133 @@ def _render_incident_replay(
                 "severity": "Severity",
                 "original_decision": "Original",
                 "decision": "Replay",
-                "expected_behavior_match": "Expected match",
                 "closed_by_replay": "Closed",
-                "must_not_violations": "Replay violations",
-                "risk_categories": "Risk categories",
-                "regression_case": "Regression fixture",
+                "diff_summary": "Replay finding",
             }
+        ),
+        hide_index=True,
+        use_container_width=True,
+    )
+
+    st.markdown("**Selected replay controls**")
+    control_cols = st.columns(4)
+    control_cols[0].metric("Expected behavior", selected_run["expected_behavior"])
+    control_cols[1].metric(
+        "Expected matched",
+        "Yes" if selected_run["expected_behavior_match"] else "No",
+    )
+    control_cols[2].metric("Audit events", selected_run["audit_event_count"])
+    control_cols[3].metric("Citations", selected_run["citation_count"])
+
+    tool_outcomes = selected_run.get("tool_outcomes", [])
+    if isinstance(tool_outcomes, list) and tool_outcomes:
+        tool_df = pd.DataFrame(tool_outcomes)
+        st.dataframe(
+            tool_df.rename(
+                columns={
+                    "tool": "Tool",
+                    "tool_type": "Type",
+                    "requires_approval": "Requires approval",
+                    "approval_granted": "Approval granted",
+                    "executed": "Executed",
+                    "blocked_reason": "Blocked reason",
+                }
+            ),
+            hide_index=True,
+            use_container_width=True,
         )
-        st.dataframe(display_df, hide_index=True, use_container_width=True)
+    else:
+        st.info("This replay blocked before tool execution.")
 
-        with st.expander("Replay summaries", expanded=False):
-            for row in run_rows:
-                st.markdown(f"- **{row['incident_id']}**: {row['diff_summary']}")
 
+def _render_incident_trace_timeline(
+    selected_run: dict[str, object],
+    trace_rows: list[dict[str, object]],
+) -> None:
+    if trace_rows:
+        trace_df = pd.DataFrame(trace_rows)
+        chart = (
+            alt.Chart(trace_df)
+            .mark_circle(size=170)
+            .encode(
+                x=alt.X("event_seq:O", title="Event"),
+                y=alt.Y("actor:N", title="Actor"),
+                color=alt.Color("event_type:N", title="Event type"),
+                size=alt.Size("risk_score:Q", title="Risk score"),
+                tooltip=[
+                    "event_seq",
+                    "actor",
+                    "event_type",
+                    "risk_score",
+                    "requires_approval",
+                    "tool_name",
+                    "content",
+                ],
+            )
+            .properties(height=240)
+        )
+        st.altair_chart(chart, use_container_width=True)
+        st.dataframe(
+            trace_df[
+                [
+                    "event_seq",
+                    "timestamp_utc",
+                    "actor",
+                    "event_type",
+                    "risk_score",
+                    "requires_approval",
+                    "tool_name",
+                    "content",
+                ]
+            ].rename(
+                columns={
+                    "event_seq": "Seq",
+                    "timestamp_utc": "Timestamp",
+                    "actor": "Actor",
+                    "event_type": "Event type",
+                    "risk_score": "Risk",
+                    "requires_approval": "Approval needed",
+                    "tool_name": "Tool",
+                    "content": "Evidence",
+                }
+            ),
+            hide_index=True,
+            use_container_width=True,
+        )
+    else:
+        st.info("No original trace events are attached to this incident.")
+
+    replay_steps = _incident_replay_step_rows(selected_run)
+    if replay_steps:
+        st.markdown("**Replay lane**")
+        st.dataframe(
+            pd.DataFrame(replay_steps),
+            hide_index=True,
+            use_container_width=True,
+        )
+
+
+def _render_incident_decision_memo(
+    summary: dict[str, object],
+    selected_incident_id: str,
+) -> None:
+    memo_path = _memo_path_for_incident(summary, selected_incident_id)
+    if not memo_path:
+        st.info("No generated memo path is available for this incident.")
+        return
+    memo = _read_text_artifact(PROJECT_ROOT / memo_path)
+    st.caption(str(memo_path))
+    if memo:
+        st.markdown(memo)
+    else:
+        st.info("Memo file is listed but not present in this runtime.")
+
+
+def _render_incident_release_gates(
+    summary: dict[str, object],
+    release_gates: dict[str, object],
+) -> None:
     if release_gates:
-        st.subheader("Incident Release Gates")
         gate_cols = st.columns(4)
         gate_cols[0].metric("Overall", _format_status(release_gates["overall_status"]))
         gate_cols[1].metric("Pass", release_gates["pass_count"])
@@ -1939,18 +2162,54 @@ def _render_incident_replay(
         gate_df = pd.DataFrame(evaluation_gate_rows(release_gates))
         if not gate_df.empty:
             st.dataframe(gate_df, hide_index=True, use_container_width=True)
+    else:
+        st.info("Incident release gates are not available.")
 
+    st.markdown("**Findings and recommendations**")
+    for item in summary.get("findings", []):
+        st.markdown(f"- {item}")
+    for item in summary.get("recommendations", []):
+        st.markdown(f"- {item}")
+
+
+def _incident_replay_step_rows(selected_run: dict[str, object]) -> list[dict[str, object]]:
+    rows: list[dict[str, object]] = [
+        {
+            "Step": 1,
+            "Replay stage": "Decision",
+            "Outcome": _format_status(str(selected_run["decision"])),
+            "Detail": selected_run["diff_summary"],
+        }
+    ]
+    tool_outcomes = selected_run.get("tool_outcomes", [])
+    if isinstance(tool_outcomes, list):
+        for index, row in enumerate(tool_outcomes, start=2):
+            if not isinstance(row, dict):
+                continue
+            outcome = "Executed" if row.get("executed") else "Blocked"
+            rows.append(
+                {
+                    "Step": index,
+                    "Replay stage": row.get("tool", "tool"),
+                    "Outcome": outcome,
+                    "Detail": row.get("blocked_reason") or row.get("tool_type", ""),
+                }
+            )
+    return rows
+
+
+def _memo_path_for_incident(
+    summary: dict[str, object],
+    selected_incident_id: str,
+) -> Path | None:
     memo_paths = summary.get("memo_paths", [])
-    if memo_paths:
-        st.subheader("Generated Memos")
-        for path in memo_paths:
-            st.markdown(f"- `{path}`")
-
-    with st.expander("Findings and recommendations", expanded=True):
-        for item in summary.get("findings", []):
-            st.markdown(f"- {item}")
-        for item in summary.get("recommendations", []):
-            st.markdown(f"- {item}")
+    if not isinstance(memo_paths, list):
+        return None
+    for path in memo_paths:
+        candidate = Path(str(path))
+        if selected_incident_id in candidate.name:
+            return candidate
+    return None
 
 
 def _render_agent_metrics(
@@ -2204,6 +2463,12 @@ def _load_eval_summary(filename: str) -> dict[str, object]:
 
 def _format_pct(value: float) -> str:
     return f"{value * 100:.2f}%"
+
+
+def _read_text_artifact(path: Path) -> str:
+    if not path.exists():
+        return ""
+    return path.read_text(encoding="utf-8")
 
 
 def _format_signed_pct(value: float) -> str:
