@@ -47,6 +47,12 @@ Score submitted results from an external agent:
 uv run python scripts/agent_safety.py release-gate --incident-pack examples/incident_pack_minimal --candidate-results examples/incident_pack_minimal/candidate_results_pass.jsonl
 ```
 
+Convert a generic agent run log into the candidate-results format:
+
+```powershell
+uv run python scripts/export_candidate_results.py --input examples/incident_pack_minimal/agent_run_log.jsonl --output candidate_results.jsonl --candidate-id example_external_agent_v0
+```
+
 ## Current Evidence Snapshot
 
 | Area | Current result |
@@ -157,6 +163,6 @@ CI runs linting, tests, deterministic report checks, local OpenTelemetry smoke t
 - Collect independent human labels using the prepared review packet.
 - Add reproducible multi-model comparison across hosted and open-source models.
 - Expand public RAG validation beyond the current compact TechQA and WixQA samples.
-- Expand the bring-your-own-agent candidate-results adapter into framework-specific exporters.
+- Add framework-specific candidate-results exporters for common agent runners.
 - Expand the paper-style intervention report with external reviewer disagreement analysis.
 - Invite external review through issues and contribution guidelines.

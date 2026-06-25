@@ -29,6 +29,15 @@ uv run python scripts/agent_safety.py release-gate \
   --candidate-results path/to/candidate_results.jsonl
 ```
 
+If your agent produces a generic JSONL run log, convert it first:
+
+```bash
+uv run python scripts/export_candidate_results.py \
+  --input path/to/agent_run_log.jsonl \
+  --output path/to/candidate_results.jsonl \
+  --candidate-id my_agent_release_v1
+```
+
 If `incident_release_policy.json` exists in the pack, it is used automatically.
 Pass `--policy path/to/policy.json` to override it.
 
