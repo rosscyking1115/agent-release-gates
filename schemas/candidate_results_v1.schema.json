@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://rosscyking1115.github.io/internal-ai-agent-eval-lab/candidate_results_v1.schema.json",
+  "$id": "https://rosscyking1115.github.io/agent-release-gates/candidate_results_v1.schema.json",
   "title": "Agent Safety Candidate Result Row v1",
   "description": "Schema for one submitted candidate-agent replay result row. Validate each line in candidate_results.jsonl against this schema.",
   "type": "object",

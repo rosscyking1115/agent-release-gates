@@ -9,7 +9,7 @@ from urllib import request
 from internal_ai_agent.io import read_jsonl, write_json
 
 DEFAULT_OTLP_ENDPOINT = "http://localhost:4318/v1/traces"
-DEFAULT_SERVICE_NAME = "internal-ai-agent-eval-lab"
+DEFAULT_SERVICE_NAME = "agent-release-gates"
 DEFAULT_SERVICE_VERSION = "0.1.0"
 DEFAULT_BATCH_SIZE = 200
 

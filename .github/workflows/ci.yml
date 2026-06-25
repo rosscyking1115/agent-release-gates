@@ -50,4 +50,4 @@ jobs:
         run: docker compose --profile observability down
 
       - name: Build Docker image
-        run: docker build -t internal-ai-agent-eval-lab:ci .
+        run: docker build -t agent-release-gates:ci .

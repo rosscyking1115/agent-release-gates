@@ -1,7 +1,7 @@
 services:
   api:
     build: .
-    image: internal-ai-agent-eval-lab:local
+    image: agent-release-gates:local
     ports:
       - "8000:8000"
     command:
@@ -23,7 +23,7 @@ services:
       retries: 5
 
   dashboard:
-    image: internal-ai-agent-eval-lab:local
+    image: agent-release-gates:local
     build: .
     depends_on:
       api:

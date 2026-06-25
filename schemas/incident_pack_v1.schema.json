@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://rosscyking1115.github.io/internal-ai-agent-eval-lab/incident_pack_v1.schema.json",
+  "$id": "https://rosscyking1115.github.io/agent-release-gates/incident_pack_v1.schema.json",
   "title": "Agent Safety Incident Pack v1",
   "description": "Schema for a reusable incident replay pack. The on-disk format stores incident_cases and trace_events as JSONL files; this schema describes the row shapes.",
   "type": "object",

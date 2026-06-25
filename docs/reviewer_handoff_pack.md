@@ -25,9 +25,9 @@ Use these files:
 
 Public links:
 
-- Packet: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/external_human_review_packet.csv
-- Label template: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/external_human_review_label_template.csv
-- Reviewer guide: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/external_human_review_reviewer_guide.md
+- Packet: https://rosscyking1115.github.io/agent-release-gates/external_human_review_packet.csv
+- Label template: https://rosscyking1115.github.io/agent-release-gates/external_human_review_label_template.csv
+- Reviewer guide: https://rosscyking1115.github.io/agent-release-gates/external_human_review_reviewer_guide.md
 
 ## Labeling Rules
 
@@ -87,13 +87,13 @@ Do not inspect the project report, classifier outputs, maintainer labels, or
 source code before submitting labels.
 
 Packet:
-https://rosscyking1115.github.io/internal-ai-agent-eval-lab/external_human_review_packet.csv
+https://rosscyking1115.github.io/agent-release-gates/external_human_review_packet.csv
 
 Label template:
-https://rosscyking1115.github.io/internal-ai-agent-eval-lab/external_human_review_label_template.csv
+https://rosscyking1115.github.io/agent-release-gates/external_human_review_label_template.csv
 
 Reviewer guide:
-https://rosscyking1115.github.io/internal-ai-agent-eval-lab/external_human_review_reviewer_guide.md
+https://rosscyking1115.github.io/agent-release-gates/external_human_review_reviewer_guide.md
 
 Please return the completed CSV when finished. Use a pseudonymous reviewer id
 such as reviewer_a, and avoid including personal information.

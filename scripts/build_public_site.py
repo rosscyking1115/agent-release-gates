@@ -379,7 +379,7 @@ def _index_html(
         f"<li>{escape(item)}</li>" for item in profile["recommended_next_data_work"]
     )
     artifact_count = len(artifact_links)
-    repo_url = "https://github.com/rosscyking1115/internal-ai-agent-eval-lab"
+    repo_url = "https://github.com/rosscyking1115/agent-release-gates"
     streamlit_url = "https://agent-evaluation-lab.streamlit.app/"
 
     return f"""<!doctype html>
@@ -1086,7 +1086,7 @@ def _artifact_index_html(artifact_links: list[tuple[str, str, str]]) -> str:
         for category, links in grouped.items()
     )
 
-    repo_url = "https://github.com/rosscyking1115/internal-ai-agent-eval-lab"
+    repo_url = "https://github.com/rosscyking1115/agent-release-gates"
     return f"""<!doctype html>
 <html lang="en">
 <head>
