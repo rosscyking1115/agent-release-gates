@@ -1,4 +1,5 @@
 import json
+import os
 from pathlib import Path
 
 from fastapi import FastAPI
@@ -35,7 +36,12 @@ app = FastAPI(
     version="0.1.0",
 )
 
-PROJECT_ROOT = Path.cwd()
+_ROOT_ENV_VAR = "AGENT_RELEASE_GATES_PROJECT_ROOT"
+
+
+def _project_root() -> Path:
+    override = os.environ.get(_ROOT_ENV_VAR)
+    return Path(override).resolve() if override else Path.cwd()
 
 
 @app.get("/health")
@@ -45,18 +51,18 @@ def health() -> dict[str, str]:
 
 @app.get("/reports/evaluation", response_class=PlainTextResponse)
 def evaluation_report() -> str:
-    return (PROJECT_ROOT / "reports/evaluation_report.md").read_text(encoding="utf-8")
+    return (_project_root() / "reports/evaluation_report.md").read_text(encoding="utf-8")
 
 
 @app.get("/reports/evaluation.html", response_class=HTMLResponse)
 def evaluation_report_html() -> str:
-    return (PROJECT_ROOT / "reports/evaluation_report.html").read_text(encoding="utf-8")
+    return (_project_root() / "reports/evaluation_report.html").read_text(encoding="utf-8")
 
 
 @app.get("/reports/evaluation.pdf")
 def evaluation_report_pdf() -> Response:
     return Response(
-        (PROJECT_ROOT / "reports/evaluation_report.pdf").read_bytes(),
+        (_project_root() / "reports/evaluation_report.pdf").read_bytes(),
         media_type="application/pdf",
         headers={
             "Content-Disposition": (
@@ -69,13 +75,13 @@ def evaluation_report_pdf() -> Response:
 @app.get("/reports/evaluation/history", response_class=JSONResponse)
 def evaluation_history() -> dict[str, object]:
     return json.loads(
-        (PROJECT_ROOT / "reports/evaluation_history.json").read_text(encoding="utf-8")
+        (_project_root() / "reports/evaluation_history.json").read_text(encoding="utf-8")
     )
 
 
 @app.get("/reports/evaluation/gates", response_class=JSONResponse)
 def evaluation_release_gates() -> dict[str, object]:
-    gates_path = PROJECT_ROOT / "reports/evaluation_gates.json"
+    gates_path = _project_root() / "reports/evaluation_gates.json"
     if gates_path.exists():
         return json.loads(gates_path.read_text(encoding="utf-8"))
     return build_evaluation_gates(
@@ -92,39 +98,39 @@ def evaluation_release_gates() -> dict[str, object]:
 
 @app.get("/reports/dataset-profile", response_class=JSONResponse)
 def dataset_profile() -> dict[str, object]:
-    profile_path = PROJECT_ROOT / "reports/dataset_profile.json"
+    profile_path = _project_root() / "reports/dataset_profile.json"
     if profile_path.exists():
         return json.loads(profile_path.read_text(encoding="utf-8"))
-    return write_dataset_profile(PROJECT_ROOT)
+    return write_dataset_profile(_project_root())
 
 
 @app.get("/reports/agent/otel-spans", response_class=PlainTextResponse)
 def agent_otel_spans() -> str:
-    return (PROJECT_ROOT / "reports/agent_otel_spans.jsonl").read_text(encoding="utf-8")
+    return (_project_root() / "reports/agent_otel_spans.jsonl").read_text(encoding="utf-8")
 
 
 @app.get("/reports/observability/otel-spans", response_class=PlainTextResponse)
 def observability_otel_spans() -> str:
-    return (PROJECT_ROOT / "reports/observability_otel_spans.jsonl").read_text(
+    return (_project_root() / "reports/observability_otel_spans.jsonl").read_text(
         encoding="utf-8"
     )
 
 
 @app.get("/reports/observability/collector-preview", response_class=JSONResponse)
 def observability_collector_preview() -> dict[str, object]:
-    preview_path = PROJECT_ROOT / "reports/collector_export_preview.json"
+    preview_path = _project_root() / "reports/collector_export_preview.json"
     if preview_path.exists():
         return json.loads(preview_path.read_text(encoding="utf-8"))
-    spans = read_jsonl(PROJECT_ROOT / "reports/observability_otel_spans.jsonl")
+    spans = read_jsonl(_project_root() / "reports/observability_otel_spans.jsonl")
     return collector_export_preview(spans)
 
 
 @app.get("/reports/observability/trace-index", response_class=JSONResponse)
 def observability_trace_index() -> dict[str, object]:
-    index_path = PROJECT_ROOT / "reports/observability_trace_index.json"
+    index_path = _project_root() / "reports/observability_trace_index.json"
     if index_path.exists():
         return json.loads(index_path.read_text(encoding="utf-8"))
-    spans = read_jsonl(PROJECT_ROOT / "reports/observability_otel_spans.jsonl")
+    spans = read_jsonl(_project_root() / "reports/observability_otel_spans.jsonl")
     return build_trace_index(spans)
 
 
@@ -184,4 +190,4 @@ def agent_run(request: AgentRunRequest) -> AgentRunResponse:
 
 
 def _read_report_json(filename: str) -> dict[str, object]:
-    return json.loads((PROJECT_ROOT / "reports" / filename).read_text(encoding="utf-8"))
+    return json.loads((_project_root() / "reports" / filename).read_text(encoding="utf-8"))

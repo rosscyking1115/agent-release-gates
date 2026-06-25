@@ -25,6 +25,19 @@ def test_health() -> None:
     assert health() == {"status": "ok"}
 
 
+def test_report_endpoint_resolves_against_configured_project_root(tmp_path, monkeypatch) -> None:
+    # The API must serve reports from an explicitly configured root, not whatever
+    # directory the server process happened to start in.
+    reports_dir = tmp_path / "reports"
+    reports_dir.mkdir()
+    (reports_dir / "evaluation_report.md").write_text(
+        "# Pinned project root marker\n", encoding="utf-8"
+    )
+    monkeypatch.setenv("AGENT_RELEASE_GATES_PROJECT_ROOT", str(tmp_path))
+
+    assert "# Pinned project root marker" in evaluation_report()
+
+
 def test_evaluation_report_endpoint_returns_markdown() -> None:
     report = evaluation_report()
 
