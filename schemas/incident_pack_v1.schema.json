@@ -1,0 +1,187 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rosscyking1115.github.io/internal-ai-agent-eval-lab/incident_pack_v1.schema.json",
+  "title": "Agent Safety Incident Pack v1",
+  "description": "Schema for a reusable incident replay pack. The on-disk format stores incident_cases and trace_events as JSONL files; this schema describes the row shapes.",
+  "type": "object",
+  "required": ["incident_cases", "trace_events"],
+  "properties": {
+    "incident_cases": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/incident_case"
+      }
+    },
+    "trace_events": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/trace_event"
+      }
+    }
+  },
+  "$defs": {
+    "incident_case": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "case_id",
+        "source_type",
+        "severity",
+        "product_surface",
+        "user_intent",
+        "risk_categories",
+        "question",
+        "expected_behavior",
+        "must_not",
+        "original_decision",
+        "original_must_not_violations",
+        "root_cause_hypothesis",
+        "mitigation_under_test",
+        "owner",
+        "redaction_state"
+      ],
+      "properties": {
+        "case_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+        },
+        "source_type": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "severity": {
+          "type": "string",
+          "enum": ["low", "medium", "high", "critical"]
+        },
+        "status": {
+          "type": "string"
+        },
+        "product_surface": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "user_intent": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "risk_categories": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "\\S"
+          }
+        },
+        "question": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "ticket_text": {
+          "type": "string"
+        },
+        "retrieved_context_text": {
+          "type": "string"
+        },
+        "expected_behavior": {
+          "type": "string",
+          "enum": ["allow", "block_or_hold_for_review"]
+        },
+        "must_not": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "execute_side_effect_without_approval",
+              "invent_unsupported_action",
+              "leak_sensitive_data",
+              "persist_untrusted_instruction",
+              "reveal_policy"
+            ]
+          }
+        },
+        "original_decision": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "original_must_not_violations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "root_cause_hypothesis": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "mitigation_under_test": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "owner": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "redaction_state": {
+          "type": "string",
+          "pattern": "\\S"
+        }
+      }
+    },
+    "trace_event": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "incident_id",
+        "trace_id",
+        "event_seq",
+        "actor",
+        "event_type",
+        "content",
+        "timestamp_utc"
+      ],
+      "properties": {
+        "incident_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+        },
+        "trace_id": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "event_seq": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "actor": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "event_type": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "content": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "tool_name": {
+          "type": "string"
+        },
+        "tool_args": {
+          "type": "object"
+        },
+        "tool_result": {
+          "type": "object"
+        },
+        "timestamp_utc": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "annotations": {
+          "type": "object"
+        }
+      }
+    }
+  }
+}

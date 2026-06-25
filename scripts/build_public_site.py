@@ -132,10 +132,21 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
                 reports_dir / incident_artifact,
                 public_dir / incident_artifact,
             )
-    for incident_memo_path in reports_dir.glob("incident_memo_INC-*.md"):
+    for stale_memo_path in public_dir.glob("incident_memo_*.md"):
+        stale_memo_path.unlink()
+    for incident_memo_path in _current_incident_memo_paths(
+        project_root,
+        incident_replay,
+    ):
         shutil.copyfile(
             incident_memo_path,
             public_dir / incident_memo_path.name,
+        )
+    incident_pack_schema = project_root / "schemas/incident_pack_v1.schema.json"
+    if incident_pack_schema.exists():
+        shutil.copyfile(
+            incident_pack_schema,
+            public_dir / incident_pack_schema.name,
         )
     if (reports_dir / "external_human_review_summary.json").exists():
         shutil.copyfile(
@@ -991,9 +1002,12 @@ def _public_artifact_links(project_root: Path = PROJECT_ROOT) -> list[tuple[str,
         ("Incident replay", "Incident replay runs", "incident_replay_runs.jsonl"),
         ("Incident replay", "Incident release gates", "incident_release_gates.json"),
         ("Incident replay", "Incident response plan", "incident_response_plan.json"),
+        ("Incident replay", "Incident pack schema", "incident_pack_v1.schema.json"),
     ]
-    reports_dir = project_root / "reports"
-    for memo_path in sorted(reports_dir.glob("incident_memo_INC-*.md")):
+    incident_replay = _read_optional_json(
+        project_root / "reports/incident_replay_summary.json"
+    )
+    for memo_path in _current_incident_memo_paths(project_root, incident_replay):
         incident_id = memo_path.stem.replace("incident_memo_", "")
         artifact_links.append(
             (
@@ -1003,6 +1017,30 @@ def _public_artifact_links(project_root: Path = PROJECT_ROOT) -> list[tuple[str,
             )
         )
     return artifact_links
+
+
+def _current_incident_memo_paths(
+    project_root: Path,
+    incident_replay: dict[str, Any],
+) -> list[Path]:
+    reports_dir = (project_root / "reports").resolve()
+    memo_paths = incident_replay.get("memo_paths", [])
+    if not isinstance(memo_paths, list):
+        return []
+
+    current_paths: list[Path] = []
+    for memo_path in memo_paths:
+        if not isinstance(memo_path, str):
+            continue
+        path = (project_root / memo_path).resolve()
+        if (
+            path.parent == reports_dir
+            and path.name.startswith("incident_memo_")
+            and path.suffix == ".md"
+            and path.exists()
+        ):
+            current_paths.append(path)
+    return sorted(current_paths)
 
 
 def _artifact_index_html(artifact_links: list[tuple[str, str, str]]) -> str:

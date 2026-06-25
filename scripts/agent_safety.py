@@ -17,6 +17,7 @@ def main() -> None:
             result = run_release_gate(
                 project_root=Path(args.project_root),
                 policy_path=Path(args.policy) if args.policy else None,
+                incident_pack_path=Path(args.incident_pack) if args.incident_pack else None,
             )
         except (FileNotFoundError, ValueError, json.JSONDecodeError) as exc:
             print(f"Release gate configuration error: {exc}", file=sys.stderr)
@@ -25,8 +26,17 @@ def main() -> None:
     parser.error("A command is required.")
 
 
-def run_release_gate(*, project_root: Path, policy_path: Path | None = None) -> int:
-    summary = write_incident_replay_suite(project_root, policy_path=policy_path)
+def run_release_gate(
+    *,
+    project_root: Path,
+    policy_path: Path | None = None,
+    incident_pack_path: Path | None = None,
+) -> int:
+    summary = write_incident_replay_suite(
+        project_root,
+        policy_path=policy_path,
+        incident_pack_path=incident_pack_path,
+    )
     metrics = summary["summary"]
     _print_release_gate_summary(summary, metrics)
     return 1 if int(metrics["release_gate_fail_count"]) else 0
@@ -49,14 +59,29 @@ def _parser() -> argparse.ArgumentParser:
     )
     release_gate.add_argument(
         "--policy",
-        default="config/incident_release_policy.json",
-        help="Policy-as-code JSON file with incident replay gate thresholds.",
+        default=None,
+        help=(
+            "Optional policy-as-code JSON file with incident replay gate thresholds. "
+            "When --incident-pack is used, an incident_release_policy.json file in "
+            "the pack is used automatically if present."
+        ),
+    )
+    release_gate.add_argument(
+        "--incident-pack",
+        default=None,
+        help=(
+            "Directory containing incident_cases.jsonl, trace_events.jsonl, and "
+            "optional incident_release_policy.json files."
+        ),
     )
     return parser
 
 
 def _print_release_gate_summary(summary: dict[str, Any], metrics: dict[str, Any]) -> None:
     print("Agent safety release gate complete")
+    incident_pack = summary.get("incident_pack", {})
+    if incident_pack:
+        print(f"- incident pack: {incident_pack.get('source', 'built_in')}")
     print(f"- policy: {summary['policy_id']} ({summary['policy_path']})")
     print(f"- incidents: {summary['case_count']}")
     print(f"- gate status: {metrics['release_gate_status']}")

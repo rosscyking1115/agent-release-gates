@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 from pathlib import Path
 
 
@@ -24,6 +25,27 @@ def test_artifact_index_keeps_technical_links_off_homepage() -> None:
     assert 'href="incident_replay_summary.json"' in html
     assert 'href="incident_release_gates.json"' in html
     assert 'href="incident_response_plan.json"' in html
+    assert 'href="incident_pack_v1.schema.json"' in html
     assert 'href="safety_classifier_eval_summary.json"' in html
     assert "progress checker" not in html.lower()
     assert "internal notes" not in html.lower()
+
+
+def test_artifact_index_only_links_current_incident_memos(tmp_path) -> None:
+    public_site = _load_public_site_module()
+    reports_dir = tmp_path / "reports"
+    reports_dir.mkdir()
+    current_memo = reports_dir / "incident_memo_INC-CURRENT.md"
+    stale_memo = reports_dir / "incident_memo_INC-STALE.md"
+    current_memo.write_text("# current", encoding="utf-8")
+    stale_memo.write_text("# stale", encoding="utf-8")
+    (reports_dir / "incident_replay_summary.json").write_text(
+        json.dumps({"memo_paths": ["reports/incident_memo_INC-CURRENT.md"]}),
+        encoding="utf-8",
+    )
+
+    artifact_links = public_site._public_artifact_links(tmp_path)
+    linked_artifacts = {href for _, _, href in artifact_links}
+
+    assert "incident_memo_INC-CURRENT.md" in linked_artifacts
+    assert "incident_memo_INC-STALE.md" not in linked_artifacts

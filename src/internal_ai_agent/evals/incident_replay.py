@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from pathlib import Path
 from typing import Any
 
@@ -16,6 +17,13 @@ INCIDENT_RELEASE_GATES_PATH = Path("reports/incident_release_gates.json")
 INCIDENT_RESPONSE_PLAN_PATH = Path("reports/incident_response_plan.json")
 INCIDENT_REGRESSION_CASES_PATH = Path("data/eval_cases/incident_regression_cases.jsonl")
 INCIDENT_RELEASE_POLICY_PATH = Path("config/incident_release_policy.json")
+
+INCIDENT_PACK_SCHEMA_VERSION = "agent-safety-incident-pack/v1"
+INCIDENT_PACK_CASES_FILENAME = "incident_cases.jsonl"
+INCIDENT_PACK_TRACE_EVENTS_FILENAME = "trace_events.jsonl"
+INCIDENT_PACK_POLICY_FILENAME = "incident_release_policy.json"
+INCIDENT_ID_PATTERN_TEXT = r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+INCIDENT_ID_PATTERN = re.compile(INCIDENT_ID_PATTERN_TEXT)
 
 CONTROLLED_AGENT_CANDIDATE_ID = "controlled_agent_approval_gate_v0"
 DEFAULT_INCIDENT_RELEASE_POLICY = {
@@ -39,18 +47,68 @@ _INCIDENT_POLICY_RATE_KEYS = {
     "min_regression_fixture_coverage",
     "min_trace_event_coverage",
 }
+_INCIDENT_SEVERITIES = {"low", "medium", "high", "critical"}
+_INCIDENT_EXPECTED_BEHAVIORS = {"allow", "block_or_hold_for_review"}
+_INCIDENT_MUST_NOT_ASSERTIONS = {
+    "execute_side_effect_without_approval",
+    "invent_unsupported_action",
+    "leak_sensitive_data",
+    "persist_untrusted_instruction",
+    "reveal_policy",
+}
+_REQUIRED_INCIDENT_CASE_FIELDS = {
+    "case_id",
+    "source_type",
+    "severity",
+    "product_surface",
+    "user_intent",
+    "risk_categories",
+    "question",
+    "expected_behavior",
+    "must_not",
+    "original_decision",
+    "original_must_not_violations",
+    "root_cause_hypothesis",
+    "mitigation_under_test",
+    "owner",
+    "redaction_state",
+}
+_REQUIRED_TRACE_EVENT_FIELDS = {
+    "incident_id",
+    "trace_id",
+    "event_seq",
+    "actor",
+    "event_type",
+    "content",
+    "timestamp_utc",
+}
 
 
 def write_incident_replay_suite(
     project_root: Path,
     *,
     policy_path: Path | None = None,
+    incident_pack_path: Path | None = None,
 ) -> dict[str, Any]:
-    ensure_incident_fixtures(project_root)
-    write_default_incident_release_policy(project_root)
-    policy = load_incident_release_policy(project_root, policy_path=policy_path)
-    cases = read_jsonl(project_root / INCIDENT_CASES_PATH)
-    trace_events = read_jsonl(project_root / INCIDENT_TRACE_EVENTS_PATH)
+    input_paths = _resolve_incident_input_paths(
+        project_root,
+        incident_pack_path=incident_pack_path,
+        policy_path=policy_path,
+    )
+    policy = load_incident_release_policy(
+        project_root,
+        policy_path=input_paths["policy_path"],
+    )
+    cases = read_jsonl(input_paths["cases_path"])
+    trace_events = read_jsonl(input_paths["trace_events_path"])
+    incident_pack = validate_incident_pack(
+        cases=cases,
+        trace_events=trace_events,
+        cases_path=input_paths["cases_path"],
+        trace_events_path=input_paths["trace_events_path"],
+        project_root=project_root,
+        incident_pack_path=input_paths["incident_pack_path"],
+    )
     replay_runs = [replay_incident(case) for case in cases]
     regression_cases = [_regression_case(row) for row in replay_runs]
     gates = incident_release_gates(
@@ -71,7 +129,8 @@ def write_incident_replay_suite(
         gates=gates,
         regression_cases=regression_cases,
         policy=policy,
-        policy_path=policy_path or INCIDENT_RELEASE_POLICY_PATH,
+        policy_path=input_paths["policy_path"] or INCIDENT_RELEASE_POLICY_PATH,
+        incident_pack=incident_pack,
     )
 
     write_jsonl(project_root / INCIDENT_REPLAY_RUNS_PATH, replay_runs)
@@ -83,6 +142,58 @@ def write_incident_replay_suite(
     summary["memo_paths"] = memo_paths
     write_json(project_root / INCIDENT_REPLAY_SUMMARY_PATH, summary)
     return {**summary, "release_gates": gates, "response_plan": response_plan}
+
+
+def _resolve_incident_input_paths(
+    project_root: Path,
+    *,
+    incident_pack_path: Path | None,
+    policy_path: Path | None,
+) -> dict[str, Path | None]:
+    if incident_pack_path is None:
+        ensure_incident_fixtures(project_root)
+        write_default_incident_release_policy(project_root)
+        return {
+            "incident_pack_path": None,
+            "cases_path": project_root / INCIDENT_CASES_PATH,
+            "trace_events_path": project_root / INCIDENT_TRACE_EVENTS_PATH,
+            "policy_path": policy_path,
+        }
+
+    pack_root = _resolve_path(project_root, incident_pack_path)
+    cases_path = pack_root / INCIDENT_PACK_CASES_FILENAME
+    trace_events_path = pack_root / INCIDENT_PACK_TRACE_EVENTS_FILENAME
+    for path in [cases_path, trace_events_path]:
+        if not path.exists():
+            msg = f"Incident pack is missing required file: {path}"
+            raise FileNotFoundError(msg)
+
+    pack_policy_path = pack_root / INCIDENT_PACK_POLICY_FILENAME
+    effective_policy_path = policy_path
+    if effective_policy_path is None and pack_policy_path.exists():
+        effective_policy_path = pack_policy_path
+    return {
+        "incident_pack_path": pack_root,
+        "cases_path": cases_path,
+        "trace_events_path": trace_events_path,
+        "policy_path": effective_policy_path,
+    }
+
+
+def _resolve_path(project_root: Path, path: Path) -> Path:
+    return path if path.is_absolute() else project_root / path
+
+
+def _artifact_path(project_root: Path, path: Path | None) -> str:
+    if path is None:
+        return ""
+    try:
+        return path.relative_to(project_root).as_posix()
+    except ValueError:
+        try:
+            return path.resolve().relative_to(project_root.resolve()).as_posix()
+        except ValueError:
+            return path.as_posix()
 
 
 def ensure_incident_fixtures(project_root: Path) -> None:
@@ -183,6 +294,287 @@ def _validate_rate_policy_value(
         )
         raise ValueError(msg)
     return rate
+
+
+def validate_incident_pack(
+    *,
+    cases: list[dict[str, Any]],
+    trace_events: list[dict[str, Any]],
+    cases_path: Path,
+    trace_events_path: Path,
+    project_root: Path,
+    incident_pack_path: Path | None = None,
+) -> dict[str, Any]:
+    case_ids = _validate_incident_cases(cases, source_path=cases_path)
+    _validate_trace_events(trace_events, source_path=trace_events_path, case_ids=case_ids)
+    return {
+        "schema_version": INCIDENT_PACK_SCHEMA_VERSION,
+        "source": _artifact_path(project_root, incident_pack_path)
+        if incident_pack_path is not None
+        else "built_in",
+        "cases_path": _artifact_path(project_root, cases_path),
+        "trace_events_path": _artifact_path(project_root, trace_events_path),
+        "case_count": len(cases),
+        "trace_event_count": len(trace_events),
+        "incident_ids": sorted(case_ids),
+    }
+
+
+def _validate_incident_cases(
+    cases: list[dict[str, Any]],
+    *,
+    source_path: Path,
+) -> set[str]:
+    if not cases:
+        msg = f"Incident pack must contain at least one incident case: {source_path}"
+        raise ValueError(msg)
+
+    case_ids: set[str] = set()
+    for index, case in enumerate(cases, start=1):
+        _validate_required_keys(
+            case,
+            required_keys=_REQUIRED_INCIDENT_CASE_FIELDS,
+            source_path=source_path,
+            row_index=index,
+            row_type="incident case",
+        )
+        case_id = _validate_incident_id(
+            case.get("case_id"),
+            field="case_id",
+            source_path=source_path,
+            row_index=index,
+        )
+        if case_id in case_ids:
+            msg = f"Duplicate incident case_id {case_id!r}: {source_path} row {index}"
+            raise ValueError(msg)
+        case_ids.add(case_id)
+        _validate_enum(
+            case.get("severity"),
+            field="severity",
+            allowed_values=_INCIDENT_SEVERITIES,
+            source_path=source_path,
+            row_index=index,
+        )
+        _validate_enum(
+            case.get("expected_behavior"),
+            field="expected_behavior",
+            allowed_values=_INCIDENT_EXPECTED_BEHAVIORS,
+            source_path=source_path,
+            row_index=index,
+        )
+        _validate_string_list(
+            case.get("risk_categories"),
+            field="risk_categories",
+            source_path=source_path,
+            row_index=index,
+            allow_empty=False,
+        )
+        must_not = _validate_string_list(
+            case.get("must_not"),
+            field="must_not",
+            source_path=source_path,
+            row_index=index,
+            allow_empty=True,
+        )
+        unknown_assertions = sorted(set(must_not) - _INCIDENT_MUST_NOT_ASSERTIONS)
+        if unknown_assertions:
+            msg = (
+                f"Unknown must_not assertion(s) {unknown_assertions}: "
+                f"{source_path} row {index}"
+            )
+            raise ValueError(msg)
+        _validate_string_list(
+            case.get("original_must_not_violations"),
+            field="original_must_not_violations",
+            source_path=source_path,
+            row_index=index,
+            allow_empty=True,
+        )
+        for field in [
+            "source_type",
+            "product_surface",
+            "user_intent",
+            "question",
+            "original_decision",
+            "root_cause_hypothesis",
+            "mitigation_under_test",
+            "owner",
+            "redaction_state",
+        ]:
+            _validate_non_empty_string(
+                case.get(field),
+                field=field,
+                source_path=source_path,
+                row_index=index,
+            )
+    return case_ids
+
+
+def _validate_trace_events(
+    trace_events: list[dict[str, Any]],
+    *,
+    source_path: Path,
+    case_ids: set[str],
+) -> None:
+    for index, event in enumerate(trace_events, start=1):
+        _validate_required_keys(
+            event,
+            required_keys=_REQUIRED_TRACE_EVENT_FIELDS,
+            source_path=source_path,
+            row_index=index,
+            row_type="trace event",
+        )
+        incident_id = _validate_non_empty_string(
+            event.get("incident_id"),
+            field="incident_id",
+            source_path=source_path,
+            row_index=index,
+        )
+        if incident_id not in case_ids:
+            msg = (
+                f"Trace event references unknown incident_id {incident_id!r}: "
+                f"{source_path} row {index}"
+            )
+            raise ValueError(msg)
+        _validate_non_empty_string(
+            event.get("trace_id"),
+            field="trace_id",
+            source_path=source_path,
+            row_index=index,
+        )
+        _validate_non_empty_string(
+            event.get("actor"),
+            field="actor",
+            source_path=source_path,
+            row_index=index,
+        )
+        _validate_non_empty_string(
+            event.get("event_type"),
+            field="event_type",
+            source_path=source_path,
+            row_index=index,
+        )
+        _validate_non_empty_string(
+            event.get("content"),
+            field="content",
+            source_path=source_path,
+            row_index=index,
+        )
+        _validate_non_empty_string(
+            event.get("timestamp_utc"),
+            field="timestamp_utc",
+            source_path=source_path,
+            row_index=index,
+        )
+        event_seq = event.get("event_seq")
+        if isinstance(event_seq, bool) or not isinstance(event_seq, int) or event_seq < 1:
+            msg = (
+                "Trace event field 'event_seq' must be a positive integer: "
+                f"{source_path} row {index}"
+            )
+            raise ValueError(msg)
+
+
+def _validate_required_keys(
+    row: dict[str, Any],
+    *,
+    required_keys: set[str],
+    source_path: Path,
+    row_index: int,
+    row_type: str,
+) -> None:
+    missing_keys = sorted(required_keys - set(row))
+    if missing_keys:
+        msg = (
+            f"Incident pack {row_type} is missing required field(s) {missing_keys}: "
+            f"{source_path} row {row_index}"
+        )
+        raise ValueError(msg)
+
+
+def _validate_non_empty_string(
+    value: Any,
+    *,
+    field: str,
+    source_path: Path,
+    row_index: int,
+) -> str:
+    if not isinstance(value, str) or not value.strip():
+        msg = (
+            f"Incident pack field {field!r} must be a non-empty string: "
+            f"{source_path} row {row_index}"
+        )
+        raise ValueError(msg)
+    return value
+
+
+def _validate_incident_id(
+    value: Any,
+    *,
+    field: str,
+    source_path: Path,
+    row_index: int,
+) -> str:
+    incident_id = _validate_non_empty_string(
+        value,
+        field=field,
+        source_path=source_path,
+        row_index=row_index,
+    )
+    if INCIDENT_ID_PATTERN.fullmatch(incident_id) is None:
+        msg = (
+            f"Incident pack field {field!r} must match {INCIDENT_ID_PATTERN_TEXT!r}: "
+            f"{source_path} row {row_index}"
+        )
+        raise ValueError(msg)
+    return incident_id
+
+
+def _validate_enum(
+    value: Any,
+    *,
+    field: str,
+    allowed_values: set[str],
+    source_path: Path,
+    row_index: int,
+) -> str:
+    parsed = _validate_non_empty_string(
+        value,
+        field=field,
+        source_path=source_path,
+        row_index=row_index,
+    )
+    if parsed not in allowed_values:
+        msg = (
+            f"Incident pack field {field!r} must be one of {sorted(allowed_values)}: "
+            f"{source_path} row {row_index}"
+        )
+        raise ValueError(msg)
+    return parsed
+
+
+def _validate_string_list(
+    value: Any,
+    *,
+    field: str,
+    source_path: Path,
+    row_index: int,
+    allow_empty: bool,
+) -> list[str]:
+    if not isinstance(value, list) or (not allow_empty and not value):
+        msg = (
+            f"Incident pack field {field!r} must be a "
+            f"{'possibly empty' if allow_empty else 'non-empty'} list of strings: "
+            f"{source_path} row {row_index}"
+        )
+        raise ValueError(msg)
+    if not all(isinstance(item, str) and item.strip() for item in value):
+        msg = (
+            f"Incident pack field {field!r} must contain only non-empty strings: "
+            f"{source_path} row {row_index}"
+        )
+        raise ValueError(msg)
+    return value
 
 
 def replay_incident(case: dict[str, Any]) -> dict[str, Any]:
@@ -366,6 +758,7 @@ def incident_replay_summary(
     regression_cases: list[dict[str, Any]],
     policy: dict[str, Any],
     policy_path: Path,
+    incident_pack: dict[str, Any],
 ) -> dict[str, Any]:
     violation_count = sum(1 for row in replay_runs if row["must_not_violations"])
     closed_count = sum(1 for row in replay_runs if row["closed_by_replay"])
@@ -379,6 +772,7 @@ def incident_replay_summary(
         "candidate_id": CONTROLLED_AGENT_CANDIDATE_ID,
         "policy_id": policy["policy_id"],
         "policy_path": policy_path.as_posix(),
+        "incident_pack": incident_pack,
         "case_count": len(cases),
         "trace_event_count": len(trace_events),
         "regression_case_count": len(regression_cases),
@@ -436,8 +830,10 @@ def incident_replay_summary(
             ),
         ],
         "artifact_paths": {
-            "incident_cases": INCIDENT_CASES_PATH.as_posix(),
-            "trace_events": INCIDENT_TRACE_EVENTS_PATH.as_posix(),
+            "incident_cases": str(incident_pack.get("cases_path", INCIDENT_CASES_PATH.as_posix())),
+            "trace_events": str(
+                incident_pack.get("trace_events_path", INCIDENT_TRACE_EVENTS_PATH.as_posix())
+            ),
             "replay_runs": INCIDENT_REPLAY_RUNS_PATH.as_posix(),
             "release_gates": INCIDENT_RELEASE_GATES_PATH.as_posix(),
             "response_plan": INCIDENT_RESPONSE_PLAN_PATH.as_posix(),
@@ -668,12 +1064,20 @@ def _trace_event_validation(
 def _write_incident_memos(project_root: Path, replay_runs: list[dict[str, Any]]) -> list[str]:
     memo_paths: list[str] = []
     for row in replay_runs:
-        relative_path = Path("reports") / f"incident_memo_{row['incident_id']}.md"
-        path = project_root / relative_path
+        path = _incident_memo_path(project_root, str(row["incident_id"]))
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(_incident_memo(row), encoding="utf-8")
-        memo_paths.append(relative_path.as_posix())
+        memo_paths.append(_artifact_path(project_root, path))
     return memo_paths
+
+
+def _incident_memo_path(project_root: Path, incident_id: str) -> Path:
+    reports_dir = (project_root / "reports").resolve()
+    path = (reports_dir / f"incident_memo_{incident_id}.md").resolve()
+    if path.parent != reports_dir:
+        msg = f"Incident memo path escaped reports directory: {path}"
+        raise ValueError(msg)
+    return path
 
 
 def _incident_memo(row: dict[str, Any]) -> str:
