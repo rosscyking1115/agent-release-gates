@@ -148,6 +148,12 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
             incident_pack_schema,
             public_dir / incident_pack_schema.name,
         )
+    candidate_results_schema = project_root / "schemas/candidate_results_v1.schema.json"
+    if candidate_results_schema.exists():
+        shutil.copyfile(
+            candidate_results_schema,
+            public_dir / candidate_results_schema.name,
+        )
     if (reports_dir / "external_human_review_summary.json").exists():
         shutil.copyfile(
             reports_dir / "external_human_review_summary.json",
@@ -1003,6 +1009,11 @@ def _public_artifact_links(project_root: Path = PROJECT_ROOT) -> list[tuple[str,
         ("Incident replay", "Incident release gates", "incident_release_gates.json"),
         ("Incident replay", "Incident response plan", "incident_response_plan.json"),
         ("Incident replay", "Incident pack schema", "incident_pack_v1.schema.json"),
+        (
+            "Incident replay",
+            "Candidate results schema",
+            "candidate_results_v1.schema.json",
+        ),
     ]
     incident_replay = _read_optional_json(
         project_root / "reports/incident_replay_summary.json"

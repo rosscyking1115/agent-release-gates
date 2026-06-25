@@ -41,6 +41,12 @@ Run a reusable external incident pack:
 uv run python scripts/agent_safety.py release-gate --incident-pack examples/incident_pack_minimal
 ```
 
+Score submitted results from an external agent:
+
+```powershell
+uv run python scripts/agent_safety.py release-gate --incident-pack examples/incident_pack_minimal --candidate-results examples/incident_pack_minimal/candidate_results_pass.jsonl
+```
+
 ## Current Evidence Snapshot
 
 | Area | Current result |
@@ -130,6 +136,7 @@ CI runs linting, tests, deterministic report checks, local OpenTelemetry smoke t
 - Goal conflict intervention report: [reports/goal_conflict_intervention.md](reports/goal_conflict_intervention.md)
 - Product pivot plan: [docs/product_pivot_plan.md](docs/product_pivot_plan.md)
 - Incident pack schema: [docs/incident_pack_schema.md](docs/incident_pack_schema.md)
+- Candidate results schema: [docs/candidate_results_schema.md](docs/candidate_results_schema.md)
 - Incident replay summary: [reports/incident_replay_summary.json](reports/incident_replay_summary.json)
 - Dataset card: [docs/dataset_card.md](docs/dataset_card.md)
 - Failure taxonomy: [docs/failure_taxonomy.md](docs/failure_taxonomy.md)
@@ -150,6 +157,6 @@ CI runs linting, tests, deterministic report checks, local OpenTelemetry smoke t
 - Collect independent human labels using the prepared review packet.
 - Add reproducible multi-model comparison across hosted and open-source models.
 - Expand public RAG validation beyond the current compact TechQA and WixQA samples.
-- Add a bring-your-own-agent adapter so external agent runners can be evaluated with the incident-pack format.
+- Expand the bring-your-own-agent candidate-results adapter into framework-specific exporters.
 - Expand the paper-style intervention report with external reviewer disagreement analysis.
 - Invite external review through issues and contribution guidelines.

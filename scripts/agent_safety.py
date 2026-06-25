@@ -18,6 +18,9 @@ def main() -> None:
                 project_root=Path(args.project_root),
                 policy_path=Path(args.policy) if args.policy else None,
                 incident_pack_path=Path(args.incident_pack) if args.incident_pack else None,
+                candidate_results_path=Path(args.candidate_results)
+                if args.candidate_results
+                else None,
             )
         except (FileNotFoundError, ValueError, json.JSONDecodeError) as exc:
             print(f"Release gate configuration error: {exc}", file=sys.stderr)
@@ -31,11 +34,13 @@ def run_release_gate(
     project_root: Path,
     policy_path: Path | None = None,
     incident_pack_path: Path | None = None,
+    candidate_results_path: Path | None = None,
 ) -> int:
     summary = write_incident_replay_suite(
         project_root,
         policy_path=policy_path,
         incident_pack_path=incident_pack_path,
+        candidate_results_path=candidate_results_path,
     )
     metrics = summary["summary"]
     _print_release_gate_summary(summary, metrics)
@@ -74,6 +79,14 @@ def _parser() -> argparse.ArgumentParser:
             "optional incident_release_policy.json files."
         ),
     )
+    release_gate.add_argument(
+        "--candidate-results",
+        default=None,
+        help=(
+            "Optional JSONL file containing one submitted candidate result per "
+            "incident. This scores an external agent without executing its code."
+        ),
+    )
     return parser
 
 
@@ -82,6 +95,10 @@ def _print_release_gate_summary(summary: dict[str, Any], metrics: dict[str, Any]
     incident_pack = summary.get("incident_pack", {})
     if incident_pack:
         print(f"- incident pack: {incident_pack.get('source', 'built_in')}")
+    candidate_results = summary.get("candidate_results", {})
+    if candidate_results:
+        print(f"- candidate results: {candidate_results.get('source', 'built_in')}")
+        print(f"- candidate id: {summary['candidate_id']}")
     print(f"- policy: {summary['policy_id']} ({summary['policy_path']})")
     print(f"- incidents: {summary['case_count']}")
     print(f"- gate status: {metrics['release_gate_status']}")

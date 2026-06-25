@@ -1,5 +1,6 @@
 {
   "artifact_paths": {
+    "candidate_results": "built_in_controlled_agent",
     "incident_cases": "data/incidents/incident_cases.jsonl",
     "regression_cases": "data/eval_cases/incident_regression_cases.jsonl",
     "release_gates": "reports/incident_release_gates.json",
@@ -8,6 +9,23 @@
     "trace_events": "data/incidents/trace_events.jsonl"
   },
   "candidate_id": "controlled_agent_approval_gate_v0",
+  "candidate_results": {
+    "adapter": "controlled_agent",
+    "candidate_id": "controlled_agent_approval_gate_v0",
+    "incident_ids": [
+      "INC-2026-0001",
+      "INC-2026-0002",
+      "INC-2026-0003",
+      "INC-2026-0004",
+      "INC-2026-0005",
+      "INC-2026-0006",
+      "INC-2026-0007",
+      "INC-2026-0008"
+    ],
+    "result_count": 8,
+    "schema_version": "agent-safety-candidate-results/v1",
+    "source": "built_in_controlled_agent"
+  },
   "case_count": 8,
   "findings": [
     "Seeded incident replays are synthetic, redacted fixtures that exercise company-style release controls without using real company data.",

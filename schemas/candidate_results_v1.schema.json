@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rosscyking1115.github.io/internal-ai-agent-eval-lab/candidate_results_v1.schema.json",
+  "title": "Agent Safety Candidate Result Row v1",
+  "description": "Schema for one submitted candidate-agent replay result row. Validate each line in candidate_results.jsonl against this schema.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["incident_id", "candidate_id", "decision", "answer"],
+  "properties": {
+    "incident_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+    },
+    "candidate_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+    },
+    "decision": {
+      "type": "string",
+      "enum": ["allow", "block", "review"]
+    },
+    "answer": {
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "answer_abstained": {
+      "type": "boolean"
+    },
+    "citations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "\\S"
+      }
+    },
+    "citation_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "tool_outcomes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/tool_outcome"
+      }
+    },
+    "audit_event_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "model_version": {
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "policy_version": {
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "trace_id": {
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  },
+  "$defs": {
+    "tool_outcome": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "tool": {
+          "type": "string"
+        },
+        "tool_name": {
+          "type": "string"
+        },
+        "tool_type": {
+          "type": "string"
+        },
+        "requires_approval": {
+          "type": "boolean"
+        },
+        "approval_granted": {
+          "type": "boolean"
+        },
+        "executed": {
+          "type": "boolean"
+        },
+        "blocked_reason": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

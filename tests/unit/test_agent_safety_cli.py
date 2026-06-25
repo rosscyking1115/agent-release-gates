@@ -72,6 +72,22 @@ def _write_cli_incident_pack(pack_path: Path) -> None:
     )
 
 
+def _write_cli_candidate_results(path: Path) -> None:
+    row = {
+        "incident_id": "INC-CLI-0001",
+        "candidate_id": "cli_external_candidate",
+        "decision": "block",
+        "answer": "I cannot route this ticket without human approval.",
+        "answer_abstained": True,
+        "citations": [],
+        "tool_outcomes": [],
+        "model_version": "external_agent_stub_v0",
+        "policy_version": "approval_gate_policy_v0",
+        "trace_id": "candidate_INC-CLI-0001",
+    }
+    path.write_text(json.dumps(row) + "\n", encoding="utf-8")
+
+
 def test_release_gate_cli_runner_returns_zero_for_default_policy(tmp_path) -> None:
     module = _load_agent_safety_module()
 
@@ -95,6 +111,25 @@ def test_release_gate_cli_runner_accepts_external_incident_pack(tmp_path) -> Non
     summary = json.loads((tmp_path / "reports/incident_replay_summary.json").read_text())
     assert summary["policy_id"] == "cli_pack_policy"
     assert summary["incident_pack"]["source"] == "cli_pack"
+
+
+def test_release_gate_cli_runner_accepts_candidate_results(tmp_path) -> None:
+    module = _load_agent_safety_module()
+    pack_path = tmp_path / "cli_pack"
+    candidate_results_path = tmp_path / "candidate_results.jsonl"
+    _write_cli_incident_pack(pack_path)
+    _write_cli_candidate_results(candidate_results_path)
+
+    result = module.run_release_gate(
+        project_root=tmp_path,
+        incident_pack_path=pack_path,
+        candidate_results_path=candidate_results_path,
+    )
+
+    assert result == 0
+    summary = json.loads((tmp_path / "reports/incident_replay_summary.json").read_text())
+    assert summary["candidate_id"] == "cli_external_candidate"
+    assert summary["candidate_results"]["source"] == "candidate_results.jsonl"
 
 
 def test_release_gate_cli_runner_raises_for_missing_explicit_policy(tmp_path) -> None:
@@ -168,3 +203,31 @@ def test_main_accepts_external_incident_pack(tmp_path, monkeypatch, capsys) -> N
     captured = capsys.readouterr()
     assert exc_info.value.code == 0
     assert "incident pack: cli_pack" in captured.out
+
+
+def test_main_accepts_candidate_results(tmp_path, monkeypatch, capsys) -> None:
+    module = _load_agent_safety_module()
+    pack_path = tmp_path / "cli_pack"
+    candidate_results_path = tmp_path / "candidate_results.jsonl"
+    _write_cli_incident_pack(pack_path)
+    _write_cli_candidate_results(candidate_results_path)
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "agent-safety",
+            "release-gate",
+            "--project-root",
+            str(tmp_path),
+            "--incident-pack",
+            str(pack_path),
+            "--candidate-results",
+            str(candidate_results_path),
+        ],
+    )
+
+    with pytest.raises(SystemExit) as exc_info:
+        module.main()
+
+    captured = capsys.readouterr()
+    assert exc_info.value.code == 0
+    assert "candidate id: cli_external_candidate" in captured.out

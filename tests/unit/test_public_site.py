@@ -26,9 +26,29 @@ def test_artifact_index_keeps_technical_links_off_homepage() -> None:
     assert 'href="incident_release_gates.json"' in html
     assert 'href="incident_response_plan.json"' in html
     assert 'href="incident_pack_v1.schema.json"' in html
+    assert 'href="candidate_results_v1.schema.json"' in html
     assert 'href="safety_classifier_eval_summary.json"' in html
     assert "progress checker" not in html.lower()
     assert "internal notes" not in html.lower()
+
+
+def test_candidate_results_schema_describes_jsonl_row() -> None:
+    schema_path = (
+        Path(__file__).resolve().parents[2] / "schemas/candidate_results_v1.schema.json"
+    )
+    schema = json.loads(schema_path.read_text(encoding="utf-8"))
+
+    assert schema["title"] == "Agent Safety Candidate Result Row v1"
+    assert set(schema["required"]) == {
+        "incident_id",
+        "candidate_id",
+        "decision",
+        "answer",
+    }
+    assert schema["properties"]["candidate_id"]["pattern"] == (
+        "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+    )
+    assert "candidate_results" not in schema["properties"]
 
 
 def test_artifact_index_only_links_current_incident_memos(tmp_path) -> None:

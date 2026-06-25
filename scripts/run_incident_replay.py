@@ -27,12 +27,23 @@ def main() -> None:
             "optional incident_release_policy.json files."
         ),
     )
+    parser.add_argument(
+        "--candidate-results",
+        default=None,
+        help=(
+            "Optional JSONL file containing one submitted candidate result per "
+            "incident. This scores an external agent without executing its code."
+        ),
+    )
     args = parser.parse_args()
     try:
         summary = write_incident_replay_suite(
             Path.cwd(),
             policy_path=Path(args.policy) if args.policy else None,
             incident_pack_path=Path(args.incident_pack) if args.incident_pack else None,
+            candidate_results_path=Path(args.candidate_results)
+            if args.candidate_results
+            else None,
         )
     except (FileNotFoundError, ValueError, json.JSONDecodeError) as exc:
         print(f"Incident replay configuration error: {exc}", file=sys.stderr)
@@ -42,6 +53,10 @@ def main() -> None:
     incident_pack = summary.get("incident_pack", {})
     if incident_pack:
         print(f"- incident pack: {incident_pack.get('source', 'built_in')}")
+    candidate_results = summary.get("candidate_results", {})
+    if candidate_results:
+        print(f"- candidate results: {candidate_results.get('source', 'built_in')}")
+        print(f"- candidate id: {summary['candidate_id']}")
     print(f"- policy: {summary['policy_id']} ({summary['policy_path']})")
     print(f"- cases: {summary['case_count']}")
     print(f"- gate status: {metrics['release_gate_status']}")

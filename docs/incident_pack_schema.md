@@ -21,6 +21,14 @@ Run a pack with:
 uv run python scripts/agent_safety.py release-gate --incident-pack my_incident_pack
 ```
 
+Score results from an external agent with:
+
+```bash
+uv run python scripts/agent_safety.py release-gate \
+  --incident-pack my_incident_pack \
+  --candidate-results path/to/candidate_results.jsonl
+```
+
 If `incident_release_policy.json` exists in the pack, it is used automatically.
 Pass `--policy path/to/policy.json` to override it.
 
@@ -117,3 +125,6 @@ uv run python scripts/agent_safety.py release-gate --incident-pack examples/inci
 
 The command writes replay artifacts into `reports/` and exits non-zero if a
 blocking gate fails.
+
+To evaluate an external agent without executing its code inside this repository,
+see `docs/candidate_results_schema.md`.
