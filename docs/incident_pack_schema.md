@@ -38,6 +38,17 @@ uv run python scripts/export_candidate_results.py \
   --candidate-id my_agent_release_v1
 ```
 
+If your agent uses LangChain or exports LangSmith-style run rows, use the
+LangChain trace adapter:
+
+```bash
+uv run python scripts/export_candidate_results.py \
+  --source-format langchain_trace \
+  --input path/to/langchain_trace_log.jsonl \
+  --output path/to/candidate_results.jsonl \
+  --candidate-id my_agent_release_v1
+```
+
 If `incident_release_policy.json` exists in the pack, it is used automatically.
 Pass `--policy path/to/policy.json` to override it.
 

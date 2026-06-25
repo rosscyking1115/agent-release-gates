@@ -31,8 +31,9 @@ def main() -> None:
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description=(
-            "Convert generic external-agent JSONL logs into candidate_results.jsonl "
-            "for Agent Release Safety Gates."
+            "Convert external-agent JSONL logs into candidate_results.jsonl "
+            "for Agent Release Safety Gates. Supports generic rows and "
+            "LangChain/LangSmith-style trace rows."
         )
     )
     parser.add_argument(
@@ -63,7 +64,10 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--source-format",
         default="generic_agent_log",
-        help="Short source-format label written into candidate row metadata.",
+        help=(
+            "Input adapter format. Use 'langchain_trace' or 'langsmith_run' for "
+            "LangChain-style traces; other labels are treated as generic rows."
+        ),
     )
     return parser
 

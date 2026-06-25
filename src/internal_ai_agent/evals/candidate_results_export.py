@@ -36,6 +36,8 @@ _DECISION_ALIASES = {
     "needs_review": "review",
 }
 _DECISIONS = {"allow", "block", "review"}
+_BOOL_TRUE_STRINGS = {"true", "yes", "1"}
+_BOOL_FALSE_STRINGS = {"false", "no", "0"}
 _INCIDENT_ID_FIELDS = ("incident_id", "case_id", "caseId", "id")
 _ANSWER_FIELDS = ("answer", "final_answer", "finalAnswer", "output", "response", "content")
 _DECISION_FIELDS = ("decision", "action", "status", "safety_decision", "safetyDecision")
@@ -43,6 +45,12 @@ _TRACE_ID_FIELDS = ("trace_id", "traceId", "run_id", "runId")
 _MODEL_VERSION_FIELDS = ("model_version", "modelVersion", "model", "runner_version")
 _POLICY_VERSION_FIELDS = ("policy_version", "policyVersion", "policy", "prompt_version")
 _TOOL_COLLECTION_FIELDS = ("tool_outcomes", "tool_calls", "toolCalls", "tools", "actions")
+_LANGCHAIN_ROOT_DECISION_FIELDS = (
+    "decision",
+    "action",
+    "safety_decision",
+    "safetyDecision",
+)
 
 
 def export_candidate_results_from_agent_log(
@@ -115,6 +123,8 @@ def candidate_result_from_agent_log(
 ) -> dict[str, Any]:
     if not isinstance(row, dict):
         raise ValueError(f"Agent log row must be an object: row {row_index}")
+    if source_format in {"langchain_trace", "langsmith_run"}:
+        row = _agent_log_row_from_langchain_trace(row, row_index=row_index)
 
     incident_id = _validate_safe_identifier(
         _first_non_empty_string(row, _INCIDENT_ID_FIELDS),
@@ -309,9 +319,9 @@ def _normalize_optional_bool(value: Any, *, field: str, row_index: int) -> bool:
         return value
     if isinstance(value, str):
         parsed = value.strip().lower()
-        if parsed in {"true", "yes", "1"}:
+        if parsed in _BOOL_TRUE_STRINGS:
             return True
-        if parsed in {"false", "no", "0"}:
+        if parsed in _BOOL_FALSE_STRINGS:
             return False
     raise ValueError(f"Agent log field {field!r} must be a boolean: row {row_index}")
 
@@ -326,6 +336,325 @@ def _normalize_metadata(value: Any, *, source_format: str) -> dict[str, Any]:
     metadata.setdefault("source_format", source_format)
     metadata.setdefault("exporter", "agent_log_to_candidate_results")
     return metadata
+
+
+def _agent_log_row_from_langchain_trace(
+    row: dict[str, Any],
+    *,
+    row_index: int,
+) -> dict[str, Any]:
+    inputs = _optional_object(row.get("inputs", {}), field="inputs", row_index=row_index)
+    outputs = _optional_object_or_string(
+        row.get("outputs", {}),
+        field="outputs",
+        row_index=row_index,
+    )
+    metadata = _langchain_metadata(row, row_index=row_index)
+    output_fields = _flatten_output_fields(outputs)
+    transformed: dict[str, Any] = {
+        "incident_id": _first_non_empty_string(inputs, _INCIDENT_ID_FIELDS)
+        or _first_non_empty_string(metadata, _INCIDENT_ID_FIELDS)
+        or _first_non_empty_string(row, ("incident_id", "case_id", "caseId")),
+        "decision": _first_non_empty_string(output_fields, _DECISION_FIELDS)
+        or _first_non_empty_string(metadata, _LANGCHAIN_ROOT_DECISION_FIELDS)
+        or _first_non_empty_string(row, _LANGCHAIN_ROOT_DECISION_FIELDS),
+        "answer": _first_non_empty_string(output_fields, _ANSWER_FIELDS)
+        or _first_non_empty_string(row, _ANSWER_FIELDS),
+        "citations": row.get(
+            "citations",
+            output_fields.get("citations", output_fields.get("source_ids", [])),
+        ),
+        "tool_outcomes": _langchain_tool_outcomes(row, row_index=row_index),
+        "audit_events": row.get("audit_events", row.get("events", [])),
+        "model_version": _first_non_empty_string(row, _MODEL_VERSION_FIELDS)
+        or _first_non_empty_string(metadata, _MODEL_VERSION_FIELDS),
+        "policy_version": _first_non_empty_string(row, _POLICY_VERSION_FIELDS)
+        or _first_non_empty_string(metadata, _POLICY_VERSION_FIELDS),
+        "trace_id": _first_non_empty_string(row, _TRACE_ID_FIELDS)
+        or str(row.get("id") or row.get("uuid") or ""),
+        "metadata": {
+            "langchain_run_id": str(row.get("id") or row.get("uuid") or ""),
+            "langchain_name": str(row.get("name") or ""),
+            "langchain_run_type": str(row.get("run_type") or row.get("runType") or ""),
+            "langchain_tags": row.get("tags", []),
+        },
+    }
+    if "answer_abstained" in output_fields:
+        transformed["answer_abstained"] = output_fields["answer_abstained"]
+    elif "refused" in output_fields:
+        transformed["refused"] = output_fields["refused"]
+    return transformed
+
+
+def _langchain_metadata(row: dict[str, Any], *, row_index: int) -> dict[str, Any]:
+    metadata = _optional_object(row.get("metadata", {}), field="metadata", row_index=row_index)
+    extra = _optional_object(row.get("extra", {}), field="extra", row_index=row_index)
+    extra_metadata = _optional_object(
+        extra.get("metadata", {}),
+        field="extra.metadata",
+        row_index=row_index,
+    )
+    merged = dict(extra_metadata)
+    merged.update(metadata)
+    return merged
+
+
+def _flatten_output_fields(outputs: dict[str, Any] | str) -> dict[str, Any]:
+    if isinstance(outputs, str):
+        return {"answer": outputs}
+    fields = dict(outputs)
+    nested = outputs.get("output")
+    if isinstance(nested, dict):
+        fields.update(nested)
+    return fields
+
+
+def _langchain_tool_outcomes(row: dict[str, Any], *, row_index: int) -> list[dict[str, Any]]:
+    explicit = _first_non_empty_list(row, _TOOL_COLLECTION_FIELDS, row_index=row_index)
+    outcomes: list[dict[str, Any]] = []
+    if explicit is not None:
+        outcomes.extend(explicit)
+
+    outputs = _optional_object_or_string(
+        row.get("outputs", {}),
+        field="outputs",
+        row_index=row_index,
+    )
+    if isinstance(outputs, dict):
+        output_tools = _first_non_empty_list(
+            outputs,
+            _TOOL_COLLECTION_FIELDS,
+            row_index=row_index,
+        )
+        if output_tools is not None:
+            outcomes.extend(output_tools)
+
+    child_runs = row.get("child_runs", row.get("childRuns", []))
+    if child_runs:
+        if not isinstance(child_runs, list):
+            raise ValueError(f"LangChain field 'child_runs' must be a list: row {row_index}")
+        outcomes.extend(_langchain_child_tool_outcomes(child_runs, row_index=row_index))
+
+    events = row.get("events", [])
+    if not events:
+        return _dedupe_tool_outcomes(outcomes)
+    if not isinstance(events, list):
+        raise ValueError(f"LangChain field 'events' must be a list: row {row_index}")
+    outcomes.extend(
+        _langchain_event_to_tool_outcome(event, row_index=row_index)
+        for event in events
+        if isinstance(event, dict) and _is_langchain_tool_event(event)
+    )
+    return _dedupe_tool_outcomes(outcomes)
+
+
+def _langchain_child_tool_outcomes(
+    child_runs: list[Any],
+    *,
+    row_index: int,
+) -> list[dict[str, Any]]:
+    outcomes: list[dict[str, Any]] = []
+    for child_run in child_runs:
+        if not isinstance(child_run, dict):
+            continue
+        run_type = str(child_run.get("run_type") or child_run.get("runType") or "").lower()
+        if run_type == "tool":
+            outcomes.append(_langchain_child_run_to_tool_outcome(child_run, row_index=row_index))
+        nested_child_runs = child_run.get("child_runs", child_run.get("childRuns", []))
+        if nested_child_runs:
+            if not isinstance(nested_child_runs, list):
+                raise ValueError(
+                    f"LangChain field 'child_runs' must be a list: row {row_index}"
+                )
+            outcomes.extend(
+                _langchain_child_tool_outcomes(nested_child_runs, row_index=row_index)
+            )
+    return outcomes
+
+
+def _langchain_child_run_to_tool_outcome(
+    child_run: dict[str, Any],
+    *,
+    row_index: int,
+) -> dict[str, Any]:
+    metadata = _langchain_metadata(child_run, row_index=row_index)
+    outputs = _optional_object_or_string(
+        child_run.get("outputs", {}),
+        field="child_runs.outputs",
+        row_index=row_index,
+    )
+    return {
+        "id": str(child_run.get("id") or child_run.get("uuid") or ""),
+        "tool": str(child_run.get("name") or ""),
+        "tool_type": str(metadata.get("tool_type") or ""),
+        "requires_approval": metadata.get("requires_approval", False),
+        "approval_granted": metadata.get("approval_granted", False),
+        "executed": _langchain_run_executed(child_run, outputs),
+        "blocked_reason": str(child_run.get("error") or metadata.get("blocked_reason") or ""),
+        "status": str(child_run.get("status") or ""),
+        "inputs": child_run.get("inputs", {}),
+        "outputs": outputs,
+    }
+
+
+def _langchain_event_to_tool_outcome(
+    event: dict[str, Any],
+    *,
+    row_index: int,
+) -> dict[str, Any]:
+    metadata = _optional_object(
+        event.get("metadata", {}),
+        field="events.metadata",
+        row_index=row_index,
+    )
+    data = _optional_object(event.get("data", {}), field="events.data", row_index=row_index)
+    event_name = str(event.get("event") or event.get("type") or event.get("status") or "")
+    return {
+        "tool": str(event.get("name") or data.get("name") or ""),
+        "tool_type": str(metadata.get("tool_type") or ""),
+        "requires_approval": metadata.get("requires_approval", False),
+        "approval_granted": metadata.get("approval_granted", False),
+        "executed": event_name.lower()
+        in {"on_tool_start", "on_tool_end", "tool_start", "tool_end"},
+        "blocked_reason": str(
+            event.get("error") or data.get("error") or metadata.get("blocked_reason") or ""
+        ),
+        "event": event_name,
+        "data": data,
+    }
+
+
+def _langchain_run_executed(row: dict[str, Any], outputs: dict[str, Any] | str) -> bool:
+    status = str(row.get("status") or "").strip().lower()
+    if status in {"error", "failed", "blocked"}:
+        return False
+    if status in {"success", "succeeded", "complete", "completed"}:
+        return True
+    return bool(outputs)
+
+
+def _is_langchain_tool_event(event: dict[str, Any]) -> bool:
+    event_name = str(event.get("event") or event.get("type") or "").lower()
+    return "tool" in event_name
+
+
+def _first_non_empty_list(
+    row: dict[str, Any],
+    fields: tuple[str, ...],
+    *,
+    row_index: int,
+) -> list[Any] | None:
+    for field in fields:
+        value = row.get(field)
+        if value is None:
+            continue
+        if not isinstance(value, list):
+            raise ValueError(f"LangChain field {field!r} must be a list: row {row_index}")
+        if value:
+            return value
+    return None
+
+
+def _dedupe_tool_outcomes(outcomes: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    deduped: list[dict[str, Any]] = []
+    stable_id_positions: dict[str, int] = {}
+    for outcome in outcomes:
+        stable_id = str(outcome.get("id") or outcome.get("call_id") or "")
+        if stable_id:
+            if stable_id in stable_id_positions:
+                existing_index = stable_id_positions[stable_id]
+                deduped[existing_index] = _merge_tool_outcome(deduped[existing_index], outcome)
+                continue
+            stable_id_positions[stable_id] = len(deduped)
+        deduped.append(outcome)
+    return deduped
+
+
+def _merge_tool_outcome(existing: dict[str, Any], new: dict[str, Any]) -> dict[str, Any]:
+    merged = dict(existing)
+    for key, value in new.items():
+        if key in {"requires_approval", "executed"}:
+            merged[key] = _merge_bool_or(merged.get(key), value)
+            continue
+        if key == "approval_granted":
+            if "approval_granted" in merged:
+                merged[key] = _merge_approval_granted(merged[key], value)
+            else:
+                merged[key] = value
+            continue
+        if key == "tool_type" and (value == "side_effect" or _is_missing(merged.get(key))):
+            merged[key] = value
+            continue
+        if _is_missing(merged.get(key)) and not _is_missing(value):
+            merged[key] = value
+    return merged
+
+
+def _merge_bool_or(existing: Any, new: Any) -> Any:
+    existing_bool = _parse_bool_like(existing)
+    new_bool = _parse_bool_like(new)
+    if existing_bool is True or new_bool is True:
+        return True
+    if existing_bool is False and new_bool is False:
+        return False
+    if existing_bool is None and not _is_missing(existing):
+        return existing
+    if new_bool is None and not _is_missing(new):
+        return new
+    return False
+
+
+def _merge_approval_granted(existing: Any, new: Any) -> Any:
+    existing_bool = _parse_bool_like(existing)
+    new_bool = _parse_bool_like(new)
+    if existing_bool is False or new_bool is False:
+        return False
+    if existing_bool is True and new_bool is True:
+        return True
+    if existing_bool is None and not _is_missing(existing):
+        return existing
+    if new_bool is None and not _is_missing(new):
+        return new
+    return False
+
+
+def _parse_bool_like(value: Any) -> bool | None:
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, str):
+        parsed = value.strip().lower()
+        if parsed in _BOOL_TRUE_STRINGS:
+            return True
+        if parsed in _BOOL_FALSE_STRINGS:
+            return False
+    if _is_missing(value):
+        return False
+    return None
+
+
+def _is_missing(value: Any) -> bool:
+    return value is None or value == "" or value == [] or value == {}
+
+
+def _optional_object(value: Any, *, field: str, row_index: int) -> dict[str, Any]:
+    if value is None:
+        return {}
+    if not isinstance(value, dict):
+        raise ValueError(f"LangChain field {field!r} must be an object: row {row_index}")
+    return value
+
+
+def _optional_object_or_string(
+    value: Any,
+    *,
+    field: str,
+    row_index: int,
+) -> dict[str, Any] | str:
+    if value is None:
+        return {}
+    if not isinstance(value, (dict, str)):
+        raise ValueError(f"LangChain field {field!r} must be an object or string: row {row_index}")
+    return value
 
 
 def _validate_safe_identifier(

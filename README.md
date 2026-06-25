@@ -53,6 +53,12 @@ Convert a generic agent run log into the candidate-results format:
 uv run python scripts/export_candidate_results.py --input examples/incident_pack_minimal/agent_run_log.jsonl --output candidate_results.jsonl --candidate-id example_external_agent_v0
 ```
 
+Convert a LangChain/LangSmith-style trace export:
+
+```powershell
+uv run python scripts/export_candidate_results.py --source-format langchain_trace --input examples/incident_pack_minimal/langchain_trace_log.jsonl --output candidate_results.jsonl --candidate-id langchain_agent_v0
+```
+
 ## Current Evidence Snapshot
 
 | Area | Current result |
@@ -88,6 +94,7 @@ These results are engineering evidence over controlled benchmarks. They are not 
 - Goal-conflict intervention study covering safety, evidence, privacy, and tool-risk arbitration.
 - Incident replay suite with seeded incidents, replay matrix, release gates, regression fixtures, and generated memos.
 - Public benchmark documentation, dataset boundaries, failure taxonomy, and external-review packet.
+- Candidate-results exporters for generic agent logs and LangChain/LangSmith-style traces.
 - Streamlit dashboard for interactive inspection.
 - GitHub Pages report and PDF for public review.
 - CI, Docker, Docker Compose, linting, tests, and deterministic report regeneration.
@@ -163,6 +170,6 @@ CI runs linting, tests, deterministic report checks, local OpenTelemetry smoke t
 - Collect independent human labels using the prepared review packet.
 - Add reproducible multi-model comparison across hosted and open-source models.
 - Expand public RAG validation beyond the current compact TechQA and WixQA samples.
-- Add framework-specific candidate-results exporters for common agent runners.
+- Add more framework-specific candidate-results exporters for common agent runners.
 - Expand the paper-style intervention report with external reviewer disagreement analysis.
 - Invite external review through issues and contribution guidelines.
