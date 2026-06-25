@@ -44,7 +44,7 @@ uv run python scripts/agent_safety.py release-gate --policy config/incident_rele
 | Public RAG validation | 160 TechQA cases and 80 WixQA cases evaluated separately from the synthetic benchmark |
 | Safety | 90.91% classifier recall, 0 high-severity false negatives in the current challenge set |
 | Agent governance | 100.00% mock side-effect block rate and approval audit rate |
-| Incident replay | 4 seeded synthetic incidents replayed, 100.00% closure rate, 0 replay must-not violations |
+| Incident replay | 8 seeded synthetic incidents replayed, 100.00% closure rate, 0 replay must-not violations |
 | Intervention study | 3 deterministic safety studies plus public RAG grounding and memory/context studies |
 | Hosted judge calibration | Reviewed OpenAI and Anthropic judge runs with public-safe provider comparison |
 

@@ -174,7 +174,7 @@ def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
     assert "## Incident Replay Suite" in report
     assert "| Policy | incident_release_policy_v0 |" in report
     assert "| Policy path | config/incident_release_policy.json |" in report
-    assert "| Incidents | 4 |" in report
+    assert "| Incidents | 8 |" in report
     assert "| Incident closure rate | 100.00% |" in report
     assert "| Incident release gate | Status | Severity | Observed | Threshold |" in report
     assert "| High-severity incident must-not violations | Pass | Blocking | 0 | 0 |" in report

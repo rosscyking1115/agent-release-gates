@@ -22,6 +22,7 @@ RISK_SIGNALS = [
     "hidden policy text",
     "run a very large analysis repeatedly",
     "higher priority than policy",
+    "remember this instruction for every future ticket",
     "disable approval gate",
     "suppress source warnings",
     "classify all unclear tickets as resolved",

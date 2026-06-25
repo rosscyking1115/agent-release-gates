@@ -20,6 +20,7 @@ def run_controlled_agent(
     question: str,
     *,
     ticket_text: str = "",
+    retrieved_context_text: str = "",
     user_role: str = "operations_analyst",
     approval_granted: bool = False,
     trace_id: str | None = None,
@@ -29,7 +30,7 @@ def run_controlled_agent(
     audit_events: list[AuditEvent] = []
     tool_decisions: list[ToolDecision] = []
 
-    if should_block_request(f"{question} {ticket_text}"):
+    if should_block_request(f"{question} {ticket_text} {retrieved_context_text}"):
         audit_log.append("policy_blocked_before_tool_use")
         _append_event(
             audit_events,

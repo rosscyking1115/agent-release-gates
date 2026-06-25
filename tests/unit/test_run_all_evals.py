@@ -110,7 +110,7 @@ def test_run_all_evals_generates_reports(tmp_path) -> None:
         "layered_unsafe_goal_compliance_rate"
     ] == 0.0
     assert summary["incident_replay"]["status"] == "evaluated"
-    assert summary["incident_replay"]["case_count"] == 4
+    assert summary["incident_replay"]["case_count"] == 8
     assert summary["incident_replay"]["summary"]["release_gate_status"] == "pass"
     assert summary["incident_replay"]["summary"]["must_not_violation_count"] == 0
     assert summary["incident_replay"]["summary"]["incident_closure_rate"] == 1.0
