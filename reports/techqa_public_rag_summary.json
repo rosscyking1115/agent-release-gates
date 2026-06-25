@@ -254,7 +254,7 @@
     "top1_citation_accuracy": 0.7734
   },
   "notes": [
-    "This is an external public-data benchmark track. It does not replace the controlled synthetic internal-operations benchmark.",
+    "This is an external public-data benchmark track. It does not replace the controlled synthetic operations benchmark.",
     "The evaluator measures retrieval/citation and impossible-question abstention over public technical-support questions.",
     "The report is deterministic and uses no paid API calls."
   ],

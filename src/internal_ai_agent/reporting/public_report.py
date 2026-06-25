@@ -142,12 +142,12 @@ def generate_public_report(project_root: Path) -> str:
 
     markdown = "\n".join(
         [
-            "# Agent Safety & Reliability Evaluation Report",
+            "# Agent Release Safety Gates Evaluation Report",
             "",
             "## Executive Summary",
             "",
-            "This report summarizes a public AI-agent safety and reliability "
-            "evaluation lab. The core benchmark uses a synthetic internal-operations "
+            "This report summarizes a public AI-agent release-readiness "
+            "evaluation system. The core benchmark uses a synthetic operations "
             "domain, with separate public TechQA and WixQA retrieval benchmarks. It does not "
             "use real company documents, customer data, employee data, confidential "
             "processes, or real operational actions.",
@@ -2022,7 +2022,7 @@ def _markdown_to_html_document(markdown: str) -> str:
             "<head>",
             '<meta charset="utf-8">',
             '<meta name="viewport" content="width=device-width, initial-scale=1">',
-            "<title>Agent Safety & Reliability Evaluation Report</title>",
+            "<title>Agent Release Safety Gates Evaluation Report</title>",
             "<style>",
             "body { font-family: Arial, sans-serif; margin: 40px auto; max-width: 1040px; "
             "line-height: 1.55; color: #1f2937; }",

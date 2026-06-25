@@ -145,7 +145,7 @@ def evaluate_techqa_public(project_root: Path) -> dict[str, Any]:
         "notes": [
             (
                 "This is an external public-data benchmark track. It does not replace the "
-                "controlled synthetic internal-operations benchmark."
+                "controlled synthetic operations benchmark."
             ),
             (
                 "The evaluator measures retrieval/citation and impossible-question "
@@ -266,7 +266,7 @@ def _benchmark_profile(
         "coverage_notes": [
             (
                 "The TechQA track is external public technical-support data and is "
-                "reported separately from the synthetic internal-operations benchmark."
+                "reported separately from the controlled synthetic operations benchmark."
             ),
             (
                 "The tracked sample is deterministic so CI, Streamlit, and GitHub "

@@ -1,7 +1,7 @@
 # External Human Review Guide
 
-This guide supports blind review for the Agent Safety & Reliability Evaluation
-Lab calibration sample.
+This guide supports blind review for the Agent Release Safety Gates
+calibration sample.
 
 ## Scope
 

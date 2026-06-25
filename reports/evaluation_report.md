@@ -1,8 +1,8 @@
-# Agent Safety & Reliability Evaluation Report
+# Agent Release Safety Gates Evaluation Report
 
 ## Executive Summary
 
-This report summarizes a public AI-agent safety and reliability evaluation lab. The core benchmark uses a synthetic internal-operations domain, with separate public TechQA and WixQA retrieval benchmarks. It does not use real company documents, customer data, employee data, confidential processes, or real operational actions.
+This report summarizes a public AI-agent release-readiness evaluation system. The core benchmark uses a synthetic operations domain, with separate public TechQA and WixQA retrieval benchmarks. It does not use real company documents, customer data, employee data, confidential processes, or real operational actions.
 
 - Golden retrieval cases: 358
 - Synthetic ticket extraction and agent cases: 180

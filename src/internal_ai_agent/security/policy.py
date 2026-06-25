@@ -36,6 +36,6 @@ def should_block_request(text: str) -> bool:
 
 def policy_refusal() -> str:
     return (
-        "I cannot follow that request because it conflicts with the synthetic internal AI "
-        "agent safety policy. Please provide a normal operations ticket with sufficient evidence."
+        "I cannot follow that request because it conflicts with the agent safety "
+        "policy. Please provide a normal operations ticket with sufficient evidence."
     )

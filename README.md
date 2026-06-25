@@ -1,6 +1,6 @@
-# Agent Safety & Reliability Evaluation Lab
+# Agent Release Safety Gates
 
-A public evaluation system for testing whether AI-agent workflows remain grounded, safe, auditable, and useful under retrieval, refusal, prompt-injection, and approval-gated tool-use conditions.
+A public release-readiness system for testing whether AI-agent workflow changes remain grounded, safe, auditable, and useful under retrieval, refusal, prompt-injection, incident replay, and approval-gated tool-use conditions.
 
 This project is not a clone, assessment, or reverse-engineering attempt of any company's internal AI system. The controlled operations benchmark is synthetic by design; TechQA and WixQA are used separately as public retrieval-validation datasets.
 
@@ -13,18 +13,19 @@ This project is not a clone, assessment, or reverse-engineering attempt of any c
 
 ## What This Project Does
 
-The lab evaluates an AI-agent workflow across four reliability questions:
+The project evaluates an AI-agent workflow across five release questions:
 
 - Does the agent retrieve the right evidence and cite it?
 - Does it abstain or refuse when evidence is weak, unsafe, or prompt-injected?
 - Does it require approval before mock side-effecting tool calls?
 - Does it leave enough trace, audit, and monitoring evidence for review?
+- Does it pass incident replay and policy-as-code release gates?
 
 The result is a reproducible evaluation artifact rather than a one-off dashboard: deterministic eval runners, generated reports, CI checks, Dockerized local execution, a public Streamlit dashboard, and a GitHub Pages report site.
 
 ## Product Direction
 
-The project is evolving toward **Agent Release Safety Gates**: a release-readiness workflow for replaying known agent incidents, applying policy gates, and producing evidence before a changed agent, prompt, model, or tool policy ships. The current lab remains the benchmark and evidence layer behind that workflow.
+**Agent Release Safety Gates** is a release-readiness workflow for replaying known agent incidents, applying policy gates, and producing evidence before a changed agent, prompt, model, or tool policy ships. The evaluation lab remains the benchmark and evidence layer behind that workflow.
 
 The first module is an Incident Replay Suite that turns redacted synthetic incidents into regression fixtures, replay results, release gates, and incident memos.
 
@@ -79,7 +80,7 @@ These results are engineering evidence over controlled benchmarks. They are not 
 uv sync
 uv run python scripts/run_all_evals.py
 uv run python scripts/agent_safety.py release-gate --policy config/incident_release_policy.json
-uv run streamlit run streamlit_app.py --server.port 8510
+uv run streamlit run app/streamlit_app.py --server.port 8510
 ```
 
 Open:
@@ -109,7 +110,7 @@ uv run pytest
 uv run python scripts/run_all_evals.py
 uv run python scripts/agent_safety.py release-gate --policy config/incident_release_policy.json
 uv run python scripts/build_public_site.py
-docker build -t internal-ai-agent-eval-lab:local .
+docker build -t agent-release-safety-gates:local .
 ```
 
 CI runs linting, tests, deterministic report checks, local OpenTelemetry smoke testing, Dockerized collector verification, and Docker build verification.
@@ -140,7 +141,6 @@ CI runs linting, tests, deterministic report checks, local OpenTelemetry smoke t
 ## Roadmap
 
 - Collect independent human labels using the prepared review packet.
-- Add a command-line release gate for incident replay and policy-as-code thresholds.
 - Add reproducible multi-model comparison across hosted and open-source models.
 - Expand public RAG validation beyond the current compact TechQA and WixQA samples.
 - Expand the paper-style intervention report with external reviewer disagreement analysis.

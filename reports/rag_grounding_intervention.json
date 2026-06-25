@@ -23,7 +23,7 @@
   ],
   "notes": [
     "This report combines only public TechQA and WixQA retriever case files.",
-    "It is separate from synthetic internal-operations safety and tool-use results.",
+    "It is separate from controlled synthetic operations safety and tool-use results.",
     "No paid provider calls are used."
   ],
   "recommendations": [

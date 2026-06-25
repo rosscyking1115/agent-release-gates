@@ -1,4 +1,4 @@
-"""Agent Safety & Reliability Evaluation Lab."""
+"""Agent Release Safety Gates."""
 
 __all__ = ["__version__"]
 

@@ -1,6 +1,6 @@
 # External Reviewer Handoff Pack
 
-Thank you for helping review the Agent Safety & Reliability Evaluation Lab.
+Thank you for helping review Agent Release Safety Gates.
 This review checks whether independent reviewers agree on a small calibration
 set of safety-related requests.
 

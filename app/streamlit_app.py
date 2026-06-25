@@ -119,7 +119,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 def main() -> None:
     st.set_page_config(
-        page_title="Agent Safety & Reliability Evaluation Lab",
+        page_title="Agent Release Safety Gates",
         layout="wide",
     )
     _render_app_header()
@@ -278,10 +278,10 @@ def main() -> None:
 
 
 def _render_app_header() -> None:
-    st.title("Agent Safety & Reliability Evaluation Lab")
+    st.title("Agent Release Safety Gates")
     st.caption(
-        "Public evaluation dashboard for grounded retrieval, safe refusal, "
-        "approval-gated tools, safety trade-offs, and observability."
+        "Public release-readiness dashboard for incident replay, grounded retrieval, "
+        "safe refusal, approval-gated tools, safety trade-offs, and observability."
     )
     link_cols = st.columns(4)
     link_cols[0].link_button(
@@ -305,7 +305,7 @@ def _render_app_header() -> None:
         use_container_width=True,
     )
     st.info(
-        "Internal runbooks, tickets, teams, procedures, and internal benchmark metrics are "
+        "Controlled runbooks, tickets, teams, procedures, and benchmark metrics are "
         "synthetic. TechQA and WixQA are separate public-data RAG benchmarks. "
         "This project does not reproduce or assess any real company's internal AI system.",
     )
@@ -454,7 +454,7 @@ def _render_summary(
 
     st.caption(
         "Synthetic operations eval across exact, paraphrased, and weak-evidence cases. "
-        "Internal benchmark data is generated and contains no real company, customer, "
+        "Controlled benchmark data is generated and contains no real company, customer, "
         "or employee information."
     )
     gate_cols = st.columns(4)
@@ -595,7 +595,7 @@ def _render_techqa_public_benchmark(summary: dict[str, object]) -> None:
     )
     st.caption(
         "External validation over NVIDIA TechQA-RAG-Eval technical-support questions. "
-        "This complements, but does not replace, the controlled synthetic internal benchmark."
+        "This complements, but does not replace, the controlled synthetic benchmark."
     )
     table_df = pd.DataFrame(techqa_public_metric_rows(summary))
     if not table_df.empty:
@@ -671,7 +671,7 @@ def _render_wixqa_public_benchmark(summary: dict[str, object]) -> None:
     st.caption(
         "External validation over WixQA expert-written enterprise-support questions "
         "grounded in public Wix Help Center articles. This adds real public customer-support "
-        "RAG evidence while keeping internal operations scenarios synthetic."
+        "RAG evidence while keeping controlled operations scenarios synthetic."
     )
     table_df = pd.DataFrame(wixqa_public_metric_rows(summary))
     if not table_df.empty:
@@ -2405,19 +2405,19 @@ def _render_public_report(
     col_markdown.download_button(
         "Download Markdown",
         data=report_markdown,
-        file_name="internal_ai_agent_evaluation_report.md",
+        file_name="agent_release_safety_gates_report.md",
         mime="text/markdown",
     )
     col_html.download_button(
         "Download HTML",
         data=report_html,
-        file_name="internal_ai_agent_evaluation_report.html",
+        file_name="agent_release_safety_gates_report.html",
         mime="text/html",
     )
     col_pdf.download_button(
         "Download PDF",
         data=report_pdf,
-        file_name="internal_ai_agent_evaluation_report.pdf",
+        file_name="agent_release_safety_gates_report.pdf",
         mime="application/pdf",
     )
     st.markdown(report_markdown)

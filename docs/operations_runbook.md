@@ -1,6 +1,6 @@
 # Operations Runbook
 
-This runbook explains how to verify the Agent Safety & Reliability Evaluation Lab locally.
+This runbook explains how to verify Agent Release Safety Gates locally.
 
 ## Local Verification
 
@@ -128,13 +128,13 @@ Expected result:
 Build the local container image:
 
 ```powershell
-docker build -t internal-ai-agent-eval-lab:local .
+docker build -t agent-release-safety-gates:local .
 ```
 
 Run the API from the image:
 
 ```powershell
-docker run --rm -p 8000:8000 internal-ai-agent-eval-lab:local
+docker run --rm -p 8000:8000 agent-release-safety-gates:local
 ```
 
 Check:
@@ -296,6 +296,6 @@ Before sharing the project publicly, confirm:
 
 - no real company documents are present
 - no customer, employee, or confidential data is present
-- internal benchmark metrics come from synthetic datasets
+- controlled benchmark metrics come from synthetic datasets
 - public-data metrics are clearly labeled as external benchmark results
 - README framing says this is an original evaluation lab, not a real company system

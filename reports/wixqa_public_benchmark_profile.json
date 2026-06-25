@@ -1,6 +1,6 @@
 {
   "coverage_notes": [
-    "WixQA is reported as a separate public enterprise-support RAG track, not as synthetic internal-operations evidence.",
+    "WixQA is reported as a separate public enterprise-support RAG track, not as controlled synthetic operations evidence.",
     "The compact tracked sample keeps CI and public deployment deterministic while preserving source attribution and license metadata."
   ],
   "report_type": "wixqa_public_benchmark_profile",

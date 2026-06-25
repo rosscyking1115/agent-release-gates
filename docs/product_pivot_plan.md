@@ -4,7 +4,7 @@
 
 The project is pivoting from a broad evaluation lab into a release-readiness tool for AI-agent systems.
 
-Working title:
+Public title:
 
 ```text
 Agent Release Safety Gates
@@ -86,7 +86,7 @@ This project must stay honest and public-safe.
 - It does not use real company documents, tickets, customers, employees, or proprietary processes.
 - It does not claim to reproduce any real external incident or exploit.
 - Simulated incidents are clearly marked as synthetic fixtures.
-- Public TechQA and WixQA tracks remain separate from synthetic internal-operations data.
+- Public TechQA and WixQA tracks remain separate from controlled synthetic operations data.
 - The project should claim evaluation infrastructure and release evidence, not production safety certification.
 
 ## Near-Term Roadmap
@@ -97,11 +97,11 @@ Completed:
 2. Add an `agent-safety` CLI entry point for release-gate runs.
 3. Add validated policy-as-code thresholds for incident gates.
 4. Add Streamlit incident queue, trace timeline, replay matrix, and memo views.
+5. Reframe README, GitHub Pages, and Streamlit around release readiness.
 
 Next:
 
-1. Reframe README, GitHub Pages, and Streamlit around release readiness once the name is final.
-2. Add public or human-labelled incident-style cases where licensing and privacy are suitable.
+1. Add public or human-labelled incident-style cases where licensing and privacy are suitable.
 
 ## Success Criteria
 

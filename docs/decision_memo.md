@@ -2,9 +2,9 @@
 
 ## Decision
 
-Use **Agent Safety & Reliability Evaluation Lab** as the public project identity.
+Use **Agent Release Safety Gates** as the public project identity.
 
-Keep the synthetic internal-operations domain as the controlled benchmark scenario, but stop using "Internal AI Agent" as the headline. The public artifact should be framed as an evaluation harness for grounded retrieval, safe refusal, tool-use governance, observability, and safety/usefulness trade-off analysis.
+Keep the controlled synthetic operations domain as the benchmark scenario, but stop using "Internal AI Agent" as the headline. The public artifact should be framed as a release-readiness workflow for incident replay, grounded retrieval, safe refusal, tool-use governance, observability, and safety/usefulness trade-off analysis.
 
 ## Context
 
@@ -23,8 +23,8 @@ The public framing must stay clear:
 - no real company system is reproduced
 - no confidential or employer data is used
 - no claim is made about the quality of any real internal system
-- the internal operations benchmark uses synthetic workflows, teams, tickets, runbooks, and metrics
-- external public benchmarks are clearly separated from the synthetic internal benchmark
+- the controlled operations benchmark uses synthetic workflows, teams, tickets, runbooks, and metrics
+- external public benchmarks are clearly separated from the synthetic benchmark
 
 ## Options Considered
 
@@ -37,7 +37,7 @@ The public framing must stay clear:
 
 ## Chosen Approach
 
-Use a synthetic operations domain for the internal benchmark:
+Use a synthetic operations domain for the controlled benchmark:
 
 - synthetic runbooks
 - synthetic operations tickets
@@ -111,7 +111,7 @@ The safety-classifier module separates enriched challenge cases, a targeted seco
 
 | Risk | Mitigation |
 | --- | --- |
-| Project appears to imply a real organization system | README, model card, and docs clearly state the synthetic internal benchmark scope |
+| Project appears to imply a real organization system | README, model card, and docs clearly state the controlled synthetic benchmark scope |
 | Metrics look too perfect | Manual challenge failures were fixed and kept as regression tests, newer analyst-authored, field-note, mixed review-bundle, decision-log, partial-evidence, and retrieved-context review batches were added, and the report keeps the hybrid field-note miss visible instead of forcing every retriever to 100% |
 | Agent appears to take real actions | Tool names include `mock`, and side effects require approval |
 | Demo depends on paid APIs | Tests and evals are deterministic and local |

@@ -7,7 +7,7 @@
     "WixQA adds multi-article enterprise-support pressure and shows stronger retrieval coverage than top-1 citation accuracy, so reranking remains important."
   ],
   "notes": [
-    "This report combines only external public-data RAG tracks. It does not mix public-data metrics with synthetic internal-operations metrics.",
+    "This report combines only external public-data RAG tracks. It does not mix public-data metrics with controlled synthetic operations metrics.",
     "The current comparison is deterministic and local; no paid provider calls are used."
   ],
   "recommendations": [

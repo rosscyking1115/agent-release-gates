@@ -369,7 +369,7 @@ def _index_html(
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Agent Safety & Reliability Evaluation Lab</title>
+  <title>Agent Release Safety Gates</title>
   <style>
     :root {{
       color-scheme: light;
@@ -531,16 +531,17 @@ def _index_html(
 <body>
   <main>
     <header>
-      <h1>Agent Safety & Reliability Evaluation Lab</h1>
+      <h1>Agent Release Safety Gates</h1>
       <p>
-        A public evaluation harness for measuring AI-agent reliability across
-        grounded retrieval, safe refusal, approval-gated mock tools,
-        safety/usefulness trade-offs, audit events, and observability.
+        A public release-readiness harness for measuring AI-agent reliability
+        across incident replay, grounded retrieval, safe refusal,
+        approval-gated mock tools, safety/usefulness trade-offs, audit events,
+        and observability.
       </p>
       <p>
         This project does not reproduce, evaluate, or criticize any real
         company's internal AI system. All data, teams, tickets, runbooks,
-        internal benchmark metrics, and workflows are synthetic. TechQA and
+        controlled benchmark metrics, and workflows are synthetic. TechQA and
         WixQA results are separate public-data RAG benchmarks.
       </p>
       <div class="actions">
@@ -557,9 +558,9 @@ def _index_html(
         <div class="summary-card">
           <h3>What it is</h3>
           <p>
-            A reproducible benchmark and dashboard for evaluating grounded
-            retrieval, safe refusal, approval-gated tools, and auditability in
-            AI-agent workflows.
+            A reproducible benchmark and dashboard for evaluating incident
+            replay, grounded retrieval, safe refusal, approval-gated tools,
+            and auditability in AI-agent workflows.
           </p>
         </div>
         <div class="summary-card">
@@ -1028,7 +1029,7 @@ def _artifact_index_html(artifact_links: list[tuple[str, str, str]]) -> str:
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Technical Artifacts - Agent Safety & Reliability Evaluation Lab</title>
+  <title>Technical Artifacts - Agent Release Safety Gates</title>
   <style>
     :root {{
       color-scheme: light;

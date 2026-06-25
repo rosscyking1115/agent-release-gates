@@ -167,7 +167,7 @@ def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
 
     report = generate_public_report(tmp_path)
 
-    assert "# Agent Safety & Reliability Evaluation Report" in report
+    assert "# Agent Release Safety Gates Evaluation Report" in report
     assert "Golden retrieval cases: 358" in report
     assert "Best current retriever: Local TF-IDF vector" in report
     assert "## Evaluation Release Gates" in report
@@ -286,7 +286,7 @@ def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
     assert "case-level extraction spans" in report
     assert "case-level agent approval spans" in report
     assert "API contract and error-case spans" in report
-    assert "public AI-agent safety and reliability evaluation lab" in report
+    assert "public AI-agent release-readiness evaluation system" in report
 
 
 def test_write_public_report_creates_markdown_artifact(tmp_path) -> None:
@@ -307,7 +307,7 @@ def test_generate_public_report_html_renders_tables_and_safety_boundary(tmp_path
     html = generate_public_report_html(tmp_path)
 
     assert "<!doctype html>" in html
-    assert "<h1>Agent Safety &amp; Reliability Evaluation Report</h1>" in html
+    assert "<h1>Agent Release Safety Gates Evaluation Report</h1>" in html
     assert "<table>" in html
     assert "<td>Hybrid sparse semantic</td>" in html
     assert "<h2>Evaluation Release Gates</h2>" in html
@@ -338,6 +338,6 @@ def test_generate_public_report_pdf_renders_shareable_artifact(tmp_path) -> None
     pdf = generate_public_report_pdf(tmp_path)
 
     assert pdf.startswith(b"%PDF-1.4")
-    assert b"AGENT SAFETY & RELIABILITY EVALUATION REPORT" in pdf
+    assert b"AGENT RELEASE SAFETY GATES EVALUATION REPORT" in pdf
     assert b"Golden retrieval cases: 358" in pdf
     assert b"%%EOF" in pdf

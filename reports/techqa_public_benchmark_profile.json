@@ -1,6 +1,6 @@
 {
   "coverage_notes": [
-    "The TechQA track is external public technical-support data and is reported separately from the synthetic internal-operations benchmark.",
+    "The TechQA track is external public technical-support data and is reported separately from the controlled synthetic operations benchmark.",
     "The tracked sample is deterministic so CI, Streamlit, and GitHub Pages can reproduce the public-data metrics without downloading the upstream dataset.",
     "Provider-backed embedding comparison remains optional and is not claimed until a credentialed run publishes a separate result."
   ],

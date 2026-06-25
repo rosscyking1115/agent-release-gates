@@ -30,7 +30,7 @@ from internal_ai_agent.rag.baseline import (
 )
 
 app = FastAPI(
-    title="Agent Safety & Reliability Evaluation Lab",
+    title="Agent Release Safety Gates",
     description="Synthetic enterprise operations AI agent demo.",
     version="0.1.0",
 )
@@ -60,7 +60,7 @@ def evaluation_report_pdf() -> Response:
         media_type="application/pdf",
         headers={
             "Content-Disposition": (
-                'attachment; filename="internal_ai_agent_evaluation_report.pdf"'
+                'attachment; filename="agent_release_safety_gates_report.pdf"'
             )
         },
     )

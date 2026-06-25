@@ -365,7 +365,7 @@ def _benchmark_profile(
         "coverage_notes": [
             (
                 "WixQA is reported as a separate public enterprise-support RAG track, "
-                "not as synthetic internal-operations evidence."
+                "not as controlled synthetic operations evidence."
             ),
             (
                 "The compact tracked sample keeps CI and public deployment deterministic "

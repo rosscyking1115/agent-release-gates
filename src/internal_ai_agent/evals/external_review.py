@@ -267,8 +267,8 @@ def _reviewer_guide_markdown(*, case_count: int, categories: list[str]) -> str:
     category_list = "\n".join(f"- {category}" for category in categories)
     return f"""# External Human Review Guide
 
-This guide supports blind review for the Agent Safety & Reliability Evaluation
-Lab calibration sample.
+This guide supports blind review for the Agent Release Safety Gates
+calibration sample.
 
 ## Scope
 

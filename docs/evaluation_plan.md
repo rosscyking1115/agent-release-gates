@@ -4,7 +4,7 @@
 
 The evaluation harness should show whether an AI-agent workflow is becoming more reliable, grounded, safe, and useful over time.
 
-The lab uses a synthetic internal-operations domain for controlled measurement, plus separate public-data tracks where external validation is available. The central research question is how safety interventions change both unsafe compliance risk and benign-task usefulness.
+The system uses a controlled synthetic operations domain for measurement, plus separate public-data tracks where external validation is available. The central research question is how safety interventions change both unsafe compliance risk and benign-task usefulness.
 
 ## Datasets
 
@@ -145,11 +145,11 @@ The optional provider-backed embedding comparison uses `scripts/run_provider_emb
 
 ## External Public TechQA Track
 
-The TechQA public track uses a tracked 160-case sample from NVIDIA TechQA-RAG-Eval. It evaluates public technical-support retrieval separately from the synthetic internal-operations benchmark. The summary report records retrieval hit rate@3, top-1 citation accuracy, mean reciprocal rank@3, abstention accuracy, impossible-question abstention, and answerable false abstention. The benchmark profile records the sample size, answerable/impossible split, unique public document count, context coverage, failed-case rate, sample-selection policy, and whether a provider-backed embedding result has actually been published.
+The TechQA public track uses a tracked 160-case sample from NVIDIA TechQA-RAG-Eval. It evaluates public technical-support retrieval separately from the controlled synthetic operations benchmark. The summary report records retrieval hit rate@3, top-1 citation accuracy, mean reciprocal rank@3, abstention accuracy, impossible-question abstention, and answerable false abstention. The benchmark profile records the sample size, answerable/impossible split, unique public document count, context coverage, failed-case rate, sample-selection policy, and whether a provider-backed embedding result has actually been published.
 
 The tracked sample keeps CI and GitHub Pages deterministic. To refresh or resize it, download the upstream `train.json` into `data/public/techqa_train.json`, then run `scripts/prepare_techqa_public_benchmark.py` with an explicit `--limit`.
 
-The TechQA retriever comparison report saves the public-track systems separately from the synthetic internal benchmark:
+The TechQA retriever comparison report saves the public-track systems separately from the controlled synthetic benchmark:
 
 - keyword title baseline
 - local TF-IDF public retriever
@@ -158,11 +158,11 @@ The current primary local TF-IDF public retriever improves TechQA retrieval hit 
 
 ## External Public WixQA Track
 
-The WixQA public track uses a tracked 80-case sample from the expert-written split of Wix/WixQA. It evaluates real public enterprise-support retrieval separately from the synthetic internal-operations benchmark and from TechQA. The summary report records retrieval hit rate@3, top-1 citation accuracy, mean reciprocal rank@3, and multi-article retrieval@3. The benchmark profile records sample size, unique document count, multi-article share, article-type mix, failed-case rate, sample-selection policy, and whether a provider-backed embedding result has actually been published.
+The WixQA public track uses a tracked 80-case sample from the expert-written split of Wix/WixQA. It evaluates real public enterprise-support retrieval separately from the controlled synthetic operations benchmark and from TechQA. The summary report records retrieval hit rate@3, top-1 citation accuracy, mean reciprocal rank@3, and multi-article retrieval@3. The benchmark profile records sample size, unique document count, multi-article share, article-type mix, failed-case rate, sample-selection policy, and whether a provider-backed embedding result has actually been published.
 
 The tracked sample keeps CI and GitHub Pages deterministic. To refresh or resize it, download the upstream `wixqa_expertwritten/test.jsonl` and `wix_kb_corpus/wix_kb_corpus.jsonl` into `data/public/`, then run `scripts/prepare_wixqa_public_benchmark.py` with an explicit `--limit`.
 
-The WixQA retriever comparison report saves the public-track systems separately from the synthetic internal benchmark:
+The WixQA retriever comparison report saves the public-track systems separately from the controlled synthetic benchmark:
 
 - keyword title baseline
 - local TF-IDF WixQA retriever

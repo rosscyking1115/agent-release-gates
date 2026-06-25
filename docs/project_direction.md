@@ -2,7 +2,7 @@
 
 ## North Star
 
-Build a useful public Agent Safety & Reliability Evaluation Lab.
+Build a useful public Agent Release Safety Gates system.
 
 The project should help someone inspect and compare agent behavior across grounded retrieval, structured extraction, safe refusal, prompt-injection resistance, tool approval, auditability, and monitoring. It should stand on its own as a public technical and research artifact.
 
@@ -64,7 +64,7 @@ The project is useful, but the next credibility gap is external validation rathe
 Current gaps:
 
 - Retrieval now includes sparse hybrid, local TF-IDF vector, local feature-hashed embedding-store experiments, current-evidence reranking, and a dry-run-first provider embedding evaluation path. A completed provider-backed result is still not published.
-- A 160-case NVIDIA TechQA-RAG-Eval public benchmark track validates technical-support retrieval, and an 80-case WixQA expert-written public benchmark validates enterprise-support retrieval, while preserving the synthetic internal-operations lab as the controlled benchmark.
+- A 160-case NVIDIA TechQA-RAG-Eval public benchmark track validates technical-support retrieval, and an 80-case WixQA expert-written public benchmark validates enterprise-support retrieval, while preserving the controlled synthetic operations track as the benchmark scenario.
 - Error analysis now identifies retrieved-but-not-cited failures, deterministic retriever-version trend snapshots, and dated lab milestone history; the expanded manual challenge set drove reranking fixes for schema mismatch, stale context, KYC artefact phrasing, decision-log wording, partial evidence notes, and ambiguous-handoff abstention.
 - Dataset profiling now exposes manual-versus-generated share, abstention coverage, task/noise/issue/team coverage, red-team coverage, and explicit data-quality gap labels. The profile now clears the previous manual-share gap with 102 hand-authored golden cases, while still flagging that provider-backed embedding comparison is not covered.
 - Release gates now convert the generated artifacts into deterministic pass/warn/fail checks for benchmark coverage, retrieval grounding, safety, approval governance, and observability consistency.

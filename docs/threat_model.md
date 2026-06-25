@@ -2,7 +2,7 @@
 
 ## Scope
 
-This project models risks for a public AI-agent safety and reliability benchmark that uses a synthetic internal-operations domain. It does not contain real company data, customer data, employee data, credentials, or confidential workflows. Public datasets, such as TechQA-RAG-Eval and WixQA, are handled as separate external benchmark tracks.
+This project models risks for a public AI-agent release-readiness benchmark that uses a controlled synthetic operations domain. It does not contain real company data, customer data, employee data, credentials, or confidential workflows. Public datasets, such as TechQA-RAG-Eval and WixQA, are handled as separate external benchmark tracks.
 
 ## Assets
 
@@ -34,7 +34,7 @@ This project models risks for a public AI-agent safety and reliability benchmark
 
 ## Initial Controls
 
-- synthetic internal benchmark data
+- controlled synthetic benchmark data
 - separate labeling for public benchmark data
 - citation requirements
 - abstention when evidence is weak
@@ -51,4 +51,4 @@ The project includes deterministic red-team cases for prompt injection, groundin
 
 ## Public Positioning Control
 
-The project must not imply that it is a clone, leak, reverse-engineering attempt, or critique of any real organization system. Public materials should describe it as an independent Agent Safety & Reliability Evaluation Lab, with a synthetic internal-operations benchmark and clearly separated public-data validation.
+The project must not imply that it is a clone, leak, reverse-engineering attempt, or critique of any real organization system. Public materials should describe it as an independent Agent Release Safety Gates system, with a controlled synthetic operations benchmark and clearly separated public-data validation.

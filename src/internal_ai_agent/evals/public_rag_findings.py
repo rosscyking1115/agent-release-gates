@@ -79,7 +79,7 @@ def _findings_report(tracks: list[dict[str, Any]]) -> dict[str, Any]:
         "notes": [
             (
                 "This report combines only external public-data RAG tracks. It does not "
-                "mix public-data metrics with synthetic internal-operations metrics."
+                "mix public-data metrics with controlled synthetic operations metrics."
             ),
             "The current comparison is deterministic and local; no paid provider calls are used.",
         ],

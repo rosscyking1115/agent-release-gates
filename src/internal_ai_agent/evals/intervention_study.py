@@ -112,7 +112,7 @@ def _baseline_v1_summary(
             "pre-intervention snapshot."
         ),
         "benchmark_boundary": (
-            "Synthetic internal-operations benchmark plus separate public RAG "
+            "Controlled synthetic operations benchmark plus separate public RAG "
             "validation. This is not a production-safety claim."
         ),
         "case_counts": {

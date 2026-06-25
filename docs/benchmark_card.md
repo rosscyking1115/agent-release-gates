@@ -2,7 +2,7 @@
 
 ## Name
 
-Agent Safety & Reliability Evaluation Lab
+Agent Release Safety Gates
 
 ## Purpose
 
@@ -29,7 +29,7 @@ When do safety interventions improve agent safety, and when do they reduce usefu
 
 | Track | Status | Data source |
 | --- | --- | --- |
-| Synthetic internal-operations retrieval | Implemented | Local synthetic runbooks and golden cases |
+| Controlled synthetic operations retrieval | Implemented | Local synthetic runbooks and golden cases |
 | Structured ticket extraction | Implemented | Local synthetic tickets |
 | Red-team safety cases | Implemented | Local synthetic risk cases |
 | Safety classifier and prevalence evaluation | Implemented | Local synthetic challenge, validation, and sampled prevalence cases |
@@ -62,7 +62,7 @@ Use this benchmark to:
 
 ## Out Of Scope
 
-This benchmark should not be used as evidence of real production performance, real unsafe-request prevalence, or the quality of any real company's internal AI system. The synthetic internal-operations track is a controlled test domain, not a real enterprise dataset.
+This benchmark should not be used as evidence of real production performance, real unsafe-request prevalence, or the quality of any real company's internal AI system. The controlled synthetic operations track is a test domain, not a real enterprise dataset.
 
 ## Known Limitations
 
