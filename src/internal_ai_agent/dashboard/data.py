@@ -243,6 +243,20 @@ def load_incident_release_gates(project_root: Path) -> dict[str, Any]:
     return {}
 
 
+def load_incident_response_plan(project_root: Path) -> dict[str, Any]:
+    path = project_root / "reports/incident_response_plan.json"
+    if path.exists():
+        return json.loads(path.read_text(encoding="utf-8"))
+    return {
+        "report_type": "incident_response_plan",
+        "status": "not_configured",
+        "summary": {},
+        "top_risk_categories": [],
+        "actions": [],
+        "recommendations": [],
+    }
+
+
 def load_dataset_profile(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/dataset_profile.json"
     return json.loads(path.read_text(encoding="utf-8"))
@@ -449,6 +463,29 @@ def incident_trace_event_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]
                 "risk_score": float(annotations.get("risk_score", 0.0)),
                 "requires_approval": bool(annotations.get("requires_approval", False)),
                 "timestamp_utc": row.get("timestamp_utc", ""),
+            }
+        )
+    return formatted_rows
+
+
+def incident_response_action_rows(report: dict[str, Any]) -> list[dict[str, Any]]:
+    formatted_rows: list[dict[str, Any]] = []
+    for row in report.get("actions", []):
+        evidence = row.get("evidence", {})
+        formatted_rows.append(
+            {
+                "incident_id": row["incident_id"],
+                "priority": row["priority"],
+                "severity": _display_status(row["severity"]),
+                "owner": _display_status_label(str(row["owner"])),
+                "review_lane": _display_status(row["review_lane"]),
+                "mitigation_status": _display_status(row["mitigation_status"]),
+                "release_implication": _display_status(row["release_implication"]),
+                "risk_categories": ", ".join(row.get("risk_categories", [])),
+                "recommended_action": row["recommended_action"],
+                "regression_case": evidence.get("regression_case_id", ""),
+                "closed_by_replay": evidence.get("closed_by_replay", False),
+                "expected_behavior_match": evidence.get("expected_behavior_match", False),
             }
         )
     return formatted_rows
@@ -1708,6 +1745,17 @@ def _display_status(status: object) -> str:
         "block": "Block",
         "review": "Review",
         "allow": "Allow",
+        "ship": "Ship",
+        "ship_with_monitoring": "Ship with monitoring",
+        "block_release": "Block release",
+        "release_blocked": "Release blocked",
+        "ready_with_monitoring": "Ready with monitoring",
+        "validated_by_replay": "Validated by replay",
+        "open_replay_gap": "Open replay gap",
+        "needs_human_review": "Needs human review",
+        "release_blocker": "Release blocker",
+        "post_release_monitoring": "Post-release monitoring",
+        "sampled_audit": "Sampled audit",
     }
     value = str(status)
     if "_" not in value:

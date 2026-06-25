@@ -178,6 +178,13 @@ def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
     assert "| Incident closure rate | 100.00% |" in report
     assert "| Incident release gate | Status | Severity | Observed | Threshold |" in report
     assert "| High-severity incident must-not violations | Pass | Blocking | 0 | 0 |" in report
+    assert "Incident Response Plan" in report
+    assert "### Incident Response Plan" not in report
+    assert "| Response-plan metric | Value |" in report
+    assert "| Overall status | Ready with monitoring |" in report
+    assert "| Release blockers | 0 |" in report
+    assert "| INC-2026-0004 | P3 | Medium | Sampled audit |" in report
+    assert "| Ship | REG-INC-2026-0004 |" in report
     assert (
         "| Overall status | Release | Pass with warnings | summary | "
         "13 pass / 1 warn | 0 fail |"
@@ -313,6 +320,11 @@ def test_generate_public_report_html_renders_tables_and_safety_boundary(tmp_path
     assert "<h2>Evaluation Release Gates</h2>" in html
     assert "<h2>Incident Replay Suite</h2>" in html
     assert "<td>Incident closure rate</td>" in html
+    assert "<p>Incident Response Plan</p>" in html
+    assert "### Incident Response Plan" not in html
+    assert "<td>Ready with monitoring</td>" in html
+    assert "<td>Sampled audit</td>" in html
+    assert "<td>Ship</td>" in html
     assert "<td>Pass with warnings</td>" in html
     assert "<td>Local TF-IDF vector</td>" in html
     assert "<td>Local embedding store</td>" in html

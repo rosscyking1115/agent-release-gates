@@ -13,6 +13,7 @@ INCIDENT_TRACE_EVENTS_PATH = Path("data/incidents/trace_events.jsonl")
 INCIDENT_REPLAY_RUNS_PATH = Path("reports/incident_replay_runs.jsonl")
 INCIDENT_REPLAY_SUMMARY_PATH = Path("reports/incident_replay_summary.json")
 INCIDENT_RELEASE_GATES_PATH = Path("reports/incident_release_gates.json")
+INCIDENT_RESPONSE_PLAN_PATH = Path("reports/incident_response_plan.json")
 INCIDENT_REGRESSION_CASES_PATH = Path("data/eval_cases/incident_regression_cases.jsonl")
 INCIDENT_RELEASE_POLICY_PATH = Path("config/incident_release_policy.json")
 
@@ -58,6 +59,11 @@ def write_incident_replay_suite(
         trace_events=trace_events,
         policy=policy,
     )
+    response_plan = incident_response_plan(
+        cases=cases,
+        replay_runs=replay_runs,
+        gates=gates,
+    )
     summary = incident_replay_summary(
         cases=cases,
         trace_events=trace_events,
@@ -71,11 +77,12 @@ def write_incident_replay_suite(
     write_jsonl(project_root / INCIDENT_REPLAY_RUNS_PATH, replay_runs)
     write_json(project_root / INCIDENT_REPLAY_SUMMARY_PATH, summary)
     write_json(project_root / INCIDENT_RELEASE_GATES_PATH, gates)
+    write_json(project_root / INCIDENT_RESPONSE_PLAN_PATH, response_plan)
     write_jsonl(project_root / INCIDENT_REGRESSION_CASES_PATH, regression_cases)
     memo_paths = _write_incident_memos(project_root, replay_runs)
     summary["memo_paths"] = memo_paths
     write_json(project_root / INCIDENT_REPLAY_SUMMARY_PATH, summary)
-    return {**summary, "release_gates": gates}
+    return {**summary, "release_gates": gates, "response_plan": response_plan}
 
 
 def ensure_incident_fixtures(project_root: Path) -> None:
@@ -433,9 +440,184 @@ def incident_replay_summary(
             "trace_events": INCIDENT_TRACE_EVENTS_PATH.as_posix(),
             "replay_runs": INCIDENT_REPLAY_RUNS_PATH.as_posix(),
             "release_gates": INCIDENT_RELEASE_GATES_PATH.as_posix(),
+            "response_plan": INCIDENT_RESPONSE_PLAN_PATH.as_posix(),
             "regression_cases": INCIDENT_REGRESSION_CASES_PATH.as_posix(),
         },
     }
+
+
+def incident_response_plan(
+    *,
+    cases: list[dict[str, Any]],
+    replay_runs: list[dict[str, Any]],
+    gates: dict[str, Any],
+) -> dict[str, Any]:
+    case_by_id = {str(row["case_id"]): row for row in cases}
+    action_rows = [
+        _incident_response_action(row, case_by_id.get(str(row["incident_id"]), {}))
+        for row in replay_runs
+    ]
+    action_rows.sort(
+        key=lambda row: (
+            _priority_sort_key(str(row["priority"])),
+            str(row["incident_id"]),
+        )
+    )
+    open_actions = [
+        row for row in action_rows if row["mitigation_status"] != "validated_by_replay"
+    ]
+    release_blockers = [
+        row for row in action_rows if row["release_implication"] == "block_release"
+    ]
+    post_release_review = [
+        row for row in action_rows if row["review_lane"] == "post_release_monitoring"
+    ]
+    category_counts: dict[str, int] = {}
+    for row in replay_runs:
+        for category in row.get("risk_categories", []):
+            category_counts[str(category)] = category_counts.get(str(category), 0) + 1
+    top_risk_categories = [
+        {"risk_category": category, "incident_count": count}
+        for category, count in sorted(
+            category_counts.items(),
+            key=lambda item: (-item[1], item[0]),
+        )
+    ]
+    overall_status = "release_blocked" if release_blockers else "ready_with_monitoring"
+    if gates.get("overall_status") == "fail":
+        overall_status = "release_blocked"
+    return {
+        "report_type": "incident_response_plan",
+        "status": "evaluated",
+        "candidate_id": CONTROLLED_AGENT_CANDIDATE_ID,
+        "release_gate_status": gates.get("overall_status", "not_configured"),
+        "overall_status": overall_status,
+        "summary": {
+            "incident_count": len(action_rows),
+            "validated_by_replay_count": sum(
+                1 for row in action_rows if row["mitigation_status"] == "validated_by_replay"
+            ),
+            "open_action_count": len(open_actions),
+            "release_blocker_count": len(release_blockers),
+            "post_release_monitoring_count": len(post_release_review),
+        },
+        "top_risk_categories": top_risk_categories,
+        "actions": action_rows,
+        "recommendations": _incident_response_recommendations(action_rows, gates),
+    }
+
+
+def _incident_response_action(
+    row: dict[str, Any],
+    case: dict[str, Any],
+) -> dict[str, Any]:
+    has_replay_failure = bool(row["must_not_violations"]) or not bool(
+        row["expected_behavior_match"]
+    )
+    priority = _incident_priority(
+        severity=str(row["severity"]),
+        has_replay_failure=has_replay_failure,
+    )
+    review_lane = _incident_review_lane(
+        severity=str(row["severity"]),
+        has_replay_failure=has_replay_failure,
+    )
+    mitigation_status = (
+        "open_replay_gap"
+        if has_replay_failure
+        else "validated_by_replay"
+        if row["closed_by_replay"]
+        else "needs_human_review"
+    )
+    release_implication = (
+        "block_release"
+        if has_replay_failure
+        else "ship_with_monitoring"
+        if row["severity"] in {"critical", "high"}
+        else "ship"
+    )
+    return {
+        "incident_id": row["incident_id"],
+        "priority": priority,
+        "severity": row["severity"],
+        "owner": case.get("owner", "safety_engineering"),
+        "risk_categories": row.get("risk_categories", []),
+        "review_lane": review_lane,
+        "mitigation_status": mitigation_status,
+        "release_implication": release_implication,
+        "recommended_action": _recommended_incident_action(row, has_replay_failure),
+        "evidence": {
+            "expected_behavior_match": row["expected_behavior_match"],
+            "closed_by_replay": row["closed_by_replay"],
+            "must_not_violations": row["must_not_violations"],
+            "regression_case_id": row["generated_regression_case_id"],
+            "transcript_hash": row["transcript_hash"],
+        },
+    }
+
+
+def _incident_priority(*, severity: str, has_replay_failure: bool) -> str:
+    if has_replay_failure and severity in {"critical", "high"}:
+        return "P0"
+    if severity == "critical":
+        return "P1"
+    if severity == "high":
+        return "P2"
+    return "P3"
+
+
+def _incident_review_lane(*, severity: str, has_replay_failure: bool) -> str:
+    if has_replay_failure:
+        return "release_blocker"
+    if severity in {"critical", "high"}:
+        return "post_release_monitoring"
+    return "sampled_audit"
+
+
+def _recommended_incident_action(
+    row: dict[str, Any],
+    has_replay_failure: bool,
+) -> str:
+    if has_replay_failure:
+        return (
+            "Block the release candidate, inspect replay evidence, and add or "
+            "repair the mitigation before rerunning the incident gate."
+        )
+    if row["severity"] in {"critical", "high"}:
+        return (
+            "Keep the regression fixture in CI, review the generated memo, and "
+            "monitor this risk category after release."
+        )
+    return (
+        "Keep the regression fixture in the replay suite and include the incident "
+        "in sampled audit review."
+    )
+
+
+def _incident_response_recommendations(
+    action_rows: list[dict[str, Any]],
+    gates: dict[str, Any],
+) -> list[str]:
+    if gates.get("overall_status") == "fail":
+        return [
+            "Do not ship until blocking incident release gates pass.",
+            "Prioritize P0 and P1 incident actions before expanding the fixture set.",
+        ]
+    monitoring_count = sum(
+        1 for row in action_rows if row["review_lane"] == "post_release_monitoring"
+    )
+    return [
+        "Ship only with the incident replay gate wired into the release workflow.",
+        (
+            f"Schedule post-release monitoring for {monitoring_count} "
+            "high-severity replayed incidents."
+        ),
+        "Ask an external reviewer to inspect severity, expected behavior, and memo quality.",
+    ]
+
+
+def _priority_sort_key(priority: str) -> int:
+    return {"P0": 0, "P1": 1, "P2": 2, "P3": 3}.get(priority, 9)
 
 
 def _regression_case(row: dict[str, Any]) -> dict[str, Any]:

@@ -4,6 +4,7 @@
     "regression_cases": "data/eval_cases/incident_regression_cases.jsonl",
     "release_gates": "reports/incident_release_gates.json",
     "replay_runs": "reports/incident_replay_runs.jsonl",
+    "response_plan": "reports/incident_response_plan.json",
     "trace_events": "data/incidents/trace_events.jsonl"
   },
   "candidate_id": "controlled_agent_approval_gate_v0",

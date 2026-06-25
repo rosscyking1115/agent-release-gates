@@ -13,12 +13,14 @@ from internal_ai_agent.dashboard.data import (
     evaluation_gate_rows,
     evaluation_history_rows,
     incident_replay_run_rows,
+    incident_response_action_rows,
     load_agent_trace_examples,
     load_dataset_profile,
     load_evaluation_gates,
     load_incident_release_gates,
     load_incident_replay_runs,
     load_incident_replay_summary,
+    load_incident_response_plan,
     load_observability_otel_spans,
     load_observability_trace_index,
     load_retriever_case_rows,
@@ -87,6 +89,7 @@ def generate_public_report(project_root: Path) -> str:
     incident_replay_summary = load_incident_replay_summary(project_root)
     incident_replay_runs = load_incident_replay_runs(project_root)
     incident_release_gates = load_incident_release_gates(project_root)
+    incident_response_plan = load_incident_response_plan(project_root)
     collector_preview = _read_json(reports_dir / "collector_export_preview.json")
     extraction = _read_json(reports_dir / "extraction_eval_summary.json")
     security = _read_json(reports_dir / "security_eval_summary.json")
@@ -171,6 +174,8 @@ def generate_public_report(project_root: Path) -> str:
             _incident_replay_table(incident_replay_summary, incident_replay_runs),
             "",
             _incident_release_gate_table(incident_release_gates),
+            "",
+            _incident_response_plan_table(incident_response_plan),
             "",
             "## Dataset Profile",
             "",
@@ -516,6 +521,37 @@ def _incident_release_gate_table(gates: dict[str, Any]) -> str:
     for row in evaluation_gate_rows(gates):
         rows.append(
             "| {label} | {status} | {severity} | {observed} | {threshold} |".format(
+                **row
+            )
+        )
+    return "\n".join(rows)
+
+
+def _incident_response_plan_table(report: dict[str, Any]) -> str:
+    if report.get("status") != "evaluated":
+        return "Incident response plan is not configured."
+    summary = report["summary"]
+    rows = [
+        "Incident Response Plan",
+        "",
+        "| Response-plan metric | Value |",
+        "| --- | ---: |",
+        f"| Overall status | {_display_status(report['overall_status'])} |",
+        f"| Validated by replay | {summary['validated_by_replay_count']} |",
+        f"| Open actions | {summary['open_action_count']} |",
+        f"| Release blockers | {summary['release_blocker_count']} |",
+        f"| Post-release monitoring | {summary['post_release_monitoring_count']} |",
+        "",
+        (
+            "| Incident | Priority | Severity | Review lane | Mitigation | "
+            "Release implication | Regression fixture |"
+        ),
+        "| --- | --- | --- | --- | --- | --- | --- |",
+    ]
+    for row in incident_response_action_rows(report):
+        rows.append(
+            "| {incident_id} | {priority} | {severity} | {review_lane} | "
+            "{mitigation_status} | {release_implication} | {regression_case} |".format(
                 **row
             )
         )
@@ -2297,6 +2333,17 @@ def _display_status(status: object) -> str:
         "ready": "Ready",
         "completed": "Completed",
         "evaluated": "Evaluated",
+        "ship": "Ship",
+        "ship_with_monitoring": "Ship with monitoring",
+        "block_release": "Block release",
+        "release_blocked": "Release blocked",
+        "ready_with_monitoring": "Ready with monitoring",
+        "validated_by_replay": "Validated by replay",
+        "open_replay_gap": "Open replay gap",
+        "needs_human_review": "Needs human review",
+        "release_blocker": "Release blocker",
+        "post_release_monitoring": "Post-release monitoring",
+        "sampled_audit": "Sampled audit",
     }
     value = str(status)
     if "_" not in value:

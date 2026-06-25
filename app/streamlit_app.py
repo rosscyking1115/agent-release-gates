@@ -28,6 +28,7 @@ from internal_ai_agent.dashboard.data import (
     human_calibration_case_rows,
     human_calibration_category_rows,
     incident_replay_run_rows,
+    incident_response_action_rows,
     incident_trace_event_rows,
     intervention_experiment_rows,
     judge_reliability_category_rows,
@@ -49,6 +50,7 @@ from internal_ai_agent.dashboard.data import (
     load_incident_release_gates,
     load_incident_replay_runs,
     load_incident_replay_summary,
+    load_incident_response_plan,
     load_incident_trace_events,
     load_intervention_study,
     load_judge_reliability_summary,
@@ -143,6 +145,7 @@ def main() -> None:
     incident_replay_runs = load_incident_replay_runs(PROJECT_ROOT)
     incident_trace_events = load_incident_trace_events(PROJECT_ROOT)
     incident_release_gates = load_incident_release_gates(PROJECT_ROOT)
+    incident_response_plan = load_incident_response_plan(PROJECT_ROOT)
     extraction_summary = load_extraction_summary(PROJECT_ROOT)
     security_summary = load_security_summary(PROJECT_ROOT)
     safety_classifier = load_safety_classifier_summary(PROJECT_ROOT)
@@ -261,6 +264,7 @@ def main() -> None:
             incident_replay_runs,
             incident_trace_events,
             incident_release_gates,
+            incident_response_plan,
         )
     elif section == "Agent Observability":
         _render_agent_metrics(
@@ -1869,6 +1873,7 @@ def _render_incident_replay(
     replay_runs: list[dict[str, object]],
     trace_events: list[dict[str, object]],
     release_gates: dict[str, object],
+    response_plan: dict[str, object],
 ) -> None:
     st.subheader("Incident Replay Workspace")
     if summary.get("status") != "evaluated":
@@ -1935,6 +1940,7 @@ def _render_incident_replay(
     tabs = st.tabs(
         [
             "Incident queue",
+            "Response plan",
             "Replay matrix",
             "Trace timeline",
             "Decision memo",
@@ -1946,15 +1952,18 @@ def _render_incident_replay(
         _render_incident_queue(run_rows, selected_display)
 
     with tabs[1]:
-        _render_incident_replay_matrix(selected_run, run_rows)
+        _render_incident_response_plan(response_plan)
 
     with tabs[2]:
-        _render_incident_trace_timeline(selected_run, selected_trace_rows)
+        _render_incident_replay_matrix(selected_run, run_rows)
 
     with tabs[3]:
-        _render_incident_decision_memo(summary, selected_incident_id)
+        _render_incident_trace_timeline(selected_run, selected_trace_rows)
 
     with tabs[4]:
+        _render_incident_decision_memo(summary, selected_incident_id)
+
+    with tabs[5]:
         _render_incident_release_gates(summary, release_gates)
 
 
@@ -2004,6 +2013,64 @@ def _render_incident_queue(
         }
     )
     st.dataframe(display_df, hide_index=True, use_container_width=True)
+
+
+def _render_incident_response_plan(response_plan: dict[str, object]) -> None:
+    if response_plan.get("status") != "evaluated":
+        st.info("Incident response plan has not been generated yet.")
+        return
+
+    summary_obj = response_plan.get("summary", {})
+    summary = summary_obj if isinstance(summary_obj, dict) else {}
+    cols = st.columns(5)
+    cols[0].metric(
+        "Plan status",
+        _format_status(response_plan.get("overall_status", "not_configured")),
+    )
+    cols[1].metric("Validated", int(summary.get("validated_by_replay_count", 0)))
+    cols[2].metric("Open actions", int(summary.get("open_action_count", 0)))
+    cols[3].metric("Blockers", int(summary.get("release_blocker_count", 0)))
+    cols[4].metric(
+        "Monitoring",
+        int(summary.get("post_release_monitoring_count", 0)),
+    )
+
+    action_rows = incident_response_action_rows(response_plan)
+    if action_rows:
+        actions_df = pd.DataFrame(action_rows)
+        st.dataframe(
+            actions_df[
+                [
+                    "incident_id",
+                    "priority",
+                    "severity",
+                    "review_lane",
+                    "mitigation_status",
+                    "release_implication",
+                    "recommended_action",
+                    "regression_case",
+                ]
+            ].rename(
+                columns={
+                    "incident_id": "Incident",
+                    "priority": "Priority",
+                    "severity": "Severity",
+                    "review_lane": "Review lane",
+                    "mitigation_status": "Mitigation",
+                    "release_implication": "Release implication",
+                    "recommended_action": "Recommended action",
+                    "regression_case": "Regression fixture",
+                }
+            ),
+            hide_index=True,
+            use_container_width=True,
+        )
+
+    recommendations = response_plan.get("recommendations", [])
+    if recommendations:
+        st.markdown("**Recommended operating actions**")
+        for item in recommendations:
+            st.markdown(f"- {item}")
 
 
 def _render_incident_replay_matrix(

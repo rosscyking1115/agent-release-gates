@@ -18,6 +18,7 @@ from internal_ai_agent.dashboard.data import (
     failure_example_rows,
     failure_reason_rows,
     incident_replay_run_rows,
+    incident_response_action_rows,
     incident_trace_event_rows,
     load_collector_export_preview,
     load_dataset_profile,
@@ -26,6 +27,7 @@ from internal_ai_agent.dashboard.data import (
     load_incident_release_gates,
     load_incident_replay_runs,
     load_incident_replay_summary,
+    load_incident_response_plan,
     load_incident_trace_events,
     load_multi_model_comparison_plan,
     load_observability_trace_index,
@@ -99,6 +101,7 @@ def test_load_incident_replay_artifacts_return_defaults_when_missing(tmp_path) -
     assert load_incident_replay_runs(tmp_path) == []
     assert load_incident_trace_events(tmp_path) == []
     assert load_incident_release_gates(tmp_path) == {}
+    assert load_incident_response_plan(tmp_path)["status"] == "not_configured"
 
 
 def test_incident_replay_run_rows_format_replay_matrix() -> None:
@@ -173,6 +176,48 @@ def test_incident_trace_event_rows_format_replay_evidence(tmp_path) -> None:
             "risk_score": 1.0,
             "requires_approval": True,
             "timestamp_utc": "2026-06-24T09:00:03Z",
+        }
+    ]
+
+
+def test_incident_response_action_rows_format_operating_plan() -> None:
+    rows = incident_response_action_rows(
+        {
+            "actions": [
+                {
+                    "incident_id": "INC-2026-0001",
+                    "priority": "P1",
+                    "severity": "critical",
+                    "owner": "safety_engineering",
+                    "review_lane": "post_release_monitoring",
+                    "mitigation_status": "validated_by_replay",
+                    "release_implication": "ship_with_monitoring",
+                    "risk_categories": ["prompt_injection", "approval_bypass"],
+                    "recommended_action": "Keep the regression fixture in CI.",
+                    "evidence": {
+                        "regression_case_id": "REG-INC-2026-0001",
+                        "closed_by_replay": True,
+                        "expected_behavior_match": True,
+                    },
+                }
+            ]
+        }
+    )
+
+    assert rows == [
+        {
+            "incident_id": "INC-2026-0001",
+            "priority": "P1",
+            "severity": "Critical",
+            "owner": "Safety Engineering",
+            "review_lane": "Post-release monitoring",
+            "mitigation_status": "Validated by replay",
+            "release_implication": "Ship with monitoring",
+            "risk_categories": "prompt_injection, approval_bypass",
+            "recommended_action": "Keep the regression fixture in CI.",
+            "regression_case": "REG-INC-2026-0001",
+            "closed_by_replay": True,
+            "expected_behavior_match": True,
         }
     ]
 

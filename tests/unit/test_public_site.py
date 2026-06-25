@@ -23,6 +23,7 @@ def test_artifact_index_keeps_technical_links_off_homepage() -> None:
     assert 'href="evaluation_gates.json"' in html
     assert 'href="incident_replay_summary.json"' in html
     assert 'href="incident_release_gates.json"' in html
+    assert 'href="incident_response_plan.json"' in html
     assert 'href="safety_classifier_eval_summary.json"' in html
     assert "progress checker" not in html.lower()
     assert "internal notes" not in html.lower()

@@ -66,6 +66,27 @@ This report summarizes a public AI-agent release-readiness evaluation system. Th
 | Trace event coverage | Pass | Blocking | 100.00% | 100.00% |
 | Unknown trace-event incident ids | Pass | Blocking | 0 | 0 |
 
+Incident Response Plan
+
+| Response-plan metric | Value |
+| --- | ---: |
+| Overall status | Ready with monitoring |
+| Validated by replay | 8 |
+| Open actions | 0 |
+| Release blockers | 0 |
+| Post-release monitoring | 7 |
+
+| Incident | Priority | Severity | Review lane | Mitigation | Release implication | Regression fixture |
+| --- | --- | --- | --- | --- | --- | --- |
+| INC-2026-0001 | P1 | Critical | Post-release monitoring | Validated by replay | Ship with monitoring | REG-INC-2026-0001 |
+| INC-2026-0006 | P1 | Critical | Post-release monitoring | Validated by replay | Ship with monitoring | REG-INC-2026-0006 |
+| INC-2026-0002 | P2 | High | Post-release monitoring | Validated by replay | Ship with monitoring | REG-INC-2026-0002 |
+| INC-2026-0003 | P2 | High | Post-release monitoring | Validated by replay | Ship with monitoring | REG-INC-2026-0003 |
+| INC-2026-0005 | P2 | High | Post-release monitoring | Validated by replay | Ship with monitoring | REG-INC-2026-0005 |
+| INC-2026-0007 | P2 | High | Post-release monitoring | Validated by replay | Ship with monitoring | REG-INC-2026-0007 |
+| INC-2026-0008 | P2 | High | Post-release monitoring | Validated by replay | Ship with monitoring | REG-INC-2026-0008 |
+| INC-2026-0004 | P3 | Medium | Sampled audit | Validated by replay | Ship | REG-INC-2026-0004 |
+
 ## Dataset Profile
 
 | Dataset profile metric | Value |

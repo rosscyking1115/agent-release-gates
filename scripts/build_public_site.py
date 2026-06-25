@@ -125,6 +125,7 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
         "incident_replay_summary.json",
         "incident_replay_runs.jsonl",
         "incident_release_gates.json",
+        "incident_response_plan.json",
     ]:
         if (reports_dir / incident_artifact).exists():
             shutil.copyfile(
@@ -989,6 +990,7 @@ def _public_artifact_links(project_root: Path = PROJECT_ROOT) -> list[tuple[str,
         ("Incident replay", "Incident replay summary", "incident_replay_summary.json"),
         ("Incident replay", "Incident replay runs", "incident_replay_runs.jsonl"),
         ("Incident replay", "Incident release gates", "incident_release_gates.json"),
+        ("Incident replay", "Incident response plan", "incident_response_plan.json"),
     ]
     reports_dir = project_root / "reports"
     for memo_path in sorted(reports_dir.glob("incident_memo_INC-*.md")):
