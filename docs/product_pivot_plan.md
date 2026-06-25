@@ -61,15 +61,23 @@ V0 outputs:
 - `reports/incident_release_gates.json`
 - `reports/incident_memo_INC-*.md`
 - `data/eval_cases/incident_regression_cases.jsonl`
+- `config/incident_release_policy.json`
 
 V0 behavior:
 
 - evaluate each incident against the current controlled agent
+- load policy-as-code release thresholds from JSON
 - detect side-effect tool execution without approval
 - detect policy or system-prompt leakage patterns
 - compare replay behavior with expected behavior
 - create release gates over high-severity incident regressions
 - generate lightweight incident memos for review
+
+V0 command:
+
+```powershell
+uv run python scripts/agent_safety.py release-gate --policy config/incident_release_policy.json
+```
 
 ## Public Boundary
 
@@ -83,12 +91,17 @@ This project must stay honest and public-safe.
 
 ## Near-Term Roadmap
 
+Completed:
+
 1. Build Incident Replay Suite v0 with seeded synthetic incident fixtures.
 2. Add an `agent-safety` CLI entry point for release-gate runs.
-3. Add policy-as-code thresholds for incident gates.
-4. Add Streamlit incident queue, trace timeline, replay matrix, and memo views.
-5. Reframe README, GitHub Pages, and Streamlit around release readiness once the name is final.
-6. Add public or human-labelled incident-style cases where licensing and privacy are suitable.
+3. Add validated policy-as-code thresholds for incident gates.
+
+Next:
+
+1. Add Streamlit incident queue, trace timeline, replay matrix, and memo views.
+2. Reframe README, GitHub Pages, and Streamlit around release readiness once the name is final.
+3. Add public or human-labelled incident-style cases where licensing and privacy are suitable.
 
 ## Success Criteria
 
@@ -100,4 +113,3 @@ The pivot is successful when a reviewer can run one command and understand:
 - whether the release should pass, warn, or fail
 - what regression fixtures were generated
 - what limitations remain
-

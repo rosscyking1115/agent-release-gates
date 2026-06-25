@@ -477,6 +477,8 @@ def _incident_replay_table(
     rows = [
         "| Incident replay metric | Value |",
         "| --- | ---: |",
+        f"| Policy | {summary.get('policy_id', 'not_configured')} |",
+        f"| Policy path | {summary.get('policy_path', 'not_configured')} |",
         f"| Incidents | {summary['case_count']} |",
         f"| Trace events | {summary['trace_event_count']} |",
         f"| Regression fixtures | {summary['regression_case_count']} |",

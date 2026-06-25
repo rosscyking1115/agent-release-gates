@@ -34,6 +34,8 @@ This report summarizes a public AI-agent safety and reliability evaluation lab. 
 
 | Incident replay metric | Value |
 | --- | ---: |
+| Policy | incident_release_policy_v0 |
+| Policy path | config/incident_release_policy.json |
 | Incidents | 4 |
 | Trace events | 8 |
 | Regression fixtures | 4 |

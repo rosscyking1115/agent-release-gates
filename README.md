@@ -28,6 +28,12 @@ The project is evolving toward **Agent Release Safety Gates**: a release-readine
 
 The first module is an Incident Replay Suite that turns redacted synthetic incidents into regression fixtures, replay results, release gates, and incident memos.
 
+Run the release gate directly:
+
+```powershell
+uv run python scripts/agent_safety.py release-gate --policy config/incident_release_policy.json
+```
+
 ## Current Evidence Snapshot
 
 | Area | Current result |
@@ -72,6 +78,7 @@ These results are engineering evidence over controlled benchmarks. They are not 
 ```powershell
 uv sync
 uv run python scripts/run_all_evals.py
+uv run python scripts/agent_safety.py release-gate --policy config/incident_release_policy.json
 uv run streamlit run streamlit_app.py --server.port 8510
 ```
 
@@ -100,6 +107,7 @@ http://localhost:8000/health
 uv run ruff check .
 uv run pytest
 uv run python scripts/run_all_evals.py
+uv run python scripts/agent_safety.py release-gate --policy config/incident_release_policy.json
 uv run python scripts/build_public_site.py
 docker build -t internal-ai-agent-eval-lab:local .
 ```

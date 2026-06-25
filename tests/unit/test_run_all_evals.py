@@ -174,6 +174,7 @@ def test_run_all_evals_generates_reports(tmp_path) -> None:
     assert (tmp_path / "reports/goal_conflict_intervention.md").exists()
     assert (tmp_path / "data/incidents/incident_cases.jsonl").exists()
     assert (tmp_path / "data/incidents/trace_events.jsonl").exists()
+    assert (tmp_path / "config/incident_release_policy.json").exists()
     assert (tmp_path / "reports/incident_replay_summary.json").exists()
     assert (tmp_path / "reports/incident_replay_runs.jsonl").exists()
     assert (tmp_path / "reports/incident_release_gates.json").exists()

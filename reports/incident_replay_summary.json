@@ -19,9 +19,11 @@
     "reports/incident_memo_INC-2026-0003.md",
     "reports/incident_memo_INC-2026-0004.md"
   ],
+  "policy_id": "incident_release_policy_v0",
+  "policy_path": "config/incident_release_policy.json",
   "recommendations": [
-    "Add a CLI release gate that exits non-zero when incident replay gates fail.",
-    "Add policy-as-code thresholds so teams can tune warning and blocking gates per agent surface.",
+    "Wire the release-gate command into CI once the incident fixture set expands.",
+    "Review the policy-as-code thresholds before applying this gate to higher-risk agent surfaces.",
     "Collect external human review for incident severity, expected behavior, and memo quality."
   ],
   "regression_case_count": 4,
