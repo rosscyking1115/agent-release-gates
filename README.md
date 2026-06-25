@@ -7,9 +7,9 @@ This project is not a clone, assessment, or reverse-engineering attempt of any c
 ## Live Project
 
 - Interactive dashboard: https://agent-evaluation-lab.streamlit.app/
-- Public project page: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/
-- Full evaluation report: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/evaluation_report.html
-- PDF report: https://rosscyking1115.github.io/internal-ai-agent-eval-lab/evaluation_report.pdf
+- Public project page: https://rosscyking1115.github.io/agent-release-gates/
+- Full evaluation report: https://rosscyking1115.github.io/agent-release-gates/evaluation_report.html
+- PDF report: https://rosscyking1115.github.io/agent-release-gates/evaluation_report.pdf
 
 ## What This Project Does
 

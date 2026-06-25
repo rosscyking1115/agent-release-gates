@@ -57,7 +57,7 @@ uv run python scripts/smoke_otel_collector.py
 docker compose --profile observability up -d otel-collector
 uv run python scripts/check_otel_collector_deployment.py
 docker compose --profile observability down
-docker build -t internal-ai-agent-eval-lab:local .
+docker build -t agent-release-gates:local .
 ```
 
 ## Pull Request Checklist

@@ -1,5 +1,5 @@
 [project]
-name = "internal-ai-agent-eval-lab"
+name = "agent-release-gates"
 version = "0.1.0"
 description = "Synthetic internal AI agent evaluation lab for enterprise operations workflows."
 readme = "README.md"

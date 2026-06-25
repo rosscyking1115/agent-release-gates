@@ -290,22 +290,22 @@ def _render_app_header() -> None:
     link_cols = st.columns(4)
     link_cols[0].link_button(
         "Project page",
-        "https://rosscyking1115.github.io/internal-ai-agent-eval-lab/",
+        "https://rosscyking1115.github.io/agent-release-gates/",
         use_container_width=True,
     )
     link_cols[1].link_button(
         "Full report",
-        "https://rosscyking1115.github.io/internal-ai-agent-eval-lab/evaluation_report.html",
+        "https://rosscyking1115.github.io/agent-release-gates/evaluation_report.html",
         use_container_width=True,
     )
     link_cols[2].link_button(
         "PDF report",
-        "https://rosscyking1115.github.io/internal-ai-agent-eval-lab/evaluation_report.pdf",
+        "https://rosscyking1115.github.io/agent-release-gates/evaluation_report.pdf",
         use_container_width=True,
     )
     link_cols[3].link_button(
         "GitHub repo",
-        "https://github.com/rosscyking1115/internal-ai-agent-eval-lab",
+        "https://github.com/rosscyking1115/agent-release-gates",
         use_container_width=True,
     )
     st.info(
@@ -334,12 +334,12 @@ def _render_sidebar() -> str:
     st.sidebar.markdown("---")
     st.sidebar.link_button(
         "Project page",
-        "https://rosscyking1115.github.io/internal-ai-agent-eval-lab/",
+        "https://rosscyking1115.github.io/agent-release-gates/",
         use_container_width=True,
     )
     st.sidebar.link_button(
         "GitHub repository",
-        "https://github.com/rosscyking1115/internal-ai-agent-eval-lab",
+        "https://github.com/rosscyking1115/agent-release-gates",
         use_container_width=True,
     )
     st.sidebar.caption("Synthetic benchmark plus TechQA and WixQA public validation.")
