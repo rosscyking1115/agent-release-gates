@@ -759,6 +759,18 @@ def _index_html(
           <p><a href="evaluation_report.html">Open report</a></p>
         </div>
         <div class="summary-card">
+          <h3>Evaluate your agent</h3>
+          <p>
+            Convert generic agent logs or LangChain/LangSmith traces into
+            candidate results, then run the incident replay release gate.
+          </p>
+          <p>
+            <a href="{repo_url}/blob/main/docs/evaluate_your_agent_quickstart.md">
+              Open quickstart
+            </a>
+          </p>
+        </div>
+        <div class="summary-card">
           <h3>Reviewer handoff</h3>
           <p>
             Inspect the external-review packet, labelling workflow, and

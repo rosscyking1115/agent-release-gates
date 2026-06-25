@@ -11,6 +11,7 @@ This page is for reviewers who want to inspect generated metrics, benchmark prof
 
 ## Benchmark Documentation
 
+- Evaluate your agent quickstart: evaluate_your_agent_quickstart.md
 - Benchmark card: benchmark_card.md
 - Dataset card: dataset_card.md
 - Failure taxonomy: failure_taxonomy.md

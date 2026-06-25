@@ -32,6 +32,20 @@ def test_artifact_index_keeps_technical_links_off_homepage() -> None:
     assert "internal notes" not in html.lower()
 
 
+def test_public_docs_link_evaluate_your_agent_quickstart() -> None:
+    project_root = Path(__file__).resolve().parents[2]
+    readme = (project_root / "README.md").read_text(encoding="utf-8")
+    artifacts = (project_root / "docs/technical_artifacts.md").read_text(encoding="utf-8")
+    site_builder = (project_root / "scripts/build_public_site.py").read_text(
+        encoding="utf-8"
+    )
+
+    assert "docs/evaluate_your_agent_quickstart.md" in readme
+    assert "evaluate_your_agent_quickstart.md" in artifacts
+    assert "Evaluate your agent" in site_builder
+    assert "docs/evaluate_your_agent_quickstart.md" in site_builder
+
+
 def test_candidate_results_schema_describes_jsonl_row() -> None:
     schema_path = (
         Path(__file__).resolve().parents[2] / "schemas/candidate_results_v1.schema.json"

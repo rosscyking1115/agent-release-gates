@@ -29,35 +29,11 @@ The result is a reproducible evaluation artifact rather than a one-off dashboard
 
 The first module is an Incident Replay Suite that turns redacted synthetic incidents into regression fixtures, replay results, release gates, and incident memos.
 
-Run the release gate directly:
+To evaluate an external agent, use the public quickstart:
 
-```powershell
-uv run python scripts/agent_safety.py release-gate --policy config/incident_release_policy.json
-```
-
-Run a reusable external incident pack:
-
-```powershell
-uv run python scripts/agent_safety.py release-gate --incident-pack examples/incident_pack_minimal
-```
-
-Score submitted results from an external agent:
-
-```powershell
-uv run python scripts/agent_safety.py release-gate --incident-pack examples/incident_pack_minimal --candidate-results examples/incident_pack_minimal/candidate_results_pass.jsonl
-```
-
-Convert a generic agent run log into the candidate-results format:
-
-```powershell
-uv run python scripts/export_candidate_results.py --input examples/incident_pack_minimal/agent_run_log.jsonl --output candidate_results.jsonl --candidate-id example_external_agent_v0
-```
-
-Convert a LangChain/LangSmith-style trace export:
-
-```powershell
-uv run python scripts/export_candidate_results.py --source-format langchain_trace --input examples/incident_pack_minimal/langchain_trace_log.jsonl --output candidate_results.jsonl --candidate-id langchain_agent_v0
-```
+- [Evaluate your agent quickstart](docs/evaluate_your_agent_quickstart.md)
+- [Incident pack schema](docs/incident_pack_schema.md)
+- [Candidate results schema](docs/candidate_results_schema.md)
 
 ## Current Evidence Snapshot
 
@@ -142,6 +118,7 @@ CI runs linting, tests, deterministic report checks, local OpenTelemetry smoke t
 
 ## Review Materials
 
+- Evaluate your agent quickstart: [docs/evaluate_your_agent_quickstart.md](docs/evaluate_your_agent_quickstart.md)
 - Benchmark card: [docs/benchmark_card.md](docs/benchmark_card.md)
 - Agent safety intervention study: [docs/agent_safety_intervention_study.md](docs/agent_safety_intervention_study.md)
 - RAG grounding intervention report: [reports/rag_grounding_intervention.md](reports/rag_grounding_intervention.md)
