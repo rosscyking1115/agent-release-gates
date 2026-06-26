@@ -16,6 +16,12 @@ dependencies = [
 [project.scripts]
 agent-safety = "internal_ai_agent.cli:main"
 
+# Inspect (UK AISI) task discovery. `inspect_ai` is an optional peer dependency
+# (pip install inspect_ai) so the deterministic core stays lean; once installed,
+# `inspect eval agent-release-gates/incident_replay --model <provider/model>` runs.
+[project.entry-points.inspect_ai]
+agent_release_gates = "internal_ai_agent.inspect_suite._registry"
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
