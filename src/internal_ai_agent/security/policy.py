@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass
+
+from pydantic import BaseModel
 
 # Risk phrases paired with the taxonomy risk category they signal. Categories
 # reuse the keys from evals.failure_taxonomy.SECURITY_RISK_TAXONOMY so audit and
@@ -66,8 +67,7 @@ _LOW_SEVERITY_CATEGORIES = {"weak_evidence"}
 _SEVERITY_RANK = {"none": 0, "low": 1, "medium": 2, "high": 3}
 
 
-@dataclass(frozen=True)
-class PolicyDecision:
+class PolicyDecision(BaseModel):
     blocked: bool
     category: str
     matched_signal: str

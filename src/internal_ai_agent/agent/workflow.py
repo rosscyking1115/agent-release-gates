@@ -56,6 +56,7 @@ def run_controlled_agent(
             audit_log=audit_log,
             audit_events=audit_events,
             monitoring=_monitoring(run_trace_id, [], [], True),
+            policy=policy_decision,
         )
 
     runbooks = [section.__dict__ for section in build_runbooks()]
@@ -116,6 +117,7 @@ def run_controlled_agent(
         audit_log=audit_log,
         audit_events=audit_events,
         monitoring=_monitoring(run_trace_id, tool_decisions, answer.citations, answer.abstained),
+        policy=policy_decision,
     )
 
 
