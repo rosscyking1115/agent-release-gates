@@ -6,6 +6,7 @@ from pydantic import BaseModel
 
 from internal_ai_agent.extraction.schemas import RoutingDecision, TicketExtraction
 from internal_ai_agent.observability.audit import AuditEvent
+from internal_ai_agent.security.policy import PolicyDecision
 
 ToolName = Literal[
     "search_runbook",
@@ -43,3 +44,4 @@ class AgentRunResult(BaseModel):
     audit_log: list[str]
     audit_events: list[AuditEvent]
     monitoring: dict[str, Any]
+    policy: PolicyDecision
