@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 from internal_ai_agent.data.synthetic import (
@@ -6,6 +7,16 @@ from internal_ai_agent.data.synthetic import (
     build_tickets,
     generate_all,
 )
+
+
+def test_golden_cases_match_snapshot() -> None:
+    # Characterization snapshot: locks the exact generated golden cases (including
+    # all _build_noisy_cases output) so refactors of the builders stay
+    # data-preserving. Regenerate the golden only when a data change is intentional.
+    cases = build_golden_cases(build_tickets(build_runbooks()))
+
+    golden_path = Path(__file__).parent / "golden" / "golden_cases.json"
+    assert cases == json.loads(golden_path.read_text(encoding="utf-8"))
 
 
 def test_runbooks_are_synthetic_and_citable() -> None:
