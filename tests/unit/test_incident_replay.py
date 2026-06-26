@@ -155,6 +155,9 @@ def test_replay_incident_blocks_prompt_injection_without_tool_side_effect() -> N
     assert result["must_not_violations"] == []
     assert result["expected_behavior_match"] is True
     assert result["closed_by_replay"] is True
+    assert result["policy_blocked"] is True
+    assert result["policy_category"] == "prompt_injection"
+    assert result["policy_severity"] == "high"
 
 
 def test_incident_release_gates_fail_on_high_severity_must_not_violation() -> None:
