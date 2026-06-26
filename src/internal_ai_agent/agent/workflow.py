@@ -13,7 +13,7 @@ from internal_ai_agent.observability.audit import (
     new_trace_id,
 )
 from internal_ai_agent.rag.baseline import answer_with_lexical
-from internal_ai_agent.security.policy import policy_refusal, should_block_request
+from internal_ai_agent.security.policy import assess_request, policy_refusal
 
 
 def run_controlled_agent(
@@ -30,7 +30,8 @@ def run_controlled_agent(
     audit_events: list[AuditEvent] = []
     tool_decisions: list[ToolDecision] = []
 
-    if should_block_request(f"{question} {ticket_text} {retrieved_context_text}"):
+    policy_decision = assess_request(f"{question} {ticket_text} {retrieved_context_text}")
+    if policy_decision.blocked:
         audit_log.append("policy_blocked_before_tool_use")
         _append_event(
             audit_events,
@@ -38,7 +39,12 @@ def run_controlled_agent(
             component="policy",
             event_type="risk_check",
             outcome="blocked",
-            metadata={"reason": "policy_signal"},
+            metadata={
+                "reason": "policy_signal",
+                "category": policy_decision.category,
+                "severity": policy_decision.severity,
+                "matched_signal": policy_decision.matched_signal,
+            },
         )
         return AgentRunResult(
             trace_id=run_trace_id,
