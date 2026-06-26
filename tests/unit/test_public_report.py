@@ -162,6 +162,18 @@ def _prepare_reports(project_root: Path) -> None:
     )
 
 
+def test_generate_public_report_matches_golden_snapshot(tmp_path) -> None:
+    # Characterization snapshot: locks the exact report output so refactors of the
+    # builder internals stay behavior-preserving. Regenerate the golden only when
+    # an output change is intentional.
+    _prepare_reports(tmp_path)
+
+    report = generate_public_report(tmp_path)
+
+    golden_path = Path(__file__).parent / "golden" / "public_report.md"
+    assert report == golden_path.read_text(encoding="utf-8")
+
+
 def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
     _prepare_reports(tmp_path)
 
