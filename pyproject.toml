@@ -1,7 +1,7 @@
 [project]
 name = "agent-release-gates"
 version = "0.1.0"
-description = "Synthetic internal AI agent evaluation lab for enterprise operations workflows."
+description = "Release-readiness gates for AI agents: replay known incidents, apply policy-as-code gates, and produce ship/warn/block evidence before an agent, prompt, model, or tool-policy change ships."
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
