@@ -1,3 +1,12 @@
+"""Public RAG reranking *opportunity* analysis.
+
+Measures the headroom a perfect reranker could recover on the public RAG tracks
+(oracle top-3 rerank ceiling and possible top-1 citation-accuracy lift). It does
+NOT run a reranker. Distinct from its similarly-named siblings:
+- ``public_rag_reranker`` runs a deterministic reranker and reports actual lift.
+- ``public_rag_model_reranker`` is the hosted, model-backed reranker adapter.
+"""
+
 from __future__ import annotations
 
 from pathlib import Path
