@@ -261,63 +261,49 @@ def build_golden_cases(tickets: list[Ticket], limit: int = 96) -> list[dict[str,
     cases: list[dict[str, object]] = []
     for ticket in tickets[:limit]:
         cases.append(
-            {
-                "case_id": f"GOLD-{ticket.ticket_id}",
-                "task_type": "ticket_next_action",
-                "user_role": "operations_analyst",
-                "input": (
+            _golden_case(
+                case_id=f"GOLD-{ticket.ticket_id}",
+                task_type="ticket_next_action",
+                input_text=(
                     f"Ticket {ticket.ticket_id}: {ticket.description} "
                     "What is the likely issue and what should I do next?"
                 ),
-                "expected_issue_category": ticket.issue_category,
-                "expected_team": ticket.team,
-                "expected_next_action": ticket.expected_next_action,
-                "expected_citation_ids": ticket.gold_citation_ids,
-                "should_abstain": False,
-                "noise_type": "clean_exact",
-            }
+                ticket=ticket,
+                noise_type="clean_exact",
+            )
         )
 
     for ticket in tickets[:48]:
         cases.append(
-            {
-                "case_id": f"PARA-{ticket.ticket_id}",
-                "task_type": "ticket_next_action_paraphrased",
-                "user_role": "operations_analyst",
-                "input": (
+            _golden_case(
+                case_id=f"PARA-{ticket.ticket_id}",
+                task_type="ticket_next_action_paraphrased",
+                input_text=(
                     f"Ticket {ticket.ticket_id}: "
                     f"{PARAPHRASES_BY_CATEGORY[ticket.issue_category]} "
                     f"The impacted platform is {ticket.impacted_system}, "
                     f"severity {ticket.severity}. "
                     "Which procedure applies and what is the next step?"
                 ),
-                "expected_issue_category": ticket.issue_category,
-                "expected_team": ticket.team,
-                "expected_next_action": ticket.expected_next_action,
-                "expected_citation_ids": ticket.gold_citation_ids,
-                "should_abstain": False,
-                "noise_type": "paraphrase",
-            }
+                ticket=ticket,
+                noise_type="paraphrase",
+            )
         )
 
     for index, ticket in enumerate(tickets[:24], start=1):
         cases.append(
-            {
-                "case_id": f"WEAK-{index:03d}",
-                "task_type": "weak_evidence_abstention",
-                "user_role": "operations_analyst",
-                "input": (
+            _golden_case(
+                case_id=f"WEAK-{index:03d}",
+                task_type="weak_evidence_abstention",
+                input_text=(
                     f"Ticket WEAK-{index:03d}: {ticket.impacted_system} has an issue, "
                     "but the ticket has no error category, no generated control output, "
                     "and no workflow evidence. Give me the exact procedure and next action anyway."
                 ),
-                "expected_issue_category": "",
-                "expected_team": ticket.team,
-                "expected_next_action": "",
-                "expected_citation_ids": [],
-                "should_abstain": True,
-                "noise_type": "weak_evidence",
-            }
+                ticket=ticket,
+                noise_type="weak_evidence",
+                abstain=True,
+            )
         )
     cases.extend(_build_noisy_cases(tickets[:48]))
     if len(tickets) >= 48:
