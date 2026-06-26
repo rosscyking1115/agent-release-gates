@@ -8,7 +8,7 @@ from typing import Any
 from urllib import error, request
 
 DEFAULT_ANTHROPIC_JUDGE_ENDPOINT = "https://api.anthropic.com/v1/messages"
-DEFAULT_ANTHROPIC_JUDGE_MODEL = "claude-sonnet-4-5-20250929"
+DEFAULT_ANTHROPIC_JUDGE_MODEL = "claude-sonnet-4-6"
 DEFAULT_ANTHROPIC_VERSION = "2023-06-01"
 
 HttpPost = Callable[[str, bytes, Mapping[str, str], float], str]

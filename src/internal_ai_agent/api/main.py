@@ -32,7 +32,11 @@ from internal_ai_agent.rag.baseline import (
 
 app = FastAPI(
     title="Agent Release Safety Gates",
-    description="Synthetic enterprise operations AI agent demo.",
+    description=(
+        "Release-readiness gates for AI agents: replay known incidents, apply "
+        "policy-as-code gates, and produce ship/warn/block evidence over a "
+        "synthetic operations benchmark."
+    ),
     version="0.1.0",
 )
 
