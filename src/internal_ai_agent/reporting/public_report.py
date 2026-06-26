@@ -65,6 +65,18 @@ AGENT_METRIC_LABELS = {
 }
 
 
+def _bullet_table_rows(heading: str, items: list[str]) -> list[str]:
+    rows = ["", f"| {heading} |", "| --- |"]
+    rows.extend(f"| {item} |" for item in items)
+    return rows
+
+
+def _findings_and_recommendations_rows(report: dict[str, Any]) -> list[str]:
+    return _bullet_table_rows("Finding", report.get("findings", [])) + _bullet_table_rows(
+        "Recommendation", report.get("recommendations", [])
+    )
+
+
 def generate_public_report(project_root: Path) -> str:
     reports_dir = project_root / "reports"
     comparison = _read_json(reports_dir / "eval_comparison.json")
@@ -703,15 +715,8 @@ def _public_rag_findings_table(report: dict[str, Any]) -> str:
         f"| Top cross-track failure label | {summary['top_cross_track_failure_label']} |",
         f"| Largest retrieval lift | {summary['largest_retrieval_lift_track']} |",
         f"| Largest top-1 lift | {summary['largest_top1_lift_track']} |",
-        "",
-        "| Finding |",
-        "| --- |",
     ]
-    for finding in report.get("findings", []):
-        rows.append(f"| {finding} |")
-    rows.extend(["", "| Recommendation |", "| --- |"])
-    for recommendation in report.get("recommendations", []):
-        rows.append(f"| {recommendation} |")
+    rows.extend(_findings_and_recommendations_rows(report))
     return "\n".join(rows)
 
 
@@ -735,15 +740,8 @@ def _public_rag_reranking_table(report: dict[str, Any]) -> str:
         f"| Residual retrieval gap | {_pct(summary['residual_retrieval_gap'])} |",
         f"| Largest rerankable track | {summary['largest_rerankable_track']} |",
         f"| Largest residual gap track | {summary['largest_residual_gap_track']} |",
-        "",
-        "| Finding |",
-        "| --- |",
     ]
-    for finding in report.get("findings", []):
-        rows.append(f"| {finding} |")
-    rows.extend(["", "| Recommendation |", "| --- |"])
-    for recommendation in report.get("recommendations", []):
-        rows.append(f"| {recommendation} |")
+    rows.extend(_findings_and_recommendations_rows(report))
     return "\n".join(rows)
 
 
@@ -764,15 +762,8 @@ def _public_rag_reranker_table(report: dict[str, Any]) -> str:
         f"| Improved cases | {summary['improved_case_count']} |",
         f"| Regressed cases | {summary['regressed_case_count']} |",
         f"| Regression rate | {_pct(summary['regression_rate'])} |",
-        "",
-        "| Finding |",
-        "| --- |",
     ]
-    for finding in report.get("findings", []):
-        rows.append(f"| {finding} |")
-    rows.extend(["", "| Recommendation |", "| --- |"])
-    for recommendation in report.get("recommendations", []):
-        rows.append(f"| {recommendation} |")
+    rows.extend(_findings_and_recommendations_rows(report))
     return "\n".join(rows)
 
 
@@ -852,12 +843,7 @@ def _rag_grounding_intervention_table(report: dict[str, Any]) -> str:
             f"{_pct(metrics['impossible_intercept_rate'])} | "
             f"{float(metrics['review_burden_per_100_cases']):.2f} |"
         )
-    rows.extend(["", "| Finding |", "| --- |"])
-    for finding in report.get("findings", []):
-        rows.append(f"| {finding} |")
-    rows.extend(["", "| Recommendation |", "| --- |"])
-    for recommendation in report.get("recommendations", []):
-        rows.append(f"| {recommendation} |")
+    rows.extend(_findings_and_recommendations_rows(report))
     return "\n".join(rows)
 
 
@@ -1182,12 +1168,7 @@ def _memory_context_intervention_table(report: dict[str, Any]) -> str:
             f"{_pct(metrics['benign_memory_usefulness_rate'])} | "
             f"{float(metrics['review_burden_per_100_cases']):.2f} |"
         )
-    rows.extend(["", "| Finding |", "| --- |"])
-    for finding in report.get("findings", []):
-        rows.append(f"| {finding} |")
-    rows.extend(["", "| Recommendation |", "| --- |"])
-    for recommendation in report.get("recommendations", []):
-        rows.append(f"| {recommendation} |")
+    rows.extend(_findings_and_recommendations_rows(report))
     return "\n".join(rows)
 
 
@@ -1242,12 +1223,7 @@ def _goal_conflict_intervention_table(report: dict[str, Any]) -> str:
             f"{_pct(metrics['benign_completion_rate'])} | "
             f"{float(metrics['review_burden_per_100_cases']):.2f} |"
         )
-    rows.extend(["", "| Finding |", "| --- |"])
-    for finding in report.get("findings", []):
-        rows.append(f"| {finding} |")
-    rows.extend(["", "| Recommendation |", "| --- |"])
-    for recommendation in report.get("recommendations", []):
-        rows.append(f"| {recommendation} |")
+    rows.extend(_findings_and_recommendations_rows(report))
     return "\n".join(rows)
 
 
