@@ -1,3 +1,11 @@
+"""Public RAG *hosted model-backed* reranker adapter.
+
+Readiness/status, request packet, and eval summary for a provider/model-backed
+reranker over the public RAG tracks. Distinct from its similarly-named siblings:
+- ``public_rag_reranking`` measures only the headroom/opportunity (no reranker).
+- ``public_rag_reranker`` runs a deterministic lexical reranker and scores lift.
+"""
+
 from __future__ import annotations
 
 from collections.abc import Callable

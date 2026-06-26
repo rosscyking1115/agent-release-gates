@@ -1,3 +1,13 @@
+"""Public RAG reranker *evaluation*.
+
+Runs a deterministic lexical reranker over the public RAG tracks and reports the
+actual lift versus the retrieval baseline (baseline vs reranked top-1 citation
+accuracy, changed/improved/regressed cases, regression rate). Distinct from its
+similarly-named siblings:
+- ``public_rag_reranking`` measures only the headroom/opportunity (no reranker).
+- ``public_rag_model_reranker`` is the hosted, model-backed reranker adapter.
+"""
+
 from __future__ import annotations
 
 from collections.abc import Callable
