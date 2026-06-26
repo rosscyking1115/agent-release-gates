@@ -14,6 +14,7 @@ from internal_ai_agent.api.main import (
     evaluation_report_pdf,
     extract,
     health,
+    nist_coverage,
     observability_collector_preview,
     observability_otel_spans,
     observability_trace_index,
@@ -75,6 +76,15 @@ def test_evaluation_release_gates_endpoint_returns_json() -> None:
     assert gates["overall_status"] in {"pass", "pass_with_warnings"}
     assert gates["fail_count"] == 0
     assert any(gate["gate_id"] == "retrieval.provider_embedding_result" for gate in gates["gates"])
+
+
+def test_nist_coverage_endpoint_returns_evidence_alignment_map() -> None:
+    coverage = nist_coverage()
+
+    assert coverage["profile"] == "NIST AI 600-1"
+    assert coverage["alignment_type"] == "evidence_alignment_not_certification"
+    assert coverage["disclaimer"]
+    assert coverage["mappings"]
 
 
 def test_dataset_profile_endpoint_returns_json() -> None:

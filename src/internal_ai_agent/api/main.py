@@ -18,6 +18,7 @@ from internal_ai_agent.api.schemas import (
 from internal_ai_agent.data.synthetic import build_runbooks
 from internal_ai_agent.evals.dataset_profile import write_dataset_profile
 from internal_ai_agent.evals.gates import evaluation_gates as build_evaluation_gates
+from internal_ai_agent.evals.nist_rmf_mapping import build_nist_coverage_map
 from internal_ai_agent.extraction.service import extract_and_route
 from internal_ai_agent.io import read_jsonl
 from internal_ai_agent.observability.collector import collector_export_preview
@@ -98,6 +99,14 @@ def evaluation_release_gates() -> dict[str, object]:
         trace_index=_read_report_json("observability_trace_index.json"),
         collector_export_preview=_read_report_json("collector_export_preview.json"),
     )
+
+
+@app.get("/reports/governance/nist-coverage", response_class=JSONResponse)
+def nist_coverage() -> dict[str, object]:
+    coverage_path = _project_root() / "reports/nist_ai_600_1_coverage_map.json"
+    if coverage_path.exists():
+        return json.loads(coverage_path.read_text(encoding="utf-8"))
+    return build_nist_coverage_map(_project_root())
 
 
 @app.get("/reports/dataset-profile", response_class=JSONResponse)
