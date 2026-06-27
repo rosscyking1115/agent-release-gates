@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for taking a look at the Agent Safety & Reliability Evaluation Lab.
+Thanks for taking a look at Agent Release Safety Gates.
 
 This project is intended to be a public benchmark-style artifact. Contributions should improve evaluation quality, reproducibility, safety analysis, or clarity. Please keep the data boundary conservative: do not add private company documents, customer data, employee data, credentials, production logs, or confidential workflows.
 

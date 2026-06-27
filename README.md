@@ -23,11 +23,11 @@ The project evaluates an AI-agent workflow across five release questions:
 - Does it leave enough trace, audit, and monitoring evidence for review?
 - Does it pass incident replay and policy-as-code release gates?
 
-The result is a reproducible evaluation artifact rather than a one-off dashboard: deterministic eval runners, generated reports, CI checks, Dockerized local execution, a public Streamlit dashboard, and a GitHub Pages report site.
+The result is a reproducible evaluation artifact rather than a one-off dashboard: deterministic eval runners, generated reports, CI checks, Dockerized local execution, a Streamlit dashboard, and a GitHub Pages report site.
 
 ## Product Direction
 
-**Agent Release Safety Gates** is a release-readiness workflow for replaying known agent incidents, applying policy gates, and producing evidence before a changed agent, prompt, model, or tool policy ships. The evaluation lab remains the benchmark and evidence layer behind that workflow.
+**Agent Release Safety Gates** is a release-readiness workflow for replaying known agent incidents, applying policy gates, and producing evidence before a changed agent, prompt, model, or tool policy ships. Its deterministic evaluation benchmark and runners are the evidence layer behind that workflow.
 
 The first module is an Incident Replay Suite that turns redacted synthetic incidents into regression fixtures, replay results, release gates, and incident memos.
 
@@ -130,7 +130,7 @@ inspect eval agent-release-gates/incident_replay --model openai/gpt-4.1-mini
 uv run ruff check .
 uv run pytest
 uv run python scripts/run_all_evals.py
-uv run python scripts/agent_safety.py release-gate --policy config/incident_release_policy.json
+uv run agent-safety release-gate --policy config/incident_release_policy.json
 uv run python scripts/build_public_site.py
 docker build -t agent-release-safety-gates:local .
 ```
@@ -145,7 +145,6 @@ CI runs linting, tests, deterministic report checks, local OpenTelemetry smoke t
 - RAG grounding intervention report: [reports/rag_grounding_intervention.md](reports/rag_grounding_intervention.md)
 - Memory context intervention report: [reports/memory_context_intervention.md](reports/memory_context_intervention.md)
 - Goal conflict intervention report: [reports/goal_conflict_intervention.md](reports/goal_conflict_intervention.md)
-- Product pivot plan: [docs/product_pivot_plan.md](docs/product_pivot_plan.md)
 - Incident pack schema: [docs/incident_pack_schema.md](docs/incident_pack_schema.md)
 - Candidate results schema: [docs/candidate_results_schema.md](docs/candidate_results_schema.md)
 - Incident replay summary: [reports/incident_replay_summary.json](reports/incident_replay_summary.json)
