@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thank you for helping review the Agent Safety & Reliability Evaluation Lab.
+        Thank you for helping review Agent Release Safety Gates.
 
         Please do not paste completed labels, personal information, credentials, private documents, or confidential examples into a public issue. This issue is only for volunteering, clarifying scope, or reporting review-process questions.
   - type: dropdown
