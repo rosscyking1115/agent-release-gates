@@ -4,14 +4,50 @@ version = "0.1.0"
 description = "Release-readiness gates for AI agents: replay known incidents, apply policy-as-code gates, and produce ship/warn/block evidence before an agent, prompt, model, or tool-policy change ships."
 readme = "README.md"
 requires-python = ">=3.12"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "rosscyking1115" }]
+keywords = [
+    "ai-safety",
+    "agent",
+    "evaluation",
+    "release-gate",
+    "llm",
+    "red-team",
+    "inspect-ai",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Quality Assurance",
+]
+# Lean core: the CLI release gate, the Inspect suite, the real-agent runner, and the
+# eval/scoring logic need only pydantic. The API and dashboard are opt-in extras.
 dependencies = [
-    "altair>=6.0.0",
-    "fastapi>=0.115.0",
-    "pandas>=2.2.0",
     "pydantic>=2.8.0",
-    "streamlit>=1.38.0",
+]
+
+[project.optional-dependencies]
+# Run the FastAPI evidence service (uvicorn internal_ai_agent.api.main:app).
+api = [
+    "fastapi>=0.115.0",
     "uvicorn[standard]>=0.30.0",
 ]
+# Run the Streamlit reviewer dashboard from a source checkout.
+dashboard = [
+    "altair>=6.0.0",
+    "pandas>=2.2.0",
+    "streamlit>=1.38.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/rosscyking1115/agent-release-gates"
+Repository = "https://github.com/rosscyking1115/agent-release-gates"
+Documentation = "https://rosscyking1115.github.io/agent-release-gates/"
+Issues = "https://github.com/rosscyking1115/agent-release-gates/issues"
 
 [project.scripts]
 agent-safety = "internal_ai_agent.cli:main"
@@ -30,9 +66,15 @@ build-backend = "hatchling.build"
 packages = ["src/internal_ai_agent"]
 
 [dependency-groups]
+# Dev/CI installs everything the test suite exercises (API + dashboard imports).
 dev = [
     "pytest>=8.2.0",
     "ruff>=0.5.0",
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.30.0",
+    "altair>=6.0.0",
+    "pandas>=2.2.0",
+    "streamlit>=1.38.0",
 ]
 
 [tool.ruff]
