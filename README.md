@@ -6,10 +6,12 @@ This project is not a clone, assessment, or reverse-engineering attempt of any c
 
 ## Live Project
 
-- Interactive dashboard: https://agent-evaluation-lab.streamlit.app/
 - Public project page: https://rosscyking1115.github.io/agent-release-gates/
-- Full evaluation report: https://rosscyking1115.github.io/agent-release-gates/evaluation_report.html
+- Full evaluation report (HTML): https://rosscyking1115.github.io/agent-release-gates/evaluation_report.html
 - PDF report: https://rosscyking1115.github.io/agent-release-gates/evaluation_report.pdf
+- Interactive dashboard: run locally (see [Run Locally](#run-locally)) or deploy on
+  Streamlit Cloud — see the [dashboard deployment guide](docs/dashboard.md). A hosted
+  instance must be set to public visibility to be shareable.
 
 ## What This Project Does
 
@@ -80,27 +82,26 @@ These results are engineering evidence over controlled benchmarks. They are not 
 ```powershell
 uv sync
 uv run python scripts/run_all_evals.py
-uv run python scripts/agent_safety.py release-gate --policy config/incident_release_policy.json
-uv run streamlit run app/streamlit_app.py --server.port 8510
+# Release gate (installed console command); exits non-zero on a blocking failure.
+uv run agent-safety release-gate --policy config/incident_release_policy.json
+# Interactive dashboard.
+uv run streamlit run streamlit_app.py --server.port 8510
 ```
 
-Open:
+Open `http://localhost:8510`. Run the API and dashboard together with
+`docker compose up --build`, then open `http://localhost:8510` and
+`http://localhost:8000/health`.
 
-```text
-http://localhost:8510
-```
-
-Run the API and dashboard together:
+Drive a real LLM through the release gate, or run the suite under Inspect:
 
 ```powershell
-docker compose up --build
-```
+# Any OpenAI-compatible / self-hosted open model endpoint.
+$env:AGENT_RUNNER_API_KEY = "..."
+uv run python scripts/run_real_agent_replay.py
 
-Then open:
-
-```text
-http://localhost:8510
-http://localhost:8000/health
+# Inspect (UK AISI) -- optional peer dependency.
+uv pip install inspect_ai
+inspect eval agent-release-gates/incident_replay --model openai/gpt-4.1-mini
 ```
 
 ## Verification
