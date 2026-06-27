@@ -26,6 +26,7 @@ from internal_ai_agent.evals.multi_model_comparison import (
     write_model_judge_provider_comparison,
     write_multi_model_comparison_plan,
 )
+from internal_ai_agent.evals.multilingual_safety import write_multilingual_safety
 from internal_ai_agent.evals.nist_rmf_mapping import write_nist_coverage_map
 from internal_ai_agent.evals.public_rag_findings import write_public_rag_findings
 from internal_ai_agent.evals.public_rag_model_reranker import (
@@ -129,6 +130,7 @@ def run_all(project_root: Path) -> dict[str, Any]:
         collector_export_preview=collector_export_preview,
         incident_release_gates=incident_replay["release_gates"],
     )
+    write_multilingual_safety(project_root)
     write_nist_coverage_map(project_root)
     public_report_path = write_public_report(project_root)
     return {
