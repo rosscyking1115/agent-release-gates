@@ -1,43 +1,70 @@
+<div align="center">
+
 # Agent Release Safety Gates
 
-A public release-readiness system for testing whether AI-agent workflow changes remain grounded, safe, auditable, and useful under retrieval, refusal, prompt-injection, incident replay, and approval-gated tool-use conditions.
+**Release-readiness gates for AI agents — replay known incidents, apply policy-as-code, and produce `ship` / `warn` / `block` evidence before a changed agent, prompt, model, or tool policy ships.**
 
-This project is not a clone, assessment, or reverse-engineering attempt of any company's internal AI system. The controlled operations benchmark is synthetic by design; TechQA and WixQA are used separately as public retrieval-validation datasets.
+[![PyPI](https://img.shields.io/pypi/v/agent-release-gates.svg)](https://pypi.org/project/agent-release-gates/)
+[![Python](https://img.shields.io/pypi/pyversions/agent-release-gates.svg)](https://pypi.org/project/agent-release-gates/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![CI](https://github.com/rosscyking1115/agent-release-gates/actions/workflows/ci.yml/badge.svg)](https://github.com/rosscyking1115/agent-release-gates/actions/workflows/ci.yml)
 
-## Live Project
+[Project page](https://rosscyking1115.github.io/agent-release-gates/) ·
+[Evaluation report](https://rosscyking1115.github.io/agent-release-gates/evaluation_report.html) ·
+[Quickstart](docs/evaluate_your_agent_quickstart.md) ·
+[Docs](#documentation)
 
-- Public project page: https://rosscyking1115.github.io/agent-release-gates/
-- Full evaluation report (HTML): https://rosscyking1115.github.io/agent-release-gates/evaluation_report.html
-- PDF report: https://rosscyking1115.github.io/agent-release-gates/evaluation_report.pdf
-- Interactive dashboard: run locally (see [Run Locally](#run-locally)) or deploy on
-  Streamlit Cloud — see the [dashboard deployment guide](docs/dashboard.md). A hosted
-  instance must be set to public visibility to be shareable.
+</div>
 
-## What This Project Does
+---
 
-The project evaluates an AI-agent workflow across five release questions:
+## Quickstart
 
-- Does the agent retrieve the right evidence and cite it?
-- Does it abstain or refuse when evidence is weak, unsafe, or prompt-injected?
-- Does it require approval before mock side-effecting tool calls?
-- Does it leave enough trace, audit, and monitoring evidence for review?
-- Does it pass incident replay and policy-as-code release gates?
+```bash
+pip install agent-release-gates
+```
 
-The result is a reproducible evaluation artifact rather than a one-off dashboard: deterministic eval runners, generated reports, CI checks, Dockerized local execution, a Streamlit dashboard, and a GitHub Pages report site.
+```bash
+# Run the deterministic release gate → exits non-zero on a blocking failure.
+agent-safety release-gate
 
-## Product Direction
+# Or run the incident-replay suite under Inspect (UK AISI).
+pip install inspect_ai
+inspect eval agent-release-gates/incident_replay --model openai/gpt-4.1-mini
+```
 
-**Agent Release Safety Gates** is a release-readiness workflow for replaying known agent incidents, applying policy gates, and producing evidence before a changed agent, prompt, model, or tool policy ships. Its deterministic evaluation benchmark and runners are the evidence layer behind that workflow.
+The core install is intentionally lean (only `pydantic`) and ships the CLI, the Inspect suite, the real-agent runner, and the scoring logic. The API and dashboard are opt-in extras:
 
-The first module is an Incident Replay Suite that turns redacted synthetic incidents into regression fixtures, replay results, release gates, and incident memos.
+```bash
+pip install "agent-release-gates[api]"        # FastAPI evidence service
+pip install "agent-release-gates[dashboard]"  # Streamlit reviewer dashboard
+```
 
-To evaluate an external agent, use the public quickstart:
+> [!NOTE]
+> These results are **engineering evidence over controlled, synthetic benchmarks** — not claims of real-world production performance. This project is not a clone, assessment, or reverse-engineering of any company's internal AI system. The operations benchmark is synthetic by design; TechQA and WixQA are used separately as public retrieval-validation datasets.
 
-- [Evaluate your agent quickstart](docs/evaluate_your_agent_quickstart.md)
-- [Incident pack schema](docs/incident_pack_schema.md)
-- [Candidate results schema](docs/candidate_results_schema.md)
+## What it does
 
-## Current Evidence Snapshot
+Before a changed agent ships, the lab answers five release questions and turns the answers into a reproducible gate:
+
+- 🔎 **Grounding** — does the agent retrieve the right evidence and cite it?
+- 🛑 **Refusal** — does it abstain when evidence is weak, unsafe, or prompt-injected?
+- ✋ **Approval** — does it require sign-off before side-effecting tool calls?
+- 🧾 **Auditability** — does it leave enough trace, audit, and monitoring evidence?
+- 🔁 **Replay** — does it pass incident replay and policy-as-code release gates?
+
+The first module is an **Incident Replay Suite** that turns redacted synthetic incidents into regression fixtures, replay results, release gates, and incident memos. The output is a reproducible evaluation *artifact* — deterministic runners, generated reports, CI checks, a Dockerized runtime, a Streamlit dashboard, and a GitHub Pages report — rather than a one-off dashboard.
+
+## How it works
+
+```
+incidents ──▶ replay matrix ──▶ policy gates ──▶ ship / warn / block ──▶ evidence + memo
+ (synthetic)   (deterministic)   (policy-as-code)    (CLI exit code)      (report / audit)
+```
+
+Point it at your own agent by exporting candidate results (generic logs or LangChain/LangSmith-style traces) and scoring them against the gates. See the [evaluate-your-agent quickstart](docs/evaluate_your_agent_quickstart.md), [incident pack schema](docs/incident_pack_schema.md), and [candidate results schema](docs/candidate_results_schema.md).
+
+## Evidence snapshot
 
 | Area | Current result |
 | --- | --- |
@@ -50,81 +77,48 @@ To evaluate an external agent, use the public quickstart:
 | Intervention study | 3 deterministic safety studies plus public RAG grounding and memory/context studies |
 | Hosted judge calibration | Reviewed OpenAI and Anthropic judge runs with public-safe provider comparison |
 
-These results are engineering evidence over controlled benchmarks. They are not claims of real-world production performance.
+## Key findings
 
-## Key Findings
-
-- Safety metrics are not meaningful alone; the lab reports over-review cost, benign auto-blocks, weak-evidence handling, and unsafe misses beside the headline scores.
+- Safety scores are not meaningful alone — the lab reports over-review cost, benign auto-blocks, weak-evidence handling, and unsafe misses **beside** the headline numbers.
 - Layered safeguards reduce selected prompt-injection, unsafe-action, and unsafe-request failures in controlled studies while making review burden visible.
-- Public TechQA and WixQA retrieval tracks help test whether the RAG harness works beyond self-contained synthetic data.
-- Public RAG grounding thresholds reduce unsupported answer attempts while making abstention and review cost visible.
-- Memory/context controls reduce polluted-memory following while preserving benign memory usefulness.
-- Goal-conflict arbitration reduces unsafe goal-following while preserving benign task completion.
-- Synthetic operations data remains useful for controlled tests that would be unsafe or impractical to run on confidential real workflows.
-- The next strongest validation step is independent human labelling, followed by broader multi-model comparison.
+- Public RAG grounding thresholds reduce unsupported answer attempts while keeping abstention and review cost visible.
+- Memory/context controls reduce polluted-memory following while preserving benign memory usefulness; goal-conflict arbitration reduces unsafe goal-following while preserving benign task completion.
+- The strongest next validation step is independent human labelling, followed by broader multi-model comparison.
 
-## What Is Included
+## What's included
 
 - Evaluation runners for retrieval, extraction, safety classification, controlled-agent behavior, and observability.
-- Baseline-vs-intervention studies for instruction hierarchy, action-risk gates, and safety classifier review policy.
-- Public RAG grounding and abstention intervention study over TechQA and WixQA.
-- Memory/context pollution intervention study covering stale, injected, and cross-user memory.
-- Goal-conflict intervention study covering safety, evidence, privacy, and tool-risk arbitration.
+- Baseline-vs-intervention studies for instruction hierarchy, action-risk gates, safety-classifier review policy, RAG grounding, memory/context pollution, and goal conflict.
 - Incident replay suite with seeded incidents, replay matrix, release gates, regression fixtures, and generated memos.
-- Public benchmark documentation, dataset boundaries, failure taxonomy, and external-review packet.
 - Candidate-results exporters for generic agent logs and LangChain/LangSmith-style traces.
-- Streamlit dashboard for interactive inspection.
-- GitHub Pages report and PDF for public review.
+- Streamlit dashboard, GitHub Pages report + PDF, and a benchmark/dataset/failure-taxonomy documentation set.
 - CI, Docker, Docker Compose, linting, tests, and deterministic report regeneration.
 
-## Install
-
-Once published to PyPI (see [publishing guide](docs/publishing.md)), the core install
-is lean — `pydantic` only — and gives you the CLI, the Inspect suite, the real-agent
-runner, and the scoring logic. The API and dashboard are opt-in extras:
-
-```bash
-pip install agent-release-gates                # CLI + Inspect suite + scoring
-pip install "agent-release-gates[api]"         # + FastAPI evidence service
-pip install "agent-release-gates[dashboard]"   # + Streamlit dashboard deps
-pip install agent-release-gates inspect_ai     # to run under Inspect
-```
-
-```bash
-agent-safety release-gate                                          # ship / warn / block
-inspect eval agent-release-gates/incident_replay --model openai/gpt-4.1-mini
-```
-
-> Not yet on PyPI — build it yourself with `uv build`, or run from source below.
-
-## Run Locally
+## Run from source
 
 ```powershell
 uv sync
 uv run python scripts/run_all_evals.py
-# Release gate (installed console command); exits non-zero on a blocking failure.
+
+# Release gate (console command); exits non-zero on a blocking failure.
 uv run agent-safety release-gate --policy config/incident_release_policy.json
-# Interactive dashboard.
+
+# Interactive dashboard → http://localhost:8510
 uv run streamlit run streamlit_app.py --server.port 8510
 ```
 
-Open `http://localhost:8510`. Run the API and dashboard together with
-`docker compose up --build`, then open `http://localhost:8510` and
-`http://localhost:8000/health`.
+Run the API and dashboard together with `docker compose up --build`, then open `http://localhost:8510` and `http://localhost:8000/health`.
 
-Drive a real LLM through the release gate, or run the suite under Inspect:
+Drive a real LLM through the release gate:
 
 ```powershell
-# Any OpenAI-compatible / self-hosted open model endpoint.
+# Any OpenAI-compatible / self-hosted open-model endpoint.
 $env:AGENT_RUNNER_API_KEY = "..."
 uv run python scripts/run_real_agent_replay.py
-
-# Inspect (UK AISI) -- optional peer dependency.
-uv pip install inspect_ai
-inspect eval agent-release-gates/incident_replay --model openai/gpt-4.1-mini
 ```
 
-## Verification
+<details>
+<summary><strong>Verification commands</strong></summary>
 
 ```powershell
 uv run ruff check .
@@ -137,29 +131,33 @@ docker build -t agent-release-safety-gates:local .
 
 CI runs linting, tests, deterministic report checks, local OpenTelemetry smoke testing, Dockerized collector verification, and Docker build verification.
 
-## Review Materials
+</details>
 
-- Evaluate your agent quickstart: [docs/evaluate_your_agent_quickstart.md](docs/evaluate_your_agent_quickstart.md)
-- Benchmark card: [docs/benchmark_card.md](docs/benchmark_card.md)
-- Agent safety intervention study: [docs/agent_safety_intervention_study.md](docs/agent_safety_intervention_study.md)
-- RAG grounding intervention report: [reports/rag_grounding_intervention.md](reports/rag_grounding_intervention.md)
-- Memory context intervention report: [reports/memory_context_intervention.md](reports/memory_context_intervention.md)
-- Goal conflict intervention report: [reports/goal_conflict_intervention.md](reports/goal_conflict_intervention.md)
-- Incident pack schema: [docs/incident_pack_schema.md](docs/incident_pack_schema.md)
-- Candidate results schema: [docs/candidate_results_schema.md](docs/candidate_results_schema.md)
-- Incident replay summary: [reports/incident_replay_summary.json](reports/incident_replay_summary.json)
-- Dataset card: [docs/dataset_card.md](docs/dataset_card.md)
-- Failure taxonomy: [docs/failure_taxonomy.md](docs/failure_taxonomy.md)
-- External reviewer handoff pack: [docs/reviewer_handoff_pack.md](docs/reviewer_handoff_pack.md)
-- Technical artifact index: [docs/technical_artifacts.md](docs/technical_artifacts.md)
-- Contribution guide: [CONTRIBUTING.md](CONTRIBUTING.md)
+## Documentation
 
-## Current Limitations
+| Topic | Link |
+| --- | --- |
+| Evaluate your agent (quickstart) | [docs/evaluate_your_agent_quickstart.md](docs/evaluate_your_agent_quickstart.md) |
+| Benchmark card | [docs/benchmark_card.md](docs/benchmark_card.md) |
+| Dataset card | [docs/dataset_card.md](docs/dataset_card.md) |
+| Failure taxonomy | [docs/failure_taxonomy.md](docs/failure_taxonomy.md) |
+| Agent-safety intervention study | [docs/agent_safety_intervention_study.md](docs/agent_safety_intervention_study.md) |
+| RAG grounding intervention | [reports/rag_grounding_intervention.md](reports/rag_grounding_intervention.md) |
+| Memory/context intervention | [reports/memory_context_intervention.md](reports/memory_context_intervention.md) |
+| Goal-conflict intervention | [reports/goal_conflict_intervention.md](reports/goal_conflict_intervention.md) |
+| Incident pack schema | [docs/incident_pack_schema.md](docs/incident_pack_schema.md) |
+| Candidate results schema | [docs/candidate_results_schema.md](docs/candidate_results_schema.md) |
+| Reviewer handoff pack | [docs/reviewer_handoff_pack.md](docs/reviewer_handoff_pack.md) |
+| Technical artifact index | [docs/technical_artifacts.md](docs/technical_artifacts.md) |
+| Dashboard deployment | [docs/dashboard.md](docs/dashboard.md) |
+| Contributing | [CONTRIBUTING.md](CONTRIBUTING.md) |
+
+## Limitations
 
 - The controlled benchmark is synthetic and still partly templated.
 - Public TechQA and WixQA tracks use compact samples, not the full upstream datasets.
 - Human-review labels are currently simulated workflow labels; independent reviewer labels are prepared but not yet published.
-- Hosted model evidence includes reviewed judge-calibration runs, not a broad multi-model agent comparison.
+- Hosted-model evidence includes reviewed judge-calibration runs, not a broad multi-model agent comparison.
 - Provider-backed embedding and reranker adapters are prepared, but credentialed hosted results are not claimed until reviewed.
 
 ## Roadmap
@@ -167,6 +165,13 @@ CI runs linting, tests, deterministic report checks, local OpenTelemetry smoke t
 - Collect independent human labels using the prepared review packet.
 - Add reproducible multi-model comparison across hosted and open-source models.
 - Expand public RAG validation beyond the current compact TechQA and WixQA samples.
-- Add more framework-specific candidate-results exporters for common agent runners.
-- Expand the paper-style intervention report with external reviewer disagreement analysis.
-- Invite external review through issues and contribution guidelines.
+- Add more framework-specific candidate-results exporters.
+- Extend the intervention report with external-reviewer disagreement analysis.
+
+## Contributing
+
+Issues and pull requests are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md). External review is explicitly invited via the [reviewer handoff pack](docs/reviewer_handoff_pack.md).
+
+## License
+
+[MIT](LICENSE) © rosscyking1115
