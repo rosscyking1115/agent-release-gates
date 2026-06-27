@@ -15,34 +15,51 @@ name = "agent-release-gates"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
-    { name = "altair" },
-    { name = "fastapi" },
-    { name = "pandas" },
     { name = "pydantic" },
-    { name = "streamlit" },
+]
+
+[package.optional-dependencies]
+api = [
+    { name = "fastapi" },
     { name = "uvicorn", extra = ["standard"] },
+]
+dashboard = [
+    { name = "altair" },
+    { name = "pandas" },
+    { name = "streamlit" },
 ]
 
 [package.dev-dependencies]
 dev = [
+    { name = "altair" },
+    { name = "fastapi" },
+    { name = "pandas" },
     { name = "pytest" },
     { name = "ruff" },
+    { name = "streamlit" },
+    { name = "uvicorn", extra = ["standard"] },
 ]
 
 [package.metadata]
 requires-dist = [
-    { name = "altair", specifier = ">=6.0.0" },
-    { name = "fastapi", specifier = ">=0.115.0" },
-    { name = "pandas", specifier = ">=2.2.0" },
+    { name = "altair", marker = "extra == 'dashboard'", specifier = ">=6.0.0" },
+    { name = "fastapi", marker = "extra == 'api'", specifier = ">=0.115.0" },
+    { name = "pandas", marker = "extra == 'dashboard'", specifier = ">=2.2.0" },
     { name = "pydantic", specifier = ">=2.8.0" },
-    { name = "streamlit", specifier = ">=1.38.0" },
-    { name = "uvicorn", extras = ["standard"], specifier = ">=0.30.0" },
+    { name = "streamlit", marker = "extra == 'dashboard'", specifier = ">=1.38.0" },
+    { name = "uvicorn", extras = ["standard"], marker = "extra == 'api'", specifier = ">=0.30.0" },
 ]
+provides-extras = ["api", "dashboard"]
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "altair", specifier = ">=6.0.0" },
+    { name = "fastapi", specifier = ">=0.115.0" },
+    { name = "pandas", specifier = ">=2.2.0" },
     { name = "pytest", specifier = ">=8.2.0" },
     { name = "ruff", specifier = ">=0.5.0" },
+    { name = "streamlit", specifier = ">=1.38.0" },
+    { name = "uvicorn", extras = ["standard"], specifier = ">=0.30.0" },
 ]
 
 [[package]]

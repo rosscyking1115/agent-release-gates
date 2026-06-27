@@ -77,6 +77,26 @@ These results are engineering evidence over controlled benchmarks. They are not 
 - GitHub Pages report and PDF for public review.
 - CI, Docker, Docker Compose, linting, tests, and deterministic report regeneration.
 
+## Install
+
+Once published to PyPI (see [publishing guide](docs/publishing.md)), the core install
+is lean — `pydantic` only — and gives you the CLI, the Inspect suite, the real-agent
+runner, and the scoring logic. The API and dashboard are opt-in extras:
+
+```bash
+pip install agent-release-gates                # CLI + Inspect suite + scoring
+pip install "agent-release-gates[api]"         # + FastAPI evidence service
+pip install "agent-release-gates[dashboard]"   # + Streamlit dashboard deps
+pip install agent-release-gates inspect_ai     # to run under Inspect
+```
+
+```bash
+agent-safety release-gate                                          # ship / warn / block
+inspect eval agent-release-gates/incident_replay --model openai/gpt-4.1-mini
+```
+
+> Not yet on PyPI — build it yourself with `uv build`, or run from source below.
+
 ## Run Locally
 
 ```powershell

@@ -6,11 +6,14 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV UV_LINK_MODE=copy
 ENV STREAMLIT_BROWSER_GATHER_USAGE_STATS=false
+# Sync the env once at build time; runtime `uv run` uses it without re-syncing
+# (which would otherwise drop the optional api/dashboard extras).
+ENV UV_NO_SYNC=1
 
 COPY pyproject.toml uv.lock README.md streamlit_app.py ./
 COPY src ./src
 
-RUN uv sync --locked --no-dev
+RUN uv sync --locked --no-dev --extra api --extra dashboard
 
 COPY app ./app
 COPY data ./data
