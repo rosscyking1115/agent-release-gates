@@ -23,3 +23,7 @@ data/public/techqa_train.json
 data/public/wixqa_expertwritten_test.jsonl
 data/public/wixqa_kb_corpus.jsonl
 /public/
+
+# Locally installed agent skills (kept out of the repo)
+.claude/skills/
+skills-lock.json
