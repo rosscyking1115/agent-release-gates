@@ -1,41 +1,52 @@
 # Evaluate Your Agent Quickstart
 
 This guide shows how to score an external AI agent with Agent Release Safety
-Gates without running that agent inside this repository.
+Gates from a plain `pip install` — no source checkout required.
 
 The workflow is intentionally simple:
 
-1. Choose an incident pack.
-2. Run your agent against each incident prompt in your own environment.
-3. Export one result row per incident.
-4. Run the release gate against those results.
-5. Inspect pass/fail reasons and fix the agent, prompt, model, or tool policy.
-
-## What You Need
-
-- Python environment with `uv` installed.
-- A local checkout of this repository.
-- An incident pack, such as `examples/incident_pack_minimal`.
-- Either a generic agent run log or a LangChain/LangSmith-style trace export.
+1. Install the package.
+2. Get an incident pack (use the bundled example, or bring your own).
+3. Run your agent against each incident prompt in your own environment.
+4. Export one result row per incident.
+5. Run the release gate against those results and read the pass/fail reasons.
 
 No provider API key is required for the release gate itself. Your agent may need
-its own credentials, but those stay outside this repository.
+its own credentials, but those stay outside this tool.
 
-## 1. Run The Example Gate
+## Install
 
-Start by checking that the bundled minimal incident pack works:
-
-```powershell
-uv run python scripts/agent_safety.py release-gate --incident-pack examples/incident_pack_minimal
+```bash
+pip install agent-release-gates
 ```
 
-This writes replay artifacts into `reports/` and prints the gate status.
+This installs the `agent-safety` command. Confirm the built-in gate runs with no
+setup at all:
 
-## 2. Export Generic Agent Logs
+```bash
+agent-safety release-gate
+```
 
-If your agent can write one JSON object per incident, use the generic exporter.
+With no arguments it replays a built-in incident pack and prints a `pass` / `fail`
+gate status. That confirms your install works before you wire in your own agent.
 
-Input example:
+## 1. Get an incident pack
+
+Materialize the bundled minimal pack into the current directory:
+
+```bash
+agent-safety init-example --dest incident_pack_minimal
+```
+
+This writes `incident_cases.jsonl`, `trace_events.jsonl`,
+`incident_release_policy.json`, and example input/output files you can imitate.
+An incident pack is just a directory containing at least `incident_cases.jsonl`
+and `trace_events.jsonl`; see the [incident pack schema](incident_pack_schema.md).
+
+## 2. Run your agent and capture logs
+
+Run your agent against each incident `question` in your own environment and write
+one JSON object per incident to a JSONL file. A generic row looks like:
 
 ```json
 {
@@ -54,31 +65,32 @@ Input example:
 }
 ```
 
-Convert it:
+`incident_pack_minimal/agent_run_log.jsonl` is a ready-made example of this format,
+and `langchain_trace_log.jsonl` shows the LangChain/LangSmith trace shape.
 
-```powershell
-uv run python scripts/export_candidate_results.py `
-  --input examples/incident_pack_minimal/agent_run_log.jsonl `
-  --output candidate_results.jsonl `
+## 3. Export candidate results
+
+Convert your agent log into the candidate-results format the gate consumes:
+
+```bash
+agent-safety export-candidate-results \
+  --input incident_pack_minimal/agent_run_log.jsonl \
+  --output candidate_results.jsonl \
   --candidate-id my_agent_release_v1
 ```
 
-## 3. Export LangChain Or LangSmith Traces
+For LangChain/LangSmith-style traces, add `--source-format langchain_trace`
+(or `--source-format langsmith_run`):
 
-If you have LangChain/LangSmith-style run rows, use the trace adapter:
-
-```powershell
-uv run python scripts/export_candidate_results.py `
-  --source-format langchain_trace `
-  --input examples/incident_pack_minimal/langchain_trace_log.jsonl `
-  --output candidate_results.jsonl `
+```bash
+agent-safety export-candidate-results \
+  --source-format langchain_trace \
+  --input incident_pack_minimal/langchain_trace_log.jsonl \
+  --output candidate_results.jsonl \
   --candidate-id langchain_agent_v1
 ```
 
-Use `--source-format langsmith_run` for the same adapter when the source file is
-labelled as a LangSmith run export.
-
-The adapter reads:
+The trace adapter reads:
 
 - `inputs.case_id` as the incident id.
 - `outputs.answer` or `outputs.final_answer` as the agent answer.
@@ -86,21 +98,26 @@ The adapter reads:
 - tool child runs or tool events as `tool_outcomes`.
 - run `id` or `uuid` as the trace id.
 
-## 4. Score Candidate Results
+## 4. Score candidate results
 
 Run the release gate with your exported candidate results:
 
-```powershell
-uv run python scripts/agent_safety.py release-gate `
-  --incident-pack examples/incident_pack_minimal `
+```bash
+agent-safety release-gate \
+  --incident-pack incident_pack_minimal \
   --candidate-results candidate_results.jsonl
 ```
 
-The candidate results file must contain exactly one row for each incident in the
-selected incident pack. Missing, extra, or duplicate incident ids fail fast as
-configuration errors.
+The candidate-results file must contain exactly one row for each incident in the
+selected pack. Missing, extra, or duplicate incident ids fail fast as
+configuration errors. When `--incident-pack` contains an
+`incident_release_policy.json`, that policy is applied automatically.
 
-## 5. Interpret The Output
+The gate writes `reports/incident_replay_summary.json` and
+`reports/incident_release_gates.json` next to where you run it, and exits
+non-zero on a blocking failure (useful as a CI step).
+
+## 5. Interpret the output
 
 A passing gate means the submitted results satisfied the incident pack's current
 policy thresholds. It is not a claim that the agent is safe in production.
@@ -116,7 +133,7 @@ A failing gate usually means one of these happened:
 Use the generated `reports/incident_replay_summary.json` and
 `reports/incident_release_gates.json` files to inspect the failing criteria.
 
-## Result Contract
+## Result contract
 
 The release gate consumes `candidate_results.jsonl`, one JSON object per
 incident. For full field details, see:
@@ -135,8 +152,8 @@ The important minimum fields are:
 }
 ```
 
-Tool outcomes are important for agent safety because the release gate can detect
-side-effect execution without approval:
+Tool outcomes matter because the gate can detect side-effect execution without
+approval:
 
 ```json
 {
@@ -148,13 +165,15 @@ side-effect execution without approval:
 }
 ```
 
-## Recommended Public Workflow
+## Working from a source checkout
 
-For a public benchmark or pull request:
+If you cloned the repository instead of installing from PyPI, the same commands
+are available through `uv` without installing, and the example pack lives at
+`examples/incident_pack_minimal`:
 
-1. Add a small incident pack or use `examples/incident_pack_minimal`.
-2. Commit the redacted candidate-results file or publish it as a run artifact.
-3. Run `uv run pytest` and the release-gate command.
-4. Include the gate status, failed criteria, and limitations in the PR or report.
+```bash
+uv run agent-safety release-gate --incident-pack examples/incident_pack_minimal
+uv run pytest
+```
 
 Do not commit private prompts, customer data, API keys, or raw production traces.

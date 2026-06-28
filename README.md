@@ -25,13 +25,22 @@ pip install agent-release-gates
 ```
 
 ```bash
-# Run the deterministic release gate → exits non-zero on a blocking failure.
+# Run the deterministic release gate on a built-in pack → exits non-zero on a block.
 agent-safety release-gate
+
+# Score your own agent: materialize an example pack, convert your logs, gate them.
+agent-safety init-example --dest incident_pack_minimal
+agent-safety export-candidate-results --input incident_pack_minimal/agent_run_log.jsonl \
+  --output candidate_results.jsonl --candidate-id my_agent_v1
+agent-safety release-gate --incident-pack incident_pack_minimal \
+  --candidate-results candidate_results.jsonl
 
 # Or run the incident-replay suite under Inspect (UK AISI).
 pip install inspect_ai
 inspect eval agent-release-gates/incident_replay --model openai/gpt-4.1-mini
 ```
+
+See the [evaluate-your-agent quickstart](docs/evaluate_your_agent_quickstart.md) for the full pip-only workflow.
 
 The core install is intentionally lean (only `pydantic`) and ships the CLI, the Inspect suite, the real-agent runner, and the scoring logic. The API and dashboard are opt-in extras:
 
