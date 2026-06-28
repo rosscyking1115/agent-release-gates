@@ -3,10 +3,25 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from importlib import resources
 from pathlib import Path
 from typing import Any
 
+from internal_ai_agent.evals.candidate_results_export import (
+    export_candidate_results_from_agent_log,
+)
 from internal_ai_agent.evals.incident_replay import write_incident_replay_suite
+
+# Files that make up the bundled minimal incident pack. Kept in sync with the
+# repo's examples/incident_pack_minimal copy by a drift-guard test.
+EXAMPLE_PACK_FILES = (
+    "agent_run_log.jsonl",
+    "candidate_results_pass.jsonl",
+    "incident_cases.jsonl",
+    "incident_release_policy.json",
+    "langchain_trace_log.jsonl",
+    "trace_events.jsonl",
+)
 
 
 def main() -> None:
@@ -25,6 +40,19 @@ def main() -> None:
         except (FileNotFoundError, ValueError, json.JSONDecodeError) as exc:
             print(f"Release gate configuration error: {exc}", file=sys.stderr)
             result = 2
+        raise SystemExit(result)
+    if args.command == "export-candidate-results":
+        result = run_export_candidate_results(
+            input_path=Path(args.input),
+            output_path=Path(args.output),
+            candidate_id=args.candidate_id,
+            model_version=args.model_version,
+            policy_version=args.policy_version,
+            source_format=args.source_format,
+        )
+        raise SystemExit(result)
+    if args.command == "init-example":
+        result = run_init_example(dest=Path(args.dest))
         raise SystemExit(result)
     parser.error("A command is required.")
 
@@ -47,12 +75,59 @@ def run_release_gate(
     return 1 if int(metrics["release_gate_fail_count"]) else 0
 
 
+def run_export_candidate_results(
+    *,
+    input_path: Path,
+    output_path: Path,
+    candidate_id: str,
+    model_version: str = "external_candidate_result",
+    policy_version: str = "unknown",
+    source_format: str = "generic_agent_log",
+) -> int:
+    try:
+        summary = export_candidate_results_from_agent_log(
+            input_path=input_path,
+            output_path=output_path,
+            candidate_id=candidate_id,
+            default_model_version=model_version,
+            default_policy_version=policy_version,
+            source_format=source_format,
+        )
+    except (FileNotFoundError, ValueError, json.JSONDecodeError) as exc:
+        print(f"Candidate results export error: {exc}", file=sys.stderr)
+        return 2
+    print(json.dumps(summary, indent=2, sort_keys=True))
+    return 0
+
+
+def run_init_example(*, dest: Path) -> int:
+    source = resources.files("internal_ai_agent").joinpath(
+        "example_packs", "incident_pack_minimal"
+    )
+    dest.mkdir(parents=True, exist_ok=True)
+    for name in EXAMPLE_PACK_FILES:
+        (dest / name).write_text(
+            source.joinpath(name).read_text(encoding="utf-8"),
+            encoding="utf-8",
+        )
+    print(f"Wrote example incident pack to {dest}")
+    for name in EXAMPLE_PACK_FILES:
+        print(f"- {name}")
+    print(
+        "\nNext: score the bundled passing results against the pack:\n"
+        f"  agent-safety release-gate --incident-pack {dest} "
+        f"--candidate-results {dest / 'candidate_results_pass.jsonl'}"
+    )
+    return 0
+
+
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="agent-safety",
         description="Run deterministic AI-agent safety release gates.",
     )
     subparsers = parser.add_subparsers(dest="command")
+
     release_gate = subparsers.add_parser(
         "release-gate",
         help="Run incident replay release gates and exit non-zero on blocking failures.",
@@ -86,6 +161,54 @@ def _parser() -> argparse.ArgumentParser:
             "Optional JSONL file containing one submitted candidate result per "
             "incident. This scores an external agent without executing its code."
         ),
+    )
+
+    export = subparsers.add_parser(
+        "export-candidate-results",
+        help="Convert external-agent JSONL logs into candidate_results.jsonl.",
+    )
+    export.add_argument(
+        "--input",
+        required=True,
+        help="Path to an external agent JSONL run log.",
+    )
+    export.add_argument(
+        "--output",
+        default="candidate_results.jsonl",
+        help="Path to write normalized candidate results JSONL.",
+    )
+    export.add_argument(
+        "--candidate-id",
+        required=True,
+        help="Safe identifier for the agent or release candidate under test.",
+    )
+    export.add_argument(
+        "--model-version",
+        default="external_candidate_result",
+        help="Default model or runner version when the input row does not include one.",
+    )
+    export.add_argument(
+        "--policy-version",
+        default="unknown",
+        help="Default safety policy or prompt version when the input row does not include one.",
+    )
+    export.add_argument(
+        "--source-format",
+        default="generic_agent_log",
+        help=(
+            "Input adapter format. Use 'langchain_trace' or 'langsmith_run' for "
+            "LangChain-style traces; other labels are treated as generic rows."
+        ),
+    )
+
+    init_example = subparsers.add_parser(
+        "init-example",
+        help="Write the bundled minimal incident pack to a directory.",
+    )
+    init_example.add_argument(
+        "--dest",
+        default="incident_pack_minimal",
+        help="Directory to write the example incident pack into.",
     )
     return parser
 
