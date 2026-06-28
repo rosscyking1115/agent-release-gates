@@ -47,11 +47,11 @@ pip install "agent-release-gates[dashboard]"  # Streamlit reviewer dashboard
 
 Before a changed agent ships, the lab answers five release questions and turns the answers into a reproducible gate:
 
-- 🔎 **Grounding** — does the agent retrieve the right evidence and cite it?
-- 🛑 **Refusal** — does it abstain when evidence is weak, unsafe, or prompt-injected?
-- ✋ **Approval** — does it require sign-off before side-effecting tool calls?
-- 🧾 **Auditability** — does it leave enough trace, audit, and monitoring evidence?
-- 🔁 **Replay** — does it pass incident replay and policy-as-code release gates?
+- **Grounding** — does the agent retrieve the right evidence and cite it?
+- **Refusal** — does it abstain when evidence is weak, unsafe, or prompt-injected?
+- **Approval** — does it require sign-off before side-effecting tool calls?
+- **Auditability** — does it leave enough trace, audit, and monitoring evidence?
+- **Replay** — does it pass incident replay and policy-as-code release gates?
 
 The first module is an **Incident Replay Suite** that turns redacted synthetic incidents into regression fixtures, replay results, release gates, and incident memos. The output is a reproducible evaluation *artifact* — deterministic runners, generated reports, CI checks, a Dockerized runtime, a Streamlit dashboard, and a GitHub Pages report — rather than a one-off dashboard.
 
@@ -168,10 +168,5 @@ CI runs linting, tests, deterministic report checks, local OpenTelemetry smoke t
 - Add more framework-specific candidate-results exporters.
 - Extend the intervention report with external-reviewer disagreement analysis.
 
-## Contributing
-
-Issues and pull requests are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md). External review is explicitly invited via the [reviewer handoff pack](docs/reviewer_handoff_pack.md).
-
-## License
-
-[MIT](LICENSE) © rosscyking1115
+> [!TIP]
+> Want to help validate this? External review is explicitly invited — start with the [reviewer handoff pack](docs/reviewer_handoff_pack.md) and [CONTRIBUTING.md](CONTRIBUTING.md).
