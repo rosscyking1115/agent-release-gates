@@ -122,6 +122,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 def main() -> None:
     st.set_page_config(
         page_title="Agent Release Safety Gates",
+        page_icon="🛡️",
         layout="wide",
     )
     _render_app_header()
@@ -291,22 +292,22 @@ def _render_app_header() -> None:
     link_cols[0].link_button(
         "Project page",
         "https://rosscyking1115.github.io/agent-release-gates/",
-        use_container_width=True,
+        width="stretch",
     )
     link_cols[1].link_button(
         "Full report",
         "https://rosscyking1115.github.io/agent-release-gates/evaluation_report.html",
-        use_container_width=True,
+        width="stretch",
     )
     link_cols[2].link_button(
         "PDF report",
         "https://rosscyking1115.github.io/agent-release-gates/evaluation_report.pdf",
-        use_container_width=True,
+        width="stretch",
     )
     link_cols[3].link_button(
         "GitHub repo",
         "https://github.com/rosscyking1115/agent-release-gates",
-        use_container_width=True,
+        width="stretch",
     )
     st.info(
         "Controlled runbooks, tickets, teams, procedures, and benchmark metrics are "
@@ -335,12 +336,12 @@ def _render_sidebar() -> str:
     st.sidebar.link_button(
         "Project page",
         "https://rosscyking1115.github.io/agent-release-gates/",
-        use_container_width=True,
+        width="stretch",
     )
     st.sidebar.link_button(
         "GitHub repository",
         "https://github.com/rosscyking1115/agent-release-gates",
-        use_container_width=True,
+        width="stretch",
     )
     st.sidebar.caption("Synthetic benchmark plus TechQA and WixQA public validation.")
     return section
@@ -474,7 +475,7 @@ def _render_summary(
     st.dataframe(
         pd.DataFrame(headline)[["label", "baseline_pct", "improved_pct", "delta_pct"]],
         hide_index=True,
-        use_container_width=True,
+        width="stretch",
     )
 
 
@@ -485,7 +486,7 @@ def _render_metric_comparison(rows: list[dict[str, object]]) -> None:
 
     table_df = pd.DataFrame(rows)[["label", "baseline_pct", "improved_pct", "delta_pct"]]
     table_df.columns = ["Metric", "Baseline", "Improved lexical", "Delta"]
-    st.dataframe(table_df, hide_index=True, use_container_width=True)
+    st.dataframe(table_df, hide_index=True, width="stretch")
 
 
 def _render_dataset_profile(profile: dict[str, object]) -> None:
@@ -505,23 +506,23 @@ def _render_dataset_profile(profile: dict[str, object]) -> None:
         st.dataframe(
             pd.DataFrame(coverage_count_rows(profile, "by_noise_type")),
             hide_index=True,
-            use_container_width=True,
+            width="stretch",
         )
     with tab_task:
         st.dataframe(
             pd.DataFrame(coverage_count_rows(profile, "by_task_type")),
             hide_index=True,
-            use_container_width=True,
+            width="stretch",
         )
     with tab_issue:
         st.dataframe(
             pd.DataFrame(coverage_count_rows(profile, "by_issue_category")),
             hide_index=True,
-            use_container_width=True,
+            width="stretch",
         )
     with tab_red_team:
         risk_rows = red_team_coverage_rows(profile, "by_risk_type")
-        st.dataframe(pd.DataFrame(risk_rows), hide_index=True, use_container_width=True)
+        st.dataframe(pd.DataFrame(risk_rows), hide_index=True, width="stretch")
     with tab_gaps:
         st.table(
             pd.DataFrame({"risk_label": profile["risk_labels"]}),
@@ -571,7 +572,7 @@ def _render_retriever_experiment(comparison: dict[str, object]) -> None:
         "Abstention",
         "Failures",
     ]
-    st.dataframe(table_df, hide_index=True, use_container_width=True)
+    st.dataframe(table_df, hide_index=True, width="stretch")
 
 
 def _render_techqa_public_benchmark(summary: dict[str, object]) -> None:
@@ -605,7 +606,7 @@ def _render_techqa_public_benchmark(summary: dict[str, object]) -> None:
     if not table_df.empty:
         display_df = table_df[["label", "value_pct"]]
         display_df.columns = ["Metric", "Value"]
-        st.dataframe(display_df, hide_index=True, use_container_width=True)
+        st.dataframe(display_df, hide_index=True, width="stretch")
     systems_df = pd.DataFrame(summary.get("retriever_systems", []))
     if not systems_df.empty:
         comparison_df = pd.DataFrame(
@@ -626,7 +627,7 @@ def _render_techqa_public_benchmark(summary: dict[str, object]) -> None:
                 for row in summary.get("retriever_systems", [])
             ]
         )
-        st.dataframe(comparison_df, hide_index=True, use_container_width=True)
+        st.dataframe(comparison_df, hide_index=True, width="stretch")
     if profile:
         profile_df = pd.DataFrame(
             [
@@ -646,7 +647,7 @@ def _render_techqa_public_benchmark(summary: dict[str, object]) -> None:
                 }
             ]
         )
-        st.dataframe(profile_df, hide_index=True, use_container_width=True)
+        st.dataframe(profile_df, hide_index=True, width="stretch")
 
 
 def _render_wixqa_public_benchmark(summary: dict[str, object]) -> None:
@@ -681,7 +682,7 @@ def _render_wixqa_public_benchmark(summary: dict[str, object]) -> None:
     if not table_df.empty:
         display_df = table_df[["label", "value_pct"]]
         display_df.columns = ["Metric", "Value"]
-        st.dataframe(display_df, hide_index=True, use_container_width=True)
+        st.dataframe(display_df, hide_index=True, width="stretch")
     systems_df = pd.DataFrame(summary.get("retriever_systems", []))
     if not systems_df.empty:
         comparison_df = pd.DataFrame(
@@ -699,7 +700,7 @@ def _render_wixqa_public_benchmark(summary: dict[str, object]) -> None:
                 for row in summary.get("retriever_systems", [])
             ]
         )
-        st.dataframe(comparison_df, hide_index=True, use_container_width=True)
+        st.dataframe(comparison_df, hide_index=True, width="stretch")
 
 
 def _render_public_rag_findings(report: dict[str, object]) -> None:
@@ -724,17 +725,17 @@ def _render_public_rag_findings(report: dict[str, object]) -> None:
 
     track_df = pd.DataFrame(public_rag_track_rows(report))
     if not track_df.empty:
-        st.dataframe(track_df, hide_index=True, use_container_width=True)
+        st.dataframe(track_df, hide_index=True, width="stretch")
 
     finding_df = pd.DataFrame({"Finding": report.get("findings", [])})
     if not finding_df.empty:
-        st.dataframe(finding_df, hide_index=True, use_container_width=True)
+        st.dataframe(finding_df, hide_index=True, width="stretch")
 
     recommendation_df = pd.DataFrame(
         {"Recommended next experiment": report.get("recommendations", [])}
     )
     if not recommendation_df.empty:
-        st.dataframe(recommendation_df, hide_index=True, use_container_width=True)
+        st.dataframe(recommendation_df, hide_index=True, width="stretch")
 
 
 def _render_public_rag_reranking(report: dict[str, object]) -> None:
@@ -762,11 +763,11 @@ def _render_public_rag_reranking(report: dict[str, object]) -> None:
 
     track_df = pd.DataFrame(public_rag_reranking_track_rows(report))
     if not track_df.empty:
-        st.dataframe(track_df, hide_index=True, use_container_width=True)
+        st.dataframe(track_df, hide_index=True, width="stretch")
 
     finding_df = pd.DataFrame({"Finding": report.get("findings", [])})
     if not finding_df.empty:
-        st.dataframe(finding_df, hide_index=True, use_container_width=True)
+        st.dataframe(finding_df, hide_index=True, width="stretch")
 
 
 def _render_public_rag_reranker(report: dict[str, object]) -> None:
@@ -794,11 +795,11 @@ def _render_public_rag_reranker(report: dict[str, object]) -> None:
 
     track_df = pd.DataFrame(public_rag_reranker_track_rows(report))
     if not track_df.empty:
-        st.dataframe(track_df, hide_index=True, use_container_width=True)
+        st.dataframe(track_df, hide_index=True, width="stretch")
 
     finding_df = pd.DataFrame({"Finding": report.get("findings", [])})
     if not finding_df.empty:
-        st.dataframe(finding_df, hide_index=True, use_container_width=True)
+        st.dataframe(finding_df, hide_index=True, width="stretch")
 
 
 def _render_public_rag_model_reranker(status: dict[str, object]) -> None:
@@ -819,14 +820,14 @@ def _render_public_rag_model_reranker(status: dict[str, object]) -> None:
     st.dataframe(
         pd.DataFrame(public_rag_model_reranker_adapter_rows(status)),
         hide_index=True,
-        use_container_width=True,
+        width="stretch",
     )
     notes = status.get("notes", [])
     if notes:
         st.dataframe(
             pd.DataFrame({"Note": notes}),
             hide_index=True,
-            use_container_width=True,
+            width="stretch",
         )
 
 
@@ -863,7 +864,7 @@ def _render_retriever_snapshots(snapshot_report: dict[str, object]) -> None:
         "Regression",
         "Reason",
     ]
-    st.dataframe(display_df, hide_index=True, use_container_width=True)
+    st.dataframe(display_df, hide_index=True, width="stretch")
 
 
 def _render_evaluation_history(history: dict[str, object]) -> None:
@@ -905,7 +906,7 @@ def _render_evaluation_history(history: dict[str, object]) -> None:
         "Citation delta",
         "Failure delta",
     ]
-    st.dataframe(display_df, hide_index=True, use_container_width=True)
+    st.dataframe(display_df, hide_index=True, width="stretch")
 
 
 def _render_evaluation_gates(gates: dict[str, object]) -> None:
@@ -921,7 +922,7 @@ def _render_evaluation_gates(gates: dict[str, object]) -> None:
 
     gate_df = pd.DataFrame(evaluation_gate_rows(gates))
     if not gate_df.empty:
-        st.dataframe(gate_df, hide_index=True, use_container_width=True)
+        st.dataframe(gate_df, hide_index=True, width="stretch")
 
 
 def _render_retriever_error_analysis(
@@ -938,7 +939,7 @@ def _render_retriever_error_analysis(
             "Abstention mismatches",
             "Top failure reason",
         ]
-        st.dataframe(overview_df, hide_index=True, use_container_width=True)
+        st.dataframe(overview_df, hide_index=True, width="stretch")
 
     example_rows = retriever_failure_example_rows(cases_by_system)
     example_df = pd.DataFrame(example_rows)
@@ -963,7 +964,7 @@ def _render_retriever_error_analysis(
             ]
         ],
         hide_index=True,
-        use_container_width=True,
+        width="stretch",
     )
 
 
@@ -997,7 +998,7 @@ def _render_error_analysis(failure_taxonomy: dict[str, object]) -> None:
                     ]
                 ],
                 hide_index=True,
-                use_container_width=True,
+                width="stretch",
             )
 
     with tab_task:
@@ -1016,13 +1017,13 @@ def _render_error_analysis(failure_taxonomy: dict[str, object]) -> None:
                     ]
                 ],
                 hide_index=True,
-                use_container_width=True,
+                width="stretch",
             )
 
     with tab_failures:
         rows = failure_reason_rows(improved_summary)
         if rows:
-            st.dataframe(pd.DataFrame(rows), hide_index=True, use_container_width=True)
+            st.dataframe(pd.DataFrame(rows), hide_index=True, width="stretch")
         else:
             st.success("No improved-system failure reasons recorded.")
 
@@ -1034,13 +1035,13 @@ def _render_error_analysis(failure_taxonomy: dict[str, object]) -> None:
             st.dataframe(
                 pd.DataFrame(label_rows),
                 hide_index=True,
-                use_container_width=True,
+                width="stretch",
             )
         if source_rows:
             st.dataframe(
                 pd.DataFrame(source_rows),
                 hide_index=True,
-                use_container_width=True,
+                width="stretch",
             )
         if not label_rows and not source_rows:
             st.info("Failure taxonomy summary is not available yet.")
@@ -1048,7 +1049,7 @@ def _render_error_analysis(failure_taxonomy: dict[str, object]) -> None:
     with tab_examples:
         rows = failure_example_rows(improved_summary)
         if rows:
-            st.dataframe(pd.DataFrame(rows), hide_index=True, use_container_width=True)
+            st.dataframe(pd.DataFrame(rows), hide_index=True, width="stretch")
         else:
             st.success("No improved-system failure examples recorded.")
 
@@ -1067,7 +1068,7 @@ def _render_extraction_metrics(
 
     table_df = pd.DataFrame(rows)[["label", "value_pct"]]
     table_df.columns = ["Metric", "Score"]
-    st.dataframe(table_df, hide_index=True, use_container_width=True)
+    st.dataframe(table_df, hide_index=True, width="stretch")
 
 
 def _render_security_metrics(
@@ -1089,7 +1090,7 @@ def _render_security_metrics(
 
     table_df = pd.DataFrame(rows)[["label", "baseline_pct", "improved_pct"]]
     table_df.columns = ["Metric", "Baseline", "Improved policy"]
-    st.dataframe(table_df, hide_index=True, use_container_width=True)
+    st.dataframe(table_df, hide_index=True, width="stretch")
 
     tab_risk, tab_channel, tab_severity = st.tabs(
         ["Risk types", "Attack channels", "Severity bands"]
@@ -1182,7 +1183,7 @@ def _render_safety_classifier_workflow(
         )
         retuning_df = pd.DataFrame(safety_retuning_rows(threshold_retuning))
         if not retuning_df.empty:
-            st.dataframe(retuning_df, hide_index=True, use_container_width=True)
+            st.dataframe(retuning_df, hide_index=True, width="stretch")
 
         threshold_df = pd.DataFrame(safety_threshold_rows(threshold_sweep))
         if not threshold_df.empty:
@@ -1212,7 +1213,7 @@ def _render_safety_classifier_workflow(
                 "Review",
                 "High severity FN",
             ]
-            st.dataframe(display_df, hide_index=True, use_container_width=True)
+            st.dataframe(display_df, hide_index=True, width="stretch")
     with tab_calibration:
         calibration_summary = human_calibration.get("summary", {})
         if not calibration_summary:
@@ -1240,10 +1241,10 @@ def _render_safety_classifier_workflow(
                 human_calibration_category_rows(human_calibration)
             )
             if not category_df.empty:
-                st.dataframe(category_df, hide_index=True, use_container_width=True)
+                st.dataframe(category_df, hide_index=True, width="stretch")
             case_df = pd.DataFrame(human_calibration_case_rows(human_calibration))
             if not case_df.empty:
-                st.dataframe(case_df, hide_index=True, use_container_width=True)
+                st.dataframe(case_df, hide_index=True, width="stretch")
             external_summary = external_human_review.get("summary", {})
             st.markdown("**External Human Review**")
             if not external_summary:
@@ -1290,7 +1291,7 @@ def _render_safety_classifier_workflow(
                     st.dataframe(
                         external_category_df,
                         hide_index=True,
-                        use_container_width=True,
+                        width="stretch",
                     )
                 external_disagreement_df = pd.DataFrame(
                     external_human_review_disagreement_rows(external_human_review)
@@ -1299,7 +1300,7 @@ def _render_safety_classifier_workflow(
                     st.dataframe(
                         external_disagreement_df,
                         hide_index=True,
-                        use_container_width=True,
+                        width="stretch",
                     )
                 for note in external_human_review.get("notes", []):
                     st.caption(str(note))
@@ -1333,7 +1334,7 @@ def _render_safety_classifier_workflow(
                 )
                 pair_df = pd.DataFrame(judge_reliability_pair_rows(judge_reliability))
                 if not pair_df.empty:
-                    st.dataframe(pair_df, hide_index=True, use_container_width=True)
+                    st.dataframe(pair_df, hide_index=True, width="stretch")
                 judge_category_df = pd.DataFrame(
                     judge_reliability_category_rows(judge_reliability)
                 )
@@ -1341,7 +1342,7 @@ def _render_safety_classifier_workflow(
                     st.dataframe(
                         judge_category_df,
                         hide_index=True,
-                        use_container_width=True,
+                        width="stretch",
                     )
                 judge_disagreement_df = pd.DataFrame(
                     judge_reliability_disagreement_rows(judge_reliability)
@@ -1350,12 +1351,12 @@ def _render_safety_classifier_workflow(
                     st.dataframe(
                         judge_disagreement_df,
                         hide_index=True,
-                        use_container_width=True,
+                        width="stretch",
                     )
             st.markdown("**Hosted Judge Adapter**")
             adapter_df = pd.DataFrame(model_judge_adapter_rows(model_judge_adapter))
             if not adapter_df.empty:
-                st.dataframe(adapter_df, hide_index=True, use_container_width=True)
+                st.dataframe(adapter_df, hide_index=True, width="stretch")
             for note in model_judge_adapter.get("notes", []):
                 st.caption(str(note))
             st.markdown("**Multi-Model Comparison Plan**")
@@ -1384,7 +1385,7 @@ def _render_safety_classifier_workflow(
                     multi_model_comparison_target_rows(multi_model_comparison)
                 )
                 if not target_df.empty:
-                    st.dataframe(target_df, hide_index=True, use_container_width=True)
+                    st.dataframe(target_df, hide_index=True, width="stretch")
                 for gate in multi_model_comparison.get("publication_gates", []):
                     st.caption(str(gate))
     with tab_review:
@@ -1399,7 +1400,7 @@ def _render_safety_classifier_workflow(
         review_cols[4].metric("SLA breaches", review_summary["sla_breach_count"])
         review_df = pd.DataFrame(safety_review_case_rows(review_simulation))
         if not review_df.empty:
-            st.dataframe(review_df, hide_index=True, use_container_width=True)
+            st.dataframe(review_df, hide_index=True, width="stretch")
     with tab_notes:
         note_cols = st.columns(4)
         note_cols[0].metric("Authored notes", adjudication_summary["adjudication_note_count"])
@@ -1417,7 +1418,7 @@ def _render_safety_classifier_workflow(
         )
         note_df = pd.DataFrame(safety_adjudication_note_rows(adjudication_notes))
         if not note_df.empty:
-            st.dataframe(note_df, hide_index=True, use_container_width=True)
+            st.dataframe(note_df, hide_index=True, width="stretch")
     with tab_review_band:
         policy = secondary_review_band["candidate_policy"]
         band_cols = st.columns(4)
@@ -1454,7 +1455,7 @@ def _render_safety_classifier_workflow(
         )
         category_actions = pd.DataFrame(secondary_review_band["category_actions"])
         if not category_actions.empty:
-            st.dataframe(category_actions, hide_index=True, use_container_width=True)
+            st.dataframe(category_actions, hide_index=True, width="stretch")
         st.markdown("**Validation Slice**")
         validation_cols = st.columns(4)
         validation_cols[0].metric(
@@ -1476,7 +1477,7 @@ def _render_safety_classifier_workflow(
         )
         validation_cases = pd.DataFrame(secondary_review_validation["cases"])
         if not validation_cases.empty:
-            st.dataframe(validation_cases, hide_index=True, use_container_width=True)
+            st.dataframe(validation_cases, hide_index=True, width="stretch")
     with tab_operating:
         operating_cols = st.columns(4)
         operating_cols[0].metric(
@@ -1504,7 +1505,7 @@ def _render_safety_classifier_workflow(
             safety_operating_recommendation_rows(operating_recommendation)
         )
         if not operating_df.empty:
-            st.dataframe(operating_df, hide_index=True, use_container_width=True)
+            st.dataframe(operating_df, hide_index=True, width="stretch")
         st.markdown("**Controls**")
         for item in operating_recommendation["operating_controls"]:
             st.write(f"- {item}")
@@ -1515,7 +1516,7 @@ def _render_safety_classifier_workflow(
                 ["unsafe_allowed", "unsafe_intercepted", "overblocks", "manual_touches"]
             ]
             st.bar_chart(chart_df, height=280)
-            st.dataframe(impact_df, hide_index=True, use_container_width=True)
+            st.dataframe(impact_df, hide_index=True, width="stretch")
     with tab_memo:
         st.markdown("**Rationale**")
         for item in threshold_memo["rationale"]:
@@ -1549,7 +1550,7 @@ def _render_security_breakdown(rows: list[dict[str, object]]) -> None:
         "Weighted safe rate",
         "Residual risk",
     ]
-    st.dataframe(display_df, hide_index=True, use_container_width=True)
+    st.dataframe(display_df, hide_index=True, width="stretch")
 
 
 def _render_intervention_study(
@@ -1593,7 +1594,7 @@ def _render_intervention_study(
                 "review_burden_per_100": "Review burden / 100",
             }
         )
-        st.dataframe(display_df, hide_index=True, use_container_width=True)
+        st.dataframe(display_df, hide_index=True, width="stretch")
 
         chart_df = df.melt(
             id_vars=["experiment"],
@@ -1612,7 +1613,7 @@ def _render_intervention_study(
             )
             .properties(height=320)
         )
-        st.altair_chart(chart, use_container_width=True)
+        st.altair_chart(chart, width="stretch")
 
         with st.expander("Headline findings", expanded=True):
             for row in rows:
@@ -1678,7 +1679,7 @@ def _render_rag_grounding_intervention(report: dict[str, object]) -> None:
             "review_burden_per_100": "Review burden / 100",
         }
     )
-    st.dataframe(display_df, hide_index=True, use_container_width=True)
+    st.dataframe(display_df, hide_index=True, width="stretch")
 
     chart_df = df.melt(
         id_vars=["variant"],
@@ -1701,7 +1702,7 @@ def _render_rag_grounding_intervention(report: dict[str, object]) -> None:
         )
         .properties(height=320)
     )
-    st.altair_chart(chart, use_container_width=True)
+    st.altair_chart(chart, width="stretch")
 
     with st.expander("Grounding findings", expanded=True):
         for item in report.get("findings", []):
@@ -1759,7 +1760,7 @@ def _render_memory_context_intervention(report: dict[str, object]) -> None:
             "review_burden_per_100": "Review burden / 100",
         }
     )
-    st.dataframe(display_df, hide_index=True, use_container_width=True)
+    st.dataframe(display_df, hide_index=True, width="stretch")
 
     chart_df = df.melt(
         id_vars=["variant"],
@@ -1782,7 +1783,7 @@ def _render_memory_context_intervention(report: dict[str, object]) -> None:
         )
         .properties(height=320)
     )
-    st.altair_chart(chart, use_container_width=True)
+    st.altair_chart(chart, width="stretch")
 
     with st.expander("Memory/context findings", expanded=True):
         for item in report.get("findings", []):
@@ -1838,7 +1839,7 @@ def _render_goal_conflict_intervention(report: dict[str, object]) -> None:
             "review_burden_per_100": "Review burden / 100",
         }
     )
-    st.dataframe(display_df, hide_index=True, use_container_width=True)
+    st.dataframe(display_df, hide_index=True, width="stretch")
 
     chart_df = df.melt(
         id_vars=["variant"],
@@ -1861,7 +1862,7 @@ def _render_goal_conflict_intervention(report: dict[str, object]) -> None:
         )
         .properties(height=320)
     )
-    st.altair_chart(chart, use_container_width=True)
+    st.altair_chart(chart, width="stretch")
 
     with st.expander("Goal-conflict findings", expanded=True):
         for item in report.get("findings", []):
@@ -2012,7 +2013,7 @@ def _render_incident_queue(
             "regression_case": "Regression fixture",
         }
     )
-    st.dataframe(display_df, hide_index=True, use_container_width=True)
+    st.dataframe(display_df, hide_index=True, width="stretch")
 
 
 def _render_incident_response_plan(response_plan: dict[str, object]) -> None:
@@ -2063,7 +2064,7 @@ def _render_incident_response_plan(response_plan: dict[str, object]) -> None:
                 }
             ),
             hide_index=True,
-            use_container_width=True,
+            width="stretch",
         )
 
     recommendations = response_plan.get("recommendations", [])
@@ -2099,7 +2100,7 @@ def _render_incident_replay_matrix(
             }
         ),
         hide_index=True,
-        use_container_width=True,
+        width="stretch",
     )
 
     st.markdown("**Selected replay controls**")
@@ -2127,7 +2128,7 @@ def _render_incident_replay_matrix(
                 }
             ),
             hide_index=True,
-            use_container_width=True,
+            width="stretch",
         )
     else:
         st.info("This replay blocked before tool execution.")
@@ -2159,7 +2160,7 @@ def _render_incident_trace_timeline(
             )
             .properties(height=240)
         )
-        st.altair_chart(chart, use_container_width=True)
+        st.altair_chart(chart, width="stretch")
         st.dataframe(
             trace_df[
                 [
@@ -2185,7 +2186,7 @@ def _render_incident_trace_timeline(
                 }
             ),
             hide_index=True,
-            use_container_width=True,
+            width="stretch",
         )
     else:
         st.info("No original trace events are attached to this incident.")
@@ -2196,7 +2197,7 @@ def _render_incident_trace_timeline(
         st.dataframe(
             pd.DataFrame(replay_steps),
             hide_index=True,
-            use_container_width=True,
+            width="stretch",
         )
 
 
@@ -2228,7 +2229,7 @@ def _render_incident_release_gates(
         gate_cols[3].metric("Fail", release_gates["fail_count"])
         gate_df = pd.DataFrame(evaluation_gate_rows(release_gates))
         if not gate_df.empty:
-            st.dataframe(gate_df, hide_index=True, use_container_width=True)
+            st.dataframe(gate_df, hide_index=True, width="stretch")
     else:
         st.info("Incident release gates are not available.")
 
@@ -2300,11 +2301,11 @@ def _render_agent_metrics(
 
     table_df = pd.DataFrame(rows)[["label", "value_pct"]]
     table_df.columns = ["Metric", "Score"]
-    st.dataframe(table_df, hide_index=True, use_container_width=True)
+    st.dataframe(table_df, hide_index=True, width="stretch")
 
     trace_rows = agent_trace_rows(traces)
     if trace_rows:
-        st.dataframe(pd.DataFrame(trace_rows), hide_index=True, use_container_width=True)
+        st.dataframe(pd.DataFrame(trace_rows), hide_index=True, width="stretch")
 
     otel_summary = agent_otel_summary(otel_spans)
     if otel_summary["span_count"]:
@@ -2334,13 +2335,13 @@ def _render_agent_metrics(
             )
         component_df = pd.DataFrame(observability_component_rows(otel_spans))
         if not component_df.empty:
-            st.dataframe(component_df, hide_index=True, use_container_width=True)
+            st.dataframe(component_df, hide_index=True, width="stretch")
         _render_trace_index(trace_index)
         _render_agent_trace_timeline(otel_spans)
         st.dataframe(
             pd.DataFrame(agent_otel_span_rows(otel_spans)),
             hide_index=True,
-            use_container_width=True,
+            width="stretch",
         )
 
 
@@ -2375,7 +2376,7 @@ def _render_trace_index(trace_index: dict[str, object]) -> None:
                     ]
                 ],
                 hide_index=True,
-                use_container_width=True,
+                width="stretch",
             )
     with tab_errors:
         error_df = pd.DataFrame(trace_index_error_rows(trace_index))
@@ -2394,18 +2395,18 @@ def _render_trace_index(trace_index: dict[str, object]) -> None:
                     ]
                 ],
                 hide_index=True,
-                use_container_width=True,
+                width="stretch",
             )
         else:
             st.success("No error spans indexed.")
     with tab_components:
         component_df = pd.DataFrame(trace_index_component_rows(trace_index))
         if not component_df.empty:
-            st.dataframe(component_df, hide_index=True, use_container_width=True)
+            st.dataframe(component_df, hide_index=True, width="stretch")
     with tab_queries:
         query_df = pd.DataFrame(trace_index_query_rows(trace_index))
         if not query_df.empty:
-            st.dataframe(query_df, hide_index=True, use_container_width=True)
+            st.dataframe(query_df, hide_index=True, width="stretch")
 
 
 def _render_agent_trace_timeline(otel_spans: list[dict[str, object]]) -> None:
@@ -2444,7 +2445,7 @@ def _render_agent_trace_timeline(otel_spans: list[dict[str, object]]) -> None:
         )
         .properties(height=240)
     )
-    st.altair_chart(chart, use_container_width=True)
+    st.altair_chart(chart, width="stretch")
     st.dataframe(
         selected_df[
             [
@@ -2458,7 +2459,7 @@ def _render_agent_trace_timeline(otel_spans: list[dict[str, object]]) -> None:
             ]
         ],
         hide_index=True,
-        use_container_width=True,
+        width="stretch",
     )
 
 
@@ -2520,7 +2521,7 @@ def _render_failures(cases: list[dict[str, object]]) -> None:
         "expected_team",
         "predicted_team",
     ]
-    st.dataframe(df[columns], hide_index=True, use_container_width=True)
+    st.dataframe(df[columns], hide_index=True, width="stretch")
 
 
 def _load_eval_summary(filename: str) -> dict[str, object]:
