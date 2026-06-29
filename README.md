@@ -10,6 +10,7 @@
 [![CI](https://github.com/rosscyking1115/agent-release-gates/actions/workflows/ci.yml/badge.svg)](https://github.com/rosscyking1115/agent-release-gates/actions/workflows/ci.yml)
 
 [Project page](https://rosscyking1115.github.io/agent-release-gates/) ·
+[Live dashboard](https://agent-release-gates.streamlit.app/) ·
 [Evaluation report](https://rosscyking1115.github.io/agent-release-gates/evaluation_report.html) ·
 [Quickstart](docs/evaluate_your_agent_quickstart.md) ·
 [Docs](#documentation)

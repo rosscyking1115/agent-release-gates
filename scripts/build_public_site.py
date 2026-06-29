@@ -380,7 +380,7 @@ def _index_html(
     )
     artifact_count = len(artifact_links)
     repo_url = "https://github.com/rosscyking1115/agent-release-gates"
-    streamlit_url = "https://agent-evaluation-lab.streamlit.app/"
+    streamlit_url = "https://agent-release-gates.streamlit.app/"
 
     return f"""<!doctype html>
 <html lang="en">

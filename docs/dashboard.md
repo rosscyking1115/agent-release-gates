@@ -29,11 +29,12 @@ delegates to `app/streamlit_app.py`. The report artifacts it reads are committed
 4. **To share it publicly:** open the app's **Settings → Sharing** and set visibility
    to **Public**. Without this, the app URL redirects to a Streamlit sign-in page (the
    reason a hosted instance can look "down" when it is merely private).
-5. Put the resulting URL in the README's *Live Project* section.
+5. Put the resulting URL in the README header links and in
+   `scripts/build_public_site.py` (`streamlit_url`).
 
-> The previous hosted instance lived at `agent-evaluation-lab.streamlit.app` (the
-> pre-rename name) and was private. Either re-point/rename that app to the renamed repo
-> and set it public, or create a fresh app per the steps above.
+> The current public instance is <https://agent-release-gates.streamlit.app/>. An
+> earlier deployment lived at `agent-evaluation-lab.streamlit.app` (the pre-rename
+> name) and has been retired.
 
 ## Refresh the data
 

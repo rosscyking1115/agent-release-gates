@@ -4,7 +4,7 @@ contact_links:
     url: https://rosscyking1115.github.io/agent-release-gates/reviewer_handoff_pack.md
     about: Read the external-review instructions before volunteering to label cases.
   - name: Public dashboard
-    url: https://agent-evaluation-lab.streamlit.app/
+    url: https://agent-release-gates.streamlit.app/
     about: Explore the interactive evaluation dashboard.
   - name: Full public report
     url: https://rosscyking1115.github.io/agent-release-gates/evaluation_report.html
