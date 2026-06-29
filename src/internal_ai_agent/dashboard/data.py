@@ -6,6 +6,35 @@ from typing import Any
 
 from internal_ai_agent.io import read_jsonl
 
+# Streamlit is an optional [dashboard] extra. This module is also imported by the
+# lean-core report builder (reporting.public_report), so it must import without
+# Streamlit installed. When Streamlit is present we memoize the file reads with
+# st.cache_data so the dashboard does not re-read every report artifact on each
+# rerun; otherwise the decorator is a no-op passthrough.
+try:
+    import streamlit as st
+
+    _cache_data = st.cache_data(show_spinner=False)
+except ModuleNotFoundError:  # pragma: no cover - exercised only without the extra
+
+    def _cache_data(func):
+        return func
+
+
+@_cache_data
+def _read_json(path: Path) -> Any:
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+@_cache_data
+def _read_jsonl(path: Path) -> list[dict[str, Any]]:
+    return read_jsonl(path)
+
+
+@_cache_data
+def _read_text(path: Path) -> str:
+    return path.read_text(encoding="utf-8")
+
 METRIC_LABELS = {
     "retrieval_hit_rate_at_3": "Retrieval hit rate@3",
     "citation_coverage": "Citation coverage",
@@ -63,23 +92,23 @@ RETRIEVER_CASE_FILES = {
 
 def load_comparison(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/eval_comparison.json"
-    return json.loads(path.read_text(encoding="utf-8"))
+    return _read_json(path)
 
 
 def load_retriever_comparison(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/retriever_comparison.json"
-    return json.loads(path.read_text(encoding="utf-8"))
+    return _read_json(path)
 
 
 def load_retriever_snapshots(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/retriever_metric_snapshots.json"
-    return json.loads(path.read_text(encoding="utf-8"))
+    return _read_json(path)
 
 
 def load_techqa_public_summary(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/techqa_public_rag_summary.json"
     if path.exists():
-        return json.loads(path.read_text(encoding="utf-8"))
+        return _read_json(path)
     return {
         "dataset": "nvidia/TechQA-RAG-Eval",
         "benchmark_track": "external_public_rag",
@@ -94,7 +123,7 @@ def load_techqa_public_summary(project_root: Path) -> dict[str, Any]:
 def load_wixqa_public_summary(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/wixqa_public_rag_summary.json"
     if path.exists():
-        return json.loads(path.read_text(encoding="utf-8"))
+        return _read_json(path)
     return {
         "dataset": "Wix/WixQA expert-written",
         "benchmark_track": "external_public_enterprise_rag",
@@ -109,7 +138,7 @@ def load_wixqa_public_summary(project_root: Path) -> dict[str, Any]:
 def load_public_rag_findings(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/public_rag_findings.json"
     if path.exists():
-        return json.loads(path.read_text(encoding="utf-8"))
+        return _read_json(path)
     return {
         "report_type": "public_rag_findings",
         "status": "not_configured",
@@ -127,7 +156,7 @@ def load_public_rag_findings(project_root: Path) -> dict[str, Any]:
 def load_public_rag_reranking_opportunity(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/public_rag_reranking_opportunity.json"
     if path.exists():
-        return json.loads(path.read_text(encoding="utf-8"))
+        return _read_json(path)
     return {
         "report_type": "public_rag_reranking_opportunity",
         "status": "not_configured",
@@ -144,7 +173,7 @@ def load_public_rag_reranking_opportunity(project_root: Path) -> dict[str, Any]:
 def load_public_rag_reranker_eval(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/public_rag_reranker_eval.json"
     if path.exists():
-        return json.loads(path.read_text(encoding="utf-8"))
+        return _read_json(path)
     return {
         "report_type": "public_rag_reranker_eval",
         "status": "not_configured",
@@ -161,7 +190,7 @@ def load_public_rag_reranker_eval(project_root: Path) -> dict[str, Any]:
 def load_public_rag_model_reranker_adapter_status(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/public_rag_model_reranker_adapter_status.json"
     if path.exists():
-        return json.loads(path.read_text(encoding="utf-8"))
+        return _read_json(path)
     return {
         "status": "not_configured",
         "adapter_type": "hosted_public_rag_reranker",
@@ -180,7 +209,7 @@ def load_public_rag_model_reranker_adapter_status(project_root: Path) -> dict[st
 def load_rag_grounding_intervention(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/rag_grounding_intervention.json"
     if path.exists():
-        return json.loads(path.read_text(encoding="utf-8"))
+        return _read_json(path)
     return {
         "report_type": "rag_grounding_intervention",
         "status": "not_configured",
@@ -194,20 +223,20 @@ def load_rag_grounding_intervention(project_root: Path) -> dict[str, Any]:
 
 def load_evaluation_history(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/evaluation_history.json"
-    return json.loads(path.read_text(encoding="utf-8"))
+    return _read_json(path)
 
 
 def load_evaluation_gates(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/evaluation_gates.json"
     if path.exists():
-        return json.loads(path.read_text(encoding="utf-8"))
+        return _read_json(path)
     return {}
 
 
 def load_incident_replay_summary(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/incident_replay_summary.json"
     if path.exists():
-        return json.loads(path.read_text(encoding="utf-8"))
+        return _read_json(path)
     return {
         "report_type": "incident_replay_suite",
         "status": "not_configured",
@@ -225,28 +254,28 @@ def load_incident_replay_summary(project_root: Path) -> dict[str, Any]:
 def load_incident_replay_runs(project_root: Path) -> list[dict[str, Any]]:
     path = project_root / "reports/incident_replay_runs.jsonl"
     if path.exists():
-        return read_jsonl(path)
+        return _read_jsonl(path)
     return []
 
 
 def load_incident_trace_events(project_root: Path) -> list[dict[str, Any]]:
     path = project_root / "data/incidents/trace_events.jsonl"
     if path.exists():
-        return read_jsonl(path)
+        return _read_jsonl(path)
     return []
 
 
 def load_incident_release_gates(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/incident_release_gates.json"
     if path.exists():
-        return json.loads(path.read_text(encoding="utf-8"))
+        return _read_json(path)
     return {}
 
 
 def load_incident_response_plan(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/incident_response_plan.json"
     if path.exists():
-        return json.loads(path.read_text(encoding="utf-8"))
+        return _read_json(path)
     return {
         "report_type": "incident_response_plan",
         "status": "not_configured",
@@ -259,75 +288,75 @@ def load_incident_response_plan(project_root: Path) -> dict[str, Any]:
 
 def load_dataset_profile(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/dataset_profile.json"
-    return json.loads(path.read_text(encoding="utf-8"))
+    return _read_json(path)
 
 
 def load_extraction_summary(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/extraction_eval_summary.json"
-    return json.loads(path.read_text(encoding="utf-8"))
+    return _read_json(path)
 
 
 def load_security_summary(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/security_eval_summary.json"
-    return json.loads(path.read_text(encoding="utf-8"))
+    return _read_json(path)
 
 
 def load_safety_classifier_summary(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/safety_classifier_eval_summary.json"
-    return json.loads(path.read_text(encoding="utf-8"))
+    return _read_json(path)
 
 
 def load_safety_threshold_sweep(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/safety_threshold_sweep.json"
-    return json.loads(path.read_text(encoding="utf-8"))
+    return _read_json(path)
 
 
 def load_safety_threshold_retuning(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/safety_threshold_retuning.json"
-    return json.loads(path.read_text(encoding="utf-8"))
+    return _read_json(path)
 
 
 def load_safety_human_review_simulation(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/safety_human_review_simulation.json"
-    return json.loads(path.read_text(encoding="utf-8"))
+    return _read_json(path)
 
 
 def load_safety_adjudication_notes(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/safety_adjudication_notes.json"
-    return json.loads(path.read_text(encoding="utf-8"))
+    return _read_json(path)
 
 
 def load_safety_secondary_review_band_analysis(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/safety_secondary_review_band_analysis.json"
-    return json.loads(path.read_text(encoding="utf-8"))
+    return _read_json(path)
 
 
 def load_safety_secondary_review_floor_validation(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/safety_secondary_review_floor_validation.json"
-    return json.loads(path.read_text(encoding="utf-8"))
+    return _read_json(path)
 
 
 def load_safety_secondary_review_operating_recommendation(
     project_root: Path,
 ) -> dict[str, Any]:
     path = project_root / "reports/safety_secondary_review_operating_recommendation.json"
-    return json.loads(path.read_text(encoding="utf-8"))
+    return _read_json(path)
 
 
 def load_safety_mitigation_impact(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/safety_mitigation_impact.json"
-    return json.loads(path.read_text(encoding="utf-8"))
+    return _read_json(path)
 
 
 def load_safety_threshold_decision_memo(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/safety_threshold_decision_memo.json"
-    return json.loads(path.read_text(encoding="utf-8"))
+    return _read_json(path)
 
 
 def load_intervention_study(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/agent_safety_intervention_study.json"
     if path.exists():
-        return json.loads(path.read_text(encoding="utf-8"))
+        return _read_json(path)
     return {
         "report_type": "agent_safety_intervention_study",
         "status": "not_configured",
@@ -343,7 +372,7 @@ def load_intervention_study(project_root: Path) -> dict[str, Any]:
 def load_memory_context_intervention(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/memory_context_intervention.json"
     if path.exists():
-        return json.loads(path.read_text(encoding="utf-8"))
+        return _read_json(path)
     return {
         "report_type": "memory_context_intervention",
         "status": "not_configured",
@@ -358,7 +387,7 @@ def load_memory_context_intervention(project_root: Path) -> dict[str, Any]:
 def load_goal_conflict_intervention(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/goal_conflict_intervention.json"
     if path.exists():
-        return json.loads(path.read_text(encoding="utf-8"))
+        return _read_json(path)
     return {
         "report_type": "goal_conflict_intervention",
         "status": "not_configured",
@@ -536,7 +565,7 @@ def memory_context_variant_rows(report: dict[str, Any]) -> list[dict[str, Any]]:
 def load_human_calibration_summary(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/human_calibration_summary.json"
     if path.exists():
-        return json.loads(path.read_text(encoding="utf-8"))
+        return _read_json(path)
     return {
         "report_type": "human_label_calibration",
         "case_count": 0,
@@ -551,7 +580,7 @@ def load_human_calibration_summary(project_root: Path) -> dict[str, Any]:
 def load_external_human_review_summary(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/external_human_review_summary.json"
     if path.exists():
-        return json.loads(path.read_text(encoding="utf-8"))
+        return _read_json(path)
     return {
         "report_type": "external_human_review",
         "status": "not_configured",
@@ -568,7 +597,7 @@ def load_external_human_review_summary(project_root: Path) -> dict[str, Any]:
 def load_judge_reliability_summary(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/judge_reliability_summary.json"
     if path.exists():
-        return json.loads(path.read_text(encoding="utf-8"))
+        return _read_json(path)
     return {
         "report_type": "judge_reliability_calibration",
         "case_count": 0,
@@ -583,7 +612,7 @@ def load_judge_reliability_summary(project_root: Path) -> dict[str, Any]:
 def load_model_judge_adapter_status(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/model_judge_adapter_status.json"
     if path.exists():
-        return json.loads(path.read_text(encoding="utf-8"))
+        return _read_json(path)
     return {
         "status": "not_configured",
         "adapter_type": "hosted_model_judge",
@@ -597,7 +626,7 @@ def load_model_judge_adapter_status(project_root: Path) -> dict[str, Any]:
 def load_multi_model_comparison_plan(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/multi_model_comparison_plan.json"
     if path.exists():
-        return json.loads(path.read_text(encoding="utf-8"))
+        return _read_json(path)
     return {
         "report_type": "multi_model_comparison_plan",
         "status": "not_configured",
@@ -614,7 +643,7 @@ def load_multi_model_comparison_plan(project_root: Path) -> dict[str, Any]:
 def load_failure_taxonomy_summary(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/failure_taxonomy_summary.json"
     if path.exists():
-        return json.loads(path.read_text(encoding="utf-8"))
+        return _read_json(path)
     return {
         "report_type": "failure_taxonomy_summary",
         "total_labeled_cases": 0,
@@ -626,46 +655,46 @@ def load_failure_taxonomy_summary(project_root: Path) -> dict[str, Any]:
 
 def load_agent_summary(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/agent_eval_summary.json"
-    return json.loads(path.read_text(encoding="utf-8"))
+    return _read_json(path)
 
 
 def load_agent_trace_examples(project_root: Path) -> list[dict[str, Any]]:
-    return read_jsonl(project_root / "reports/agent_trace_examples.jsonl")
+    return _read_jsonl(project_root / "reports/agent_trace_examples.jsonl")
 
 
 def load_agent_otel_spans(project_root: Path) -> list[dict[str, Any]]:
-    return read_jsonl(project_root / "reports/agent_otel_spans.jsonl")
+    return _read_jsonl(project_root / "reports/agent_otel_spans.jsonl")
 
 
 def load_observability_otel_spans(project_root: Path) -> list[dict[str, Any]]:
     path = project_root / "reports/observability_otel_spans.jsonl"
     if path.exists():
-        return read_jsonl(path)
+        return _read_jsonl(path)
     return load_agent_otel_spans(project_root)
 
 
 def load_collector_export_preview(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/collector_export_preview.json"
     if path.exists():
-        return json.loads(path.read_text(encoding="utf-8"))
+        return _read_json(path)
     return {}
 
 
 def load_observability_trace_index(project_root: Path) -> dict[str, Any]:
     path = project_root / "reports/observability_trace_index.json"
     if path.exists():
-        return json.loads(path.read_text(encoding="utf-8"))
+        return _read_json(path)
     return {}
 
 
 def load_public_report(project_root: Path) -> str:
     path = project_root / "reports/evaluation_report.md"
-    return path.read_text(encoding="utf-8")
+    return _read_text(path)
 
 
 def load_public_report_html(project_root: Path) -> str:
     path = project_root / "reports/evaluation_report.html"
-    return path.read_text(encoding="utf-8")
+    return _read_text(path)
 
 
 def load_public_report_pdf(project_root: Path) -> bytes:
@@ -1547,7 +1576,7 @@ def _span_outcome(span: dict[str, Any]) -> str:
 
 def load_case_rows(project_root: Path, system: str) -> list[dict[str, Any]]:
     filename = f"{system}_eval_cases.jsonl"
-    return read_jsonl(project_root / "reports" / filename)
+    return _read_jsonl(project_root / "reports" / filename)
 
 
 def load_retriever_case_rows(project_root: Path) -> dict[str, list[dict[str, Any]]]:
