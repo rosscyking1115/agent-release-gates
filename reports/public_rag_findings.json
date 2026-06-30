@@ -1,8 +1,8 @@
 {
   "findings": [
     "Local TF-IDF retrieval outperforms the keyword-title baseline on every evaluated public RAG track.",
-    "Across public tracks, weighted retrieval hit rate@3 is 87.92% and weighted top-1 citation accuracy is 76.56%.",
-    "The most common cross-track failure label is retrieval_miss (25).",
+    "Across public tracks, weighted retrieval hit rate@3 is 79.92% and weighted top-1 citation accuracy is 69.61%.",
+    "The most common cross-track failure label is retrieval_miss (110).",
     "TechQA exposes the abstention trade-off: the primary retriever improves answerable retrieval, but impossible-question abstention remains the main inspection target.",
     "WixQA adds multi-article enterprise-support pressure and shows stronger retrieval coverage than top-1 citation accuracy, so reranking remains important."
   ],
@@ -18,76 +18,76 @@
   "status": "evaluated",
   "summary": {
     "evaluated_track_count": 2,
-    "largest_retrieval_lift_track": "Wix/WixQA expert-written (+27.50%)",
-    "largest_top1_lift_track": "Wix/WixQA expert-written (+28.75%)",
-    "top_cross_track_failure_label": "retrieval_miss (25)",
-    "total_case_count": 240,
-    "total_document_count": 215,
-    "total_failed_case_count": 71,
-    "weighted_failure_rate": 0.2958,
-    "weighted_retrieval_hit_rate_at_3": 0.8792,
-    "weighted_top1_citation_accuracy": 0.7656
+    "largest_retrieval_lift_track": "Wix/WixQA expert-written (+24.38%)",
+    "largest_top1_lift_track": "Wix/WixQA expert-written (+24.37%)",
+    "top_cross_track_failure_label": "retrieval_miss (110)",
+    "total_case_count": 640,
+    "total_document_count": 510,
+    "total_failed_case_count": 259,
+    "weighted_failure_rate": 0.4047,
+    "weighted_retrieval_hit_rate_at_3": 0.7992,
+    "weighted_top1_citation_accuracy": 0.6961
   },
   "tracks": [
     {
       "baseline_retriever": "Keyword title baseline",
       "benchmark_track": "external_public_rag",
-      "case_count": 160,
+      "case_count": 480,
       "dataset": "nvidia/TechQA-RAG-Eval",
       "dataset_specific_metrics": {
-        "answerable_false_abstention_rate": 0.0547,
-        "impossible_abstention_rate": 0.3438
+        "answerable_false_abstention_rate": 0.0443,
+        "impossible_abstention_rate": 0.1146
       },
-      "document_count": 119,
-      "failed_case_count": 51,
-      "failure_rate": 0.3187,
+      "document_count": 337,
+      "failed_case_count": 197,
+      "failure_rate": 0.4104,
       "failure_reasons": {
-        "expected_document_not_retrieved_at_3": 16,
-        "expected_document_retrieved_but_not_top1": 13,
-        "failed_to_abstain_impossible_question": 21,
-        "false_abstention_answerable_question": 7
+        "expected_document_not_retrieved_at_3": 74,
+        "expected_document_retrieved_but_not_top1": 32,
+        "failed_to_abstain_impossible_question": 85,
+        "false_abstention_answerable_question": 17
       },
       "license": "Apache-2.0",
-      "mean_reciprocal_rank_at_3": 0.8151,
+      "mean_reciprocal_rank_at_3": 0.7617,
       "primary_retriever": "Local TF-IDF public retriever",
-      "retrieval_hit_rate_at_3": 0.875,
-      "retrieval_hit_rate_at_3_lift": 0.1484,
+      "retrieval_hit_rate_at_3": 0.8073,
+      "retrieval_hit_rate_at_3_lift": 0.1563,
       "taxonomy_labels": {
-        "excessive_abstention": 7,
-        "over_refusal": 7,
-        "retrieval_miss": 16,
-        "weak_evidence_treated_as_strong": 21,
-        "wrong_citation": 13
+        "excessive_abstention": 17,
+        "over_refusal": 17,
+        "retrieval_miss": 74,
+        "weak_evidence_treated_as_strong": 85,
+        "wrong_citation": 32
       },
-      "top1_citation_accuracy": 0.7734,
-      "top1_citation_accuracy_lift": 0.1875
+      "top1_citation_accuracy": 0.724,
+      "top1_citation_accuracy_lift": 0.1719
     },
     {
       "baseline_retriever": "Keyword title baseline",
       "benchmark_track": "external_public_enterprise_rag",
-      "case_count": 80,
+      "case_count": 160,
       "dataset": "Wix/WixQA expert-written",
       "dataset_specific_metrics": {
-        "multi_article_retrieval_hit_rate_at_3": 0.9565
+        "multi_article_retrieval_hit_rate_at_3": 0.8864
       },
-      "document_count": 96,
-      "failed_case_count": 20,
-      "failure_rate": 0.25,
+      "document_count": 173,
+      "failed_case_count": 62,
+      "failure_rate": 0.3875,
       "failure_reasons": {
-        "expected_document_not_retrieved_at_3": 9,
-        "expected_document_retrieved_but_not_top1": 11
+        "expected_document_not_retrieved_at_3": 36,
+        "expected_document_retrieved_but_not_top1": 26
       },
       "license": "MIT",
-      "mean_reciprocal_rank_at_3": 0.8104,
+      "mean_reciprocal_rank_at_3": 0.6844,
       "primary_retriever": "Local TF-IDF WixQA retriever",
-      "retrieval_hit_rate_at_3": 0.8875,
-      "retrieval_hit_rate_at_3_lift": 0.275,
+      "retrieval_hit_rate_at_3": 0.775,
+      "retrieval_hit_rate_at_3_lift": 0.2438,
       "taxonomy_labels": {
-        "retrieval_miss": 9,
-        "wrong_citation": 11
+        "retrieval_miss": 36,
+        "wrong_citation": 26
       },
-      "top1_citation_accuracy": 0.75,
-      "top1_citation_accuracy_lift": 0.2875
+      "top1_citation_accuracy": 0.6125,
+      "top1_citation_accuracy_lift": 0.2437
     }
   ]
 }

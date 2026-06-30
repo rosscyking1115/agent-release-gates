@@ -42,7 +42,7 @@ Internal operations data remains synthetic:
 
 The TechQA track is explicitly separate. It is public technical-support data
 used to validate retrieval behavior outside the synthetic benchmark. The tracked
-sample currently contains 160 cases.
+sample currently contains 480 cases.
 
 ## Current Milestones
 
@@ -92,7 +92,7 @@ Every new feature should improve at least one of:
 ## Current Limitations
 
 - The internal benchmark is synthetic and still partly templated.
-- The TechQA public benchmark uses a 160-case compact sample, not the full upstream dataset.
+- The TechQA public benchmark uses a 480-case compact sample, not the full upstream dataset.
 - Extraction is deterministic rather than LLM-backed.
 - Red-team checks are deterministic and rule-based.
 - Provider-backed embedding results are not published yet.
@@ -105,4 +105,4 @@ Every new feature should improve at least one of:
 3. Add a human-labeled calibration sample and compare human review with deterministic rules and LLM-as-judge.
 4. Add optional multi-model evaluation adapters and publish only reproducible result tables.
 5. Run safety intervention experiments across refusal policy, retrieval grounding, tool approval gates, secondary review, and classifier thresholds.
-6. Expand the TechQA public benchmark beyond 160 cases and compare local retrieval with provider embeddings.
+6. Expand the TechQA public benchmark beyond 480 cases and compare local retrieval with provider embeddings.

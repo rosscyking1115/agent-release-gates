@@ -35,8 +35,8 @@ When do safety interventions improve agent safety, and when do they reduce usefu
 | Safety classifier and prevalence evaluation | Implemented | Local synthetic challenge, validation, and sampled prevalence cases |
 | Approval-gated mock tool use | Implemented | Local controlled-agent cases |
 | Observability and release gates | Implemented | Local trace, audit, and report artifacts |
-| Public TechQA retrieval validation | Implemented | 160-case compact NVIDIA TechQA-RAG-Eval sample |
-| Public WixQA retrieval validation | Implemented | 80-case compact WixQA expert-written sample |
+| Public TechQA retrieval validation | Implemented | 480-case compact NVIDIA TechQA-RAG-Eval sample |
+| Public WixQA retrieval validation | Implemented | 160-case compact WixQA expert-written sample |
 | Maintainer-labeled calibration | Implemented | 24-case calibration sample |
 | External human-review packet | Implemented | Review packet and label template prepared; labels awaiting independent reviewers |
 | Local rubric judge reliability | Implemented | Deterministic judge baseline against maintainer labels |
@@ -68,8 +68,8 @@ This benchmark should not be used as evidence of real production performance, re
 
 - Synthetic cases are still partly templated.
 - Human-review labels are simulated and deterministic; the external-review packet is prepared, but independent labels are not yet published.
-- Public TechQA uses a compact 160-case sample, not the full upstream dataset.
-- Public WixQA uses a compact 80-case expert-written sample, not the full upstream benchmark suite.
+- Public TechQA uses a compact 480-case sample, not the full upstream dataset.
+- Public WixQA uses a compact 160-case expert-written sample, not the full upstream benchmark suite.
 - Provider-backed embeddings and multi-model results are not yet published.
 - Deterministic rules make the benchmark reproducible but do not replace adversarial human review.
 

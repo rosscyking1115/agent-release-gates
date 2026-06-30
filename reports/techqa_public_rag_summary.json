@@ -1,34 +1,34 @@
 {
   "abstention_score_threshold": 15.0,
-  "answerable_case_count": 128,
+  "answerable_case_count": 384,
   "benchmark_profile": {
-    "answerable_case_count": 128,
+    "answerable_case_count": 384,
     "answerable_context_coverage": 1.0,
     "average_contexts_per_case": 0.8,
     "benchmark_track": "external_public_rag",
     "dataset": "nvidia/TechQA-RAG-Eval",
-    "failed_case_count": 51,
-    "failure_rate": 0.3187,
-    "impossible_abstention_rate": 0.3438,
-    "impossible_case_count": 32,
+    "failed_case_count": 197,
+    "failure_rate": 0.4104,
+    "impossible_abstention_rate": 0.1146,
+    "impossible_case_count": 96,
     "impossible_case_share": 0.2,
     "license": "Apache-2.0",
     "provider_backed_embedding_result_published": false,
-    "retrieval_hit_rate_at_3": 0.875,
-    "sample_case_count": 160,
+    "retrieval_hit_rate_at_3": 0.8073,
+    "sample_case_count": 480,
     "sample_path": "data/public/techqa_rag_eval_sample.jsonl",
     "sample_scope": "tracked_compact_public_sample",
     "sample_selection_policy": "first_answerable_plus_first_impossible_20pct",
     "source_url": "https://huggingface.co/datasets/nvidia/TechQA-RAG-Eval",
     "status": "evaluated",
-    "top1_citation_accuracy": 0.7734,
-    "tracked_sample_default_limit": 160,
-    "unique_document_count": 119
+    "top1_citation_accuracy": 0.724,
+    "tracked_sample_default_limit": 480,
+    "unique_document_count": 337
   },
   "benchmark_track": "external_public_rag",
-  "case_count": 160,
+  "case_count": 480,
   "dataset": "nvidia/TechQA-RAG-Eval",
-  "document_count": 119,
+  "document_count": 337,
   "failure_examples": [
     {
       "case_id": "TRAIN_Q015",
@@ -48,7 +48,7 @@
       "taxonomy_labels": [
         "wrong_citation"
       ],
-      "top_score": 321.142
+      "top_score": 320.7766
     },
     {
       "case_id": "TRAIN_Q016",
@@ -63,52 +63,52 @@
       "retrieved_citation_ids": [
         "swg21067352.txt",
         "swg21902654.txt",
-        "swg22009818.txt"
+        "swg21981870.txt"
       ],
       "taxonomy_labels": [
         "retrieval_miss"
       ],
-      "top_score": 71.1317
+      "top_score": 71.6282
     },
     {
       "case_id": "TRAIN_Q017",
       "expected_citation_ids": [
         "swg27019359.txt"
       ],
-      "expected_rank": 2,
+      "expected_rank": null,
       "failure_reasons": [
-        "expected_document_retrieved_but_not_top1"
+        "expected_document_not_retrieved_at_3"
       ],
       "is_impossible": false,
       "retrieved_citation_ids": [
-        "swg21695094.txt",
-        "swg27019359.txt",
-        "swg21426787.txt"
+        "swg21690673.txt",
+        "swg21982008.txt",
+        "swg21695094.txt"
       ],
       "taxonomy_labels": [
-        "wrong_citation"
+        "retrieval_miss"
       ],
-      "top_score": 21.5374
+      "top_score": 32.955
     },
     {
       "case_id": "TRAIN_Q020",
       "expected_citation_ids": [
         "swg24035040.txt"
       ],
-      "expected_rank": 2,
+      "expected_rank": null,
       "failure_reasons": [
-        "expected_document_retrieved_but_not_top1"
+        "expected_document_not_retrieved_at_3"
       ],
       "is_impossible": false,
       "retrieved_citation_ids": [
         "swg21263677.txt",
-        "swg24035040.txt",
-        "swg21993043.txt"
+        "swg21651101.txt",
+        "swg21689914.txt"
       ],
       "taxonomy_labels": [
-        "wrong_citation"
+        "retrieval_miss"
       ],
-      "top_score": 68.7803
+      "top_score": 63.4981
     },
     {
       "case_id": "TRAIN_Q024",
@@ -121,14 +121,14 @@
       ],
       "is_impossible": false,
       "retrieved_citation_ids": [
+        "swg24043574.txt",
         "swg21507587.txt",
-        "swg21966637.txt",
-        "swg22001418.txt"
+        "swg21477587.txt"
       ],
       "taxonomy_labels": [
         "retrieval_miss"
       ],
-      "top_score": 44.1336
+      "top_score": 47.4965
     },
     {
       "case_id": "TRAIN_Q029",
@@ -142,13 +142,13 @@
       "is_impossible": false,
       "retrieved_citation_ids": [
         "swg21515420.txt",
-        "swg21249798.txt",
-        "swg21636093.txt"
+        "swg21700865.txt",
+        "swg22002975.txt"
       ],
       "taxonomy_labels": [
         "retrieval_miss"
       ],
-      "top_score": 43.2497
+      "top_score": 42.1415
     },
     {
       "case_id": "TRAIN_Q033",
@@ -157,21 +157,18 @@
       ],
       "expected_rank": null,
       "failure_reasons": [
-        "false_abstention_answerable_question",
         "expected_document_not_retrieved_at_3"
       ],
       "is_impossible": false,
       "retrieved_citation_ids": [
-        "swg24039229.txt",
-        "swg1PI37248.txt",
-        "swg21611699.txt"
+        "swg21371279.txt",
+        "swg21442694.txt",
+        "swg21688543.txt"
       ],
       "taxonomy_labels": [
-        "excessive_abstention",
-        "over_refusal",
         "retrieval_miss"
       ],
-      "top_score": 6.4425
+      "top_score": 18.7902
     },
     {
       "case_id": "TRAIN_Q038",
@@ -180,21 +177,18 @@
       ],
       "expected_rank": null,
       "failure_reasons": [
-        "false_abstention_answerable_question",
         "expected_document_not_retrieved_at_3"
       ],
       "is_impossible": false,
       "retrieved_citation_ids": [
-        "swg21966637.txt",
-        "swg21998655.txt",
-        "swg21983129.txt"
+        "swg21700865.txt",
+        "swg21690673.txt",
+        "swg21974757.txt"
       ],
       "taxonomy_labels": [
-        "excessive_abstention",
-        "over_refusal",
         "retrieval_miss"
       ],
-      "top_score": 6.469
+      "top_score": 25.2192
     },
     {
       "case_id": "TRAIN_Q039",
@@ -207,14 +201,14 @@
       ],
       "is_impossible": false,
       "retrieved_citation_ids": [
+        "swg24042177.txt",
         "swg21249798.txt",
-        "swg21636093.txt",
-        "swg24041394.txt"
+        "swg21138332.txt"
       ],
       "taxonomy_labels": [
         "retrieval_miss"
       ],
-      "top_score": 36.1334
+      "top_score": 34.8847
     },
     {
       "case_id": "TRAIN_Q043",
@@ -234,24 +228,24 @@
       "taxonomy_labels": [
         "wrong_citation"
       ],
-      "top_score": 44.415
+      "top_score": 42.6836
     }
   ],
   "failure_reasons": {
-    "expected_document_not_retrieved_at_3": 16,
-    "expected_document_retrieved_but_not_top1": 13,
-    "failed_to_abstain_impossible_question": 21,
-    "false_abstention_answerable_question": 7
+    "expected_document_not_retrieved_at_3": 74,
+    "expected_document_retrieved_but_not_top1": 32,
+    "failed_to_abstain_impossible_question": 85,
+    "false_abstention_answerable_question": 17
   },
-  "impossible_case_count": 32,
+  "impossible_case_count": 96,
   "license": "Apache-2.0",
   "metrics": {
-    "abstention_accuracy": 0.825,
-    "answerable_false_abstention_rate": 0.0547,
-    "impossible_abstention_rate": 0.3438,
-    "mean_reciprocal_rank_at_3": 0.8151,
-    "retrieval_hit_rate_at_3": 0.875,
-    "top1_citation_accuracy": 0.7734
+    "abstention_accuracy": 0.7875,
+    "answerable_false_abstention_rate": 0.0443,
+    "impossible_abstention_rate": 0.1146,
+    "mean_reciprocal_rank_at_3": 0.7617,
+    "retrieval_hit_rate_at_3": 0.8073,
+    "top1_citation_accuracy": 0.724
   },
   "notes": [
     "This is an external public-data benchmark track. It does not replace the controlled synthetic operations benchmark.",
@@ -259,56 +253,56 @@
     "The report is deterministic and uses no paid API calls."
   ],
   "primary_retriever": {
-    "case_count": 160,
+    "case_count": 480,
     "description": "Local TF-IDF document retrieval with title boosts and exact phrase scoring.",
-    "failed_case_count": 51,
+    "failed_case_count": 197,
     "label": "Local TF-IDF public retriever",
     "metrics": {
-      "abstention_accuracy": 0.825,
-      "answerable_false_abstention_rate": 0.0547,
-      "impossible_abstention_rate": 0.3438,
-      "mean_reciprocal_rank_at_3": 0.8151,
-      "retrieval_hit_rate_at_3": 0.875,
-      "top1_citation_accuracy": 0.7734
+      "abstention_accuracy": 0.7875,
+      "answerable_false_abstention_rate": 0.0443,
+      "impossible_abstention_rate": 0.1146,
+      "mean_reciprocal_rank_at_3": 0.7617,
+      "retrieval_hit_rate_at_3": 0.8073,
+      "top1_citation_accuracy": 0.724
     },
     "system_id": "local_tfidf_public_retriever"
   },
   "retriever_comparison": {
     "baseline_system_id": "keyword_title_baseline",
-    "impossible_abstention_rate_delta": -0.25,
+    "impossible_abstention_rate_delta": -0.2812,
     "primary_system_id": "local_tfidf_public_retriever",
-    "retrieval_hit_rate_at_3_lift": 0.1484,
+    "retrieval_hit_rate_at_3_lift": 0.1563,
     "system_count": 2,
-    "top1_citation_accuracy_lift": 0.1875
+    "top1_citation_accuracy_lift": 0.1719
   },
   "retriever_systems": [
     {
-      "case_count": 160,
+      "case_count": 480,
       "description": "Simple title-token overlap baseline over public support documents.",
-      "failed_case_count": 80,
+      "failed_case_count": 253,
       "label": "Keyword title baseline",
       "metrics": {
-        "abstention_accuracy": 0.625,
-        "answerable_false_abstention_rate": 0.3672,
-        "impossible_abstention_rate": 0.5938,
-        "mean_reciprocal_rank_at_3": 0.651,
-        "retrieval_hit_rate_at_3": 0.7266,
-        "top1_citation_accuracy": 0.5859
+        "abstention_accuracy": 0.6625,
+        "answerable_false_abstention_rate": 0.2708,
+        "impossible_abstention_rate": 0.3958,
+        "mean_reciprocal_rank_at_3": 0.5968,
+        "retrieval_hit_rate_at_3": 0.651,
+        "top1_citation_accuracy": 0.5521
       },
       "system_id": "keyword_title_baseline"
     },
     {
-      "case_count": 160,
+      "case_count": 480,
       "description": "Local TF-IDF document retrieval with title boosts and exact phrase scoring.",
-      "failed_case_count": 51,
+      "failed_case_count": 197,
       "label": "Local TF-IDF public retriever",
       "metrics": {
-        "abstention_accuracy": 0.825,
-        "answerable_false_abstention_rate": 0.0547,
-        "impossible_abstention_rate": 0.3438,
-        "mean_reciprocal_rank_at_3": 0.8151,
-        "retrieval_hit_rate_at_3": 0.875,
-        "top1_citation_accuracy": 0.7734
+        "abstention_accuracy": 0.7875,
+        "answerable_false_abstention_rate": 0.0443,
+        "impossible_abstention_rate": 0.1146,
+        "mean_reciprocal_rank_at_3": 0.7617,
+        "retrieval_hit_rate_at_3": 0.8073,
+        "top1_citation_accuracy": 0.724
       },
       "system_id": "local_tfidf_public_retriever"
     }
@@ -317,10 +311,10 @@
   "source_url": "https://huggingface.co/datasets/nvidia/TechQA-RAG-Eval",
   "status": "evaluated",
   "taxonomy_labels": {
-    "excessive_abstention": 7,
-    "over_refusal": 7,
-    "retrieval_miss": 16,
-    "weak_evidence_treated_as_strong": 21,
-    "wrong_citation": 13
+    "excessive_abstention": 17,
+    "over_refusal": 17,
+    "retrieval_miss": 74,
+    "weak_evidence_treated_as_strong": 85,
+    "wrong_citation": 32
   }
 }

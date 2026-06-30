@@ -20,7 +20,7 @@ TECHQA_RETRIEVER_COMPARISON_PATH = Path(
     "reports/techqa_public_retriever_comparison.json"
 )
 TECHQA_RETRIEVER_CASES_PATH = Path("reports/techqa_public_retriever_cases.jsonl")
-TECHQA_DEFAULT_SAMPLE_LIMIT = 160
+TECHQA_DEFAULT_SAMPLE_LIMIT = 480
 ABSTENTION_SCORE_THRESHOLD = 15.0
 TECHQA_PRIMARY_RETRIEVER_ID = "local_tfidf_public_retriever"
 TECHQA_RETRIEVER_SYSTEMS = [

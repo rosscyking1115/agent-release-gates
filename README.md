@@ -80,7 +80,7 @@ Point it at your own agent by exporting candidate results (generic logs or LangC
 | --- | --- |
 | Controlled benchmark | 358 synthetic golden cases, 60 red-team cases, 180 synthetic operations tickets |
 | Retrieval | 100.00% synthetic retrieval hit rate@3 with local TF-IDF/vector-style retrievers |
-| Public RAG validation | 160 TechQA cases and 80 WixQA cases evaluated separately from the synthetic benchmark |
+| Public RAG validation | 480 TechQA cases and 160 WixQA cases evaluated separately from the synthetic benchmark |
 | Safety | 90.91% classifier recall, 0 high-severity false negatives in the current challenge set |
 | Agent governance | 100.00% mock side-effect block rate and approval audit rate |
 | Incident replay | 8 seeded synthetic incidents replayed, 100.00% closure rate, 0 replay must-not violations |

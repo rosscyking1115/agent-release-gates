@@ -6,15 +6,15 @@
     "Provider-backed embedding comparison remains optional."
   ],
   "primary_retriever": {
-    "case_count": 80,
+    "case_count": 160,
     "description": "Local TF-IDF retrieval with title boosts and exact phrase scoring.",
-    "failed_case_count": 20,
+    "failed_case_count": 62,
     "label": "Local TF-IDF WixQA retriever",
     "metrics": {
-      "mean_reciprocal_rank_at_3": 0.8104,
-      "multi_article_retrieval_hit_rate_at_3": 0.9565,
-      "retrieval_hit_rate_at_3": 0.8875,
-      "top1_citation_accuracy": 0.75
+      "mean_reciprocal_rank_at_3": 0.6844,
+      "multi_article_retrieval_hit_rate_at_3": 0.8864,
+      "retrieval_hit_rate_at_3": 0.775,
+      "top1_citation_accuracy": 0.6125
     },
     "system_id": "local_tfidf_wixqa_retriever"
   },
@@ -23,34 +23,34 @@
   "summary": {
     "baseline_system_id": "keyword_title_baseline",
     "primary_system_id": "local_tfidf_wixqa_retriever",
-    "retrieval_hit_rate_at_3_lift": 0.275,
+    "retrieval_hit_rate_at_3_lift": 0.2438,
     "system_count": 2,
-    "top1_citation_accuracy_lift": 0.2875
+    "top1_citation_accuracy_lift": 0.2437
   },
   "systems": [
     {
-      "case_count": 80,
+      "case_count": 160,
       "description": "Simple title-token overlap baseline over Wix public KB articles.",
-      "failed_case_count": 43,
+      "failed_case_count": 101,
       "label": "Keyword title baseline",
       "metrics": {
-        "mean_reciprocal_rank_at_3": 0.5292,
-        "multi_article_retrieval_hit_rate_at_3": 0.6522,
-        "retrieval_hit_rate_at_3": 0.6125,
-        "top1_citation_accuracy": 0.4625
+        "mean_reciprocal_rank_at_3": 0.4375,
+        "multi_article_retrieval_hit_rate_at_3": 0.6591,
+        "retrieval_hit_rate_at_3": 0.5312,
+        "top1_citation_accuracy": 0.3688
       },
       "system_id": "keyword_title_baseline"
     },
     {
-      "case_count": 80,
+      "case_count": 160,
       "description": "Local TF-IDF retrieval with title boosts and exact phrase scoring.",
-      "failed_case_count": 20,
+      "failed_case_count": 62,
       "label": "Local TF-IDF WixQA retriever",
       "metrics": {
-        "mean_reciprocal_rank_at_3": 0.8104,
-        "multi_article_retrieval_hit_rate_at_3": 0.9565,
-        "retrieval_hit_rate_at_3": 0.8875,
-        "top1_citation_accuracy": 0.75
+        "mean_reciprocal_rank_at_3": 0.6844,
+        "multi_article_retrieval_hit_rate_at_3": 0.8864,
+        "retrieval_hit_rate_at_3": 0.775,
+        "top1_citation_accuracy": 0.6125
       },
       "system_id": "local_tfidf_wixqa_retriever"
     }

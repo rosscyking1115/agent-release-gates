@@ -145,7 +145,7 @@ The optional provider-backed embedding comparison uses `scripts/run_provider_emb
 
 ## External Public TechQA Track
 
-The TechQA public track uses a tracked 160-case sample from NVIDIA TechQA-RAG-Eval. It evaluates public technical-support retrieval separately from the controlled synthetic operations benchmark. The summary report records retrieval hit rate@3, top-1 citation accuracy, mean reciprocal rank@3, abstention accuracy, impossible-question abstention, and answerable false abstention. The benchmark profile records the sample size, answerable/impossible split, unique public document count, context coverage, failed-case rate, sample-selection policy, and whether a provider-backed embedding result has actually been published.
+The TechQA public track uses a tracked 480-case sample from NVIDIA TechQA-RAG-Eval. It evaluates public technical-support retrieval separately from the controlled synthetic operations benchmark. The summary report records retrieval hit rate@3, top-1 citation accuracy, mean reciprocal rank@3, abstention accuracy, impossible-question abstention, and answerable false abstention. The benchmark profile records the sample size, answerable/impossible split, unique public document count, context coverage, failed-case rate, sample-selection policy, and whether a provider-backed embedding result has actually been published.
 
 The tracked sample keeps CI and GitHub Pages deterministic. To refresh or resize it, download the upstream `train.json` into `data/public/techqa_train.json`, then run `scripts/prepare_techqa_public_benchmark.py` with an explicit `--limit`.
 
@@ -154,11 +154,11 @@ The TechQA retriever comparison report saves the public-track systems separately
 - keyword title baseline
 - local TF-IDF public retriever
 
-The current primary local TF-IDF public retriever improves TechQA retrieval hit rate@3 from 72.66% to 87.50% and top-1 citation accuracy from 58.59% to 77.34% versus the keyword-title baseline. The same comparison records the abstention trade-off: impossible-question abstention decreases from 59.38% to 34.38%, so future work should inspect whether the less conservative behavior is desirable before adding provider-backed embeddings.
+The current primary local TF-IDF public retriever improves TechQA retrieval hit rate@3 from 65.10% to 80.73% and top-1 citation accuracy from 55.21% to 72.40% versus the keyword-title baseline. The same comparison records the abstention trade-off: impossible-question abstention decreases from 39.58% to 11.46%, so future work should inspect whether the less conservative behavior is desirable before adding provider-backed embeddings.
 
 ## External Public WixQA Track
 
-The WixQA public track uses a tracked 80-case sample from the expert-written split of Wix/WixQA. It evaluates real public enterprise-support retrieval separately from the controlled synthetic operations benchmark and from TechQA. The summary report records retrieval hit rate@3, top-1 citation accuracy, mean reciprocal rank@3, and multi-article retrieval@3. The benchmark profile records sample size, unique document count, multi-article share, article-type mix, failed-case rate, sample-selection policy, and whether a provider-backed embedding result has actually been published.
+The WixQA public track uses a tracked 160-case sample from the expert-written split of Wix/WixQA. It evaluates real public enterprise-support retrieval separately from the controlled synthetic operations benchmark and from TechQA. The summary report records retrieval hit rate@3, top-1 citation accuracy, mean reciprocal rank@3, and multi-article retrieval@3. The benchmark profile records sample size, unique document count, multi-article share, article-type mix, failed-case rate, sample-selection policy, and whether a provider-backed embedding result has actually been published.
 
 The tracked sample keeps CI and GitHub Pages deterministic. To refresh or resize it, download the upstream `wixqa_expertwritten/test.jsonl` and `wix_kb_corpus/wix_kb_corpus.jsonl` into `data/public/`, then run `scripts/prepare_wixqa_public_benchmark.py` with an explicit `--limit`.
 
@@ -167,7 +167,7 @@ The WixQA retriever comparison report saves the public-track systems separately 
 - keyword title baseline
 - local TF-IDF WixQA retriever
 
-The current primary local TF-IDF WixQA retriever improves retrieval hit rate@3 from 61.25% to 88.75% and top-1 citation accuracy from 46.25% to 75.00% versus the keyword-title baseline. It also reaches 95.65% retrieval hit@3 on multi-article cases, which makes it a useful complement to the TechQA impossible-question abstention track.
+The current primary local TF-IDF WixQA retriever improves retrieval hit rate@3 from 53.12% to 77.50% and top-1 citation accuracy from 36.88% to 61.25% versus the keyword-title baseline. It also reaches 88.64% retrieval hit@3 on multi-article cases, which makes it a useful complement to the TechQA impossible-question abstention track.
 
 The public report and dashboard also surface retriever failure analysis. The overview counts failed cases, cases where the expected section was retrieved but not finally cited, abstention mismatches, and the top failure reason for each retriever. The example table keeps the diagnostic and recommended fix attached to concrete case ids.
 

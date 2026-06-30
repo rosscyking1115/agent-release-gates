@@ -6,17 +6,17 @@
     "The primary public retriever remains a local TF-IDF system so the public benchmark is reproducible in CI."
   ],
   "primary_retriever": {
-    "case_count": 160,
+    "case_count": 480,
     "description": "Local TF-IDF document retrieval with title boosts and exact phrase scoring.",
-    "failed_case_count": 51,
+    "failed_case_count": 197,
     "label": "Local TF-IDF public retriever",
     "metrics": {
-      "abstention_accuracy": 0.825,
-      "answerable_false_abstention_rate": 0.0547,
-      "impossible_abstention_rate": 0.3438,
-      "mean_reciprocal_rank_at_3": 0.8151,
-      "retrieval_hit_rate_at_3": 0.875,
-      "top1_citation_accuracy": 0.7734
+      "abstention_accuracy": 0.7875,
+      "answerable_false_abstention_rate": 0.0443,
+      "impossible_abstention_rate": 0.1146,
+      "mean_reciprocal_rank_at_3": 0.7617,
+      "retrieval_hit_rate_at_3": 0.8073,
+      "top1_citation_accuracy": 0.724
     },
     "system_id": "local_tfidf_public_retriever"
   },
@@ -24,40 +24,40 @@
   "status": "evaluated",
   "summary": {
     "baseline_system_id": "keyword_title_baseline",
-    "impossible_abstention_rate_delta": -0.25,
+    "impossible_abstention_rate_delta": -0.2812,
     "primary_system_id": "local_tfidf_public_retriever",
-    "retrieval_hit_rate_at_3_lift": 0.1484,
+    "retrieval_hit_rate_at_3_lift": 0.1563,
     "system_count": 2,
-    "top1_citation_accuracy_lift": 0.1875
+    "top1_citation_accuracy_lift": 0.1719
   },
   "systems": [
     {
-      "case_count": 160,
+      "case_count": 480,
       "description": "Simple title-token overlap baseline over public support documents.",
-      "failed_case_count": 80,
+      "failed_case_count": 253,
       "label": "Keyword title baseline",
       "metrics": {
-        "abstention_accuracy": 0.625,
-        "answerable_false_abstention_rate": 0.3672,
-        "impossible_abstention_rate": 0.5938,
-        "mean_reciprocal_rank_at_3": 0.651,
-        "retrieval_hit_rate_at_3": 0.7266,
-        "top1_citation_accuracy": 0.5859
+        "abstention_accuracy": 0.6625,
+        "answerable_false_abstention_rate": 0.2708,
+        "impossible_abstention_rate": 0.3958,
+        "mean_reciprocal_rank_at_3": 0.5968,
+        "retrieval_hit_rate_at_3": 0.651,
+        "top1_citation_accuracy": 0.5521
       },
       "system_id": "keyword_title_baseline"
     },
     {
-      "case_count": 160,
+      "case_count": 480,
       "description": "Local TF-IDF document retrieval with title boosts and exact phrase scoring.",
-      "failed_case_count": 51,
+      "failed_case_count": 197,
       "label": "Local TF-IDF public retriever",
       "metrics": {
-        "abstention_accuracy": 0.825,
-        "answerable_false_abstention_rate": 0.0547,
-        "impossible_abstention_rate": 0.3438,
-        "mean_reciprocal_rank_at_3": 0.8151,
-        "retrieval_hit_rate_at_3": 0.875,
-        "top1_citation_accuracy": 0.7734
+        "abstention_accuracy": 0.7875,
+        "answerable_false_abstention_rate": 0.0443,
+        "impossible_abstention_rate": 0.1146,
+        "mean_reciprocal_rank_at_3": 0.7617,
+        "retrieval_hit_rate_at_3": 0.8073,
+        "top1_citation_accuracy": 0.724
       },
       "system_id": "local_tfidf_public_retriever"
     }

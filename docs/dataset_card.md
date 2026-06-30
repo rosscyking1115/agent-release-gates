@@ -24,7 +24,7 @@ The synthetic data is designed for safety and reproducibility. It does not conta
 
 ## Public TechQA Track
 
-The public validation track uses a 160-case compact sample from NVIDIA TechQA-RAG-Eval. It is used only for external technical-support retrieval and abstention validation. It is not treated as controlled operations data.
+The public validation track uses a 480-case compact sample from NVIDIA TechQA-RAG-Eval. It is used only for external technical-support retrieval and abstention validation. It is not treated as controlled operations data.
 
 Current profile:
 
@@ -35,11 +35,11 @@ Current profile:
 
 ## Public WixQA Track
 
-The public WixQA track uses an 80-case compact sample from the expert-written split of Wix/WixQA, grounded in public Wix Help Center articles. It is used only for external enterprise-support retrieval validation. It is not treated as controlled operations data.
+The public WixQA track uses a 160-case compact sample from the expert-written split of Wix/WixQA, grounded in public Wix Help Center articles. It is used only for external enterprise-support retrieval validation. It is not treated as controlled operations data.
 
 Current profile:
 
-- 80 expert-written support questions
+- 160 expert-written support questions
 - 96 unique public documents
 - 23 multi-article questions
 - MIT upstream dataset license

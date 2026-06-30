@@ -9,8 +9,8 @@ Agent Release Safety Gates
 This project provides a public evaluation harness for local experimentation with AI-agent safety and reliability:
 
 - grounded retrieval over synthetic runbooks
-- external public technical-support retrieval evaluation using a 160-case TechQA-RAG-Eval sample
-- external public enterprise-support retrieval evaluation using an 80-case WixQA expert-written sample
+- external public technical-support retrieval evaluation using a 480-case TechQA-RAG-Eval sample
+- external public enterprise-support retrieval evaluation using a 160-case WixQA expert-written sample
 - deterministic release gates for benchmark, safety, governance, and observability checks
 - structured extraction from synthetic tickets
 - role-aware answer generation
@@ -72,9 +72,9 @@ The dataset profile reports 102 manual golden cases, 70 expected abstentions, 46
 
 The retriever snapshot report records deterministic version-to-version deltas and flags regressions when citation coverage falls or failed-case count rises. The evaluation history report adds stable dated lab milestones for the same local benchmark sequence, plus a current cross-workflow quality summary.
 
-The external TechQA public RAG track evaluates 160 compact public technical-support cases with 87.50% retrieval hit rate@3, 77.34% top-1 citation accuracy, 81.51% mean reciprocal rank@3, and 34.38% impossible-question abstention for the primary local TF-IDF public retriever. Against a keyword-title baseline, the local TF-IDF retriever raises retrieval hit rate@3 from 72.66% to 87.50% and top-1 citation accuracy from 58.59% to 77.34%, while impossible-question abstention moves from 59.38% to 34.38%. The companion benchmark profile reports 128 answerable cases, 32 impossible cases, 119 unique public documents, and a 31.87% failed-case rate.
+The external TechQA public RAG track evaluates 480 compact public technical-support cases with 80.73% retrieval hit rate@3, 72.40% top-1 citation accuracy, 76.17% mean reciprocal rank@3, and 11.46% impossible-question abstention for the primary local TF-IDF public retriever. Against a keyword-title baseline, the local TF-IDF retriever raises retrieval hit rate@3 from 65.10% to 80.73% and top-1 citation accuracy from 55.21% to 72.40%, while impossible-question abstention moves from 39.58% to 11.46%. The companion benchmark profile reports 384 answerable cases, 96 impossible cases, 337 unique public documents, and a 41.04% failed-case rate.
 
-The external WixQA public RAG track evaluates 80 compact expert-written enterprise-support cases with 88.75% retrieval hit rate@3, 75.00% top-1 citation accuracy, 81.04% mean reciprocal rank@3, and 95.65% multi-article retrieval hit rate@3 for the primary local TF-IDF WixQA retriever. Against a keyword-title baseline, the local TF-IDF retriever raises retrieval hit rate@3 from 61.25% to 88.75% and top-1 citation accuracy from 46.25% to 75.00%. The companion benchmark profile reports 96 unique public documents, 23 multi-article cases, and a 25.00% failed-case rate. These public tracks validate retrieval behavior on public data but should not be confused with the controlled synthetic operations benchmark.
+The external WixQA public RAG track evaluates 160 compact expert-written enterprise-support cases with 77.50% retrieval hit rate@3, 61.25% top-1 citation accuracy, 68.44% mean reciprocal rank@3, and 88.64% multi-article retrieval hit rate@3 for the primary local TF-IDF WixQA retriever. Against a keyword-title baseline, the local TF-IDF retriever raises retrieval hit rate@3 from 53.12% to 77.50% and top-1 citation accuracy from 36.88% to 61.25%. The companion benchmark profile reports 173 unique public documents, 44 multi-article cases, and a 38.75% failed-case rate. These public tracks validate retrieval behavior on public data but should not be confused with the controlled synthetic operations benchmark.
 
 The release-gate report turns the generated metrics into pass/warn/fail checks. Current blocking gates cover benchmark size, manual-case share, local retrieval grounding, abstention, schema validity, weighted red-team safety, residual risk, approval governance, trace indexing, and collector-span consistency. The provider-backed embedding comparison remains a non-blocking warning because no credentialed provider result is published.
 

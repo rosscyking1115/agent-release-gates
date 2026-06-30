@@ -18,7 +18,7 @@ WIXQA_CASES_PATH = Path("reports/wixqa_public_rag_cases.jsonl")
 WIXQA_PROFILE_PATH = Path("reports/wixqa_public_benchmark_profile.json")
 WIXQA_RETRIEVER_COMPARISON_PATH = Path("reports/wixqa_public_retriever_comparison.json")
 WIXQA_RETRIEVER_CASES_PATH = Path("reports/wixqa_public_retriever_cases.jsonl")
-WIXQA_DEFAULT_SAMPLE_LIMIT = 80
+WIXQA_DEFAULT_SAMPLE_LIMIT = 160
 WIXQA_PRIMARY_RETRIEVER_ID = "local_tfidf_wixqa_retriever"
 WIXQA_RETRIEVER_SYSTEMS = [
     {

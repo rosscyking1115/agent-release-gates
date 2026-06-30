@@ -702,8 +702,8 @@ The combined export includes workflow-level spans, agent tool/audit spans, case-
 - Extraction is deterministic rather than LLM-backed.
 - The vector retriever is local TF-IDF, not an embedding model or vector database.
 - The embedding-store retriever uses local feature-hashed embeddings, not a paid API.
-- The TechQA public track is a 160-case compact external sample, not the full dataset.
-- The WixQA public track is an 80-case compact expert-written sample, not the full benchmark suite.
+- The TechQA public track is a 480-case compact external sample, not the full dataset.
+- The WixQA public track is a 160-case compact expert-written sample, not the full benchmark suite.
 - Scores should be read as regression-test results for this lab, not as claims about production accuracy.
 - Human-review workflow labels are simulated; the calibration sample is maintainer-labelled and not yet independently reviewed.
 - Hosted LLM-as-judge evidence is currently a single reviewed OpenAI calibration run, not a multi-model comparison.
@@ -718,5 +718,5 @@ The combined export includes workflow-level spans, agent tool/audit spans, case-
 - Run safety intervention experiments across refusal policy, retrieval grounding, tool approval gates, secondary review, and classifier thresholds.
 - Validate the public RAG grounding thresholds with a provider-backed reranker.
 - Collect external labels for memory/context pollution cases.
-- Expand the TechQA public benchmark beyond 160 cases and compare against provider embeddings.
+- Expand the TechQA public benchmark beyond 480 cases and compare against provider embeddings.
 - Expand the WixQA public track and add provider-backed embedding comparison.
