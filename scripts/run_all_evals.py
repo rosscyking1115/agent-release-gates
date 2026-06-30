@@ -5,6 +5,9 @@ from typing import Any
 
 from internal_ai_agent.data.synthetic import generate_all
 from internal_ai_agent.evals.agent import evaluate_agent
+from internal_ai_agent.evals.business_impact import (
+    write_business_impact_summary,
+)
 from internal_ai_agent.evals.dataset_profile import write_dataset_profile
 from internal_ai_agent.evals.external_review import prepare_external_human_review
 from internal_ai_agent.evals.extraction import evaluate_extraction
@@ -97,6 +100,10 @@ def run_all(project_root: Path) -> dict[str, Any]:
         security=security,
         agent=agent,
     )
+    business_impact = write_business_impact_summary(
+        project_root,
+        intervention_study=intervention_study,
+    )
     memory_context_intervention = write_memory_context_intervention(project_root)
     goal_conflict_intervention = write_goal_conflict_intervention(project_root)
     incident_replay = write_incident_replay_suite(project_root)
@@ -155,6 +162,7 @@ def run_all(project_root: Path) -> dict[str, Any]:
         "model_judge_provider_comparison": model_judge_provider_comparison,
         "agent": agent,
         "intervention_study": intervention_study,
+        "business_impact": business_impact,
         "memory_context_intervention": memory_context_intervention,
         "goal_conflict_intervention": goal_conflict_intervention,
         "incident_replay": incident_replay,

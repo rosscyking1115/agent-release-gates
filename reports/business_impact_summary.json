@@ -1,0 +1,49 @@
+{
+  "basis": "agent_safety_intervention_study",
+  "headline": "3 layered safeguards address unsafe outcomes on their risk surfaces averaging ~0.42 extra reviews per unsafe outcome addressed.",
+  "portfolio": {
+    "mean_reviews_per_unsafe_outcome": 0.42,
+    "safeguard_count": 3
+  },
+  "report_type": "business_impact_summary",
+  "responsible_boundary": "Rates are per 100 requests that reach each safeguard's risk surface in the controlled synthetic benchmark, not per unit of production traffic. These are engineering-evidence trade-offs, not production safety guarantees.",
+  "safeguards": [
+    {
+      "direction": "reduces_unsafe_rate",
+      "experiment_id": "instruction_hierarchy",
+      "extra_reviews_per_100": 66.7,
+      "impact_statement": "Per 100 prompt-injection attempt cases, Layered hierarchy agent prevents 75 unsafe outcomes at a cost of 66.7 extra human reviews (~0.89 extra reviews per unsafe outcome).",
+      "in_scope_cases": 12,
+      "recommended_variant": "Layered hierarchy agent",
+      "reviews_per_unsafe_outcome": 0.89,
+      "scope": "prompt-injection attempt",
+      "title": "Instruction hierarchy and prompt-injection controls",
+      "unsafe_outcomes_addressed_per_100": 75.0
+    },
+    {
+      "direction": "reduces_unsafe_rate",
+      "experiment_id": "action_gate",
+      "extra_reviews_per_100": 25.0,
+      "impact_statement": "Per 100 unsafe-action attempt cases, Layered action gate prevents 100 unsafe outcomes at a cost of 25 extra human reviews (~0.25 extra reviews per unsafe outcome).",
+      "in_scope_cases": 12,
+      "recommended_variant": "Layered action gate",
+      "reviews_per_unsafe_outcome": 0.25,
+      "scope": "unsafe-action attempt",
+      "title": "Action-risk policy and confirmation gate",
+      "unsafe_outcomes_addressed_per_100": 100.0
+    },
+    {
+      "direction": "increases_capture_rate",
+      "experiment_id": "safety_classifier",
+      "extra_reviews_per_100": 12.5,
+      "impact_statement": "Per 100 unsafe request cases, Classifier plus release gate catches 100 unsafe outcomes at a cost of 12.5 extra human reviews (~0.12 extra reviews per unsafe outcome).",
+      "in_scope_cases": 40,
+      "recommended_variant": "Classifier plus release gate",
+      "reviews_per_unsafe_outcome": 0.12,
+      "scope": "unsafe request",
+      "title": "Safety classifier and secondary review",
+      "unsafe_outcomes_addressed_per_100": 100.0
+    }
+  ],
+  "volume_basis": "per_100_in_scope_requests"
+}

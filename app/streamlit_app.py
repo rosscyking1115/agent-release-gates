@@ -115,6 +115,7 @@ from internal_ai_agent.dashboard.data import (
     trace_index_trace_rows,
     wixqa_public_metric_rows,
 )
+from internal_ai_agent.evals.business_impact import business_impact_summary
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
@@ -1569,6 +1570,27 @@ def _render_intervention_study(
     cols[0].metric("Experiments", int(report["experiment_count"]))
     cols[1].metric("Baseline", str(report["baseline_label"]))
     cols[2].metric("Status", str(report["status"]).replace("_", " ").title())
+
+    impact = business_impact_summary(report)
+    if impact["safeguards"]:
+        st.markdown("#### Business impact")
+        st.markdown(str(impact["headline"]))
+        impact_df = pd.DataFrame(
+            [
+                {
+                    "Safeguard": s["title"],
+                    "In-scope cases": s["in_scope_cases"],
+                    "Unsafe outcomes / 100": s["unsafe_outcomes_addressed_per_100"],
+                    "Extra reviews / 100": s["extra_reviews_per_100"],
+                    "Reviews per outcome": s["reviews_per_unsafe_outcome"],
+                }
+                for s in impact["safeguards"]
+            ]
+        )
+        st.dataframe(impact_df, hide_index=True, width="stretch")
+        for safeguard in impact["safeguards"]:
+            st.markdown(f"- {safeguard['impact_statement']}")
+        st.caption(impact["responsible_boundary"])
 
     rows = intervention_experiment_rows(report)
     if rows:
