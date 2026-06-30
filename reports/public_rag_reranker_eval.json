@@ -1,7 +1,7 @@
 {
   "findings": [
-    "The conservative deterministic reranker improves weighted top-1 citation accuracy by +0.96%.",
-    "It changes 8 cases, improves 3, and regresses 1.",
+    "The conservative deterministic reranker improves weighted top-1 citation accuracy by -0.19%.",
+    "It changes 27 cases, improves 5, and regresses 6.",
     "The small lift confirms reranking is useful, but the observed effect is far below the oracle top-3 ceiling and needs stronger model-based scoring."
   ],
   "notes": [
@@ -24,64 +24,64 @@
   },
   "status": "evaluated",
   "summary": {
-    "baseline_top1_accuracy": 0.7644,
-    "change_rate": 0.0385,
-    "changed_case_count": 8,
+    "baseline_top1_accuracy": 0.6912,
+    "change_rate": 0.0496,
+    "changed_case_count": 27,
     "evaluated_track_count": 2,
-    "improved_case_count": 3,
-    "net_improved_case_count": 2,
-    "regressed_case_count": 1,
-    "regression_rate": 0.0048,
-    "reranked_top1_accuracy": 0.774,
-    "top1_accuracy_delta": 0.0096,
-    "total_case_count": 208
+    "improved_case_count": 5,
+    "net_improved_case_count": -1,
+    "regressed_case_count": 6,
+    "regression_rate": 0.011,
+    "reranked_top1_accuracy": 0.6893,
+    "top1_accuracy_delta": -0.0019,
+    "total_case_count": 544
   },
   "tracks": [
     {
       "benchmark_track": "external_public_rag",
-      "case_count": 128,
+      "case_count": 384,
       "changed_case_examples": [
         {
           "baseline_top1_match": false,
           "candidate_scores": [
             {
-              "document_id": "swg21507587.txt",
-              "original_score": 44.1336,
-              "reranker_score": 61.5417
+              "document_id": "swg21971485.txt",
+              "original_score": 18.7438,
+              "reranker_score": 34.0
             },
             {
-              "document_id": "swg21966637.txt",
-              "original_score": 42.665,
-              "reranker_score": 69.2708
+              "document_id": "swg21985946.txt",
+              "original_score": 17.7319,
+              "reranker_score": 39.6154
             },
             {
-              "document_id": "swg22001418.txt",
-              "original_score": 37.5643,
-              "reranker_score": 57.0208
+              "document_id": "swg21598974.txt",
+              "original_score": 14.4136,
+              "reranker_score": 27.6154
             }
           ],
-          "case_id": "TRAIN_Q024",
+          "case_id": "TRAIN_Q081",
           "change_outcome": "neutral",
           "changed": true,
           "decision": {
             "action": "promote_challenger",
-            "challenger_id": "swg21966637.txt",
-            "incumbent_id": "swg21507587.txt",
-            "original_score_gap": 1.4686,
-            "reranker_margin": 7.7291
+            "challenger_id": "swg21985946.txt",
+            "incumbent_id": "swg21971485.txt",
+            "original_score_gap": 1.0119,
+            "reranker_margin": 5.6154
           },
           "expected_citation_ids": [
-            "swg21592093.txt"
+            "swg24042387.txt"
           ],
           "original_citation_ids": [
-            "swg21507587.txt",
-            "swg21966637.txt",
-            "swg22001418.txt"
+            "swg21971485.txt",
+            "swg21985946.txt",
+            "swg21598974.txt"
           ],
           "reranked_citation_ids": [
-            "swg21966637.txt",
-            "swg21507587.txt",
-            "swg22001418.txt"
+            "swg21985946.txt",
+            "swg21971485.txt",
+            "swg21598974.txt"
           ],
           "reranked_top1_match": false,
           "retrieval_hit_at_3": false
@@ -90,43 +90,43 @@
           "baseline_top1_match": false,
           "candidate_scores": [
             {
-              "document_id": "swg24039229.txt",
-              "original_score": 6.4425,
-              "reranker_score": 10.3333
+              "document_id": "swg21138332.txt",
+              "original_score": 34.1539,
+              "reranker_score": 59.8387
             },
             {
-              "document_id": "swg1PI37248.txt",
-              "original_score": 4.8356,
-              "reranker_score": 15.6667
+              "document_id": "swg21249798.txt",
+              "original_score": 32.1837,
+              "reranker_score": 66.4516
             },
             {
-              "document_id": "swg21611699.txt",
-              "original_score": 4.7412,
-              "reranker_score": 15.6667
+              "document_id": "swg24042177.txt",
+              "original_score": 29.3722,
+              "reranker_score": 54.1935
             }
           ],
-          "case_id": "TRAIN_Q033",
+          "case_id": "TRAIN_Q092",
           "change_outcome": "neutral",
           "changed": true,
           "decision": {
             "action": "promote_challenger",
-            "challenger_id": "swg1PI37248.txt",
-            "incumbent_id": "swg24039229.txt",
-            "original_score_gap": 1.6069,
-            "reranker_margin": 5.3334
+            "challenger_id": "swg21249798.txt",
+            "incumbent_id": "swg21138332.txt",
+            "original_score_gap": 1.9702,
+            "reranker_margin": 6.6129
           },
           "expected_citation_ids": [
-            "swg21591076.txt"
+            "swg21268440.txt"
           ],
           "original_citation_ids": [
-            "swg24039229.txt",
-            "swg1PI37248.txt",
-            "swg21611699.txt"
+            "swg21138332.txt",
+            "swg21249798.txt",
+            "swg24042177.txt"
           ],
           "reranked_citation_ids": [
-            "swg1PI37248.txt",
-            "swg24039229.txt",
-            "swg21611699.txt"
+            "swg21249798.txt",
+            "swg21138332.txt",
+            "swg24042177.txt"
           ],
           "reranked_top1_match": false,
           "retrieval_hit_at_3": false
@@ -135,19 +135,64 @@
           "baseline_top1_match": false,
           "candidate_scores": [
             {
-              "document_id": "swg21993043.txt",
-              "original_score": 13.7968,
-              "reranker_score": 22.7143
+              "document_id": "swg21628092.txt",
+              "original_score": 37.2401,
+              "reranker_score": 66.6923
             },
             {
-              "document_id": "swg21636093.txt",
-              "original_score": 13.0852,
-              "reranker_score": 34.2857
+              "document_id": "swg21138332.txt",
+              "original_score": 35.4258,
+              "reranker_score": 55.8462
             },
             {
-              "document_id": "swg21975233.txt",
-              "original_score": 11.8188,
-              "reranker_score": 20.4286
+              "document_id": "swg21965955.txt",
+              "original_score": 35.3484,
+              "reranker_score": 71.7692
+            }
+          ],
+          "case_id": "TRAIN_Q110",
+          "change_outcome": "neutral",
+          "changed": true,
+          "decision": {
+            "action": "promote_challenger",
+            "challenger_id": "swg21965955.txt",
+            "incumbent_id": "swg21628092.txt",
+            "original_score_gap": 1.8917,
+            "reranker_margin": 5.0769
+          },
+          "expected_citation_ids": [
+            "swg21308281.txt"
+          ],
+          "original_citation_ids": [
+            "swg21628092.txt",
+            "swg21138332.txt",
+            "swg21965955.txt"
+          ],
+          "reranked_citation_ids": [
+            "swg21965955.txt",
+            "swg21628092.txt",
+            "swg21138332.txt"
+          ],
+          "reranked_top1_match": false,
+          "retrieval_hit_at_3": false
+        },
+        {
+          "baseline_top1_match": false,
+          "candidate_scores": [
+            {
+              "document_id": "swg21606716.txt",
+              "original_score": 19.417,
+              "reranker_score": 25.0714
+            },
+            {
+              "document_id": "swg21318303.txt",
+              "original_score": 19.0723,
+              "reranker_score": 27.2143
+            },
+            {
+              "document_id": "swg22008829.txt",
+              "original_score": 17.8621,
+              "reranker_score": 31.7857
             }
           ],
           "case_id": "TRAIN_Q112",
@@ -155,23 +200,23 @@
           "changed": true,
           "decision": {
             "action": "promote_challenger",
-            "challenger_id": "swg21636093.txt",
-            "incumbent_id": "swg21993043.txt",
-            "original_score_gap": 0.7116,
-            "reranker_margin": 11.5714
+            "challenger_id": "swg22008829.txt",
+            "incumbent_id": "swg21606716.txt",
+            "original_score_gap": 1.5549,
+            "reranker_margin": 6.7143
           },
           "expected_citation_ids": [
             "swg21624731.txt"
           ],
           "original_citation_ids": [
-            "swg21993043.txt",
-            "swg21636093.txt",
-            "swg21975233.txt"
+            "swg21606716.txt",
+            "swg21318303.txt",
+            "swg22008829.txt"
           ],
           "reranked_citation_ids": [
-            "swg21636093.txt",
-            "swg21993043.txt",
-            "swg21975233.txt"
+            "swg22008829.txt",
+            "swg21606716.txt",
+            "swg21318303.txt"
           ],
           "reranked_top1_match": false,
           "retrieval_hit_at_3": false
@@ -180,109 +225,337 @@
           "baseline_top1_match": false,
           "candidate_scores": [
             {
-              "document_id": "swg22009818.txt",
-              "original_score": 10.4877,
-              "reranker_score": 24.6154
-            },
-            {
-              "document_id": "swg21426787.txt",
-              "original_score": 8.7957,
-              "reranker_score": 30.4615
+              "document_id": "swg21509634.txt",
+              "original_score": 10.8127,
+              "reranker_score": 21.5
             },
             {
               "document_id": "swg21962862.txt",
-              "original_score": 8.0593,
-              "reranker_score": 15.2308
+              "original_score": 10.2414,
+              "reranker_score": 21.5
+            },
+            {
+              "document_id": "swg27023910.txt",
+              "original_score": 9.5834,
+              "reranker_score": 28.75
             }
           ],
-          "case_id": "TRAIN_Q116",
-          "change_outcome": "improved",
+          "case_id": "TRAIN_Q225",
+          "change_outcome": "neutral",
           "changed": true,
           "decision": {
             "action": "promote_challenger",
-            "challenger_id": "swg21426787.txt",
-            "incumbent_id": "swg22009818.txt",
-            "original_score_gap": 1.692,
-            "reranker_margin": 5.8461
+            "challenger_id": "swg27023910.txt",
+            "incumbent_id": "swg21509634.txt",
+            "original_score_gap": 1.2293,
+            "reranker_margin": 7.25
           },
           "expected_citation_ids": [
-            "swg21426787.txt"
+            "swg21569953.txt"
           ],
           "original_citation_ids": [
-            "swg22009818.txt",
-            "swg21426787.txt",
-            "swg21962862.txt"
+            "swg21509634.txt",
+            "swg21962862.txt",
+            "swg27023910.txt"
           ],
           "reranked_citation_ids": [
-            "swg21426787.txt",
-            "swg22009818.txt",
+            "swg27023910.txt",
+            "swg21509634.txt",
             "swg21962862.txt"
           ],
-          "reranked_top1_match": true,
+          "reranked_top1_match": false,
+          "retrieval_hit_at_3": false
+        },
+        {
+          "baseline_top1_match": false,
+          "candidate_scores": [
+            {
+              "document_id": "swg21649807.txt",
+              "original_score": 13.6863,
+              "reranker_score": 20.4762
+            },
+            {
+              "document_id": "swg21698950.txt",
+              "original_score": 13.1072,
+              "reranker_score": 43.5714
+            },
+            {
+              "document_id": "swg21255545.txt",
+              "original_score": 8.6325,
+              "reranker_score": 28.619
+            }
+          ],
+          "case_id": "TRAIN_Q237",
+          "change_outcome": "neutral",
+          "changed": true,
+          "decision": {
+            "action": "promote_challenger",
+            "challenger_id": "swg21698950.txt",
+            "incumbent_id": "swg21649807.txt",
+            "original_score_gap": 0.5791,
+            "reranker_margin": 23.0952
+          },
+          "expected_citation_ids": [
+            "swg21569731.txt"
+          ],
+          "original_citation_ids": [
+            "swg21649807.txt",
+            "swg21698950.txt",
+            "swg21255545.txt"
+          ],
+          "reranked_citation_ids": [
+            "swg21698950.txt",
+            "swg21649807.txt",
+            "swg21255545.txt"
+          ],
+          "reranked_top1_match": false,
+          "retrieval_hit_at_3": false
+        },
+        {
+          "baseline_top1_match": false,
+          "candidate_scores": [
+            {
+              "document_id": "swg21227799.txt",
+              "original_score": 13.8804,
+              "reranker_score": 25.3333
+            },
+            {
+              "document_id": "swg21365841.txt",
+              "original_score": 13.2679,
+              "reranker_score": 33.1667
+            },
+            {
+              "document_id": "swg21576245.txt",
+              "original_score": 12.1418,
+              "reranker_score": 18.1667
+            }
+          ],
+          "case_id": "TRAIN_Q248",
+          "change_outcome": "neutral",
+          "changed": true,
+          "decision": {
+            "action": "promote_challenger",
+            "challenger_id": "swg21365841.txt",
+            "incumbent_id": "swg21227799.txt",
+            "original_score_gap": 0.6125,
+            "reranker_margin": 7.8334
+          },
+          "expected_citation_ids": [
+            "swg27023600.txt"
+          ],
+          "original_citation_ids": [
+            "swg21227799.txt",
+            "swg21365841.txt",
+            "swg21576245.txt"
+          ],
+          "reranked_citation_ids": [
+            "swg21365841.txt",
+            "swg21227799.txt",
+            "swg21576245.txt"
+          ],
+          "reranked_top1_match": false,
+          "retrieval_hit_at_3": false
+        },
+        {
+          "baseline_top1_match": true,
+          "candidate_scores": [
+            {
+              "document_id": "swg21320206.txt",
+              "original_score": 16.9603,
+              "reranker_score": 27.8049
+            },
+            {
+              "document_id": "swg24035571.txt",
+              "original_score": 15.9898,
+              "reranker_score": 31.2439
+            },
+            {
+              "document_id": "swg22004607.txt",
+              "original_score": 15.3068,
+              "reranker_score": 32.8537
+            }
+          ],
+          "case_id": "TRAIN_Q353",
+          "change_outcome": "regressed",
+          "changed": true,
+          "decision": {
+            "action": "promote_challenger",
+            "challenger_id": "swg22004607.txt",
+            "incumbent_id": "swg21320206.txt",
+            "original_score_gap": 1.6535,
+            "reranker_margin": 5.0488
+          },
+          "expected_citation_ids": [
+            "swg21320206.txt"
+          ],
+          "original_citation_ids": [
+            "swg21320206.txt",
+            "swg24035571.txt",
+            "swg22004607.txt"
+          ],
+          "reranked_citation_ids": [
+            "swg22004607.txt",
+            "swg21320206.txt",
+            "swg24035571.txt"
+          ],
+          "reranked_top1_match": false,
           "retrieval_hit_at_3": true
         }
       ],
       "dataset": "nvidia/TechQA-RAG-Eval",
       "metrics": {
-        "baseline_top1_accuracy": 0.7734,
-        "baseline_top1_correct_count": 99,
+        "baseline_top1_accuracy": 0.724,
+        "baseline_top1_correct_count": 278,
         "change_rate": 0.0312,
-        "changed_case_count": 4,
-        "improved_case_count": 1,
-        "neutral_change_count": 3,
-        "regressed_case_count": 0,
-        "regression_rate": 0.0,
-        "reranked_top1_accuracy": 0.7812,
-        "reranked_top1_correct_count": 100,
-        "top1_accuracy_delta": 0.0078
+        "changed_case_count": 12,
+        "improved_case_count": 0,
+        "neutral_change_count": 9,
+        "regressed_case_count": 3,
+        "regression_rate": 0.0078,
+        "reranked_top1_accuracy": 0.7161,
+        "reranked_top1_correct_count": 275,
+        "top1_accuracy_delta": -0.0079
       },
       "status": "evaluated"
     },
     {
       "benchmark_track": "external_public_enterprise_rag",
-      "case_count": 80,
+      "case_count": 160,
       "changed_case_examples": [
         {
           "baseline_top1_match": false,
           "candidate_scores": [
             {
-              "document_id": "7a49619f637ed0508bca64c0995e2726276d8faba2907d97350e0f01384709af",
-              "original_score": 15.7045,
+              "document_id": "f346781bc6cf23c95342ce003927de9d985a99eeb7561c69f03e65da7c10f2fb",
+              "original_score": 18.3012,
+              "reranker_score": 18.0
+            },
+            {
+              "document_id": "0d6bacf2646098a55162336b12fc8eeb56c6618febc7ad94a9c7d5d9bb71ba3f",
+              "original_score": 17.4325,
+              "reranker_score": 24.0
+            },
+            {
+              "document_id": "2df694686b70b35ed389ff590354cfaf19aafc07659b12b02078f2ebcf015ac8",
+              "original_score": 17.1236,
+              "reranker_score": 18.0
+            }
+          ],
+          "case_id": "WIXQA-EXPERT-0028",
+          "change_outcome": "improved",
+          "changed": true,
+          "decision": {
+            "action": "promote_challenger",
+            "challenger_id": "0d6bacf2646098a55162336b12fc8eeb56c6618febc7ad94a9c7d5d9bb71ba3f",
+            "incumbent_id": "f346781bc6cf23c95342ce003927de9d985a99eeb7561c69f03e65da7c10f2fb",
+            "original_score_gap": 0.8687,
+            "reranker_margin": 6.0
+          },
+          "expected_citation_ids": [
+            "13ae20110f373b7614a4594a0b47cd190eaecba13c74138551ee24f682b43f08",
+            "0d6bacf2646098a55162336b12fc8eeb56c6618febc7ad94a9c7d5d9bb71ba3f"
+          ],
+          "original_citation_ids": [
+            "f346781bc6cf23c95342ce003927de9d985a99eeb7561c69f03e65da7c10f2fb",
+            "0d6bacf2646098a55162336b12fc8eeb56c6618febc7ad94a9c7d5d9bb71ba3f",
+            "2df694686b70b35ed389ff590354cfaf19aafc07659b12b02078f2ebcf015ac8"
+          ],
+          "reranked_citation_ids": [
+            "0d6bacf2646098a55162336b12fc8eeb56c6618febc7ad94a9c7d5d9bb71ba3f",
+            "f346781bc6cf23c95342ce003927de9d985a99eeb7561c69f03e65da7c10f2fb",
+            "2df694686b70b35ed389ff590354cfaf19aafc07659b12b02078f2ebcf015ac8"
+          ],
+          "reranked_top1_match": true,
+          "retrieval_hit_at_3": true
+        },
+        {
+          "baseline_top1_match": true,
+          "candidate_scores": [
+            {
+              "document_id": "0dc521e6f3cba224285bf32a1a21752313474992f3be4ac874a7b93ca2f7dda6",
+              "original_score": 18.2969,
+              "reranker_score": 24.0
+            },
+            {
+              "document_id": "571ab41fb9e80c99d0f10cfceae8b71ed3d426c5b13c9745655925b4161e8fd4",
+              "original_score": 17.7756,
               "reranker_score": 36.0
             },
             {
-              "document_id": "49d9e88fadbf11fa4e685c847590078ff9394c2fe7566094f504f53ca4aca465",
-              "original_score": 14.1889,
-              "reranker_score": 42.5455
-            },
-            {
-              "document_id": "ad7a6f1f5851bf2c4bc738d6223bb1546e78c7b7f3317d721b67181cd675c5a8",
-              "original_score": 13.7173,
-              "reranker_score": 30.5455
+              "document_id": "91eeefd48d7dcfda197a6162b7259e942579b5e6a53f50def1b09fecaad9ee1d",
+              "original_score": 13.7673,
+              "reranker_score": 16.5
             }
           ],
-          "case_id": "WIXQA-EXPERT-0025",
+          "case_id": "WIXQA-EXPERT-0029",
+          "change_outcome": "regressed",
+          "changed": true,
+          "decision": {
+            "action": "promote_challenger",
+            "challenger_id": "571ab41fb9e80c99d0f10cfceae8b71ed3d426c5b13c9745655925b4161e8fd4",
+            "incumbent_id": "0dc521e6f3cba224285bf32a1a21752313474992f3be4ac874a7b93ca2f7dda6",
+            "original_score_gap": 0.5213,
+            "reranker_margin": 12.0
+          },
+          "expected_citation_ids": [
+            "f3dbc14fb416feb03a8bcf6c1712d81cda4c6febe412e6acdfd8f471ed79adf8",
+            "8fd246f6ccd03e386abc914642c48d78e1e434c6895b6e98f7c690eb18f3a5a1",
+            "0dc521e6f3cba224285bf32a1a21752313474992f3be4ac874a7b93ca2f7dda6"
+          ],
+          "original_citation_ids": [
+            "0dc521e6f3cba224285bf32a1a21752313474992f3be4ac874a7b93ca2f7dda6",
+            "571ab41fb9e80c99d0f10cfceae8b71ed3d426c5b13c9745655925b4161e8fd4",
+            "91eeefd48d7dcfda197a6162b7259e942579b5e6a53f50def1b09fecaad9ee1d"
+          ],
+          "reranked_citation_ids": [
+            "571ab41fb9e80c99d0f10cfceae8b71ed3d426c5b13c9745655925b4161e8fd4",
+            "0dc521e6f3cba224285bf32a1a21752313474992f3be4ac874a7b93ca2f7dda6",
+            "91eeefd48d7dcfda197a6162b7259e942579b5e6a53f50def1b09fecaad9ee1d"
+          ],
+          "reranked_top1_match": false,
+          "retrieval_hit_at_3": true
+        },
+        {
+          "baseline_top1_match": false,
+          "candidate_scores": [
+            {
+              "document_id": "e63fe24104428cb2bb94d1087fbb7a9c7136f0c028f7a441bbfeb33357069d25",
+              "original_score": 34.9745,
+              "reranker_score": 48.6667
+            },
+            {
+              "document_id": "3a7ba684b5e7faa2655c89d099e584de6ee63108a373400a59695da8167db572",
+              "original_score": 33.7334,
+              "reranker_score": 60.0
+            },
+            {
+              "document_id": "5fbc47de05f77213b05973a3ad35aa082c84b11e939a70914ed66ab02fc8b617",
+              "original_score": 17.9496,
+              "reranker_score": 45.6667
+            }
+          ],
+          "case_id": "WIXQA-EXPERT-0047",
           "change_outcome": "improved",
           "changed": true,
           "decision": {
             "action": "promote_challenger",
-            "challenger_id": "49d9e88fadbf11fa4e685c847590078ff9394c2fe7566094f504f53ca4aca465",
-            "incumbent_id": "7a49619f637ed0508bca64c0995e2726276d8faba2907d97350e0f01384709af",
-            "original_score_gap": 1.5156,
-            "reranker_margin": 6.5455
+            "challenger_id": "3a7ba684b5e7faa2655c89d099e584de6ee63108a373400a59695da8167db572",
+            "incumbent_id": "e63fe24104428cb2bb94d1087fbb7a9c7136f0c028f7a441bbfeb33357069d25",
+            "original_score_gap": 1.2411,
+            "reranker_margin": 11.3333
           },
           "expected_citation_ids": [
-            "49d9e88fadbf11fa4e685c847590078ff9394c2fe7566094f504f53ca4aca465"
+            "3a7ba684b5e7faa2655c89d099e584de6ee63108a373400a59695da8167db572"
           ],
           "original_citation_ids": [
-            "7a49619f637ed0508bca64c0995e2726276d8faba2907d97350e0f01384709af",
-            "49d9e88fadbf11fa4e685c847590078ff9394c2fe7566094f504f53ca4aca465",
-            "ad7a6f1f5851bf2c4bc738d6223bb1546e78c7b7f3317d721b67181cd675c5a8"
+            "e63fe24104428cb2bb94d1087fbb7a9c7136f0c028f7a441bbfeb33357069d25",
+            "3a7ba684b5e7faa2655c89d099e584de6ee63108a373400a59695da8167db572",
+            "5fbc47de05f77213b05973a3ad35aa082c84b11e939a70914ed66ab02fc8b617"
           ],
           "reranked_citation_ids": [
-            "49d9e88fadbf11fa4e685c847590078ff9394c2fe7566094f504f53ca4aca465",
-            "7a49619f637ed0508bca64c0995e2726276d8faba2907d97350e0f01384709af",
-            "ad7a6f1f5851bf2c4bc738d6223bb1546e78c7b7f3317d721b67181cd675c5a8"
+            "3a7ba684b5e7faa2655c89d099e584de6ee63108a373400a59695da8167db572",
+            "e63fe24104428cb2bb94d1087fbb7a9c7136f0c028f7a441bbfeb33357069d25",
+            "5fbc47de05f77213b05973a3ad35aa082c84b11e939a70914ed66ab02fc8b617"
           ],
           "reranked_top1_match": true,
           "retrieval_hit_at_3": true
@@ -291,88 +564,43 @@
           "baseline_top1_match": false,
           "candidate_scores": [
             {
-              "document_id": "d487a621f0535cd8d7c717d614c18d36b49841066c8dd641967d05be5205b6c9",
-              "original_score": 12.4156,
-              "reranker_score": 7.0
+              "document_id": "2dc662f80a2af9aa209981a6aba1962f140573cba262184f4240b67a1d26772a",
+              "original_score": 14.7438,
+              "reranker_score": 22.3636
             },
             {
-              "document_id": "7ccd1a9278fc1868865563acc0217c1d235e1ce76037eafcde2c68cef64a8134",
-              "original_score": 11.653,
-              "reranker_score": 14.5
+              "document_id": "571ab41fb9e80c99d0f10cfceae8b71ed3d426c5b13c9745655925b4161e8fd4",
+              "original_score": 14.71,
+              "reranker_score": 37.3636
             },
             {
-              "document_id": "7f365d820565efdc168e39938b16e965ea0e70a394eaac7e926078ec3b562ceb",
-              "original_score": 10.8158,
-              "reranker_score": 13.5
-            }
-          ],
-          "case_id": "WIXQA-EXPERT-0041",
-          "change_outcome": "improved",
-          "changed": true,
-          "decision": {
-            "action": "promote_challenger",
-            "challenger_id": "7ccd1a9278fc1868865563acc0217c1d235e1ce76037eafcde2c68cef64a8134",
-            "incumbent_id": "d487a621f0535cd8d7c717d614c18d36b49841066c8dd641967d05be5205b6c9",
-            "original_score_gap": 0.7626,
-            "reranker_margin": 7.5
-          },
-          "expected_citation_ids": [
-            "7ccd1a9278fc1868865563acc0217c1d235e1ce76037eafcde2c68cef64a8134"
-          ],
-          "original_citation_ids": [
-            "d487a621f0535cd8d7c717d614c18d36b49841066c8dd641967d05be5205b6c9",
-            "7ccd1a9278fc1868865563acc0217c1d235e1ce76037eafcde2c68cef64a8134",
-            "7f365d820565efdc168e39938b16e965ea0e70a394eaac7e926078ec3b562ceb"
-          ],
-          "reranked_citation_ids": [
-            "7ccd1a9278fc1868865563acc0217c1d235e1ce76037eafcde2c68cef64a8134",
-            "d487a621f0535cd8d7c717d614c18d36b49841066c8dd641967d05be5205b6c9",
-            "7f365d820565efdc168e39938b16e965ea0e70a394eaac7e926078ec3b562ceb"
-          ],
-          "reranked_top1_match": true,
-          "retrieval_hit_at_3": true
-        },
-        {
-          "baseline_top1_match": false,
-          "candidate_scores": [
-            {
-              "document_id": "dd6385654e2bc9cc5fcaf350bc944449291fa2377a61e06052035a2f0605c5b5",
-              "original_score": 8.057,
-              "reranker_score": 16.9091
-            },
-            {
-              "document_id": "359dab9e725658fc9407e34714d19da1fda7a8cb8c85c5c141968dd3775de044",
-              "original_score": 7.3133,
-              "reranker_score": 20.1818
-            },
-            {
-              "document_id": "a58c7cf097e081353986990a4ed90f8045245be5295358d7e81a7475f1204e09",
-              "original_score": 6.7278,
+              "document_id": "674a8ee961c87e71e35bc7f786673c780ab0b522230ff5806aed8dac13989744",
+              "original_score": 10.8001,
               "reranker_score": 23.1818
             }
           ],
-          "case_id": "WIXQA-EXPERT-0053",
+          "case_id": "WIXQA-EXPERT-0058",
           "change_outcome": "neutral",
           "changed": true,
           "decision": {
             "action": "promote_challenger",
-            "challenger_id": "a58c7cf097e081353986990a4ed90f8045245be5295358d7e81a7475f1204e09",
-            "incumbent_id": "dd6385654e2bc9cc5fcaf350bc944449291fa2377a61e06052035a2f0605c5b5",
-            "original_score_gap": 1.3292,
-            "reranker_margin": 6.2727
+            "challenger_id": "571ab41fb9e80c99d0f10cfceae8b71ed3d426c5b13c9745655925b4161e8fd4",
+            "incumbent_id": "2dc662f80a2af9aa209981a6aba1962f140573cba262184f4240b67a1d26772a",
+            "original_score_gap": 0.0338,
+            "reranker_margin": 15.0
           },
           "expected_citation_ids": [
-            "7a2109a7643cefe52eaad4779d868dd6fc845b8ab32bc8f131c4c63d53cb7456"
+            "fee90bfe3add5c0b9da4bf8c8c34b2d0ef79e802d7b8410b961c46df370ce336"
           ],
           "original_citation_ids": [
-            "dd6385654e2bc9cc5fcaf350bc944449291fa2377a61e06052035a2f0605c5b5",
-            "359dab9e725658fc9407e34714d19da1fda7a8cb8c85c5c141968dd3775de044",
-            "a58c7cf097e081353986990a4ed90f8045245be5295358d7e81a7475f1204e09"
+            "2dc662f80a2af9aa209981a6aba1962f140573cba262184f4240b67a1d26772a",
+            "571ab41fb9e80c99d0f10cfceae8b71ed3d426c5b13c9745655925b4161e8fd4",
+            "674a8ee961c87e71e35bc7f786673c780ab0b522230ff5806aed8dac13989744"
           ],
           "reranked_citation_ids": [
-            "a58c7cf097e081353986990a4ed90f8045245be5295358d7e81a7475f1204e09",
-            "dd6385654e2bc9cc5fcaf350bc944449291fa2377a61e06052035a2f0605c5b5",
-            "359dab9e725658fc9407e34714d19da1fda7a8cb8c85c5c141968dd3775de044"
+            "571ab41fb9e80c99d0f10cfceae8b71ed3d426c5b13c9745655925b4161e8fd4",
+            "2dc662f80a2af9aa209981a6aba1962f140573cba262184f4240b67a1d26772a",
+            "674a8ee961c87e71e35bc7f786673c780ab0b522230ff5806aed8dac13989744"
           ],
           "reranked_top1_match": false,
           "retrieval_hit_at_3": false
@@ -382,18 +610,18 @@
           "candidate_scores": [
             {
               "document_id": "b3e00d9ee8731d8ba3a2b6a598661814748800e26861ceae1043dd13aedcf7be",
-              "original_score": 14.7454,
+              "original_score": 14.4055,
               "reranker_score": 22.3636
             },
             {
-              "document_id": "5f02fc2f8937d16a4d8cdca47da36ae34429e0b279fb0cc56af72e2d91991a28",
-              "original_score": 13.1933,
-              "reranker_score": 29.4545
+              "document_id": "085e4d36ca87e3caa5403c4a9fd6e2e147826bf93f1bb909f23e8f2f0167aab4",
+              "original_score": 13.1188,
+              "reranker_score": 19.9091
             },
             {
-              "document_id": "e9366441d1e037a1470c9bad57455dbadc24db0ca931791edd0f3b026ea6a58f",
-              "original_score": 8.6707,
-              "reranker_score": 16.9091
+              "document_id": "5f02fc2f8937d16a4d8cdca47da36ae34429e0b279fb0cc56af72e2d91991a28",
+              "original_score": 12.6536,
+              "reranker_score": 29.4545
             }
           ],
           "case_id": "WIXQA-EXPERT-0073",
@@ -403,7 +631,7 @@
             "action": "promote_challenger",
             "challenger_id": "5f02fc2f8937d16a4d8cdca47da36ae34429e0b279fb0cc56af72e2d91991a28",
             "incumbent_id": "b3e00d9ee8731d8ba3a2b6a598661814748800e26861ceae1043dd13aedcf7be",
-            "original_score_gap": 1.5521,
+            "original_score_gap": 1.7519,
             "reranker_margin": 7.0909
           },
           "expected_citation_ids": [
@@ -411,30 +639,165 @@
           ],
           "original_citation_ids": [
             "b3e00d9ee8731d8ba3a2b6a598661814748800e26861ceae1043dd13aedcf7be",
-            "5f02fc2f8937d16a4d8cdca47da36ae34429e0b279fb0cc56af72e2d91991a28",
-            "e9366441d1e037a1470c9bad57455dbadc24db0ca931791edd0f3b026ea6a58f"
+            "085e4d36ca87e3caa5403c4a9fd6e2e147826bf93f1bb909f23e8f2f0167aab4",
+            "5f02fc2f8937d16a4d8cdca47da36ae34429e0b279fb0cc56af72e2d91991a28"
           ],
           "reranked_citation_ids": [
             "5f02fc2f8937d16a4d8cdca47da36ae34429e0b279fb0cc56af72e2d91991a28",
             "b3e00d9ee8731d8ba3a2b6a598661814748800e26861ceae1043dd13aedcf7be",
-            "e9366441d1e037a1470c9bad57455dbadc24db0ca931791edd0f3b026ea6a58f"
+            "085e4d36ca87e3caa5403c4a9fd6e2e147826bf93f1bb909f23e8f2f0167aab4"
           ],
           "reranked_top1_match": false,
           "retrieval_hit_at_3": true
+        },
+        {
+          "baseline_top1_match": false,
+          "candidate_scores": [
+            {
+              "document_id": "f346781bc6cf23c95342ce003927de9d985a99eeb7561c69f03e65da7c10f2fb",
+              "original_score": 24.5505,
+              "reranker_score": 27.3333
+            },
+            {
+              "document_id": "80f713366c2599da0c718797a8174799885289c8c050fccccb21442a90f0c03a",
+              "original_score": 23.712,
+              "reranker_score": 36.6667
+            },
+            {
+              "document_id": "2df694686b70b35ed389ff590354cfaf19aafc07659b12b02078f2ebcf015ac8",
+              "original_score": 22.892,
+              "reranker_score": 27.3333
+            }
+          ],
+          "case_id": "WIXQA-EXPERT-0081",
+          "change_outcome": "improved",
+          "changed": true,
+          "decision": {
+            "action": "promote_challenger",
+            "challenger_id": "80f713366c2599da0c718797a8174799885289c8c050fccccb21442a90f0c03a",
+            "incumbent_id": "f346781bc6cf23c95342ce003927de9d985a99eeb7561c69f03e65da7c10f2fb",
+            "original_score_gap": 0.8385,
+            "reranker_margin": 9.3334
+          },
+          "expected_citation_ids": [
+            "80f713366c2599da0c718797a8174799885289c8c050fccccb21442a90f0c03a"
+          ],
+          "original_citation_ids": [
+            "f346781bc6cf23c95342ce003927de9d985a99eeb7561c69f03e65da7c10f2fb",
+            "80f713366c2599da0c718797a8174799885289c8c050fccccb21442a90f0c03a",
+            "2df694686b70b35ed389ff590354cfaf19aafc07659b12b02078f2ebcf015ac8"
+          ],
+          "reranked_citation_ids": [
+            "80f713366c2599da0c718797a8174799885289c8c050fccccb21442a90f0c03a",
+            "f346781bc6cf23c95342ce003927de9d985a99eeb7561c69f03e65da7c10f2fb",
+            "2df694686b70b35ed389ff590354cfaf19aafc07659b12b02078f2ebcf015ac8"
+          ],
+          "reranked_top1_match": true,
+          "retrieval_hit_at_3": true
+        },
+        {
+          "baseline_top1_match": false,
+          "candidate_scores": [
+            {
+              "document_id": "8355a228e57d0a766b3bdfd591d86a12b060f7e7f7d4fd19c468cb8f1c336721",
+              "original_score": 4.0,
+              "reranker_score": 0.0
+            },
+            {
+              "document_id": "fa04af5bc8c305f900f1f6bcea2fe66b5a4e6b1a84450b1f6a980084d3d4addc",
+              "original_score": 3.4061,
+              "reranker_score": 3.7778
+            },
+            {
+              "document_id": "ac52db95f0cfec00e71b43d37c7428fb694f9bc262cd7f2770fe661de581c8be",
+              "original_score": 2.6962,
+              "reranker_score": 11.3333
+            }
+          ],
+          "case_id": "WIXQA-EXPERT-0086",
+          "change_outcome": "neutral",
+          "changed": true,
+          "decision": {
+            "action": "promote_challenger",
+            "challenger_id": "ac52db95f0cfec00e71b43d37c7428fb694f9bc262cd7f2770fe661de581c8be",
+            "incumbent_id": "8355a228e57d0a766b3bdfd591d86a12b060f7e7f7d4fd19c468cb8f1c336721",
+            "original_score_gap": 1.3038,
+            "reranker_margin": 11.3333
+          },
+          "expected_citation_ids": [
+            "c260289b0947792bce0e1eac376a70ecf0d3482c1cde01fa22d8f44e6f7c0ee0"
+          ],
+          "original_citation_ids": [
+            "8355a228e57d0a766b3bdfd591d86a12b060f7e7f7d4fd19c468cb8f1c336721",
+            "fa04af5bc8c305f900f1f6bcea2fe66b5a4e6b1a84450b1f6a980084d3d4addc",
+            "ac52db95f0cfec00e71b43d37c7428fb694f9bc262cd7f2770fe661de581c8be"
+          ],
+          "reranked_citation_ids": [
+            "ac52db95f0cfec00e71b43d37c7428fb694f9bc262cd7f2770fe661de581c8be",
+            "8355a228e57d0a766b3bdfd591d86a12b060f7e7f7d4fd19c468cb8f1c336721",
+            "fa04af5bc8c305f900f1f6bcea2fe66b5a4e6b1a84450b1f6a980084d3d4addc"
+          ],
+          "reranked_top1_match": false,
+          "retrieval_hit_at_3": false
+        },
+        {
+          "baseline_top1_match": false,
+          "candidate_scores": [
+            {
+              "document_id": "49d9e88fadbf11fa4e685c847590078ff9394c2fe7566094f504f53ca4aca465",
+              "original_score": 22.3192,
+              "reranker_score": 35.5
+            },
+            {
+              "document_id": "11e6ff65a8bb2f65b29f9d2726561da8f5de81543fe3000fe40668f383c88489",
+              "original_score": 20.6633,
+              "reranker_score": 54.0
+            },
+            {
+              "document_id": "3b3edb8700d3099ded98be8cb0c41785b964f5fc4c21db11cd1c6f96250b8f51",
+              "original_score": 19.908,
+              "reranker_score": 42.0
+            }
+          ],
+          "case_id": "WIXQA-EXPERT-0109",
+          "change_outcome": "neutral",
+          "changed": true,
+          "decision": {
+            "action": "promote_challenger",
+            "challenger_id": "11e6ff65a8bb2f65b29f9d2726561da8f5de81543fe3000fe40668f383c88489",
+            "incumbent_id": "49d9e88fadbf11fa4e685c847590078ff9394c2fe7566094f504f53ca4aca465",
+            "original_score_gap": 1.6559,
+            "reranker_margin": 18.5
+          },
+          "expected_citation_ids": [
+            "c8783e7cee11b09c015c396cebcd60a7c1c93a4be6d73383d41d11369527cde3"
+          ],
+          "original_citation_ids": [
+            "49d9e88fadbf11fa4e685c847590078ff9394c2fe7566094f504f53ca4aca465",
+            "11e6ff65a8bb2f65b29f9d2726561da8f5de81543fe3000fe40668f383c88489",
+            "3b3edb8700d3099ded98be8cb0c41785b964f5fc4c21db11cd1c6f96250b8f51"
+          ],
+          "reranked_citation_ids": [
+            "11e6ff65a8bb2f65b29f9d2726561da8f5de81543fe3000fe40668f383c88489",
+            "49d9e88fadbf11fa4e685c847590078ff9394c2fe7566094f504f53ca4aca465",
+            "3b3edb8700d3099ded98be8cb0c41785b964f5fc4c21db11cd1c6f96250b8f51"
+          ],
+          "reranked_top1_match": false,
+          "retrieval_hit_at_3": false
         }
       ],
       "dataset": "Wix/WixQA expert-written",
       "metrics": {
-        "baseline_top1_accuracy": 0.75,
-        "baseline_top1_correct_count": 60,
-        "change_rate": 0.05,
-        "changed_case_count": 4,
-        "improved_case_count": 2,
-        "neutral_change_count": 1,
-        "regressed_case_count": 1,
-        "regression_rate": 0.0125,
-        "reranked_top1_accuracy": 0.7625,
-        "reranked_top1_correct_count": 61,
+        "baseline_top1_accuracy": 0.6125,
+        "baseline_top1_correct_count": 98,
+        "change_rate": 0.0938,
+        "changed_case_count": 15,
+        "improved_case_count": 5,
+        "neutral_change_count": 7,
+        "regressed_case_count": 3,
+        "regression_rate": 0.0187,
+        "reranked_top1_accuracy": 0.625,
+        "reranked_top1_correct_count": 100,
         "top1_accuracy_delta": 0.0125
       },
       "status": "evaluated"

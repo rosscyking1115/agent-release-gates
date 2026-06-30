@@ -1,8 +1,8 @@
 {
-  "case_count": 240,
+  "case_count": 640,
   "datasets": {
-    "Wix/WixQA expert-written": 80,
-    "nvidia/TechQA-RAG-Eval": 160
+    "Wix/WixQA expert-written": 160,
+    "nvidia/TechQA-RAG-Eval": 480
   },
   "decision_policy": {
     "baseline_public_retriever": "Use the existing public retriever decision threshold.",
@@ -12,9 +12,9 @@
     "strict_grounding_gate": "Abstain on low-confidence retrieved evidence."
   },
   "findings": [
-    "A moderate evidence gate reduces unsupported public-RAG answer attempts by 4.32% absolute while keeping useful-answer rate at 72.60%.",
-    "A stricter grounding gate reduces unsupported answer attempts by 11.05% absolute but increases false abstention/review to 26.92%.",
-    "Routing strict low-evidence cases to review makes the operational cost explicit: 30.83 reviews per 100 public-RAG cases."
+    "A moderate evidence gate reduces unsupported public-RAG answer attempts by 5.33% absolute while keeping useful-answer rate at 65.99%.",
+    "A stricter grounding gate reduces unsupported answer attempts by 9.74% absolute but increases false abstention/review to 20.22%.",
+    "Routing strict low-evidence cases to review makes the operational cost explicit: 22.97 reviews per 100 public-RAG cases."
   ],
   "limitations": [
     "The intervention is deterministic and uses public benchmark labels only for scoring, not for making decisions.",
@@ -34,17 +34,17 @@
   "report_type": "rag_grounding_intervention",
   "status": "evaluated",
   "summary": {
-    "answerable_case_count": 208,
-    "baseline_unsupported_answer_rate": 0.2067,
-    "case_count": 240,
+    "answerable_case_count": 544,
+    "baseline_unsupported_answer_rate": 0.2886,
+    "case_count": 640,
     "dataset_count": 2,
-    "impossible_case_count": 32,
-    "moderate_unsupported_answer_rate": 0.1635,
-    "moderate_useful_answer_rate": 0.726,
+    "impossible_case_count": 96,
+    "moderate_unsupported_answer_rate": 0.2353,
+    "moderate_useful_answer_rate": 0.6599,
     "recommended_variant": "moderate_evidence_gate",
-    "strict_review_burden_per_100": 30.83,
-    "strict_unsupported_answer_rate": 0.0962,
-    "strict_useful_answer_rate": 0.6346
+    "strict_review_burden_per_100": 22.97,
+    "strict_unsupported_answer_rate": 0.1912,
+    "strict_useful_answer_rate": 0.6066
   },
   "thresholds": {
     "baseline_public_retriever": {
@@ -70,13 +70,13 @@
   },
   "variants": [
     {
-      "case_count": 240,
+      "case_count": 640,
       "dataset_metrics": [
         {
           "abstention_burden_per_100_cases": 0.0,
           "answer_attempt_rate": 1.0,
-          "answerable_case_count": 80,
-          "case_count": 80,
+          "answerable_case_count": 160,
+          "case_count": 160,
           "dataset": "Wix/WixQA expert-written",
           "false_abstention_or_review_count": 0,
           "false_abstention_or_review_rate": 0.0,
@@ -84,25 +84,25 @@
           "impossible_intercept_rate": 0.0,
           "impossible_miss_count": 0,
           "review_burden_per_100_cases": 0.0,
-          "unsupported_answer_count": 20,
-          "unsupported_answer_rate": 0.25,
-          "useful_answer_rate": 0.75
+          "unsupported_answer_count": 62,
+          "unsupported_answer_rate": 0.3875,
+          "useful_answer_rate": 0.6125
         },
         {
-          "abstention_burden_per_100_cases": 11.25,
-          "answer_attempt_rate": 0.8875,
-          "answerable_case_count": 128,
-          "case_count": 160,
+          "abstention_burden_per_100_cases": 5.83,
+          "answer_attempt_rate": 0.9417,
+          "answerable_case_count": 384,
+          "case_count": 480,
           "dataset": "nvidia/TechQA-RAG-Eval",
-          "false_abstention_or_review_count": 7,
-          "false_abstention_or_review_rate": 0.0547,
-          "impossible_case_count": 32,
-          "impossible_intercept_rate": 0.3438,
-          "impossible_miss_count": 21,
+          "false_abstention_or_review_count": 17,
+          "false_abstention_or_review_rate": 0.0443,
+          "impossible_case_count": 96,
+          "impossible_intercept_rate": 0.1146,
+          "impossible_miss_count": 85,
           "review_burden_per_100_cases": 0.0,
-          "unsupported_answer_count": 23,
-          "unsupported_answer_rate": 0.1797,
-          "useful_answer_rate": 0.7656
+          "unsupported_answer_count": 95,
+          "unsupported_answer_rate": 0.2474,
+          "useful_answer_rate": 0.7083
         }
       ],
       "failure_examples": [
@@ -112,7 +112,7 @@
           "decision": "answer",
           "failure_type": "unsupported_answer_attempt",
           "threshold": 15.0,
-          "top_score": 321.142
+          "top_score": 320.7766
         },
         {
           "case_id": "TRAIN_Q016",
@@ -120,7 +120,7 @@
           "decision": "answer",
           "failure_type": "unsupported_answer_attempt",
           "threshold": 15.0,
-          "top_score": 71.1317
+          "top_score": 71.6282
         },
         {
           "case_id": "TRAIN_Q017",
@@ -128,7 +128,7 @@
           "decision": "answer",
           "failure_type": "unsupported_answer_attempt",
           "threshold": 15.0,
-          "top_score": 21.5374
+          "top_score": 32.955
         },
         {
           "case_id": "TRAIN_Q020",
@@ -136,7 +136,7 @@
           "decision": "answer",
           "failure_type": "unsupported_answer_attempt",
           "threshold": 15.0,
-          "top_score": 68.7803
+          "top_score": 63.4981
         },
         {
           "case_id": "TRAIN_Q024",
@@ -144,7 +144,7 @@
           "decision": "answer",
           "failure_type": "unsupported_answer_attempt",
           "threshold": 15.0,
-          "top_score": 44.1336
+          "top_score": 47.4965
         },
         {
           "case_id": "TRAIN_Q029",
@@ -152,35 +152,35 @@
           "decision": "answer",
           "failure_type": "unsupported_answer_attempt",
           "threshold": 15.0,
-          "top_score": 43.2497
+          "top_score": 42.1415
         }
       ],
       "label": "Baseline public retriever",
       "metrics": {
-        "abstention_burden_per_100_cases": 7.5,
-        "answer_attempt_rate": 0.925,
-        "answerable_case_count": 208,
-        "case_count": 240,
-        "false_abstention_or_review_count": 7,
-        "false_abstention_or_review_rate": 0.0337,
-        "impossible_case_count": 32,
-        "impossible_intercept_rate": 0.3438,
-        "impossible_miss_count": 21,
+        "abstention_burden_per_100_cases": 4.37,
+        "answer_attempt_rate": 0.9563,
+        "answerable_case_count": 544,
+        "case_count": 640,
+        "false_abstention_or_review_count": 17,
+        "false_abstention_or_review_rate": 0.0312,
+        "impossible_case_count": 96,
+        "impossible_intercept_rate": 0.1146,
+        "impossible_miss_count": 85,
         "review_burden_per_100_cases": 0.0,
-        "unsupported_answer_count": 43,
-        "unsupported_answer_rate": 0.2067,
-        "useful_answer_rate": 0.7596
+        "unsupported_answer_count": 157,
+        "unsupported_answer_rate": 0.2886,
+        "useful_answer_rate": 0.6801
       },
       "variant_id": "baseline_public_retriever"
     },
     {
-      "case_count": 240,
+      "case_count": 640,
       "dataset_metrics": [
         {
           "abstention_burden_per_100_cases": 0.0,
           "answer_attempt_rate": 1.0,
-          "answerable_case_count": 80,
-          "case_count": 80,
+          "answerable_case_count": 160,
+          "case_count": 160,
           "dataset": "Wix/WixQA expert-written",
           "false_abstention_or_review_count": 0,
           "false_abstention_or_review_rate": 0.0,
@@ -188,25 +188,25 @@
           "impossible_intercept_rate": 0.0,
           "impossible_miss_count": 0,
           "review_burden_per_100_cases": 0.0,
-          "unsupported_answer_count": 20,
-          "unsupported_answer_rate": 0.25,
-          "useful_answer_rate": 0.75
+          "unsupported_answer_count": 62,
+          "unsupported_answer_rate": 0.3875,
+          "useful_answer_rate": 0.6125
         },
         {
-          "abstention_burden_per_100_cases": 11.25,
-          "answer_attempt_rate": 0.8875,
-          "answerable_case_count": 128,
-          "case_count": 160,
+          "abstention_burden_per_100_cases": 5.83,
+          "answer_attempt_rate": 0.9417,
+          "answerable_case_count": 384,
+          "case_count": 480,
           "dataset": "nvidia/TechQA-RAG-Eval",
-          "false_abstention_or_review_count": 7,
-          "false_abstention_or_review_rate": 0.0547,
-          "impossible_case_count": 32,
-          "impossible_intercept_rate": 0.3438,
-          "impossible_miss_count": 21,
+          "false_abstention_or_review_count": 17,
+          "false_abstention_or_review_rate": 0.0443,
+          "impossible_case_count": 96,
+          "impossible_intercept_rate": 0.1146,
+          "impossible_miss_count": 85,
           "review_burden_per_100_cases": 0.0,
-          "unsupported_answer_count": 23,
-          "unsupported_answer_rate": 0.1797,
-          "useful_answer_rate": 0.7656
+          "unsupported_answer_count": 95,
+          "unsupported_answer_rate": 0.2474,
+          "useful_answer_rate": 0.7083
         }
       ],
       "failure_examples": [
@@ -216,7 +216,7 @@
           "decision": "answer",
           "failure_type": "unsupported_answer_attempt",
           "threshold": 15.0,
-          "top_score": 321.142
+          "top_score": 320.7766
         },
         {
           "case_id": "TRAIN_Q016",
@@ -224,7 +224,7 @@
           "decision": "answer",
           "failure_type": "unsupported_answer_attempt",
           "threshold": 15.0,
-          "top_score": 71.1317
+          "top_score": 71.6282
         },
         {
           "case_id": "TRAIN_Q017",
@@ -232,7 +232,7 @@
           "decision": "answer",
           "failure_type": "unsupported_answer_attempt",
           "threshold": 15.0,
-          "top_score": 21.5374
+          "top_score": 32.955
         },
         {
           "case_id": "TRAIN_Q020",
@@ -240,7 +240,7 @@
           "decision": "answer",
           "failure_type": "unsupported_answer_attempt",
           "threshold": 15.0,
-          "top_score": 68.7803
+          "top_score": 63.4981
         },
         {
           "case_id": "TRAIN_Q024",
@@ -248,7 +248,7 @@
           "decision": "answer",
           "failure_type": "unsupported_answer_attempt",
           "threshold": 15.0,
-          "top_score": 44.1336
+          "top_score": 47.4965
         },
         {
           "case_id": "TRAIN_Q029",
@@ -256,61 +256,61 @@
           "decision": "answer",
           "failure_type": "unsupported_answer_attempt",
           "threshold": 15.0,
-          "top_score": 43.2497
+          "top_score": 42.1415
         }
       ],
       "label": "Citation-required answering",
       "metrics": {
-        "abstention_burden_per_100_cases": 7.5,
-        "answer_attempt_rate": 0.925,
-        "answerable_case_count": 208,
-        "case_count": 240,
-        "false_abstention_or_review_count": 7,
-        "false_abstention_or_review_rate": 0.0337,
-        "impossible_case_count": 32,
-        "impossible_intercept_rate": 0.3438,
-        "impossible_miss_count": 21,
+        "abstention_burden_per_100_cases": 4.37,
+        "answer_attempt_rate": 0.9563,
+        "answerable_case_count": 544,
+        "case_count": 640,
+        "false_abstention_or_review_count": 17,
+        "false_abstention_or_review_rate": 0.0312,
+        "impossible_case_count": 96,
+        "impossible_intercept_rate": 0.1146,
+        "impossible_miss_count": 85,
         "review_burden_per_100_cases": 0.0,
-        "unsupported_answer_count": 43,
-        "unsupported_answer_rate": 0.2067,
-        "useful_answer_rate": 0.7596
+        "unsupported_answer_count": 157,
+        "unsupported_answer_rate": 0.2886,
+        "useful_answer_rate": 0.6801
       },
       "variant_id": "citation_required_answering"
     },
     {
-      "case_count": 240,
+      "case_count": 640,
       "dataset_metrics": [
         {
-          "abstention_burden_per_100_cases": 7.5,
-          "answer_attempt_rate": 0.925,
-          "answerable_case_count": 80,
-          "case_count": 80,
+          "abstention_burden_per_100_cases": 8.13,
+          "answer_attempt_rate": 0.9187,
+          "answerable_case_count": 160,
+          "case_count": 160,
           "dataset": "Wix/WixQA expert-written",
-          "false_abstention_or_review_count": 6,
-          "false_abstention_or_review_rate": 0.075,
+          "false_abstention_or_review_count": 13,
+          "false_abstention_or_review_rate": 0.0813,
           "impossible_case_count": 0,
           "impossible_intercept_rate": 0.0,
           "impossible_miss_count": 0,
           "review_burden_per_100_cases": 0.0,
-          "unsupported_answer_count": 16,
-          "unsupported_answer_rate": 0.2,
-          "useful_answer_rate": 0.725
+          "unsupported_answer_count": 52,
+          "unsupported_answer_rate": 0.325,
+          "useful_answer_rate": 0.5938
         },
         {
-          "abstention_burden_per_100_cases": 20.0,
-          "answer_attempt_rate": 0.8,
-          "answerable_case_count": 128,
-          "case_count": 160,
+          "abstention_burden_per_100_cases": 14.79,
+          "answer_attempt_rate": 0.8521,
+          "answerable_case_count": 384,
+          "case_count": 480,
           "dataset": "nvidia/TechQA-RAG-Eval",
-          "false_abstention_or_review_count": 17,
-          "false_abstention_or_review_rate": 0.1328,
-          "impossible_case_count": 32,
-          "impossible_intercept_rate": 0.4688,
-          "impossible_miss_count": 17,
+          "false_abstention_or_review_count": 44,
+          "false_abstention_or_review_rate": 0.1146,
+          "impossible_case_count": 96,
+          "impossible_intercept_rate": 0.2812,
+          "impossible_miss_count": 69,
           "review_burden_per_100_cases": 0.0,
-          "unsupported_answer_count": 18,
-          "unsupported_answer_rate": 0.1406,
-          "useful_answer_rate": 0.7266
+          "unsupported_answer_count": 76,
+          "unsupported_answer_rate": 0.1979,
+          "useful_answer_rate": 0.6875
         }
       ],
       "failure_examples": [
@@ -320,7 +320,7 @@
           "decision": "answer",
           "failure_type": "unsupported_answer_attempt",
           "threshold": 20.0,
-          "top_score": 321.142
+          "top_score": 320.7766
         },
         {
           "case_id": "TRAIN_Q016",
@@ -328,7 +328,7 @@
           "decision": "answer",
           "failure_type": "unsupported_answer_attempt",
           "threshold": 20.0,
-          "top_score": 71.1317
+          "top_score": 71.6282
         },
         {
           "case_id": "TRAIN_Q017",
@@ -336,7 +336,7 @@
           "decision": "answer",
           "failure_type": "unsupported_answer_attempt",
           "threshold": 20.0,
-          "top_score": 21.5374
+          "top_score": 32.955
         },
         {
           "case_id": "TRAIN_Q020",
@@ -344,7 +344,7 @@
           "decision": "answer",
           "failure_type": "unsupported_answer_attempt",
           "threshold": 20.0,
-          "top_score": 68.7803
+          "top_score": 63.4981
         },
         {
           "case_id": "TRAIN_Q024",
@@ -352,7 +352,7 @@
           "decision": "answer",
           "failure_type": "unsupported_answer_attempt",
           "threshold": 20.0,
-          "top_score": 44.1336
+          "top_score": 47.4965
         },
         {
           "case_id": "TRAIN_Q029",
@@ -360,61 +360,61 @@
           "decision": "answer",
           "failure_type": "unsupported_answer_attempt",
           "threshold": 20.0,
-          "top_score": 43.2497
+          "top_score": 42.1415
         }
       ],
       "label": "Moderate evidence gate",
       "metrics": {
-        "abstention_burden_per_100_cases": 15.83,
-        "answer_attempt_rate": 0.8417,
-        "answerable_case_count": 208,
-        "case_count": 240,
-        "false_abstention_or_review_count": 23,
-        "false_abstention_or_review_rate": 0.1106,
-        "impossible_case_count": 32,
-        "impossible_intercept_rate": 0.4688,
-        "impossible_miss_count": 17,
+        "abstention_burden_per_100_cases": 13.13,
+        "answer_attempt_rate": 0.8688,
+        "answerable_case_count": 544,
+        "case_count": 640,
+        "false_abstention_or_review_count": 57,
+        "false_abstention_or_review_rate": 0.1048,
+        "impossible_case_count": 96,
+        "impossible_intercept_rate": 0.2812,
+        "impossible_miss_count": 69,
         "review_burden_per_100_cases": 0.0,
-        "unsupported_answer_count": 34,
-        "unsupported_answer_rate": 0.1635,
-        "useful_answer_rate": 0.726
+        "unsupported_answer_count": 128,
+        "unsupported_answer_rate": 0.2353,
+        "useful_answer_rate": 0.6599
       },
       "variant_id": "moderate_evidence_gate"
     },
     {
-      "case_count": 240,
+      "case_count": 640,
       "dataset_metrics": [
         {
-          "abstention_burden_per_100_cases": 31.25,
-          "answer_attempt_rate": 0.6875,
-          "answerable_case_count": 80,
-          "case_count": 80,
+          "abstention_burden_per_100_cases": 23.13,
+          "answer_attempt_rate": 0.7688,
+          "answerable_case_count": 160,
+          "case_count": 160,
           "dataset": "Wix/WixQA expert-written",
-          "false_abstention_or_review_count": 25,
-          "false_abstention_or_review_rate": 0.3125,
+          "false_abstention_or_review_count": 37,
+          "false_abstention_or_review_rate": 0.2313,
           "impossible_case_count": 0,
           "impossible_intercept_rate": 0.0,
           "impossible_miss_count": 0,
           "review_burden_per_100_cases": 0.0,
-          "unsupported_answer_count": 8,
-          "unsupported_answer_rate": 0.1,
-          "useful_answer_rate": 0.5875
+          "unsupported_answer_count": 39,
+          "unsupported_answer_rate": 0.2437,
+          "useful_answer_rate": 0.525
         },
         {
-          "abstention_burden_per_100_cases": 30.63,
-          "answer_attempt_rate": 0.6937,
-          "answerable_case_count": 128,
-          "case_count": 160,
+          "abstention_burden_per_100_cases": 22.92,
+          "answer_attempt_rate": 0.7708,
+          "answerable_case_count": 384,
+          "case_count": 480,
           "dataset": "nvidia/TechQA-RAG-Eval",
-          "false_abstention_or_review_count": 31,
-          "false_abstention_or_review_rate": 0.2422,
-          "impossible_case_count": 32,
-          "impossible_intercept_rate": 0.5625,
-          "impossible_miss_count": 14,
+          "false_abstention_or_review_count": 73,
+          "false_abstention_or_review_rate": 0.1901,
+          "impossible_case_count": 96,
+          "impossible_intercept_rate": 0.3854,
+          "impossible_miss_count": 59,
           "review_burden_per_100_cases": 0.0,
-          "unsupported_answer_count": 12,
-          "unsupported_answer_rate": 0.0938,
-          "useful_answer_rate": 0.6641
+          "unsupported_answer_count": 65,
+          "unsupported_answer_rate": 0.1693,
+          "useful_answer_rate": 0.6406
         }
       ],
       "failure_examples": [
@@ -424,7 +424,7 @@
           "decision": "abstain",
           "failure_type": "answerable_low_evidence_intercepted",
           "threshold": 25.0,
-          "top_score": 20.8675
+          "top_score": 22.3168
         },
         {
           "case_id": "TRAIN_Q015",
@@ -432,7 +432,7 @@
           "decision": "answer",
           "failure_type": "unsupported_answer_attempt",
           "threshold": 25.0,
-          "top_score": 321.142
+          "top_score": 320.7766
         },
         {
           "case_id": "TRAIN_Q016",
@@ -440,15 +440,15 @@
           "decision": "answer",
           "failure_type": "unsupported_answer_attempt",
           "threshold": 25.0,
-          "top_score": 71.1317
+          "top_score": 71.6282
         },
         {
           "case_id": "TRAIN_Q017",
           "dataset": "nvidia/TechQA-RAG-Eval",
-          "decision": "abstain",
-          "failure_type": "answerable_low_evidence_intercepted",
+          "decision": "answer",
+          "failure_type": "unsupported_answer_attempt",
           "threshold": 25.0,
-          "top_score": 21.5374
+          "top_score": 32.955
         },
         {
           "case_id": "TRAIN_Q020",
@@ -456,7 +456,7 @@
           "decision": "answer",
           "failure_type": "unsupported_answer_attempt",
           "threshold": 25.0,
-          "top_score": 68.7803
+          "top_score": 63.4981
         },
         {
           "case_id": "TRAIN_Q024",
@@ -464,61 +464,61 @@
           "decision": "answer",
           "failure_type": "unsupported_answer_attempt",
           "threshold": 25.0,
-          "top_score": 44.1336
+          "top_score": 47.4965
         }
       ],
       "label": "Strict grounding gate",
       "metrics": {
-        "abstention_burden_per_100_cases": 30.83,
-        "answer_attempt_rate": 0.6917,
-        "answerable_case_count": 208,
-        "case_count": 240,
-        "false_abstention_or_review_count": 56,
-        "false_abstention_or_review_rate": 0.2692,
-        "impossible_case_count": 32,
-        "impossible_intercept_rate": 0.5625,
-        "impossible_miss_count": 14,
+        "abstention_burden_per_100_cases": 22.97,
+        "answer_attempt_rate": 0.7703,
+        "answerable_case_count": 544,
+        "case_count": 640,
+        "false_abstention_or_review_count": 110,
+        "false_abstention_or_review_rate": 0.2022,
+        "impossible_case_count": 96,
+        "impossible_intercept_rate": 0.3854,
+        "impossible_miss_count": 59,
         "review_burden_per_100_cases": 0.0,
-        "unsupported_answer_count": 20,
-        "unsupported_answer_rate": 0.0962,
-        "useful_answer_rate": 0.6346
+        "unsupported_answer_count": 104,
+        "unsupported_answer_rate": 0.1912,
+        "useful_answer_rate": 0.6066
       },
       "variant_id": "strict_grounding_gate"
     },
     {
-      "case_count": 240,
+      "case_count": 640,
       "dataset_metrics": [
         {
           "abstention_burden_per_100_cases": 0.0,
-          "answer_attempt_rate": 0.6875,
-          "answerable_case_count": 80,
-          "case_count": 80,
+          "answer_attempt_rate": 0.7688,
+          "answerable_case_count": 160,
+          "case_count": 160,
           "dataset": "Wix/WixQA expert-written",
-          "false_abstention_or_review_count": 25,
-          "false_abstention_or_review_rate": 0.3125,
+          "false_abstention_or_review_count": 37,
+          "false_abstention_or_review_rate": 0.2313,
           "impossible_case_count": 0,
           "impossible_intercept_rate": 0.0,
           "impossible_miss_count": 0,
-          "review_burden_per_100_cases": 31.25,
-          "unsupported_answer_count": 8,
-          "unsupported_answer_rate": 0.1,
-          "useful_answer_rate": 0.5875
+          "review_burden_per_100_cases": 23.13,
+          "unsupported_answer_count": 39,
+          "unsupported_answer_rate": 0.2437,
+          "useful_answer_rate": 0.525
         },
         {
           "abstention_burden_per_100_cases": 0.0,
-          "answer_attempt_rate": 0.6937,
-          "answerable_case_count": 128,
-          "case_count": 160,
+          "answer_attempt_rate": 0.7708,
+          "answerable_case_count": 384,
+          "case_count": 480,
           "dataset": "nvidia/TechQA-RAG-Eval",
-          "false_abstention_or_review_count": 31,
-          "false_abstention_or_review_rate": 0.2422,
-          "impossible_case_count": 32,
-          "impossible_intercept_rate": 0.5625,
-          "impossible_miss_count": 14,
-          "review_burden_per_100_cases": 30.63,
-          "unsupported_answer_count": 12,
-          "unsupported_answer_rate": 0.0938,
-          "useful_answer_rate": 0.6641
+          "false_abstention_or_review_count": 73,
+          "false_abstention_or_review_rate": 0.1901,
+          "impossible_case_count": 96,
+          "impossible_intercept_rate": 0.3854,
+          "impossible_miss_count": 59,
+          "review_burden_per_100_cases": 22.92,
+          "unsupported_answer_count": 65,
+          "unsupported_answer_rate": 0.1693,
+          "useful_answer_rate": 0.6406
         }
       ],
       "failure_examples": [
@@ -528,7 +528,7 @@
           "decision": "review",
           "failure_type": "answerable_low_evidence_intercepted",
           "threshold": 25.0,
-          "top_score": 20.8675
+          "top_score": 22.3168
         },
         {
           "case_id": "TRAIN_Q015",
@@ -536,7 +536,7 @@
           "decision": "answer",
           "failure_type": "unsupported_answer_attempt",
           "threshold": 25.0,
-          "top_score": 321.142
+          "top_score": 320.7766
         },
         {
           "case_id": "TRAIN_Q016",
@@ -544,15 +544,15 @@
           "decision": "answer",
           "failure_type": "unsupported_answer_attempt",
           "threshold": 25.0,
-          "top_score": 71.1317
+          "top_score": 71.6282
         },
         {
           "case_id": "TRAIN_Q017",
           "dataset": "nvidia/TechQA-RAG-Eval",
-          "decision": "review",
-          "failure_type": "answerable_low_evidence_intercepted",
+          "decision": "answer",
+          "failure_type": "unsupported_answer_attempt",
           "threshold": 25.0,
-          "top_score": 21.5374
+          "top_score": 32.955
         },
         {
           "case_id": "TRAIN_Q020",
@@ -560,7 +560,7 @@
           "decision": "answer",
           "failure_type": "unsupported_answer_attempt",
           "threshold": 25.0,
-          "top_score": 68.7803
+          "top_score": 63.4981
         },
         {
           "case_id": "TRAIN_Q024",
@@ -568,24 +568,24 @@
           "decision": "answer",
           "failure_type": "unsupported_answer_attempt",
           "threshold": 25.0,
-          "top_score": 44.1336
+          "top_score": 47.4965
         }
       ],
       "label": "Strict gate with review",
       "metrics": {
         "abstention_burden_per_100_cases": 0.0,
-        "answer_attempt_rate": 0.6917,
-        "answerable_case_count": 208,
-        "case_count": 240,
-        "false_abstention_or_review_count": 56,
-        "false_abstention_or_review_rate": 0.2692,
-        "impossible_case_count": 32,
-        "impossible_intercept_rate": 0.5625,
-        "impossible_miss_count": 14,
-        "review_burden_per_100_cases": 30.83,
-        "unsupported_answer_count": 20,
-        "unsupported_answer_rate": 0.0962,
-        "useful_answer_rate": 0.6346
+        "answer_attempt_rate": 0.7703,
+        "answerable_case_count": 544,
+        "case_count": 640,
+        "false_abstention_or_review_count": 110,
+        "false_abstention_or_review_rate": 0.2022,
+        "impossible_case_count": 96,
+        "impossible_intercept_rate": 0.3854,
+        "impossible_miss_count": 59,
+        "review_burden_per_100_cases": 22.97,
+        "unsupported_answer_count": 104,
+        "unsupported_answer_rate": 0.1912,
+        "useful_answer_rate": 0.6066
       },
       "variant_id": "strict_gate_with_review"
     }

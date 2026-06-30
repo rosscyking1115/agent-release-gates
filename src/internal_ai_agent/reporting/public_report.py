@@ -394,11 +394,11 @@ def generate_public_report(project_root: Path) -> str:
             "- The vector retriever is local TF-IDF, not an embedding model or vector database.",
             "- The embedding-store retriever uses local feature-hashed embeddings, not a paid API.",
             (
-                "- The TechQA public track is a 160-case compact external sample, "
+                "- The TechQA public track is a 480-case compact external sample, "
                 "not the full dataset."
             ),
             (
-                "- The WixQA public track is an 80-case compact expert-written sample, "
+                "- The WixQA public track is a 160-case compact expert-written sample, "
                 "not the full benchmark suite."
             ),
             (
@@ -433,7 +433,7 @@ def generate_public_report(project_root: Path) -> str:
             "- Validate the public RAG grounding thresholds with a provider-backed reranker.",
             "- Collect external labels for memory/context pollution cases.",
             (
-                "- Expand the TechQA public benchmark beyond 160 cases and compare "
+                "- Expand the TechQA public benchmark beyond 480 cases and compare "
                 "against provider embeddings."
             ),
             "- Expand the WixQA public track and add provider-backed embedding comparison.",

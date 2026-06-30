@@ -1,7 +1,7 @@
 {
   "findings": [
-    "Across public RAG tracks, top-3 reranking could lift weighted top-1 citation accuracy from 76.44% to 87.98%.",
-    "The current compact public samples contain 24 rerankable cases and 25 residual retrieval misses.",
+    "Across public RAG tracks, top-3 reranking could lift weighted top-1 citation accuracy from 69.12% to 79.78%.",
+    "The current compact public samples contain 58 rerankable cases and 110 residual retrieval misses.",
     "Reranking is worth testing, but retriever recall still needs separate work because reranking cannot recover documents outside the candidate set."
   ],
   "notes": [
@@ -16,26 +16,26 @@
   "report_type": "public_rag_reranking_opportunity",
   "status": "evaluated",
   "summary": {
-    "current_top1_correct_count": 159,
-    "current_weighted_top1_citation_accuracy": 0.7644,
+    "current_top1_correct_count": 376,
+    "current_weighted_top1_citation_accuracy": 0.6912,
     "evaluated_track_count": 2,
-    "largest_rerankable_track": "Wix/WixQA expert-written (+13.75%)",
-    "largest_residual_gap_track": "nvidia/TechQA-RAG-Eval (+12.50%)",
-    "not_retrieved_case_count": 25,
-    "oracle_top3_rerank_ceiling": 0.8798,
-    "possible_weighted_top1_lift": 0.1154,
-    "rerankable_case_count": 24,
-    "residual_retrieval_gap": 0.1202,
-    "total_case_count": 208
+    "largest_rerankable_track": "Wix/WixQA expert-written (+16.25%)",
+    "largest_residual_gap_track": "Wix/WixQA expert-written (+22.50%)",
+    "not_retrieved_case_count": 110,
+    "oracle_top3_rerank_ceiling": 0.7978,
+    "possible_weighted_top1_lift": 0.1066,
+    "rerankable_case_count": 58,
+    "residual_retrieval_gap": 0.2022,
+    "total_case_count": 544
   },
   "tracks": [
     {
       "benchmark_track": "external_public_rag",
-      "case_count": 128,
-      "current_top1_citation_accuracy": 0.7734,
-      "current_top1_correct_count": 99,
+      "case_count": 384,
+      "current_top1_citation_accuracy": 0.724,
+      "current_top1_correct_count": 278,
       "dataset": "nvidia/TechQA-RAG-Eval",
-      "not_retrieved_case_count": 16,
+      "not_retrieved_case_count": 74,
       "not_retrieved_case_examples": [
         {
           "case_id": "TRAIN_Q016",
@@ -49,7 +49,37 @@
           "retrieved_citation_ids": [
             "swg21067352.txt",
             "swg21902654.txt",
-            "swg22009818.txt"
+            "swg21981870.txt"
+          ]
+        },
+        {
+          "case_id": "TRAIN_Q017",
+          "expected_citation_ids": [
+            "swg27019359.txt"
+          ],
+          "expected_rank": null,
+          "failure_reasons": [
+            "expected_document_not_retrieved_at_3"
+          ],
+          "retrieved_citation_ids": [
+            "swg21690673.txt",
+            "swg21982008.txt",
+            "swg21695094.txt"
+          ]
+        },
+        {
+          "case_id": "TRAIN_Q020",
+          "expected_citation_ids": [
+            "swg24035040.txt"
+          ],
+          "expected_rank": null,
+          "failure_reasons": [
+            "expected_document_not_retrieved_at_3"
+          ],
+          "retrieved_citation_ids": [
+            "swg21263677.txt",
+            "swg21651101.txt",
+            "swg21689914.txt"
           ]
         },
         {
@@ -62,9 +92,9 @@
             "expected_document_not_retrieved_at_3"
           ],
           "retrieved_citation_ids": [
+            "swg24043574.txt",
             "swg21507587.txt",
-            "swg21966637.txt",
-            "swg22001418.txt"
+            "swg21477587.txt"
           ]
         },
         {
@@ -78,46 +108,14 @@
           ],
           "retrieved_citation_ids": [
             "swg21515420.txt",
-            "swg21249798.txt",
-            "swg21636093.txt"
-          ]
-        },
-        {
-          "case_id": "TRAIN_Q033",
-          "expected_citation_ids": [
-            "swg21591076.txt"
-          ],
-          "expected_rank": null,
-          "failure_reasons": [
-            "false_abstention_answerable_question",
-            "expected_document_not_retrieved_at_3"
-          ],
-          "retrieved_citation_ids": [
-            "swg24039229.txt",
-            "swg1PI37248.txt",
-            "swg21611699.txt"
-          ]
-        },
-        {
-          "case_id": "TRAIN_Q038",
-          "expected_citation_ids": [
-            "swg21341204.txt"
-          ],
-          "expected_rank": null,
-          "failure_reasons": [
-            "false_abstention_answerable_question",
-            "expected_document_not_retrieved_at_3"
-          ],
-          "retrieved_citation_ids": [
-            "swg21966637.txt",
-            "swg21998655.txt",
-            "swg21983129.txt"
+            "swg21700865.txt",
+            "swg22002975.txt"
           ]
         }
       ],
-      "oracle_top3_rerank_ceiling": 0.875,
-      "possible_top1_lift": 0.1016,
-      "rerankable_case_count": 13,
+      "oracle_top3_rerank_ceiling": 0.8073,
+      "possible_top1_lift": 0.0833,
+      "rerankable_case_count": 32,
       "rerankable_case_examples": [
         {
           "case_id": "TRAIN_Q015",
@@ -132,36 +130,6 @@
             "swg22010832.txt",
             "swg22011696.txt",
             "swg21998452.txt"
-          ]
-        },
-        {
-          "case_id": "TRAIN_Q017",
-          "expected_citation_ids": [
-            "swg27019359.txt"
-          ],
-          "expected_rank": 2,
-          "failure_reasons": [
-            "expected_document_retrieved_but_not_top1"
-          ],
-          "retrieved_citation_ids": [
-            "swg21695094.txt",
-            "swg27019359.txt",
-            "swg21426787.txt"
-          ]
-        },
-        {
-          "case_id": "TRAIN_Q020",
-          "expected_citation_ids": [
-            "swg24035040.txt"
-          ],
-          "expected_rank": 2,
-          "failure_reasons": [
-            "expected_document_retrieved_but_not_top1"
-          ],
-          "retrieved_citation_ids": [
-            "swg21263677.txt",
-            "swg24035040.txt",
-            "swg21993043.txt"
           ]
         },
         {
@@ -180,31 +148,61 @@
           ]
         },
         {
-          "case_id": "TRAIN_Q044",
+          "case_id": "TRAIN_Q067",
           "expected_citation_ids": [
-            "swg21592093.txt"
+            "swg21451229.txt"
           ],
           "expected_rank": 3,
           "failure_reasons": [
             "expected_document_retrieved_but_not_top1"
           ],
           "retrieved_citation_ids": [
-            "swg21966637.txt",
-            "swg21507587.txt",
-            "swg21592093.txt"
+            "swg21690658.txt",
+            "swg21611073.txt",
+            "swg21451229.txt"
+          ]
+        },
+        {
+          "case_id": "TRAIN_Q069",
+          "expected_citation_ids": [
+            "swg21632275.txt"
+          ],
+          "expected_rank": 3,
+          "failure_reasons": [
+            "expected_document_retrieved_but_not_top1"
+          ],
+          "retrieved_citation_ids": [
+            "swg21498634.txt",
+            "swg21399255.txt",
+            "swg21632275.txt"
+          ]
+        },
+        {
+          "case_id": "TRAIN_Q071",
+          "expected_citation_ids": [
+            "swg21962862.txt"
+          ],
+          "expected_rank": 2,
+          "failure_reasons": [
+            "expected_document_retrieved_but_not_top1"
+          ],
+          "retrieved_citation_ids": [
+            "swg21974546.txt",
+            "swg21962862.txt",
+            "swg21977398.txt"
           ]
         }
       ],
-      "residual_retrieval_gap": 0.125,
+      "residual_retrieval_gap": 0.1927,
       "status": "evaluated"
     },
     {
       "benchmark_track": "external_public_enterprise_rag",
-      "case_count": 80,
-      "current_top1_citation_accuracy": 0.75,
-      "current_top1_correct_count": 60,
+      "case_count": 160,
+      "current_top1_citation_accuracy": 0.6125,
+      "current_top1_correct_count": 98,
       "dataset": "Wix/WixQA expert-written",
-      "not_retrieved_case_count": 9,
+      "not_retrieved_case_count": 36,
       "not_retrieved_case_examples": [
         {
           "case_id": "WIXQA-EXPERT-0005",
@@ -216,9 +214,24 @@
             "expected_document_not_retrieved_at_3"
           ],
           "retrieved_citation_ids": [
+            "fff4ccf96f0bf0a2c3b82d0734f384299bd9a621212087f9268941acd38f8d36",
             "3407d197c71652bee58835ba148794a8be7e70cf9e25c599044b823c82db29fd",
-            "c5d82d4a0741f072da98db371148bfb349e37561fd94b32c1326dd77d44a4ca0",
-            "0b6d939e9e0d8599e895cad834a336ccec3f5e4c149645def2ea4d4d6091b356"
+            "6ac11c077e31c980c3de33be613fa8af2af6f78ed5da96ede5644a7195a1e866"
+          ]
+        },
+        {
+          "case_id": "WIXQA-EXPERT-0025",
+          "expected_citation_ids": [
+            "49d9e88fadbf11fa4e685c847590078ff9394c2fe7566094f504f53ca4aca465"
+          ],
+          "expected_rank": null,
+          "failure_reasons": [
+            "expected_document_not_retrieved_at_3"
+          ],
+          "retrieved_citation_ids": [
+            "73962a6c69a291d8a5d108b0a2116dd29341275b37c155084612574eb649c8d7",
+            "50d02c7ce566adb08742f7cc810bfceab55f9a7c43fcd7fe73f932c2cd8c88b1",
+            "7a49619f637ed0508bca64c0995e2726276d8faba2907d97350e0f01384709af"
           ]
         },
         {
@@ -232,8 +245,8 @@
           ],
           "retrieved_citation_ids": [
             "89e39fdcca5874eb36d1ac6e359aad2cd93b601cac1cf7b8743449ff7893ead8",
-            "fd36cb06f2de70a197a60c3d2e28ec709fb884cad11153f4bb6086f82755bd5a",
-            "c5d82d4a0741f072da98db371148bfb349e37561fd94b32c1326dd77d44a4ca0"
+            "5641574289f2768293891471cfcc69b935623ef2723abd28fcb9dddf430ce5e8",
+            "fd36cb06f2de70a197a60c3d2e28ec709fb884cad11153f4bb6086f82755bd5a"
           ]
         },
         {
@@ -265,27 +278,27 @@
             "a513a215c1798f329293330cb5f5e975a18978954b5ee27d84441e029f900d51",
             "33dfa4eb3abc1c459f4b8f24cb14757f39c1b9c7c13f598cf904b9d395cc6970"
           ]
-        },
-        {
-          "case_id": "WIXQA-EXPERT-0053",
-          "expected_citation_ids": [
-            "7a2109a7643cefe52eaad4779d868dd6fc845b8ab32bc8f131c4c63d53cb7456"
-          ],
-          "expected_rank": null,
-          "failure_reasons": [
-            "expected_document_not_retrieved_at_3"
-          ],
-          "retrieved_citation_ids": [
-            "dd6385654e2bc9cc5fcaf350bc944449291fa2377a61e06052035a2f0605c5b5",
-            "359dab9e725658fc9407e34714d19da1fda7a8cb8c85c5c141968dd3775de044",
-            "a58c7cf097e081353986990a4ed90f8045245be5295358d7e81a7475f1204e09"
-          ]
         }
       ],
-      "oracle_top3_rerank_ceiling": 0.8875,
-      "possible_top1_lift": 0.1375,
-      "rerankable_case_count": 11,
+      "oracle_top3_rerank_ceiling": 0.775,
+      "possible_top1_lift": 0.1625,
+      "rerankable_case_count": 26,
       "rerankable_case_examples": [
+        {
+          "case_id": "WIXQA-EXPERT-0001",
+          "expected_citation_ids": [
+            "49d9e88fadbf11fa4e685c847590078ff9394c2fe7566094f504f53ca4aca465"
+          ],
+          "expected_rank": 2,
+          "failure_reasons": [
+            "expected_document_retrieved_but_not_top1"
+          ],
+          "retrieved_citation_ids": [
+            "51aca93604e8d423b3a87c0126335c5864f343205d7441aa23171523bb26c7aa",
+            "49d9e88fadbf11fa4e685c847590078ff9394c2fe7566094f504f53ca4aca465",
+            "88f6b5848f6f662d7fe9d69f2708f00c75067894320261c58578ad0ed732baa9"
+          ]
+        },
         {
           "case_id": "WIXQA-EXPERT-0004",
           "expected_citation_ids": [
@@ -318,7 +331,7 @@
           ]
         },
         {
-          "case_id": "WIXQA-EXPERT-0025",
+          "case_id": "WIXQA-EXPERT-0024",
           "expected_citation_ids": [
             "49d9e88fadbf11fa4e685c847590078ff9394c2fe7566094f504f53ca4aca465"
           ],
@@ -327,43 +340,29 @@
             "expected_document_retrieved_but_not_top1"
           ],
           "retrieved_citation_ids": [
-            "7a49619f637ed0508bca64c0995e2726276d8faba2907d97350e0f01384709af",
+            "50d02c7ce566adb08742f7cc810bfceab55f9a7c43fcd7fe73f932c2cd8c88b1",
             "49d9e88fadbf11fa4e685c847590078ff9394c2fe7566094f504f53ca4aca465",
             "ad7a6f1f5851bf2c4bc738d6223bb1546e78c7b7f3317d721b67181cd675c5a8"
           ]
         },
         {
-          "case_id": "WIXQA-EXPERT-0041",
+          "case_id": "WIXQA-EXPERT-0028",
           "expected_citation_ids": [
-            "7ccd1a9278fc1868865563acc0217c1d235e1ce76037eafcde2c68cef64a8134"
+            "13ae20110f373b7614a4594a0b47cd190eaecba13c74138551ee24f682b43f08",
+            "0d6bacf2646098a55162336b12fc8eeb56c6618febc7ad94a9c7d5d9bb71ba3f"
           ],
           "expected_rank": 2,
           "failure_reasons": [
             "expected_document_retrieved_but_not_top1"
           ],
           "retrieved_citation_ids": [
-            "d487a621f0535cd8d7c717d614c18d36b49841066c8dd641967d05be5205b6c9",
-            "7ccd1a9278fc1868865563acc0217c1d235e1ce76037eafcde2c68cef64a8134",
-            "7f365d820565efdc168e39938b16e965ea0e70a394eaac7e926078ec3b562ceb"
-          ]
-        },
-        {
-          "case_id": "WIXQA-EXPERT-0044",
-          "expected_citation_ids": [
-            "c71c2c71e9442d4007e45716aa6e8f4826f19a00e850c8b742bd10aa6090a1e5"
-          ],
-          "expected_rank": 2,
-          "failure_reasons": [
-            "expected_document_retrieved_but_not_top1"
-          ],
-          "retrieved_citation_ids": [
-            "7f365d820565efdc168e39938b16e965ea0e70a394eaac7e926078ec3b562ceb",
-            "c71c2c71e9442d4007e45716aa6e8f4826f19a00e850c8b742bd10aa6090a1e5",
-            "4c851bd1efd1009bb75a387d406fb7914e906fda9016127529184916bd23aaf9"
+            "f346781bc6cf23c95342ce003927de9d985a99eeb7561c69f03e65da7c10f2fb",
+            "0d6bacf2646098a55162336b12fc8eeb56c6618febc7ad94a9c7d5d9bb71ba3f",
+            "2df694686b70b35ed389ff590354cfaf19aafc07659b12b02078f2ebcf015ac8"
           ]
         }
       ],
-      "residual_retrieval_gap": 0.1125,
+      "residual_retrieval_gap": 0.225,
       "status": "evaluated"
     }
   ]

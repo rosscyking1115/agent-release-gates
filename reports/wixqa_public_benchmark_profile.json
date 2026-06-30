@@ -6,27 +6,27 @@
   "report_type": "wixqa_public_benchmark_profile",
   "summary": {
     "article_type_counts": {
-      "article": 104,
-      "feature_request": 2
+      "article": 206,
+      "feature_request": 3
     },
-    "average_grounding_documents_per_case": 1.325,
+    "average_grounding_documents_per_case": 1.3062,
     "benchmark_track": "external_public_enterprise_rag",
     "dataset": "Wix/WixQA expert-written",
-    "failed_case_count": 20,
-    "failure_rate": 0.25,
+    "failed_case_count": 62,
+    "failure_rate": 0.3875,
     "license": "MIT",
-    "multi_article_case_count": 23,
-    "multi_article_case_share": 0.2875,
+    "multi_article_case_count": 44,
+    "multi_article_case_share": 0.275,
     "provider_backed_embedding_result_published": false,
-    "retrieval_hit_rate_at_3": 0.8875,
-    "sample_case_count": 80,
+    "retrieval_hit_rate_at_3": 0.775,
+    "sample_case_count": 160,
     "sample_path": "data/public/wixqa_public_rag_sample.jsonl",
     "sample_scope": "tracked_compact_public_sample",
     "sample_selection_policy": "first_expertwritten_cases_with_all_articles_present",
     "source_url": "https://huggingface.co/datasets/Wix/WixQA",
     "status": "evaluated",
-    "top1_citation_accuracy": 0.75,
-    "tracked_sample_default_limit": 80,
-    "unique_document_count": 96
+    "top1_citation_accuracy": 0.6125,
+    "tracked_sample_default_limit": 160,
+    "unique_document_count": 173
   }
 }

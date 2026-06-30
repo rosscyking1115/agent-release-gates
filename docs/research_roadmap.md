@@ -13,8 +13,8 @@ When do safety interventions improve agent safety, and when do they reduce usefu
 ## Current Evidence
 
 - Controlled synthetic operations benchmark with retrieval, citation, abstention, extraction, safety, tool-governance, and observability checks.
-- Public TechQA retrieval validation using a compact 160-case sample.
-- Public WixQA enterprise-support retrieval validation using a compact 80-case expert-written sample.
+- Public TechQA retrieval validation using a compact 480-case sample.
+- Public WixQA enterprise-support retrieval validation using a compact 160-case expert-written sample.
 - Safety classifier evaluation with false positive / false negative trade-offs, sampled synthetic prevalence, simulated human review, mitigation impact, and threshold decision memo.
 - External human-review packet and label template for independent calibration labels.
 - Deterministic release gates, public reports, Docker runtime, CI, Streamlit dashboard, and GitHub Pages site.

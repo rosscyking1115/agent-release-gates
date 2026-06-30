@@ -8,17 +8,17 @@ This study evaluates deterministic grounding and abstention controls over public
 
 | Variant | Cases | Unsupported answer rate | Useful answer rate | False abstention/review | Impossible intercept | Review burden / 100 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| Baseline public retriever | 240 | 20.67% | 75.96% | 3.37% | 34.38% | 0.00 |
-| Citation-required answering | 240 | 20.67% | 75.96% | 3.37% | 34.38% | 0.00 |
-| Moderate evidence gate | 240 | 16.35% | 72.60% | 11.06% | 46.88% | 0.00 |
-| Strict grounding gate | 240 | 9.62% | 63.46% | 26.92% | 56.25% | 0.00 |
-| Strict gate with review | 240 | 9.62% | 63.46% | 26.92% | 56.25% | 30.83 |
+| Baseline public retriever | 640 | 28.86% | 68.01% | 3.12% | 11.46% | 0.00 |
+| Citation-required answering | 640 | 28.86% | 68.01% | 3.12% | 11.46% | 0.00 |
+| Moderate evidence gate | 640 | 23.53% | 65.99% | 10.48% | 28.12% | 0.00 |
+| Strict grounding gate | 640 | 19.12% | 60.66% | 20.22% | 38.54% | 0.00 |
+| Strict gate with review | 640 | 19.12% | 60.66% | 20.22% | 38.54% | 22.97 |
 
 ## Findings
 
-- A moderate evidence gate reduces unsupported public-RAG answer attempts by 4.32% absolute while keeping useful-answer rate at 72.60%.
-- A stricter grounding gate reduces unsupported answer attempts by 11.05% absolute but increases false abstention/review to 26.92%.
-- Routing strict low-evidence cases to review makes the operational cost explicit: 30.83 reviews per 100 public-RAG cases.
+- A moderate evidence gate reduces unsupported public-RAG answer attempts by 5.33% absolute while keeping useful-answer rate at 65.99%.
+- A stricter grounding gate reduces unsupported answer attempts by 9.74% absolute but increases false abstention/review to 20.22%.
+- Routing strict low-evidence cases to review makes the operational cost explicit: 22.97 reviews per 100 public-RAG cases.
 
 ## Recommendations
 
