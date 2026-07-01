@@ -95,7 +95,7 @@ Every new feature should improve at least one of:
 - The TechQA public benchmark uses a 480-case compact sample, not the full upstream dataset.
 - Extraction is deterministic rather than LLM-backed.
 - Red-team checks are deterministic and rule-based.
-- Provider-backed embedding results are not published yet.
+- A reviewed provider-backed embedding result is published for the synthetic benchmark; public-RAG provider embeddings and multi-model comparison are not published yet.
 - Observability is local JSONL plus collector validation, not downstream production tracing.
 
 ## Next Priorities

@@ -168,7 +168,7 @@ CI runs linting, tests, deterministic report checks, local OpenTelemetry smoke t
 - Public TechQA and WixQA tracks use compact samples, not the full upstream datasets.
 - Human-review labels are currently simulated workflow labels; independent reviewer labels are prepared but not yet published.
 - Hosted-model evidence includes reviewed judge-calibration runs, not a broad multi-model agent comparison.
-- Provider-backed embedding and reranker adapters are prepared, but credentialed hosted results are not claimed until reviewed.
+- A reviewed credentialed provider-backed embedding result (OpenAI `text-embedding-3-small`) is published for the synthetic benchmark, where it matches the local retrievers; reranker and multi-model adapters are prepared but not yet published.
 
 ## Roadmap
 

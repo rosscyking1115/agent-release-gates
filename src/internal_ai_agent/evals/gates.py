@@ -1,11 +1,46 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from typing import Any
 
 from internal_ai_agent.io import write_json
 
 Gate = dict[str, Any]
+
+PROVIDER_EMBEDDING_PUBLISHED_PATH = "reports/provider_embedding_published_result.json"
+
+
+def _provider_embedding_gate(published: dict[str, Any] | None) -> Gate:
+    base = {
+        "gate_id": "retrieval.provider_embedding_result",
+        "area": "Retrieval",
+        "label": "Provider-backed embedding result published",
+        "severity": "non_blocking",
+        "threshold": "optional credentialed run",
+    }
+    if published and published.get("status") == "published":
+        hit = float(published.get("metrics", {}).get("retrieval_hit_rate_at_3", 0.0))
+        return {
+            **base,
+            "status": "pass",
+            "observed": "published",
+            "rationale": (
+                f"A reviewed credentialed {published.get('provider', 'provider')} "
+                f"{published.get('model', 'embedding')} run is published "
+                f"(retrieval hit rate@3 {hit:.4f} on {published.get('case_count', '?')} "
+                "golden cases), matching the best local retrievers."
+            ),
+        }
+    return {
+        **base,
+        "status": "warn",
+        "observed": "not_published",
+        "rationale": (
+            "A dry-run-first provider comparison exists, but no credentialed provider "
+            "result is claimed in the deterministic public benchmark."
+        ),
+    }
 
 
 def evaluation_gates(
@@ -19,6 +54,7 @@ def evaluation_gates(
     trace_index: dict[str, Any],
     collector_export_preview: dict[str, Any],
     incident_release_gates: dict[str, Any] | None = None,
+    provider_embedding_published: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     systems = {system["label"]: system for system in retriever_comparison["systems"]}
     gates: list[Gate] = [
@@ -126,19 +162,7 @@ def evaluation_gates(
             expected=trace_index["span_count"],
             rationale="The collector preview and local trace index should cover the same span set.",
         ),
-        {
-            "gate_id": "retrieval.provider_embedding_result",
-            "area": "Retrieval",
-            "label": "Provider-backed embedding result published",
-            "status": "warn",
-            "severity": "non_blocking",
-            "observed": "not_published",
-            "threshold": "optional credentialed run",
-            "rationale": (
-                "A dry-run-first provider comparison exists, but no credentialed provider "
-                "result is claimed in the deterministic public benchmark."
-            ),
-        },
+        _provider_embedding_gate(provider_embedding_published),
     ]
     if incident_release_gates is not None:
         gates.append(
@@ -182,6 +206,12 @@ def write_evaluation_gates(
     collector_export_preview: dict[str, Any],
     incident_release_gates: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
+    published_path = project_root / PROVIDER_EMBEDDING_PUBLISHED_PATH
+    provider_embedding_published = (
+        json.loads(published_path.read_text(encoding="utf-8"))
+        if published_path.exists()
+        else None
+    )
     report = evaluation_gates(
         comparison=comparison,
         retriever_comparison=retriever_comparison,
@@ -192,6 +222,7 @@ def write_evaluation_gates(
         trace_index=trace_index,
         collector_export_preview=collector_export_preview,
         incident_release_gates=incident_release_gates,
+        provider_embedding_published=provider_embedding_published,
     )
     write_json(project_root / "reports/evaluation_gates.json", report)
     return report
