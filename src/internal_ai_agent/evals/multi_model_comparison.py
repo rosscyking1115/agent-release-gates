@@ -80,7 +80,11 @@ def write_multi_model_comparison_plan(project_root: Path) -> dict[str, Any]:
             (
                 "Repeat the Anthropic run when needed and promote only reviewed output."
             ),
-            "Add Google and local open-source judge adapters behind dry-run-first scripts.",
+            (
+                "Run the local open-source judge (adapter available: "
+                "scripts/run_model_judge_eval.py --provider local --run) and promote the "
+                "reviewed result; add a Google adapter behind a dry-run-first script."
+            ),
             "Compare model disagreement by category, severity, and error type.",
             "Add human external labels before treating model agreement as validation evidence.",
         ],
@@ -172,11 +176,15 @@ def _planned_targets(reviewed_providers: set[str]) -> list[dict[str, Any]]:
         },
         {
             "provider": "local_open_source",
-            "adapter_status": "planned",
+            "adapter_status": "available",
             "credential_env_var": "not_required_for_local_runtime",
             "model_env_var": "LOCAL_JUDGE_MODEL",
-            "runner": "planned",
-            "result_state": "not_run",
+            "runner": "scripts/run_model_judge_eval.py --provider local --run",
+            "result_state": (
+                "reviewed_result_present"
+                if "local_open_source" in reviewed_providers
+                else "not_run"
+            ),
         },
     ]
 
