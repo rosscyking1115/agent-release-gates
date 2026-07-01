@@ -13,7 +13,7 @@
     "impossible_case_count": 96,
     "impossible_case_share": 0.2,
     "license": "Apache-2.0",
-    "provider_backed_embedding_result_published": false,
+    "provider_backed_embedding_result_published": true,
     "retrieval_hit_rate_at_3": 0.8073,
     "sample_case_count": 480,
     "sample_path": "data/public/techqa_rag_eval_sample.jsonl",

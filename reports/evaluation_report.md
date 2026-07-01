@@ -166,7 +166,7 @@ The retrieval experiment compares a deliberately weak baseline, a lexical retrie
 | Impossible-question abstention | 11.46% |
 | Answerable false abstention | 4.43% |
 | Failed cases | 197 |
-| Provider-backed embedding result published | False |
+| Provider-backed embedding result published | True |
 
 | TechQA retriever | Retrieval@3 | Top-1 citation | Impossible abstention | Failed cases |
 | --- | ---: | ---: | ---: | ---: |
@@ -190,7 +190,7 @@ The retrieval experiment compares a deliberately weak baseline, a lexical retrie
 | Mean reciprocal rank@3 | 68.44% |
 | Multi-article retrieval@3 | 88.64% |
 | Failed cases | 62 |
-| Provider-backed embedding result published | False |
+| Provider-backed embedding result published | True |
 
 | WixQA retriever | Retrieval@3 | Top-1 citation | Failed cases |
 | --- | ---: | ---: | ---: |

@@ -1,0 +1,63 @@
+{
+  "finding": "On techqa, the provider embedding beats the local retriever on hit rate@3 (0.8906 vs 0.8073, delta +0.0833). On wixqa, the provider embedding beats the local retriever on hit rate@3 (0.9812 vs 0.7750, delta +0.2062).",
+  "model": "text-embedding-3-small",
+  "provider": "openai",
+  "report_type": "public_rag_provider_embedding_published_result",
+  "review_note": "Single credentialed run, manually reviewed. Retrieval metrics (hit@3, top-1 citation, MRR@3) are rank-based and directly comparable to the local retriever; abstention uses the local threshold and is indicative only. Regenerate with scripts/run_public_rag_provider_embedding_eval.py --run and OPENAI_API_KEY.",
+  "run_type": "reviewed_single_credentialed_run",
+  "status": "published",
+  "tracks": {
+    "techqa": {
+      "case_count": 480,
+      "dataset": "nvidia/TechQA-RAG-Eval",
+      "document_count": 337,
+      "hit_rate_delta": 0.0833,
+      "local_primary_metrics": {
+        "abstention_accuracy": 0.7875,
+        "answerable_false_abstention_rate": 0.0443,
+        "impossible_abstention_rate": 0.1146,
+        "mean_reciprocal_rank_at_3": 0.7617,
+        "retrieval_hit_rate_at_3": 0.8073,
+        "top1_citation_accuracy": 0.724
+      },
+      "local_primary_system_id": "local_tfidf_public_retriever",
+      "model": "text-embedding-3-small",
+      "provider": "openai",
+      "provider_metrics": {
+        "abstention_accuracy": 0.8,
+        "answerable_false_abstention_rate": 0.0,
+        "impossible_abstention_rate": 0.0,
+        "mean_reciprocal_rank_at_3": 0.8481,
+        "retrieval_hit_rate_at_3": 0.8906,
+        "top1_citation_accuracy": 0.8151
+      },
+      "provider_system_id": "provider_openai_embedding_techqa",
+      "status": "evaluated",
+      "track": "techqa"
+    },
+    "wixqa": {
+      "case_count": 160,
+      "dataset": "Wix/WixQA expert-written",
+      "document_count": 173,
+      "hit_rate_delta": 0.2062,
+      "local_primary_metrics": {
+        "mean_reciprocal_rank_at_3": 0.6844,
+        "multi_article_retrieval_hit_rate_at_3": 0.8864,
+        "retrieval_hit_rate_at_3": 0.775,
+        "top1_citation_accuracy": 0.6125
+      },
+      "local_primary_system_id": "local_tfidf_wixqa_retriever",
+      "model": "text-embedding-3-small",
+      "provider": "openai",
+      "provider_metrics": {
+        "mean_reciprocal_rank_at_3": 0.9042,
+        "multi_article_retrieval_hit_rate_at_3": 1.0,
+        "retrieval_hit_rate_at_3": 0.9812,
+        "top1_citation_accuracy": 0.8438
+      },
+      "provider_system_id": "provider_openai_embedding_wixqa",
+      "status": "evaluated",
+      "track": "wixqa"
+    }
+  }
+}
