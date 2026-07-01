@@ -70,7 +70,7 @@ This benchmark should not be used as evidence of real production performance, re
 - Human-review labels are simulated and deterministic; the external-review packet is prepared, but independent labels are not yet published.
 - Public TechQA uses a compact 480-case sample, not the full upstream dataset.
 - Public WixQA uses a compact 160-case expert-written sample, not the full upstream benchmark suite.
-- Provider-backed embeddings and multi-model results are not yet published.
+- A reviewed provider-backed embedding result (OpenAI text-embedding-3-small) is published for the synthetic benchmark; multi-model comparison results are not yet published.
 - Deterministic rules make the benchmark reproducible but do not replace adversarial human review.
 
 ## Reproducibility

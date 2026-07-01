@@ -139,10 +139,10 @@
       "area": "Retrieval",
       "gate_id": "retrieval.provider_embedding_result",
       "label": "Provider-backed embedding result published",
-      "observed": "not_published",
-      "rationale": "A dry-run-first provider comparison exists, but no credentialed provider result is claimed in the deterministic public benchmark.",
+      "observed": "published",
+      "rationale": "A reviewed credentialed openai text-embedding-3-small run is published (retrieval hit rate@3 1.0000 on 358 golden cases), matching the best local retrievers.",
       "severity": "non_blocking",
-      "status": "warn",
+      "status": "pass",
       "threshold": "optional credentialed run"
     },
     {
@@ -157,7 +157,7 @@
       "value_format": "status"
     }
   ],
-  "overall_status": "pass_with_warnings",
-  "pass_count": 13,
-  "warn_count": 1
+  "overall_status": "pass",
+  "pass_count": 14,
+  "warn_count": 0
 }

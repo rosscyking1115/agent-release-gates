@@ -14,7 +14,7 @@ This report summarizes a public AI-agent release-readiness evaluation system. Th
 
 | Gate | Area | Status | Severity | Observed | Threshold |
 | --- | --- | --- | --- | ---: | ---: |
-| Overall status | Release | Pass with warnings | summary | 13 pass / 1 warn | 0 fail |
+| Overall status | Release | Pass | summary | 14 pass / 0 warn | 0 fail |
 | Golden case coverage | Benchmark | Pass | Blocking | 358 | 300 |
 | Manual golden-case share | Benchmark | Pass | Blocking | 28.49% | 25.00% |
 | Local TF-IDF vector citation coverage | Retrieval | Pass | Blocking | 100.00% | 99.00% |
@@ -27,7 +27,7 @@ This report summarizes a public AI-agent release-readiness evaluation system. Th
 | Approval audit coverage | Agent governance | Pass | Blocking | 100.00% | 99.00% |
 | Indexed trace count | Observability | Pass | Blocking | 21 | 10 |
 | Collector preview span consistency | Observability | Pass | Blocking | 1328 | 1328 |
-| Provider-backed embedding result published | Retrieval | Warning | Non-blocking | Not yet published | optional credentialed run |
+| Provider-backed embedding result published | Retrieval | Pass | Non-blocking | published | optional credentialed run |
 | Incident replay release gates | Incident replay | Pass | Blocking | Pass | Pass |
 
 ## Incident Replay Suite
