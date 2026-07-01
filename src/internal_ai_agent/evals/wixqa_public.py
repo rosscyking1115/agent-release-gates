@@ -2,12 +2,14 @@ from __future__ import annotations
 
 import re
 from collections import Counter
+from collections.abc import Callable
 from dataclasses import asdict, dataclass
 from math import log
 from pathlib import Path
 from typing import Any
 
 from internal_ai_agent.evals.failure_taxonomy import labels_for_failure_reasons
+from internal_ai_agent.evals.public_rag_publish import published_tracks
 from internal_ai_agent.io import read_jsonl, write_json, write_jsonl
 
 WIXQA_QA_RAW_PATH = Path("data/public/wixqa_expertwritten_test.jsonl")
@@ -103,6 +105,7 @@ def evaluate_wixqa_public(project_root: Path) -> dict[str, Any]:
         results=results,
         metrics=metrics,
         status="evaluated",
+        provider_backed_embedding_published="wixqa" in published_tracks(project_root),
     )
     report = {
         "dataset": "Wix/WixQA expert-written",
@@ -235,8 +238,10 @@ def _evaluate_case(
     documents: list[WixQADocument],
     *,
     system: dict[str, str],
+    retrieve: Callable[..., list[WixQARetrievedDocument]] | None = None,
 ) -> WixQACaseResult:
-    retrieved = _retrieve(
+    retrieve_fn = retrieve if retrieve is not None else _retrieve
+    retrieved = retrieve_fn(
         str(case["question"]),
         documents,
         top_k=3,
@@ -320,6 +325,7 @@ def _benchmark_profile(
     results: list[WixQACaseResult],
     metrics: dict[str, float],
     status: str,
+    provider_backed_embedding_published: bool = False,
 ) -> dict[str, Any]:
     context_counts = [len(case.get("contexts", [])) for case in cases]
     article_types = Counter(
@@ -352,7 +358,7 @@ def _benchmark_profile(
         "tracked_sample_default_limit": WIXQA_DEFAULT_SAMPLE_LIMIT,
         "sample_selection_policy": "first_expertwritten_cases_with_all_articles_present",
         "sample_scope": "tracked_compact_public_sample",
-        "provider_backed_embedding_result_published": False,
+        "provider_backed_embedding_result_published": provider_backed_embedding_published,
         "failed_case_count": len(failed_cases),
         "failure_rate": _rate(bool(row.failure_reasons) for row in results),
     }

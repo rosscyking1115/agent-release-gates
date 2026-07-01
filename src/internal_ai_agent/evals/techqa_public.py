@@ -3,12 +3,14 @@ from __future__ import annotations
 import json
 import re
 from collections import Counter
+from collections.abc import Callable
 from dataclasses import asdict, dataclass
 from math import log
 from pathlib import Path
 from typing import Any
 
 from internal_ai_agent.evals.failure_taxonomy import labels_for_failure_reasons
+from internal_ai_agent.evals.public_rag_publish import published_tracks
 from internal_ai_agent.io import read_jsonl, write_json, write_jsonl
 
 TECHQA_SAMPLE_PATH = Path("data/public/techqa_rag_eval_sample.jsonl")
@@ -121,6 +123,7 @@ def evaluate_techqa_public(project_root: Path) -> dict[str, Any]:
         results=results,
         metrics=metrics,
         status="evaluated",
+        provider_backed_embedding_published="techqa" in published_tracks(project_root),
     )
     report = {
         "dataset": "nvidia/TechQA-RAG-Eval",
@@ -221,6 +224,7 @@ def _benchmark_profile(
     results: list[TechQACaseResult],
     metrics: dict[str, float],
     status: str,
+    provider_backed_embedding_published: bool = False,
 ) -> dict[str, Any]:
     answerable_cases = [case for case in cases if not bool(case.get("is_impossible"))]
     impossible_cases = [case for case in cases if bool(case.get("is_impossible"))]
@@ -252,7 +256,7 @@ def _benchmark_profile(
         "tracked_sample_default_limit": TECHQA_DEFAULT_SAMPLE_LIMIT,
         "sample_selection_policy": "first_answerable_plus_first_impossible_20pct",
         "sample_scope": "tracked_compact_public_sample",
-        "provider_backed_embedding_result_published": False,
+        "provider_backed_embedding_result_published": provider_backed_embedding_published,
         "failed_case_count": len(failed_cases),
         "failure_rate": _rate(bool(row.failure_reasons) for row in results),
     }
@@ -318,8 +322,10 @@ def _evaluate_case(
     documents: list[TechQADocument],
     *,
     system: dict[str, str],
+    retrieve: Callable[..., list[TechQARetrievedDocument]] | None = None,
 ) -> TechQACaseResult:
-    retrieved = _retrieve(
+    retrieve_fn = retrieve if retrieve is not None else _retrieve
+    retrieved = retrieve_fn(
         str(case["question"]),
         documents,
         top_k=3,

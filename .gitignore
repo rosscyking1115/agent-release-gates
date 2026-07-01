@@ -27,3 +27,6 @@ data/public/wixqa_kb_corpus.jsonl
 # Locally installed agent skills (kept out of the repo)
 .claude/skills/
 skills-lock.json
+
+# Local-only provider embedding run status (public RAG tracks)
+reports/public_rag_provider_embedding_status.json
