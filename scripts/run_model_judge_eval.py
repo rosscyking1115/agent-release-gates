@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
+from urllib.error import URLError
 
 from internal_ai_agent.evals.model_judge import (
     dry_run_status,
@@ -15,6 +16,16 @@ from internal_ai_agent.providers.anthropic_judge import (
     AnthropicJudgeConfig,
     AnthropicJudgeProviderError,
     anthropic_judge_config_from_env,
+)
+from internal_ai_agent.providers.local_judge import (
+    DEFAULT_LOCAL_JUDGE_MODEL,
+    LocalJudgeClient,
+    LocalJudgeConfig,
+    LocalJudgeProviderError,
+    local_judge_config_from_env,
+)
+from internal_ai_agent.providers.local_judge import (
+    PROVIDER_NAME as LOCAL_PROVIDER_NAME,
 )
 from internal_ai_agent.providers.openai_judge import (
     DEFAULT_OPENAI_JUDGE_MODEL,
@@ -36,9 +47,12 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--provider",
-        choices=("openai", "anthropic"),
+        choices=("openai", "anthropic", "local"),
         default="openai",
-        help="Hosted judge provider.",
+        help=(
+            "Judge provider. 'local' uses a self-hosted OpenAI-compatible endpoint "
+            "(Ollama/vLLM/LM Studio) and needs no API key."
+        ),
     )
     parser.add_argument(
         "--model",
@@ -73,12 +87,13 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     args = parse_args()
     project_root = Path.cwd()
+    provider_name = LOCAL_PROVIDER_NAME if args.provider == "local" else args.provider
     requested_model = args.model or _default_model(args.provider)
 
     if not args.run:
         status = dry_run_status(
             project_root,
-            provider=args.provider,
+            provider=provider_name,
             model=requested_model,
         )
         write_json(Path(args.status_output), status)
@@ -90,7 +105,7 @@ def main() -> None:
         status = {
             **dry_run_status(
                 project_root,
-                provider=args.provider,
+                provider=provider_name,
                 model=requested_model,
             ),
             "status": "blocked",
@@ -105,22 +120,31 @@ def main() -> None:
         report = evaluate_hosted_model_judge(
             project_root,
             judge_case=judge_case,
-            provider=args.provider,
+            provider=provider_name,
             model=config.model,
         )
-    except (OpenAIJudgeProviderError, AnthropicJudgeProviderError) as exc:
-        status = _provider_error_status(args.provider, config.model, exc)
+    except (
+        OpenAIJudgeProviderError,
+        AnthropicJudgeProviderError,
+        LocalJudgeProviderError,
+    ) as exc:
+        status = _provider_error_status(provider_name, config.model, exc)
+        write_json(Path(args.status_output), status)
+        print(json.dumps(status, indent=2, sort_keys=True))
+        raise SystemExit(1) from exc
+    except URLError as exc:
+        status = _local_unreachable_status(provider_name, config, exc)
         write_json(Path(args.status_output), status)
         print(json.dumps(status, indent=2, sort_keys=True))
         raise SystemExit(1) from exc
     except ValueError as exc:
-        status = _judge_parse_error_status(args.provider, config.model, exc)
+        status = _judge_parse_error_status(provider_name, config.model, exc)
         write_json(Path(args.status_output), status)
         print(json.dumps(status, indent=2, sort_keys=True))
         raise SystemExit(1) from exc
     status = {
         "status": "completed",
-        "provider": args.provider,
+        "provider": provider_name,
         "model": config.model,
         "summary_path": "reports/model_judge_eval_summary.json",
         "cases_path": "reports/model_judge_eval_cases.jsonl",
@@ -135,16 +159,22 @@ def main() -> None:
 def _default_model(provider: str) -> str:
     if provider == "anthropic":
         return DEFAULT_ANTHROPIC_JUDGE_MODEL
+    if provider == "local":
+        return DEFAULT_LOCAL_JUDGE_MODEL
     return DEFAULT_OPENAI_JUDGE_MODEL
 
 
 def _credential_env_var(provider: str) -> str:
     if provider == "anthropic":
         return "ANTHROPIC_API_KEY"
+    if provider == "local":
+        return "none required (local runtime)"
     return "OPENAI_API_KEY"
 
 
 def _config_from_env(provider: str) -> object | None:
+    if provider == "local":
+        return local_judge_config_from_env()
     if provider == "anthropic":
         return anthropic_judge_config_from_env()
     return openai_judge_config_from_env()
@@ -154,6 +184,15 @@ def _build_judge_client(
     args: argparse.Namespace,
     env_config: object,
 ) -> tuple[object, object]:
+    if args.provider == "local":
+        config = LocalJudgeConfig(
+            model=args.model or env_config.model,
+            endpoint=args.endpoint or env_config.endpoint,
+            api_key=env_config.api_key,
+            timeout_seconds=args.timeout_seconds or env_config.timeout_seconds,
+            max_output_tokens=args.max_output_tokens or env_config.max_output_tokens,
+        )
+        return config, LocalJudgeClient(config).judge_case
     if args.provider == "anthropic":
         config = AnthropicJudgeConfig(
             api_key=env_config.api_key,
@@ -177,7 +216,7 @@ def _build_judge_client(
 def _provider_error_status(
     provider: str,
     model: str,
-    exc: OpenAIJudgeProviderError | AnthropicJudgeProviderError,
+    exc: OpenAIJudgeProviderError | AnthropicJudgeProviderError | LocalJudgeProviderError,
 ) -> dict[str, object]:
     status = {
         "status": "provider_error",
@@ -196,7 +235,7 @@ def _provider_error_status(
 
 def _safe_error_summary(
     provider: str,
-    exc: OpenAIJudgeProviderError | AnthropicJudgeProviderError,
+    exc: OpenAIJudgeProviderError | AnthropicJudgeProviderError | LocalJudgeProviderError,
 ) -> str:
     if exc.status_code == 429:
         return (
@@ -208,7 +247,7 @@ def _safe_error_summary(
 
 def _provider_error_next_steps(
     provider: str,
-    exc: OpenAIJudgeProviderError | AnthropicJudgeProviderError,
+    exc: OpenAIJudgeProviderError | AnthropicJudgeProviderError | LocalJudgeProviderError,
 ) -> list[str]:
     if exc.status_code == 429:
         return [
@@ -224,6 +263,29 @@ def _provider_error_next_steps(
         "Review the provider error body preview.",
         "Confirm the API key, project, endpoint, and model are valid.",
     ]
+
+
+def _local_unreachable_status(
+    provider: str,
+    config: LocalJudgeConfig,
+    exc: URLError,
+) -> dict[str, object]:
+    return {
+        "status": "local_runtime_unreachable",
+        "provider": provider,
+        "model": config.model,
+        "endpoint": config.endpoint,
+        "safe_error_summary": (
+            f"Could not reach the local judge endpoint {config.endpoint}: {exc.reason}."
+        ),
+        "next_steps": [
+            "Start a local OpenAI-compatible server, e.g. run `ollama serve` and "
+            "`ollama pull llama3.1:8b`.",
+            "Confirm LOCAL_JUDGE_ENDPOINT matches the server (Ollama default is "
+            "http://localhost:11434/v1/chat/completions).",
+            "Then rerun scripts/run_model_judge_eval.py --provider local --run.",
+        ],
+    }
 
 
 def _judge_parse_error_status(
