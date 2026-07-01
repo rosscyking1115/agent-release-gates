@@ -13,6 +13,16 @@ interventions create false positives, false negatives, review load, or usefulnes
 loss. It should not claim to reproduce or assess any real company's internal
 system.
 
+This is a real, reusable tool meant for adoption by practitioners and teams that
+ship agent changes, and for delivering practical value to the community and to
+organizations evaluating agent safety — not a one-off demonstration. A core
+design principle is that the evaluation stays runnable by anyone, including
+without paid API keys and on self-hosted infrastructure: hosted-provider
+comparisons are always optional add-ons over a free, self-hostable baseline. This
+keeps the barrier to adoption low for the community and supports privacy- or
+cost-constrained organizations (for example in regulated sectors) that cannot
+send evaluation data to third-party APIs.
+
 ## Scope
 
 The lab evaluates:
