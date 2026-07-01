@@ -50,6 +50,8 @@ def test_judge_case_parses_openai_compatible_chat_completion() -> None:
     assert captured["body"]["messages"][0]["role"] == "system"
     assert captured["body"]["messages"][1]["role"] == "user"
     assert "HUMAN-CAL-001" in captured["body"]["messages"][1]["content"]
+    # Forced JSON output so small models can't meta-refuse in prose.
+    assert captured["body"]["response_format"] == {"type": "json_object"}
     # No API key -> no Authorization header.
     assert "Authorization" not in captured["headers"]
 
