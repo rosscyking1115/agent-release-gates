@@ -12,7 +12,7 @@
     "license": "MIT",
     "multi_article_case_count": 44,
     "multi_article_case_share": 0.275,
-    "provider_backed_embedding_result_published": false,
+    "provider_backed_embedding_result_published": true,
     "retrieval_hit_rate_at_3": 0.775,
     "sample_case_count": 160,
     "sample_path": "data/public/wixqa_public_rag_sample.jsonl",

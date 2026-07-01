@@ -92,6 +92,7 @@ Point it at your own agent by exporting candidate results (generic logs or LangC
 - Safety scores are not meaningful alone — the lab reports over-review cost, benign auto-blocks, weak-evidence handling, and unsafe misses **beside** the headline numbers.
 - Layered safeguards reduce selected prompt-injection, unsafe-action, and unsafe-request failures in controlled studies while making review burden visible.
 - Public RAG grounding thresholds reduce unsupported answer attempts while keeping abstention and review cost visible.
+- A hosted OpenAI embedding only *ties* the local retrievers on the saturated synthetic benchmark, but clearly *beats* them on the harder public TechQA/WixQA tracks (WixQA hit@3 98.12% vs 77.50%) — showing where a provider embedding actually adds retrieval value.
 - Memory/context controls reduce polluted-memory following while preserving benign memory usefulness; goal-conflict arbitration reduces unsafe goal-following while preserving benign task completion.
 - The strongest next validation step is independent human labelling, followed by broader multi-model comparison.
 
@@ -168,7 +169,7 @@ CI runs linting, tests, deterministic report checks, local OpenTelemetry smoke t
 - Public TechQA and WixQA tracks use compact samples, not the full upstream datasets.
 - Human-review labels are currently simulated workflow labels; independent reviewer labels are prepared but not yet published.
 - Hosted-model evidence includes reviewed judge-calibration runs, not a broad multi-model agent comparison.
-- A reviewed credentialed provider-backed embedding result (OpenAI `text-embedding-3-small`) is published for the synthetic benchmark, where it matches the local retrievers; reranker and multi-model adapters are prepared but not yet published.
+- Reviewed provider-backed embedding results (OpenAI `text-embedding-3-small`) are published for the synthetic benchmark (where it matches local retrieval) and the public TechQA/WixQA tracks (where it beats local — WixQA hit@3 98.12% vs 77.50%); reranker and multi-model adapters are prepared but not yet published.
 
 ## Roadmap
 
