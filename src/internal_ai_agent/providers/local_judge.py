@@ -106,6 +106,12 @@ class LocalJudgeClient:
             "temperature": 0,
             "max_tokens": self.config.max_output_tokens,
             "stream": False,
+            # Constrain output to a JSON object. Small, safety-tuned open models
+            # otherwise sometimes meta-refuse a judging task in prose; this forces
+            # them to emit the label/decision schema. It is a request-format detail,
+            # not a prompt change, so the judged prompt stays identical across
+            # providers. Supported by Ollama, vLLM, and LM Studio.
+            "response_format": {"type": "json_object"},
         }
 
 
