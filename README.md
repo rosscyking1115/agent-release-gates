@@ -50,6 +50,8 @@ pip install "agent-release-gates[api]"        # FastAPI evidence service
 pip install "agent-release-gates[dashboard]"  # Streamlit reviewer dashboard
 ```
 
+Already installed? Upgrade with `pip install --upgrade agent-release-gates` (see the [changelog](CHANGELOG.md)).
+
 > [!NOTE]
 > These results are **engineering evidence over controlled, synthetic benchmarks** — not claims of real-world production performance. This project is not a clone, assessment, or reverse-engineering of any company's internal AI system. The operations benchmark is synthetic by design; TechQA and WixQA are used separately as public retrieval-validation datasets.
 
