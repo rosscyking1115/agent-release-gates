@@ -1,6 +1,6 @@
 [project]
 name = "agent-release-gates"
-version = "0.1.1"
+version = "0.1.2"
 description = "Release-readiness gates for AI agents: replay known incidents, apply policy-as-code gates, and produce ship/warn/block evidence before an agent, prompt, model, or tool-policy change ships."
 readme = "README.md"
 requires-python = ">=3.12"
