@@ -20,6 +20,8 @@ EXAMPLE_PACK_FILES = (
     "incident_cases.jsonl",
     "incident_release_policy.json",
     "langchain_trace_log.jsonl",
+    "langgraph_log.jsonl",
+    "openai_agents_log.jsonl",
     "trace_events.jsonl",
 )
 
@@ -197,7 +199,9 @@ def _parser() -> argparse.ArgumentParser:
         default="generic_agent_log",
         help=(
             "Input adapter format. Use 'langchain_trace' or 'langsmith_run' for "
-            "LangChain-style traces; other labels are treated as generic rows."
+            "LangChain-style traces, 'openai_agents' for OpenAI Agents SDK run "
+            "results, 'langgraph' for LangGraph final states; other labels are "
+            "treated as generic rows."
         ),
     )
 

@@ -83,7 +83,7 @@
   ],
   "overall_status": "pass",
   "pass_count": 7,
-  "policy_id": "incident_release_policy_v0",
-  "release_candidate": "controlled_agent_approval_gate_v0",
+  "policy_id": "minimal_example_incident_policy",
+  "release_candidate": "langgraph_example",
   "warn_count": 0
 }

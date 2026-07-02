@@ -12,6 +12,8 @@ _EXAMPLE_PACK_FILES = (
     "incident_cases.jsonl",
     "incident_release_policy.json",
     "langchain_trace_log.jsonl",
+    "langgraph_log.jsonl",
+    "openai_agents_log.jsonl",
     "trace_events.jsonl",
 )
 

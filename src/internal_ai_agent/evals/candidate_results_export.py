@@ -125,6 +125,10 @@ def candidate_result_from_agent_log(
         raise ValueError(f"Agent log row must be an object: row {row_index}")
     if source_format in {"langchain_trace", "langsmith_run"}:
         row = _agent_log_row_from_langchain_trace(row, row_index=row_index)
+    elif source_format == "openai_agents":
+        row = _agent_log_row_from_openai_agents(row, row_index=row_index)
+    elif source_format == "langgraph":
+        row = _agent_log_row_from_langgraph(row, row_index=row_index)
 
     incident_id = _validate_safe_identifier(
         _first_non_empty_string(row, _INCIDENT_ID_FIELDS),
@@ -536,6 +540,269 @@ def _langchain_run_executed(row: dict[str, Any], outputs: dict[str, Any] | str) 
 def _is_langchain_tool_event(event: dict[str, Any]) -> bool:
     event_name = str(event.get("event") or event.get("type") or "").lower()
     return "tool" in event_name
+
+
+def _agent_log_row_from_openai_agents(
+    row: dict[str, Any],
+    *,
+    row_index: int,
+) -> dict[str, Any]:
+    """Normalize a serialized OpenAI Agents SDK run result.
+
+    Expected row shape (one JSON object per incident): `final_output`, optional
+    `new_items` (tool_call_item / tool_call_output_item raw items), optional
+    `input_guardrail_results` / `output_guardrail_results`, and the incident id
+    plus a safety decision at the root, in `metadata`, or in `context`. A tripped
+    guardrail maps to a `block` decision when no explicit decision is present.
+    """
+    metadata_in = _optional_object(row.get("metadata", {}), field="metadata", row_index=row_index)
+    context = _optional_object(row.get("context", {}), field="context", row_index=row_index)
+    decision = (
+        _first_non_empty_string(row, _DECISION_FIELDS)
+        or _first_non_empty_string(metadata_in, _DECISION_FIELDS)
+        or _first_non_empty_string(context, _DECISION_FIELDS)
+    )
+    if decision is None and _openai_agents_guardrail_tripped(row):
+        decision = "block"
+    last_agent = row.get("last_agent")
+    if isinstance(last_agent, dict):
+        last_agent = last_agent.get("name", "")
+    transformed: dict[str, Any] = {
+        "incident_id": _first_non_empty_string(row, _INCIDENT_ID_FIELDS)
+        or _first_non_empty_string(metadata_in, _INCIDENT_ID_FIELDS)
+        or _first_non_empty_string(context, _INCIDENT_ID_FIELDS),
+        "decision": decision,
+        "answer": row.get("final_output") or _first_non_empty_string(row, _ANSWER_FIELDS),
+        "citations": row.get("citations", metadata_in.get("citations", [])),
+        "tool_outcomes": _openai_agents_tool_outcomes(row, row_index=row_index),
+        "audit_events": row.get("audit_events", []),
+        "model_version": _first_non_empty_string(row, _MODEL_VERSION_FIELDS)
+        or _first_non_empty_string(metadata_in, _MODEL_VERSION_FIELDS),
+        "policy_version": _first_non_empty_string(row, _POLICY_VERSION_FIELDS)
+        or _first_non_empty_string(metadata_in, _POLICY_VERSION_FIELDS),
+        "trace_id": _first_non_empty_string(row, _TRACE_ID_FIELDS),
+        "metadata": {
+            "openai_agents_last_agent": str(last_agent or ""),
+            "openai_agents_guardrail_tripped": _openai_agents_guardrail_tripped(row),
+        },
+    }
+    abstained = row.get("answer_abstained", metadata_in.get("answer_abstained"))
+    if abstained is not None:
+        transformed["answer_abstained"] = abstained
+    return transformed
+
+
+def _openai_agents_guardrail_tripped(row: dict[str, Any]) -> bool:
+    for field in ("input_guardrail_results", "output_guardrail_results"):
+        results = row.get(field, [])
+        if not isinstance(results, list):
+            continue
+        for result in results:
+            if not isinstance(result, dict):
+                continue
+            output = result.get("output", result)
+            if isinstance(output, dict) and bool(output.get("tripwire_triggered")):
+                return True
+    return False
+
+
+def _openai_agents_tool_outcomes(
+    row: dict[str, Any],
+    *,
+    row_index: int,
+) -> list[dict[str, Any]]:
+    explicit = _first_non_empty_list(row, _TOOL_COLLECTION_FIELDS, row_index=row_index)
+    if explicit is not None:
+        return explicit
+
+    new_items = row.get("new_items", [])
+    if not isinstance(new_items, list):
+        raise ValueError(f"OpenAI Agents field 'new_items' must be a list: row {row_index}")
+    outcomes: list[dict[str, Any]] = []
+    positions_by_call_id: dict[str, int] = {}
+    for item in new_items:
+        if not isinstance(item, dict):
+            continue
+        item_type = str(item.get("type") or "").lower()
+        raw = item.get("raw_item", item)
+        if not isinstance(raw, dict):
+            raw = {}
+        call_id = str(raw.get("call_id") or raw.get("id") or "")
+        if item_type in {"tool_call_item", "handoff_call_item"}:
+            outcome = {
+                "id": call_id,
+                "tool": str(raw.get("name") or ""),
+                "tool_type": "handoff" if item_type == "handoff_call_item" else str(
+                    item.get("tool_type") or raw.get("tool_type") or ""
+                ),
+                "requires_approval": item.get(
+                    "requires_approval", raw.get("requires_approval", False)
+                ),
+                "approval_granted": item.get(
+                    "approval_granted", raw.get("approval_granted", False)
+                ),
+                "executed": False,
+                "blocked_reason": str(item.get("error") or raw.get("error") or ""),
+                "arguments": raw.get("arguments", {}),
+            }
+            if call_id:
+                positions_by_call_id[call_id] = len(outcomes)
+            outcomes.append(outcome)
+        elif item_type in {"tool_call_output_item", "handoff_output_item"} and call_id:
+            position = positions_by_call_id.get(call_id)
+            if position is not None:
+                outcomes[position]["executed"] = True
+                outcomes[position]["output"] = raw.get("output", item.get("output"))
+    return outcomes
+
+
+def _agent_log_row_from_langgraph(
+    row: dict[str, Any],
+    *,
+    row_index: int,
+) -> dict[str, Any]:
+    """Normalize a serialized LangGraph final state.
+
+    Expected row shape (one JSON object per incident): a `messages` list
+    (LangChain-style `type`/`role` messages where AI messages may carry
+    `tool_calls` and tool messages reply with `tool_call_id`), plus the incident
+    id and a safety decision at the root, in `metadata`, or in
+    `config.configurable`. `values.messages` from a state snapshot also works.
+    """
+    metadata_in = _optional_object(row.get("metadata", {}), field="metadata", row_index=row_index)
+    config = _optional_object(row.get("config", {}), field="config", row_index=row_index)
+    configurable = _optional_object(
+        config.get("configurable", {}),
+        field="config.configurable",
+        row_index=row_index,
+    )
+    messages = _langgraph_messages(row, row_index=row_index)
+    transformed: dict[str, Any] = {
+        "incident_id": _first_non_empty_string(row, _INCIDENT_ID_FIELDS)
+        or _first_non_empty_string(metadata_in, _INCIDENT_ID_FIELDS)
+        or _first_non_empty_string(configurable, _INCIDENT_ID_FIELDS),
+        "decision": _first_non_empty_string(row, _DECISION_FIELDS)
+        or _first_non_empty_string(metadata_in, _DECISION_FIELDS)
+        or _first_non_empty_string(configurable, _DECISION_FIELDS),
+        "answer": row.get("answer")
+        or row.get("final_answer")
+        or _langgraph_final_ai_text(messages),
+        "citations": row.get("citations", metadata_in.get("citations", [])),
+        "tool_outcomes": _langgraph_tool_outcomes(row, messages, row_index=row_index),
+        "audit_events": row.get("audit_events", []),
+        "model_version": _first_non_empty_string(row, _MODEL_VERSION_FIELDS)
+        or _first_non_empty_string(metadata_in, _MODEL_VERSION_FIELDS),
+        "policy_version": _first_non_empty_string(row, _POLICY_VERSION_FIELDS)
+        or _first_non_empty_string(metadata_in, _POLICY_VERSION_FIELDS),
+        "trace_id": _first_non_empty_string(row, _TRACE_ID_FIELDS)
+        or str(configurable.get("thread_id") or ""),
+        "metadata": {
+            "langgraph_thread_id": str(configurable.get("thread_id") or ""),
+            "langgraph_message_count": len(messages),
+        },
+    }
+    abstained = row.get("answer_abstained", metadata_in.get("answer_abstained"))
+    if abstained is not None:
+        transformed["answer_abstained"] = abstained
+    return transformed
+
+
+def _langgraph_messages(row: dict[str, Any], *, row_index: int) -> list[dict[str, Any]]:
+    messages = row.get("messages")
+    if messages is None:
+        values = row.get("values")
+        if isinstance(values, dict):
+            messages = values.get("messages")
+    if messages is None:
+        return []
+    if not isinstance(messages, list):
+        raise ValueError(f"LangGraph field 'messages' must be a list: row {row_index}")
+    return [message for message in messages if isinstance(message, dict)]
+
+
+def _langgraph_message_kind(message: dict[str, Any]) -> str:
+    return str(message.get("type") or message.get("role") or "").lower()
+
+
+def _langgraph_message_text(message: dict[str, Any]) -> str:
+    content = message.get("content", "")
+    if isinstance(content, str):
+        return content
+    if isinstance(content, list):
+        parts = [
+            str(block.get("text", ""))
+            for block in content
+            if isinstance(block, dict) and block.get("type", "text") == "text"
+        ]
+        return "\n".join(part for part in parts if part)
+    return str(content or "")
+
+
+def _langgraph_final_ai_text(messages: list[dict[str, Any]]) -> str | None:
+    for message in reversed(messages):
+        if _langgraph_message_kind(message) in {"ai", "assistant"}:
+            text = _langgraph_message_text(message)
+            if text.strip():
+                return text
+    return None
+
+
+def _langgraph_tool_outcomes(
+    row: dict[str, Any],
+    messages: list[dict[str, Any]],
+    *,
+    row_index: int,
+) -> list[dict[str, Any]]:
+    explicit = _first_non_empty_list(row, _TOOL_COLLECTION_FIELDS, row_index=row_index)
+    if explicit is not None:
+        return explicit
+
+    outcomes: list[dict[str, Any]] = []
+    positions_by_call_id: dict[str, int] = {}
+    for message in messages:
+        kind = _langgraph_message_kind(message)
+        if kind in {"ai", "assistant"}:
+            for tool_call in message.get("tool_calls", []) or []:
+                if not isinstance(tool_call, dict):
+                    continue
+                call_id = str(tool_call.get("id") or "")
+                outcome = {
+                    "id": call_id,
+                    "tool": str(tool_call.get("name") or ""),
+                    "tool_type": str(tool_call.get("tool_type") or ""),
+                    "requires_approval": tool_call.get("requires_approval", False),
+                    "approval_granted": tool_call.get("approval_granted", False),
+                    "executed": False,
+                    "blocked_reason": "",
+                    "arguments": tool_call.get("args", {}),
+                }
+                if call_id:
+                    positions_by_call_id[call_id] = len(outcomes)
+                outcomes.append(outcome)
+        elif kind == "tool":
+            call_id = str(message.get("tool_call_id") or "")
+            position = positions_by_call_id.get(call_id)
+            status = str(message.get("status") or "").lower()
+            failed = status == "error"
+            if position is not None:
+                outcomes[position]["executed"] = not failed
+                outcomes[position]["output"] = _langgraph_message_text(message)
+                if failed:
+                    outcomes[position]["blocked_reason"] = _langgraph_message_text(message)
+            else:
+                outcomes.append(
+                    {
+                        "id": call_id,
+                        "tool": str(message.get("name") or ""),
+                        "tool_type": "",
+                        "requires_approval": False,
+                        "approval_granted": False,
+                        "executed": not failed,
+                        "blocked_reason": _langgraph_message_text(message) if failed else "",
+                        "output": _langgraph_message_text(message),
+                    }
+                )
+    return outcomes
 
 
 def _first_non_empty_list(

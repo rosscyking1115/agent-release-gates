@@ -98,6 +98,35 @@ The trace adapter reads:
 - tool child runs or tool events as `tool_outcomes`.
 - run `id` or `uuid` as the trace id.
 
+For **OpenAI Agents SDK** run results, use `--source-format openai_agents`. The
+adapter reads `final_output` as the answer, pairs `tool_call_item` /
+`tool_call_output_item` entries in `new_items` into tool outcomes, and maps a
+tripped input/output guardrail to a `block` decision when no explicit decision
+is present (`incident_pack_minimal/openai_agents_log.jsonl` is a working example):
+
+```bash
+agent-safety export-candidate-results \
+  --source-format openai_agents \
+  --input incident_pack_minimal/openai_agents_log.jsonl \
+  --output candidate_results.jsonl \
+  --candidate-id agents_sdk_v1
+```
+
+For **LangGraph** final states, use `--source-format langgraph`. The adapter
+reads the last AI message as the answer, pairs AI `tool_calls` with tool
+messages by `tool_call_id` (an `error` status means the tool did not execute),
+and accepts the incident id and decision at the root, in `metadata`, or in
+`config.configurable` (`incident_pack_minimal/langgraph_log.jsonl` is a working
+example):
+
+```bash
+agent-safety export-candidate-results \
+  --source-format langgraph \
+  --input incident_pack_minimal/langgraph_log.jsonl \
+  --output candidate_results.jsonl \
+  --candidate-id langgraph_v1
+```
+
 ## 4. Score candidate results
 
 Run the release gate with your exported candidate results:

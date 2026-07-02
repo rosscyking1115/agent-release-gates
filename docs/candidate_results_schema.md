@@ -54,6 +54,26 @@ The exporter accepts common aliases from generic agent logs:
 Decision aliases such as `refused`, `blocked`, `approved`, `escalated`, and
 `human_review` are normalized to `block`, `allow`, or `review`.
 
+## OpenAI Agents SDK Export
+
+Use `--source-format openai_agents` when each JSONL row is a serialized OpenAI
+Agents SDK run result. The adapter reads `final_output` as the answer, pairs
+`tool_call_item` / `tool_call_output_item` entries in `new_items` into tool
+outcomes (`handoff_call_item` becomes a `handoff` tool), and maps a tripped
+`input_guardrail_results` / `output_guardrail_results` tripwire to a `block`
+decision when no explicit decision is present. Incident id and decision may sit
+at the root, in `metadata`, or in `context`.
+
+## LangGraph Export
+
+Use `--source-format langgraph` when each JSONL row is a serialized LangGraph
+final state. The adapter reads the last AI message in `messages` (or
+`values.messages`) as the answer, pairs AI `tool_calls` with tool messages by
+`tool_call_id` (a tool message with `status: "error"` means the tool did not
+execute and its content becomes `blocked_reason`), and accepts incident id and
+decision at the root, in `metadata`, or in `config.configurable`. The
+`thread_id` becomes the trace id when no explicit trace id is present.
+
 ## LangChain Trace Export
 
 Use `--source-format langchain_trace` when each JSONL row is a LangChain or

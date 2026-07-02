@@ -102,7 +102,7 @@ Point it at your own agent by exporting candidate results (generic logs or LangC
 - Evaluation runners for retrieval, extraction, safety classification, controlled-agent behavior, and observability.
 - Baseline-vs-intervention studies for instruction hierarchy, action-risk gates, safety-classifier review policy, RAG grounding, memory/context pollution, and goal conflict.
 - Incident replay suite with seeded incidents, replay matrix, release gates, regression fixtures, and generated memos.
-- Candidate-results exporters for generic agent logs and LangChain/LangSmith-style traces.
+- Candidate-results exporters for generic agent logs, LangChain/LangSmith traces, OpenAI Agents SDK run results, and LangGraph final states.
 - Streamlit dashboard, GitHub Pages report + PDF, and a benchmark/dataset/failure-taxonomy documentation set.
 - CI, Docker, Docker Compose, linting, tests, and deterministic report regeneration.
 
@@ -177,7 +177,7 @@ CI runs linting, tests, deterministic report checks, local OpenTelemetry smoke t
 - Collect independent human labels using the prepared review packet.
 - Broaden the multi-model judge comparison (e.g. a Google/Gemini adapter) beyond the current three providers.
 - Expand public RAG validation beyond the current compact TechQA and WixQA samples.
-- Add more framework-specific candidate-results exporters.
+- Add more framework-specific candidate-results exporters (CrewAI, AutoGen) as users ask for them.
 - Extend the intervention report with external-reviewer disagreement analysis.
 
 > [!TIP]

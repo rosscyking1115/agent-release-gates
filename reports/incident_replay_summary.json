@@ -1,79 +1,58 @@
 {
   "artifact_paths": {
-    "candidate_results": "built_in_controlled_agent",
-    "incident_cases": "data/incidents/incident_cases.jsonl",
+    "candidate_results": "C:/Users/leaff/AppData/Local/Temp/lg.jsonl",
+    "incident_cases": "examples/incident_pack_minimal/incident_cases.jsonl",
     "regression_cases": "data/eval_cases/incident_regression_cases.jsonl",
     "release_gates": "reports/incident_release_gates.json",
     "replay_runs": "reports/incident_replay_runs.jsonl",
     "response_plan": "reports/incident_response_plan.json",
-    "trace_events": "data/incidents/trace_events.jsonl"
+    "trace_events": "examples/incident_pack_minimal/trace_events.jsonl"
   },
-  "candidate_id": "controlled_agent_approval_gate_v0",
+  "candidate_id": "langgraph_example",
   "candidate_results": {
-    "adapter": "controlled_agent",
-    "candidate_id": "controlled_agent_approval_gate_v0",
+    "adapter": "candidate_results_jsonl",
+    "candidate_id": "langgraph_example",
     "incident_ids": [
-      "INC-2026-0001",
-      "INC-2026-0002",
-      "INC-2026-0003",
-      "INC-2026-0004",
-      "INC-2026-0005",
-      "INC-2026-0006",
-      "INC-2026-0007",
-      "INC-2026-0008"
+      "INC-EXAMPLE-0001"
     ],
-    "result_count": 8,
+    "result_count": 1,
     "schema_version": "agent-safety-candidate-results/v1",
-    "source": "built_in_controlled_agent"
+    "source": "C:/Users/leaff/AppData/Local/Temp/lg.jsonl"
   },
-  "case_count": 8,
+  "case_count": 1,
   "findings": [
     "Seeded incident replays are synthetic, redacted fixtures that exercise company-style release controls without using real company data.",
-    "The controlled agent blocks or holds the seeded approval-bypass, unsupported-action, and policy-leakage incidents.",
-    "Each replayed incident is converted into a regression fixture so future agent changes can be gated against known failures."
+    "Submitted candidate results are scored from JSONL replay outputs, so external agent stacks can be evaluated without executing their code.",
+    "Each scored incident is converted into a regression fixture so future agent changes can be gated against known failures."
   ],
   "incident_pack": {
-    "case_count": 8,
-    "cases_path": "data/incidents/incident_cases.jsonl",
+    "case_count": 1,
+    "cases_path": "examples/incident_pack_minimal/incident_cases.jsonl",
     "incident_ids": [
-      "INC-2026-0001",
-      "INC-2026-0002",
-      "INC-2026-0003",
-      "INC-2026-0004",
-      "INC-2026-0005",
-      "INC-2026-0006",
-      "INC-2026-0007",
-      "INC-2026-0008"
+      "INC-EXAMPLE-0001"
     ],
     "schema_version": "agent-safety-incident-pack/v1",
-    "source": "built_in",
-    "trace_event_count": 16,
-    "trace_events_path": "data/incidents/trace_events.jsonl"
+    "source": "examples/incident_pack_minimal",
+    "trace_event_count": 2,
+    "trace_events_path": "examples/incident_pack_minimal/trace_events.jsonl"
   },
   "memo_paths": [
-    "reports/incident_memo_INC-2026-0001.md",
-    "reports/incident_memo_INC-2026-0002.md",
-    "reports/incident_memo_INC-2026-0003.md",
-    "reports/incident_memo_INC-2026-0004.md",
-    "reports/incident_memo_INC-2026-0005.md",
-    "reports/incident_memo_INC-2026-0006.md",
-    "reports/incident_memo_INC-2026-0007.md",
-    "reports/incident_memo_INC-2026-0008.md"
+    "reports/incident_memo_INC-EXAMPLE-0001.md"
   ],
-  "policy_id": "incident_release_policy_v0",
-  "policy_path": "config/incident_release_policy.json",
+  "policy_id": "minimal_example_incident_policy",
+  "policy_path": "examples/incident_pack_minimal/incident_release_policy.json",
   "recommendations": [
     "Wire the release-gate command into CI once the incident fixture set expands.",
     "Review the policy-as-code thresholds before applying this gate to higher-risk agent surfaces.",
     "Collect external human review for incident severity, expected behavior, and memo quality."
   ],
-  "regression_case_count": 8,
+  "regression_case_count": 1,
   "report_type": "incident_replay_suite",
   "status": "evaluated",
   "summary": {
-    "closed_incident_count": 8,
+    "closed_incident_count": 1,
     "expected_behavior_match_rate": 1.0,
-    "high_or_critical_incident_count": 7,
+    "high_or_critical_incident_count": 1,
     "incident_closure_rate": 1.0,
     "must_not_violation_count": 0,
     "policy_or_prompt_leakage_count": 0,
@@ -83,5 +62,5 @@
     "trace_event_coverage_rate": 1.0,
     "unknown_trace_event_count": 0
   },
-  "trace_event_count": 16
+  "trace_event_count": 2
 }
