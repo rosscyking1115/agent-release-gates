@@ -4,7 +4,7 @@
   "next_steps": [
     "Repeat the OpenAI run when quota is available and promote only reviewed output.",
     "Repeat the Anthropic run when needed and promote only reviewed output.",
-    "Run the local open-source judge (adapter available: scripts/run_model_judge_eval.py --provider local --run) and promote the reviewed result; add a Google adapter behind a dry-run-first script.",
+    "Add a Google (Gemini) judge adapter behind a dry-run-first script to reach the fourth distinct provider.",
     "Compare model disagreement by category, severity, and error type.",
     "Add human external labels before treating model agreement as validation evidence."
   ],
@@ -67,7 +67,7 @@
       "credential_env_var": "not_required_for_local_runtime",
       "model_env_var": "LOCAL_JUDGE_MODEL",
       "provider": "local_open_source",
-      "result_state": "not_run",
+      "result_state": "reviewed_result_present",
       "runner": "scripts/run_model_judge_eval.py --provider local --run"
     }
   ],
@@ -81,16 +81,17 @@
   "readiness_summary": {
     "adapter_available_count": 2,
     "adapter_planned_count": 2,
-    "credentialed_result_count": 2,
+    "credentialed_result_count": 3,
     "ready_for_anthropic_run": false,
     "ready_for_cross_provider_publication": true,
     "ready_for_openai_repeat_run": true
   },
   "report_type": "multi_model_comparison_plan",
   "reviewed_hosted_result_present": true,
-  "reviewed_provider_count": 2,
+  "reviewed_provider_count": 3,
   "reviewed_providers": [
     "anthropic",
+    "local_open_source",
     "openai"
   ],
   "status": "reviewed_partial_results",

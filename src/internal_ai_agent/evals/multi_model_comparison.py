@@ -81,9 +81,8 @@ def write_multi_model_comparison_plan(project_root: Path) -> dict[str, Any]:
                 "Repeat the Anthropic run when needed and promote only reviewed output."
             ),
             (
-                "Run the local open-source judge (adapter available: "
-                "scripts/run_model_judge_eval.py --provider local --run) and promote the "
-                "reviewed result; add a Google adapter behind a dry-run-first script."
+                "Add a Google (Gemini) judge adapter behind a dry-run-first script to "
+                "reach the fourth distinct provider."
             ),
             "Compare model disagreement by category, severity, and error type.",
             "Add human external labels before treating model agreement as validation evidence.",

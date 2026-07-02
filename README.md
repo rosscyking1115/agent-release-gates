@@ -85,7 +85,7 @@ Point it at your own agent by exporting candidate results (generic logs or LangC
 | Agent governance | 100.00% mock side-effect block rate and approval audit rate |
 | Incident replay | 8 seeded synthetic incidents replayed, 100.00% closure rate, 0 replay must-not violations |
 | Intervention study | 3 deterministic safety studies plus public RAG grounding and memory/context studies |
-| Hosted judge calibration | Reviewed OpenAI and Anthropic judge runs with public-safe provider comparison |
+| Multi-model judge comparison | 3 reviewed providers (OpenAI, Anthropic, local open-source) on 24 human-calibration cases; local `llama3.1:8b` 91.67% vs frontier 95.83–100% |
 
 ## Key findings
 
@@ -94,7 +94,8 @@ Point it at your own agent by exporting candidate results (generic logs or LangC
 - Public RAG grounding thresholds reduce unsupported answer attempts while keeping abstention and review cost visible.
 - A hosted OpenAI embedding only *ties* the local retrievers on the saturated synthetic benchmark, but clearly *beats* them on the harder public TechQA/WixQA tracks (WixQA hit@3 98.12% vs 77.50%) — showing where a provider embedding actually adds retrieval value.
 - Memory/context controls reduce polluted-memory following while preserving benign memory usefulness; goal-conflict arbitration reduces unsafe goal-following while preserving benign task completion.
-- The strongest next validation step is independent human labelling, followed by broader multi-model comparison.
+- As a safety judge, a free self-hosted `llama3.1:8b` reaches 91.67% label accuracy vs 95.83% (`gpt-4.1-mini`) and 100% (`claude-sonnet-4-5`) — but with 2 unsafe misses the frontier models avoided. Self-hosting the judge is viable but weaker on the safety-relevant recall that matters most, so the three models are reported as disagreement slices, not a ranking.
+- The strongest next validation step is independent human labelling.
 
 ## What's included
 
@@ -168,13 +169,13 @@ CI runs linting, tests, deterministic report checks, local OpenTelemetry smoke t
 - The controlled benchmark is synthetic and still partly templated.
 - Public TechQA and WixQA tracks use compact samples, not the full upstream datasets.
 - Human-review labels are currently simulated workflow labels; independent reviewer labels are prepared but not yet published.
-- Hosted-model evidence includes reviewed judge-calibration runs, not a broad multi-model agent comparison.
-- Reviewed provider-backed embedding results (OpenAI `text-embedding-3-small`) are published for the synthetic benchmark (where it matches local retrieval) and the public TechQA/WixQA tracks (where it beats local — WixQA hit@3 98.12% vs 77.50%); reranker and multi-model adapters are prepared but not yet published.
+- The multi-model judge comparison covers three providers (OpenAI, Anthropic, local open-source) on a 24-case calibration set; a broader multi-model *agent* comparison and a Google judge adapter are still open.
+- Reviewed provider-backed embedding results (OpenAI `text-embedding-3-small`) are published for the synthetic benchmark (where it matches local retrieval) and the public TechQA/WixQA tracks (where it beats local — WixQA hit@3 98.12% vs 77.50%); reranker adapters are prepared but not yet published.
 
 ## Roadmap
 
 - Collect independent human labels using the prepared review packet.
-- Add reproducible multi-model comparison across hosted and open-source models.
+- Broaden the multi-model judge comparison (e.g. a Google/Gemini adapter) beyond the current three providers.
 - Expand public RAG validation beyond the current compact TechQA and WixQA samples.
 - Add more framework-specific candidate-results exporters.
 - Extend the intervention report with external-reviewer disagreement analysis.
