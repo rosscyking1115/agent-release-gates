@@ -6,7 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 license = "MIT"
 license-files = ["LICENSE"]
-authors = [{ name = "rosscyking1115" }]
+authors = [{ name = "Cheng-Yuan King", email = "rosscyking1115@gmail.com" }]
 keywords = [
     "ai-safety",
     "agent",
