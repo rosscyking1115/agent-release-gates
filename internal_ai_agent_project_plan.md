@@ -13,15 +13,15 @@ interventions create false positives, false negatives, review load, or usefulnes
 loss. It should not claim to reproduce or assess any real company's internal
 system.
 
-This is a real, reusable tool meant for adoption by practitioners and teams that
-ship agent changes, and for delivering practical value to the community and to
-organizations evaluating agent safety — not a one-off demonstration. A core
-design principle is that the evaluation stays runnable by anyone, including
-without paid API keys and on self-hosted infrastructure: hosted-provider
-comparisons are always optional add-ons over a free, self-hostable baseline. This
-keeps the barrier to adoption low for the community and supports privacy- or
-cost-constrained organizations (for example in regulated sectors) that cannot
-send evaluation data to third-party APIs.
+This is a **portfolio / reference implementation** that demonstrates AI-safety
+release-engineering (incident replay + policy-as-code gating). It is not a
+product and is not for sale; there is no roadmap, support commitment, or
+commercial intent. The working infrastructure exists to make the design and
+evidence inspectable end to end. A core engineering principle — which also
+happens to make the evidence trustworthy — is that the evaluation stays runnable
+by anyone with no paid API keys and no network: hosted-provider comparisons are
+always optional overlays over a deterministic, self-contained baseline, so the
+numbers a reviewer sees in CI are the numbers they can reproduce.
 
 ## Scope
 
