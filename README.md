@@ -15,6 +15,12 @@
 [Engineering writeup](docs/engineering_writeup.md) ·
 [Docs](#documentation)
 
+<br>
+
+<img src="docs/img/dashboard.png" alt="Agent Release Safety Gates reviewer dashboard: the ship/warn/block gate status (pass), synthetic and public-RAG case counts, safety recall, and a baseline-vs-improved metrics table" width="840">
+
+<sub>The reviewer dashboard — one evidence surface, showing the release-gate status and metrics. <a href="https://agent-release-gates.streamlit.app/">Open it live →</a></sub>
+
 </div>
 
 ---
