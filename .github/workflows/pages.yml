@@ -15,13 +15,15 @@ env:
 
 concurrency:
   group: "pages"
-  cancel-in-progress: false
+  # Only the latest commit needs publishing; cancelling superseded runs avoids
+  # competing Pages deployments that fail with "Deployment failed, try again later".
+  cancel-in-progress: true
 
 jobs:
   deploy:
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url || steps.deployment_retry.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
@@ -56,4 +58,15 @@ jobs:
 
       - name: Deploy to GitHub Pages
         id: deployment
+        uses: actions/deploy-pages@v4
+
+      # The Pages backend occasionally returns a transient "try again later" even
+      # after the artifact uploads cleanly. Give it a moment and retry once.
+      - name: Wait before deploy retry
+        if: failure() && steps.deployment.conclusion == 'failure'
+        run: sleep 45
+
+      - name: Deploy to GitHub Pages (retry)
+        if: failure() && steps.deployment.conclusion == 'failure'
+        id: deployment_retry
         uses: actions/deploy-pages@v4
