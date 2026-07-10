@@ -2,7 +2,7 @@
 
 *A reference implementation of AI-safety release-engineering. This writeup explains the
 idea, the design decisions, and what the implementation is meant to demonstrate. It is a
-portfolio project, not a product.*
+reference project, not a product.*
 
 ## The problem
 
@@ -78,7 +78,7 @@ The harness answers five release questions, each backed by a concrete eval:
 
 ## Two findings that show the reasoning
 
-Portfolio projects are more convincing when the findings are honest and non-obvious. Two
+The work is more convincing when the findings are honest and non-obvious. Two
 examples the implementation produced:
 
 - **Provider vs. local embeddings.** On the synthetic benchmark a hosted OpenAI embedding
