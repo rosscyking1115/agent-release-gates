@@ -26,7 +26,7 @@
 ---
 
 > [!NOTE]
-> **This is a portfolio / reference-implementation project**, not a product for sale. It exists to demonstrate how an AI-agent change can be gated on safety evidence — incident replay plus policy-as-code — before it ships. It is intentionally built end to end (a PyPI-published CLI, CI, a FastAPI service, a Streamlit dashboard, Docker) so the design and the evidence are fully inspectable. Start with the **[engineering writeup](docs/engineering_writeup.md)** for the design rationale and what it demonstrates.
+> **A reference implementation**, not a product for sale. It shows how an AI-agent change can be gated on safety evidence — incident replay plus policy-as-code — before it ships. It is intentionally built end to end (a PyPI-published CLI, CI, a FastAPI service, a Streamlit dashboard, Docker) so the design and the evidence are fully inspectable. Start with the **[engineering writeup](docs/engineering_writeup.md)** for the design rationale.
 
 ## Quickstart
 
@@ -64,7 +64,7 @@ Already installed? Upgrade with `pip install --upgrade agent-release-gates` (see
 > [!NOTE]
 > These results are **engineering evidence over controlled, synthetic benchmarks** — not claims of real-world production performance. This project is not a clone, assessment, or reverse-engineering of any company's internal AI system. The operations benchmark is synthetic by design; TechQA and WixQA are used separately as public retrieval-validation datasets.
 
-## The idea it demonstrates
+## The idea
 
 Agents regress silently: a prompt tweak, a model swap, or a loosened tool policy can quietly reintroduce a failure you already fixed. Web services solved the analogous problem with regression tests and release gates in CI. This project applies that discipline to agent safety — it answers five release questions and turns the answers into a reproducible gate:
 
