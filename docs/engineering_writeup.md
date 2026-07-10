@@ -1,8 +1,8 @@
 # Engineering Writeup — Gating AI-Agent Releases on Safety Evidence
 
 *A reference implementation of AI-safety release-engineering. This writeup explains the
-idea, the design decisions, and what the implementation is meant to demonstrate. It is a
-reference project, not a product.*
+idea, the design decisions, and what the implementation covers. It is a reference project,
+not a product.*
 
 ## The problem
 
@@ -95,9 +95,9 @@ examples the implementation produced:
   disagreement slices, not a leaderboard. (One implementation detail: the local model
   initially meta-refused the judging task in prose until output was constrained to JSON.)
 
-## What this is meant to demonstrate
+## What this implementation covers
 
-For an AI-safety / eval-engineering audience, the implementation is evidence of:
+The implementation spans:
 
 - **Eval-harness design** — a deterministic, reproducible scoring pipeline with a clean
   agent-agnostic contract and a policy-as-code gate that runs in CI.
@@ -123,7 +123,7 @@ For an AI-safety / eval-engineering audience, the implementation is evidence of:
 
 ## Scope
 
-This is a **portfolio / reference implementation**. There is no roadmap, support commitment,
-pricing, or commercial intent, and none is planned. The working infrastructure (service,
-dashboard, Docker, exporters) exists to make the design and evidence inspectable end to end
-— it is the demonstration, not a product.
+This is a **reference implementation**. There is no roadmap, support commitment, pricing, or
+commercial intent, and none is planned. The working infrastructure (service, dashboard,
+Docker, exporters) exists to make the design and evidence inspectable end to end — not to be
+a product.

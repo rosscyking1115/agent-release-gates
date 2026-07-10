@@ -184,7 +184,7 @@ CI runs linting, tests, deterministic report checks, local OpenTelemetry smoke t
 
 ## Scope
 
-This is a **portfolio / reference implementation**, not a maintained product — there is no roadmap, support commitment, or commercial intent. The items below are the natural next steps a production-grade version would take, listed to show where this implementation deliberately stops:
+This is a **reference implementation**, not a maintained product — there is no roadmap, support commitment, or commercial intent. The items below are the natural next steps a production-grade version would take, listed to show where this implementation deliberately stops:
 
 - Independent human labelling of the calibration set (the strongest next validation step).
 - A broader multi-model judge comparison beyond the current three providers.
