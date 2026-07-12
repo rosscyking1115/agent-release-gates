@@ -173,6 +173,7 @@ CI runs linting, tests, deterministic report checks, local OpenTelemetry smoke t
 | Reviewer handoff pack | [docs/reviewer_handoff_pack.md](docs/reviewer_handoff_pack.md) |
 | Technical artifact index | [docs/technical_artifacts.md](docs/technical_artifacts.md) |
 | Dashboard deployment | [docs/dashboard.md](docs/dashboard.md) |
+| Planning history (provenance) | [docs/history/](docs/history/) |
 
 ## Limitations
 
