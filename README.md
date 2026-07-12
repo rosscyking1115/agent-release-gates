@@ -23,6 +23,8 @@
 
 </div>
 
+> Part of my AI-safety pair with [redteam-foundry](https://github.com/rosscyking1115/redteam-foundry), which audits the benchmarks whose challenge packs these gates consume. Full project map → [profile](https://github.com/rosscyking1115).
+
 ---
 
 > [!NOTE]
