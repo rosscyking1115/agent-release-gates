@@ -1,0 +1,25 @@
+name: keep-streamlit-awake
+
+# Streamlit Community Cloud (free tier) sleeps an app after ~12h of no traffic, so the
+# next visitor hits a "wake up" screen + a cold start. This pings the app's health
+# endpoint every few hours to keep the reviewer dashboard warm for public viewers.
+# Best-effort — Streamlit may still recycle the container.
+on:
+  schedule:
+    - cron: "53 */6 * * *"   # every ~6 hours, off-the-hour on purpose
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wake / keep the app warm
+        run: |
+          APP="https://agent-release-gates.streamlit.app"
+          # Health endpoint returns "ok" when the app is serving; also hit root to trigger a wake.
+          curl -fsS --retry 5 --retry-all-errors --max-time 60 "$APP/_stcore/health" || true
+          curl -fsS --retry 5 --retry-all-errors --max-time 60 "$APP/" -o /dev/null || true
+          echo "pinged $APP"
