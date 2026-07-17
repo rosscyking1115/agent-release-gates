@@ -571,7 +571,7 @@ def _index_html(
     </header>
 
     <section>
-      <h2>At A Glance</h2>
+      <h2>At a glance</h2>
       <div class="summary-grid">
         <div class="summary-card">
           <h3>What it is</h3>
@@ -609,7 +609,7 @@ def _index_html(
     </section>
 
     <section class="section">
-      <h2>Key Findings</h2>
+      <h2>Key findings</h2>
       <div class="summary-grid">
         <div class="summary-card">
           <h3>Safety needs trade-off reporting</h3>
@@ -659,7 +659,7 @@ def _index_html(
     </section>
 
     <section class="section">
-      <h2>Evidence Snapshot</h2>
+      <h2>Evidence snapshot</h2>
       <div class="grid">
         {_metric("Synthetic golden cases", counts["golden_cases"])}
         {_metric("Red-team cases", counts["red_team_cases"])}
@@ -740,7 +740,7 @@ def _index_html(
     </section>
 
     <section class="section">
-      <h2>Explore The Project</h2>
+      <h2>Explore the project</h2>
       <div class="summary-grid">
         <div class="summary-card">
           <h3>Interactive dashboard</h3>
@@ -794,7 +794,7 @@ def _index_html(
     </section>
 
     <section class="section">
-      <h2>Benchmark Transparency</h2>
+      <h2>Benchmark transparency</h2>
       <p>
         High scores on synthetic cases are useful only when the benchmark mix is
         visible. This project keeps the synthetic benchmark, public RAG tracks,
@@ -811,7 +811,7 @@ def _index_html(
     </section>
 
     <section class="section">
-      <h2>Run Locally</h2>
+      <h2>Run locally</h2>
       <p>
         The FastAPI service and dashboard are containerized so the full stack
         can be run from the public repository.

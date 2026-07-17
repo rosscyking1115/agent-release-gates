@@ -364,7 +364,7 @@ def _render_reviewer_summary(
     model_judge_adapter: dict[str, object],
     multi_model_comparison: dict[str, object],
 ) -> None:
-    st.subheader("Reviewer Summary")
+    st.subheader("Reviewer summary")
     st.markdown(
         """
         This lab is a reproducible evaluation system for AI-agent safety and reliability.
@@ -401,7 +401,7 @@ def _render_reviewer_summary(
         _format_status(evaluation_gates.get("overall_status", "")),
     )
 
-    st.markdown("**Current Evidence**")
+    st.markdown("**Current evidence**")
     st.markdown(
         f"""
         - Improved synthetic citation coverage:
@@ -419,7 +419,7 @@ def _render_reviewer_summary(
         """
     )
 
-    st.markdown("**Validation Boundary**")
+    st.markdown("**Validation boundary**")
     st.markdown(
         f"""
         - Synthetic operations data is generated and intentionally contains no real
@@ -481,7 +481,7 @@ def _render_summary(
 
 
 def _render_metric_comparison(rows: list[dict[str, object]]) -> None:
-    st.subheader("Before And After")
+    st.subheader("Before and after")
     chart_df = pd.DataFrame(rows).set_index("label")[["baseline", "improved"]]
     st.bar_chart(chart_df, height=360)
 
@@ -491,7 +491,7 @@ def _render_metric_comparison(rows: list[dict[str, object]]) -> None:
 
 
 def _render_dataset_profile(profile: dict[str, object]) -> None:
-    st.subheader("Dataset Profile")
+    st.subheader("Dataset profile")
     mix = profile["golden_case_mix"]
     cols = st.columns(5)
     cols[0].metric("Golden cases", profile["dataset_counts"]["golden_cases"])
@@ -534,7 +534,7 @@ def _render_dataset_profile(profile: dict[str, object]) -> None:
 
 
 def _render_dataset_profile_summary(profile: dict[str, object]) -> None:
-    st.subheader("Benchmark Transparency")
+    st.subheader("Benchmark transparency")
     mix = profile["golden_case_mix"]
     cols = st.columns(4)
     cols[0].metric("Manual golden cases", mix["manual_cases"])
@@ -546,7 +546,7 @@ def _render_dataset_profile_summary(profile: dict[str, object]) -> None:
 
 
 def _render_retriever_experiment(comparison: dict[str, object]) -> None:
-    st.subheader("Retriever Experiment")
+    st.subheader("Retriever experiment")
     rows = retriever_experiment_rows(comparison)
     chart_df = pd.DataFrame(rows).set_index("system")[
         ["retrieval_hit_rate_at_3", "citation_coverage", "next_action_accuracy"]
@@ -577,7 +577,7 @@ def _render_retriever_experiment(comparison: dict[str, object]) -> None:
 
 
 def _render_techqa_public_benchmark(summary: dict[str, object]) -> None:
-    st.subheader("External Public RAG Benchmark")
+    st.subheader("External public RAG benchmark")
     if summary.get("status") != "evaluated":
         st.info("TechQA public benchmark is not configured in this runtime.")
         return
@@ -652,7 +652,7 @@ def _render_techqa_public_benchmark(summary: dict[str, object]) -> None:
 
 
 def _render_wixqa_public_benchmark(summary: dict[str, object]) -> None:
-    st.subheader("WixQA Public Enterprise RAG Benchmark")
+    st.subheader("WixQA public enterprise RAG benchmark")
     if summary.get("status") != "evaluated":
         st.info("WixQA public benchmark is not configured in this runtime.")
         return
@@ -705,7 +705,7 @@ def _render_wixqa_public_benchmark(summary: dict[str, object]) -> None:
 
 
 def _render_public_rag_findings(report: dict[str, object]) -> None:
-    st.subheader("Cross-Public RAG Findings")
+    st.subheader("Cross-public RAG findings")
     if report.get("status") != "evaluated":
         st.info("Cross-public RAG findings are not configured in this runtime.")
         return
@@ -740,7 +740,7 @@ def _render_public_rag_findings(report: dict[str, object]) -> None:
 
 
 def _render_public_rag_reranking(report: dict[str, object]) -> None:
-    st.subheader("Public RAG Reranking Opportunity")
+    st.subheader("Public RAG reranking opportunity")
     if report.get("status") != "evaluated":
         st.info("Public RAG reranking opportunity is not configured in this runtime.")
         return
@@ -772,7 +772,7 @@ def _render_public_rag_reranking(report: dict[str, object]) -> None:
 
 
 def _render_public_rag_reranker(report: dict[str, object]) -> None:
-    st.subheader("Public RAG Reranker Evaluation")
+    st.subheader("Public RAG reranker evaluation")
     if report.get("status") != "evaluated":
         st.info("Public RAG reranker evaluation is not configured in this runtime.")
         return
@@ -804,7 +804,7 @@ def _render_public_rag_reranker(report: dict[str, object]) -> None:
 
 
 def _render_public_rag_model_reranker(status: dict[str, object]) -> None:
-    st.subheader("Hosted Public RAG Reranker Adapter")
+    st.subheader("Hosted public RAG reranker adapter")
     if status.get("status") == "not_configured":
         st.info("Hosted public RAG reranker packet is not configured in this runtime.")
         return
@@ -833,7 +833,7 @@ def _render_public_rag_model_reranker(status: dict[str, object]) -> None:
 
 
 def _render_retriever_snapshots(snapshot_report: dict[str, object]) -> None:
-    st.subheader("Retriever Metric Snapshots")
+    st.subheader("Retriever metric snapshots")
     rows = retriever_snapshot_rows(snapshot_report)
     table_df = pd.DataFrame(rows)
     if table_df.empty:
@@ -869,7 +869,7 @@ def _render_retriever_snapshots(snapshot_report: dict[str, object]) -> None:
 
 
 def _render_evaluation_history(history: dict[str, object]) -> None:
-    st.subheader("Evaluation History")
+    st.subheader("Evaluation history")
     rows = evaluation_history_rows(history)
     table_df = pd.DataFrame(rows)
     if table_df.empty:
@@ -914,7 +914,7 @@ def _render_evaluation_gates(gates: dict[str, object]) -> None:
     if not gates:
         return
 
-    st.subheader("Evaluation Release Gates")
+    st.subheader("Evaluation release gates")
     cols = st.columns(4)
     cols[0].metric("Overall", str(gates["overall_status"]))
     cols[1].metric("Pass", gates["pass_count"])
@@ -929,7 +929,7 @@ def _render_evaluation_gates(gates: dict[str, object]) -> None:
 def _render_retriever_error_analysis(
     cases_by_system: dict[str, list[dict[str, object]]],
 ) -> None:
-    st.subheader("Retriever Failure Analysis")
+    st.subheader("Retriever failure analysis")
     overview_rows = retriever_failure_overview(cases_by_system)
     overview_df = pd.DataFrame(overview_rows)
     if not overview_df.empty:
@@ -970,7 +970,7 @@ def _render_retriever_error_analysis(
 
 
 def _render_error_analysis(failure_taxonomy: dict[str, object]) -> None:
-    st.subheader("Noisy Case And Error Analysis")
+    st.subheader("Noisy cases and error analysis")
     tab_noise, tab_task, tab_failures, tab_taxonomy, tab_examples = st.tabs(
         [
             "Noise types",
@@ -1059,7 +1059,7 @@ def _render_extraction_metrics(
     summary: dict[str, object],
     rows: list[dict[str, object]],
 ) -> None:
-    st.subheader("Structured Extraction And Routing")
+    st.subheader("Structured extraction and routing")
     cols = st.columns(2)
     cols[0].metric("Extraction cases", summary["case_count"])
     cols[1].metric("System", summary["system_version"])
@@ -1076,7 +1076,7 @@ def _render_security_metrics(
     summary: dict[str, object],
     rows: list[dict[str, object]],
 ) -> None:
-    st.subheader("Security Red-Team Evaluation")
+    st.subheader("Security red-team evaluation")
     cols = st.columns(4)
     cols[0].metric("Red-team cases", summary["case_count"])
     cols[1].metric("Improved block rate", f"{summary['metrics']['improved_block_rate'] * 100:.2f}%")
@@ -1121,7 +1121,7 @@ def _render_safety_classifier_workflow(
     model_judge_adapter: dict[str, object],
     multi_model_comparison: dict[str, object],
 ) -> None:
-    st.subheader("Safety Prevalence And Classifier Workflow")
+    st.subheader("Safety prevalence and classifier workflow")
     metrics = classifier["metrics"]
     prevalence = classifier["weighted_prevalence"]
     review_summary = review_simulation["summary"]
@@ -1247,7 +1247,7 @@ def _render_safety_classifier_workflow(
             if not case_df.empty:
                 st.dataframe(case_df, hide_index=True, width="stretch")
             external_summary = external_human_review.get("summary", {})
-            st.markdown("**External Human Review**")
+            st.markdown("**External human review**")
             if not external_summary:
                 st.info("External human-review summary is not available yet.")
             else:
@@ -1306,7 +1306,7 @@ def _render_safety_classifier_workflow(
                 for note in external_human_review.get("notes", []):
                     st.caption(str(note))
             judge_summary = judge_reliability.get("summary", {})
-            st.markdown("**Judge Reliability**")
+            st.markdown("**Judge reliability**")
             if not judge_summary:
                 st.info("Judge reliability summary is not available yet.")
             else:
@@ -1354,13 +1354,13 @@ def _render_safety_classifier_workflow(
                         hide_index=True,
                         width="stretch",
                     )
-            st.markdown("**Hosted Judge Adapter**")
+            st.markdown("**Hosted judge adapter**")
             adapter_df = pd.DataFrame(model_judge_adapter_rows(model_judge_adapter))
             if not adapter_df.empty:
                 st.dataframe(adapter_df, hide_index=True, width="stretch")
             for note in model_judge_adapter.get("notes", []):
                 st.caption(str(note))
-            st.markdown("**Multi-Model Comparison Plan**")
+            st.markdown("**Multi-model comparison plan**")
             readiness = multi_model_comparison.get("readiness_summary", {})
             if not readiness:
                 st.info("Multi-model comparison plan is not configured yet.")
@@ -1457,7 +1457,7 @@ def _render_safety_classifier_workflow(
         category_actions = pd.DataFrame(secondary_review_band["category_actions"])
         if not category_actions.empty:
             st.dataframe(category_actions, hide_index=True, width="stretch")
-        st.markdown("**Validation Slice**")
+        st.markdown("**Validation slice**")
         validation_cols = st.columns(4)
         validation_cols[0].metric(
             "Unsafe capture",
@@ -1522,7 +1522,7 @@ def _render_safety_classifier_workflow(
         st.markdown("**Rationale**")
         for item in threshold_memo["rationale"]:
             st.write(f"- {item}")
-        st.markdown("**Next Threshold Work**")
+        st.markdown("**Next threshold work**")
         for item in threshold_memo["next_threshold_work"]:
             st.write(f"- {item}")
 
@@ -1560,7 +1560,7 @@ def _render_intervention_study(
     memory_context_report: dict[str, object],
     goal_conflict_report: dict[str, object],
 ) -> None:
-    st.subheader("Safety Intervention Results")
+    st.subheader("Safety intervention results")
     if report.get("status") == "not_configured":
         st.info("Agent safety intervention study has not been generated yet.")
         return
@@ -1641,7 +1641,7 @@ def _render_intervention_study(
             for row in rows:
                 st.markdown(f"- {row['headline']}")
 
-    st.subheader("Evaluation Reliability")
+    st.subheader("Evaluation reliability")
     st.markdown(str(report["responsible_release_boundary"]))
     next_steps = report.get("next_steps", [])
     if next_steps:
@@ -1655,7 +1655,7 @@ def _render_intervention_study(
 
 
 def _render_rag_grounding_intervention(report: dict[str, object]) -> None:
-    st.subheader("RAG Grounding And Abstention")
+    st.subheader("RAG grounding and abstention")
     if report.get("status") != "evaluated":
         st.info("RAG grounding intervention study is not configured in this runtime.")
         return
@@ -1732,7 +1732,7 @@ def _render_rag_grounding_intervention(report: dict[str, object]) -> None:
 
 
 def _render_memory_context_intervention(report: dict[str, object]) -> None:
-    st.subheader("Memory And Context Pollution")
+    st.subheader("Memory and context pollution")
     if report.get("status") != "evaluated":
         st.info("Memory/context intervention study is not configured in this runtime.")
         return
@@ -1813,7 +1813,7 @@ def _render_memory_context_intervention(report: dict[str, object]) -> None:
 
 
 def _render_goal_conflict_intervention(report: dict[str, object]) -> None:
-    st.subheader("Goal Conflict Arbitration")
+    st.subheader("Goal-conflict arbitration")
     if report.get("status") != "evaluated":
         st.info("Goal-conflict intervention study is not configured in this runtime.")
         return
@@ -1898,7 +1898,7 @@ def _render_incident_replay(
     release_gates: dict[str, object],
     response_plan: dict[str, object],
 ) -> None:
-    st.subheader("Incident Replay Workspace")
+    st.subheader("Incident replay workspace")
     if summary.get("status") != "evaluated":
         st.info("Incident replay suite has not been generated yet.")
         return
@@ -2310,7 +2310,7 @@ def _render_agent_metrics(
     trace_index: dict[str, object],
     collector_preview: dict[str, object],
 ) -> None:
-    st.subheader("Controlled Agent And Tool Governance")
+    st.subheader("Controlled agent and tool governance")
     cols = st.columns(2)
     cols[0].metric("Agent cases", summary["case_count"])
     cols[1].metric(
@@ -2371,7 +2371,7 @@ def _render_trace_index(trace_index: dict[str, object]) -> None:
     if not trace_index:
         return
 
-    st.subheader("Local Trace Index")
+    st.subheader("Local trace index")
     cols = st.columns(4)
     cols[0].metric("Indexed traces", f"{trace_index['trace_count']:,}")
     cols[1].metric("Indexed spans", f"{trace_index['span_count']:,}")
@@ -2490,7 +2490,7 @@ def _render_public_report(
     report_html: str,
     report_pdf: bytes,
 ) -> None:
-    st.subheader("Evaluation Report")
+    st.subheader("Evaluation report")
     col_markdown, col_html, col_pdf = st.columns(3)
     col_markdown.download_button(
         "Download Markdown",
@@ -2517,7 +2517,7 @@ def _render_case_analysis(
     baseline_cases: list[dict[str, object]],
     improved_cases: list[dict[str, object]],
 ) -> None:
-    st.subheader("Case Analysis")
+    st.subheader("Case analysis")
     tab_baseline, tab_improved = st.tabs(["Baseline failures", "Improved failures"])
     with tab_baseline:
         _render_failures(baseline_cases)
