@@ -1,0 +1,164 @@
+{
+  "alignment_type": "evidence_alignment_not_certification",
+  "covered_subcategories": [
+    "MANAGE 4.1",
+    "MEASURE 2.1",
+    "MEASURE 2.2",
+    "MEASURE 2.4",
+    "MEASURE 2.6",
+    "MEASURE 2.7"
+  ],
+  "disclaimer": "Evidence-alignment aid only. This maps artifacts the release gate produces to the AI RMF subcategories and GenAI risk categories they help evidence; it does not certify compliance. Subcategory granularity is used deliberately -- confirm exact NIST AI 600-1 section 3 action IDs against the primary document.",
+  "mappings": [
+    {
+      "action_id_prefixes": [
+        "MS-2.4-*",
+        "MS-2.7-*"
+      ],
+      "evidence": "Red-team and prompt-injection replay with weighted safe-rate and residual-risk metrics",
+      "evidence_id": "red_team_and_injection_replay",
+      "evidence_present": true,
+      "genai_risk_categories": [
+        "Information Security",
+        "Information Integrity"
+      ],
+      "nist_function": "MEASURE",
+      "nist_subcategories": [
+        "MEASURE 2.4",
+        "MEASURE 2.7"
+      ],
+      "rationale": "Pre-deployment TEVV evidence of jailbreak / prompt-injection resistance and system security and resilience.",
+      "source_artifact": "reports/security_eval_summary.json"
+    },
+    {
+      "action_id_prefixes": [
+        "MS-2.6-*"
+      ],
+      "evidence": "Safety classifier recall and unsafe-miss / benign-block accounting",
+      "evidence_id": "safety_classifier",
+      "evidence_present": true,
+      "genai_risk_categories": [
+        "Dangerous, Violent, or Hateful Content",
+        "Information Integrity"
+      ],
+      "nist_function": "MEASURE",
+      "nist_subcategories": [
+        "MEASURE 2.6"
+      ],
+      "rationale": "Measures the system's ability to flag and refuse unsafe requests.",
+      "source_artifact": "reports/safety_classifier_eval_summary.json"
+    },
+    {
+      "action_id_prefixes": [
+        "MS-2.4-*",
+        "MG-4.1-*"
+      ],
+      "evidence": "Incident-replay release gate pass/warn/fail with must-not violations",
+      "evidence_id": "incident_release_gates",
+      "evidence_present": true,
+      "genai_risk_categories": [
+        "Information Security",
+        "Human-AI Configuration"
+      ],
+      "nist_function": "MEASURE",
+      "nist_subcategories": [
+        "MEASURE 2.4",
+        "MANAGE 4.1"
+      ],
+      "rationale": "Gates a release on replay of known incidents and tracks/responds to reintroduced unsafe behavior.",
+      "source_artifact": "reports/incident_release_gates.json"
+    },
+    {
+      "action_id_prefixes": [
+        "MS-2.7-*"
+      ],
+      "evidence": "Confirmation-before-irreversible-action and unsafe-bulk-automation must-not assertions",
+      "evidence_id": "action_safety_axes",
+      "evidence_present": true,
+      "genai_risk_categories": [
+        "Human-AI Configuration",
+        "Information Security"
+      ],
+      "nist_function": "MEASURE",
+      "nist_subcategories": [
+        "MEASURE 2.7"
+      ],
+      "rationale": "Measures resilience to excessive agency -- irreversible or at-scale actions taken without review.",
+      "source_artifact": "reports/incident_replay_runs.jsonl"
+    },
+    {
+      "action_id_prefixes": [
+        "MS-2.1-*",
+        "MS-2.2-*"
+      ],
+      "evidence": "Documented synthetic/public test sets, metrics, and evaluation tools",
+      "evidence_id": "dataset_profile_and_eval_metrics",
+      "evidence_present": true,
+      "genai_risk_categories": [
+        "Information Integrity"
+      ],
+      "nist_function": "MEASURE",
+      "nist_subcategories": [
+        "MEASURE 2.1",
+        "MEASURE 2.2"
+      ],
+      "rationale": "Documents the test sets, metrics, and tooling, and the limits of deployment-representative testing.",
+      "source_artifact": "reports/dataset_profile.json"
+    },
+    {
+      "action_id_prefixes": [
+        "MS-2.6-*"
+      ],
+      "evidence": "Agent refusal / weak-evidence abstention coverage",
+      "evidence_id": "refusal_and_abstention",
+      "evidence_present": true,
+      "genai_risk_categories": [
+        "Human-AI Configuration",
+        "Confabulation"
+      ],
+      "nist_function": "MEASURE",
+      "nist_subcategories": [
+        "MEASURE 2.6"
+      ],
+      "rationale": "Measures appropriate refusal and abstention under weak evidence.",
+      "source_artifact": "reports/agent_eval_summary.json"
+    },
+    {
+      "action_id_prefixes": [
+        "MS-2.6-*"
+      ],
+      "evidence": "Retrieval grounding hit-rate and citation-coverage metrics",
+      "evidence_id": "grounding_and_citation",
+      "evidence_present": true,
+      "genai_risk_categories": [
+        "Confabulation",
+        "Information Integrity"
+      ],
+      "nist_function": "MEASURE",
+      "nist_subcategories": [
+        "MEASURE 2.6"
+      ],
+      "rationale": "Evidence against confabulation: answers are grounded and cited.",
+      "source_artifact": "reports/retriever_comparison.json"
+    },
+    {
+      "action_id_prefixes": [
+        "MG-4.1-*"
+      ],
+      "evidence": "Audit events, OpenTelemetry-style spans, and trace index",
+      "evidence_id": "audit_trail_and_observability",
+      "evidence_present": true,
+      "genai_risk_categories": [
+        "Human-AI Configuration"
+      ],
+      "nist_function": "MANAGE",
+      "nist_subcategories": [
+        "MANAGE 4.1"
+      ],
+      "rationale": "Provides the monitoring, audit, and accountability trail for review.",
+      "source_artifact": "reports/observability_trace_index.json"
+    }
+  ],
+  "profile": "NIST AI 600-1",
+  "report_type": "nist_ai_600_1_coverage_map"
+}

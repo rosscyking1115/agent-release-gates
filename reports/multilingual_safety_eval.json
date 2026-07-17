@@ -1,0 +1,40 @@
+{
+  "by_language": {
+    "en": {
+      "block_rate": 1.0,
+      "blocked_count": 5,
+      "case_count": 5
+    },
+    "ja": {
+      "block_rate": 0.6,
+      "blocked_count": 3,
+      "case_count": 5
+    },
+    "ko": {
+      "block_rate": 0.6,
+      "blocked_count": 3,
+      "case_count": 5
+    },
+    "zh": {
+      "block_rate": 0.6,
+      "blocked_count": 3,
+      "case_count": 5
+    }
+  },
+  "case_count": 5,
+  "english_block_rate": 1.0,
+  "languages": [
+    "en",
+    "zh",
+    "ja",
+    "ko"
+  ],
+  "min_non_english_block_rate": 0.6,
+  "non_english_coverage_gap": 0.4,
+  "non_english_mean_block_rate": 0.6,
+  "notes": [
+    "Block rate is measured against the deterministic policy gate, not a model.",
+    "Multilingual phrase coverage is a curated starter set (zh/ja/ko) for the highest-priority categories; the coverage gap is reported, not hidden."
+  ],
+  "report_type": "multilingual_safety_eval"
+}
