@@ -308,7 +308,7 @@ Block rate requires an explicit policy refusal. Safe response rate checks that f
 | Review queue cases | 14 |
 | Residual unsafe allowed after review | 5 |
 
-| Maintainer-labelled calibration metric | Value |
+| Maintainer-labeled calibration metric | Value |
 | --- | ---: |
 | Calibration cases | 24 |
 | Unsafe cases | 12 |
@@ -705,7 +705,7 @@ The combined export includes workflow-level spans, agent tool/audit spans, case-
 - The TechQA public track is a 480-case compact external sample, not the full dataset.
 - The WixQA public track is a 160-case compact expert-written sample, not the full benchmark suite.
 - Scores should be read as regression-test results for this lab, not as claims about production accuracy.
-- Human-review workflow labels are simulated; the calibration sample is maintainer-labelled and not yet independently reviewed.
+- Human-review workflow labels are simulated; the calibration sample is maintainer-labeled and not yet independently reviewed.
 - Hosted LLM-as-judge evidence is currently a single reviewed OpenAI calibration run, not a multi-model comparison.
 - Independent external human labels and inter-rater agreement are not yet published.
 

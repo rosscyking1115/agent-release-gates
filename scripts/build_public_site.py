@@ -773,7 +773,7 @@ def _index_html(
         <div class="summary-card">
           <h3>Reviewer handoff</h3>
           <p>
-            Inspect the external-review packet, labelling workflow, and
+            Inspect the external-review packet, labeling workflow, and
             reviewer-facing instructions.
           </p>
           <p>

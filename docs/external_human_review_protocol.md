@@ -15,7 +15,7 @@ Reviewer labels must be reported separately from maintainer labels.
 | --- | --- |
 | `data/review/external_human_review_packet.csv` | Case packet shared with reviewers. |
 | `data/review/external_human_review_label_template.csv` | Blank label sheet for reviewer responses. |
-| `data/review/external_human_review_reviewer_guide.md` | Reviewer-facing instructions for blind labelling. |
+| `data/review/external_human_review_reviewer_guide.md` | Reviewer-facing instructions for blind labeling. |
 | `data/review/external_human_review_labels.csv` | Optional completed labels, kept separate from maintainer labels. |
 | `reports/external_human_review_manifest.json` | Machine-readable readiness checklist and artifact map. |
 | `reports/external_human_review_summary.json` | Generated review status and agreement metrics. |

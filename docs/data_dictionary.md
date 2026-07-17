@@ -90,7 +90,7 @@ Inputs:
 | `data/eval_cases/goal_conflict_cases.jsonl` | Synthetic goal-conflict intervention cases covering safety-policy, evidence-quality, privacy, instruction-hierarchy, and tool-risk arbitration. |
 | `data/review/external_human_review_packet.csv` | Public packet of calibration cases for independent reviewer labeling. |
 | `data/review/external_human_review_label_template.csv` | Blank reviewer-response template with allowed label, decision, confidence, rationale, and notes fields. |
-| `data/review/external_human_review_reviewer_guide.md` | Reviewer-facing blind-labelling instructions generated with the external review packet. |
+| `data/review/external_human_review_reviewer_guide.md` | Reviewer-facing blind-labeling instructions generated with the external review packet. |
 | `config/action_risk_policy.yaml` | Synthetic mock-action risk policy for low, medium, high, and blocked tool actions used by the action-gate intervention study. |
 
 Reports:

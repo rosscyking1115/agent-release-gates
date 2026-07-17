@@ -92,7 +92,7 @@
   "dataset_path": "data/eval/human_calibration_cases.jsonl",
   "label_source": "maintainer_labeled_calibration_v1",
   "notes": [
-    "This is a small maintainer-labelled calibration sample intended to test the rubric and measurement plumbing.",
+    "This is a small maintainer-labeled calibration sample intended to test the rubric and measurement plumbing.",
     "It is not an independent external human-evaluation study; external review and inter-rater calibration remain planned next work.",
     "The classifier is compared against adjudicated human labels and expected action labels, with review routed separately from auto-block."
   ],

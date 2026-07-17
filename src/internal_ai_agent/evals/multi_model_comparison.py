@@ -126,13 +126,13 @@ def write_model_judge_provider_comparison(project_root: Path) -> dict[str, Any]:
         "case_comparison_rows": case_rows,
         "publication_policy": (
             "This artifact is derived only from sanitized reviewed summaries and "
-            "maintainer-labelled calibration metadata. It excludes raw provider "
+            "maintainer-labeled calibration metadata. It excludes raw provider "
             "response ids and full provider rationales."
         ),
         "interpretation": [
             "Use disagreement slices to inspect failure modes; "
             "do not rank providers by one aggregate score.",
-            "The current comparison is limited by a 24-case maintainer-labelled calibration set.",
+            "The current comparison is limited by a 24-case maintainer-labeled calibration set.",
             "Independent human labels are still needed before treating model agreement "
             "as validation.",
         ],

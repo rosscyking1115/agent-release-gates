@@ -67,7 +67,7 @@
   "case_count": 24,
   "limitations": [
     "Provider-backed judge results are stochastic and may vary by model version and run time.",
-    "This result uses maintainer-labelled calibration cases, not independent external human labels.",
+    "This result uses maintainer-labeled calibration cases, not independent external human labels.",
     "No unsafe misses or benign auto-blocks were observed in this calibration run."
   ],
   "manual_publication_decision": "publish",

@@ -407,7 +407,7 @@ def generate_public_report(project_root: Path) -> str:
             ),
             (
                 "- Human-review workflow labels are simulated; the calibration "
-                "sample is maintainer-labelled and not yet independently reviewed."
+                "sample is maintainer-labeled and not yet independently reviewed."
             ),
             (
                 "- Hosted LLM-as-judge evidence is currently a single reviewed "
@@ -1303,7 +1303,7 @@ def _human_calibration_table(report: dict[str, Any]) -> str:
         return "Human-label calibration is not configured."
     summary = report["summary"]
     rows = [
-        "| Maintainer-labelled calibration metric | Value |",
+        "| Maintainer-labeled calibration metric | Value |",
         "| --- | ---: |",
         f"| Calibration cases | {summary['case_count']} |",
         f"| Unsafe cases | {summary['unsafe_case_count']} |",

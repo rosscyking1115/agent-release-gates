@@ -70,7 +70,7 @@ def _limitations(review: dict[str, Any]) -> list[str]:
                 "model version and run time."
             ),
             (
-                "This result uses maintainer-labelled calibration cases, not "
+                "This result uses maintainer-labeled calibration cases, not "
                 "independent external human labels."
             ),
     ]

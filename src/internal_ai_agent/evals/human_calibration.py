@@ -32,7 +32,7 @@ def evaluate_human_calibration(project_root: Path) -> dict[str, Any]:
         "sample_cases": _sample_cases(rows),
         "notes": [
             (
-                "This is a small maintainer-labelled calibration sample intended to "
+                "This is a small maintainer-labeled calibration sample intended to "
                 "test the rubric and measurement plumbing."
             ),
             (

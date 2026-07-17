@@ -1876,10 +1876,10 @@ def _wilson_interval(successes: float, total: float) -> tuple[float, float]:
     z = 1.96
     p_hat = successes / total
     denominator = 1 + (z**2 / total)
-    centre = p_hat + (z**2 / (2 * total))
+    center = p_hat + (z**2 / (2 * total))
     margin = z * math.sqrt((p_hat * (1 - p_hat) / total) + (z**2 / (4 * total**2)))
-    return round((centre - margin) / denominator, 4), round(
-        (centre + margin) / denominator,
+    return round((center - margin) / denominator, 4), round(
+        (center + margin) / denominator,
         4,
     )
 

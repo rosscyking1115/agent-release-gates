@@ -247,7 +247,7 @@ def test_generate_public_report_summarizes_core_metrics(tmp_path) -> None:
     assert "| retrieved_access_escalation |" in report
     assert "## Safety Classifier Workflow" in report
     assert "| Safety classifier metric | Value |" in report
-    assert "| Maintainer-labelled calibration metric | Value |" in report
+    assert "| Maintainer-labeled calibration metric | Value |" in report
     assert "| Calibration cases | 24 |" in report
     assert "| Classifier label accuracy |" in report
     assert "| External human-review artifact | Value |" in report

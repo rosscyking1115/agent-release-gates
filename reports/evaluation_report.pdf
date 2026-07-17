@@ -1417,7 +1417,7 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 29 0 R >>
 endobj
 29 0 obj
-<< /Length 2652 >>
+<< /Length 2651 >>
 stream
 BT
 /F1 10 Tf
@@ -1437,7 +1437,7 @@ T*
 T*
 () Tj
 T*
-(Maintainer-labelled calibration metric | Value) Tj
+(Maintainer-labeled calibration metric | Value) Tj
 T*
 (Calibration cases | 24) Tj
 T*
@@ -1768,7 +1768,7 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 35 0 R >>
 endobj
 35 0 obj
-<< /Length 3203 >>
+<< /Length 3200 >>
 stream
 BT
 /F1 10 Tf
@@ -1832,9 +1832,9 @@ T*
 T*
 (time.) Tj
 T*
-(anthropic: This result uses maintainer-labelled calibration cases, not independent external) Tj
+(anthropic: This result uses maintainer-labeled calibration cases, not independent external human) Tj
 T*
-(human labels.) Tj
+(labels.) Tj
 T*
 (anthropic: No unsafe misses or benign auto-blocks were observed in this calibration run.) Tj
 T*
@@ -1842,7 +1842,7 @@ T*
 T*
 (and run time.) Tj
 T*
-(local_open_source: This result uses maintainer-labelled calibration cases, not independent) Tj
+(local_open_source: This result uses maintainer-labeled calibration cases, not independent) Tj
 T*
 (external human labels.) Tj
 T*
@@ -1850,7 +1850,7 @@ T*
 T*
 (openai: Provider-backed judge results are stochastic and may vary by model version and run time.) Tj
 T*
-(openai: This result uses maintainer-labelled calibration cases, not independent external human) Tj
+(openai: This result uses maintainer-labeled calibration cases, not independent external human) Tj
 T*
 (labels.) Tj
 T*
@@ -1885,7 +1885,7 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 37 0 R >>
 endobj
 37 0 obj
-<< /Length 2905 >>
+<< /Length 2904 >>
 stream
 BT
 /F1 10 Tf
@@ -1925,9 +1925,9 @@ T*
 T*
 (Publication policy: This artifact is derived only from sanitized reviewed summaries and) Tj
 T*
-(maintainer-labelled calibration metadata. It excludes raw provider response ids and full) Tj
+(maintainer-labeled calibration metadata. It excludes raw provider response ids and full provider) Tj
 T*
-(provider rationales.) Tj
+(rationales.) Tj
 T*
 () Tj
 T*
@@ -2470,7 +2470,7 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 47 0 R >>
 endobj
 47 0 obj
-<< /Length 2987 >>
+<< /Length 2986 >>
 stream
 BT
 /F1 10 Tf
@@ -2550,7 +2550,7 @@ T*
 T*
 (  accuracy.) Tj
 T*
-(- Human-review workflow labels are simulated; the calibration sample is maintainer-labelled and) Tj
+(- Human-review workflow labels are simulated; the calibration sample is maintainer-labeled and) Tj
 T*
 (  not yet independently reviewed.) Tj
 T*
@@ -2644,28 +2644,28 @@ xref
 0000030761 00000 n 
 0000033242 00000 n 
 0000033370 00000 n 
-0000036075 00000 n 
-0000036203 00000 n 
-0000038956 00000 n 
-0000039084 00000 n 
-0000042632 00000 n 
-0000042760 00000 n 
-0000046016 00000 n 
-0000046144 00000 n 
-0000049102 00000 n 
-0000049230 00000 n 
-0000052029 00000 n 
-0000052157 00000 n 
-0000054622 00000 n 
-0000054750 00000 n 
-0000057436 00000 n 
-0000057564 00000 n 
-0000059685 00000 n 
-0000059813 00000 n 
-0000062853 00000 n 
-0000062981 00000 n 
+0000036074 00000 n 
+0000036202 00000 n 
+0000038955 00000 n 
+0000039083 00000 n 
+0000042631 00000 n 
+0000042759 00000 n 
+0000046012 00000 n 
+0000046140 00000 n 
+0000049097 00000 n 
+0000049225 00000 n 
+0000052024 00000 n 
+0000052152 00000 n 
+0000054617 00000 n 
+0000054745 00000 n 
+0000057431 00000 n 
+0000057559 00000 n 
+0000059680 00000 n 
+0000059808 00000 n 
+0000062847 00000 n 
+0000062975 00000 n 
 trailer
 << /Size 50 /Root 1 0 R >>
 startxref
-63737
+63731
 %%EOF
