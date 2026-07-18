@@ -10,7 +10,7 @@ Keep the synthetic internal-operations domain as the controlled benchmark scenar
 
 The goal is to create a reusable public lab for testing AI-agent behavior without confidential data.
 
-The project needs to be more than a chatbot demo or portfolio dashboard. It should help people inspect a measurable agent workflow with retrieval, extraction, safety controls, approval gates, auditability, and reproducible evaluation.
+The project needs to be more than a chatbot demo. It should help people inspect a measurable agent workflow with retrieval, extraction, safety controls, approval gates, auditability, and reproducible evaluation.
 
 The active research question is:
 
@@ -69,25 +69,23 @@ The project is positioned as a responsible AI-agent safety and reliability evalu
 
 ## Evidence Built So Far
 
-| Evidence | Skill Signal |
-| --- | --- |
-| Synthetic data generator | Data design and privacy-aware development |
-| Baseline vs improved retrieval eval | Measurement discipline |
-| Local vector and embedding-store retrieval experiments | Retrieval experimentation and error analysis |
-| TechQA public RAG benchmark | External validation over public technical-support data |
-| WixQA public RAG benchmark | External validation over public enterprise-support data |
-| Retriever metric snapshots | Regression tracking across retriever versions |
-| Evaluation release gates | Deterministic quality bars before publishing results |
-| Dataset profile and coverage gaps | Benchmark design honesty |
-| Citation and abstention metrics | Grounded AI judgement |
-| Structured extraction schemas | Document intelligence and validation |
-| Red-team policy suite | AI security awareness |
-| Safety prevalence and classifier evaluation workflow | Safety thresholding, synthetic prevalence estimation, false positive / false negative trade-off measurement, human-review simulation, reviewer-disagreement slicing, secondary review-band analysis, secondary-floor validation, operating recommendation, mitigation-impact reporting, and decision-support design |
-| Controlled agent workflow | Tool governance and approval design |
-| Trace and audit events | Observability and debugging |
-| OTel-style evaluation, trace timeline, local trace index, OTLP/HTTP export preview, local collector smoke test, and Dockerized OpenTelemetry Collector check | Inspectable local observability artifact |
-| FastAPI and Streamlit surfaces | Product delivery |
-| CI workflow and operations runbook | Engineering reliability |
+- Synthetic data generator
+- Baseline vs improved retrieval eval
+- Local vector and embedding-store retrieval experiments
+- TechQA public RAG benchmark
+- WixQA public RAG benchmark
+- Retriever metric snapshots
+- Evaluation release gates
+- Dataset profile and coverage gaps
+- Citation and abstention metrics
+- Structured extraction schemas
+- Red-team policy suite
+- Safety prevalence and classifier evaluation workflow (thresholding, synthetic prevalence estimation, false positive / false negative trade-off measurement, human-review simulation, reviewer-disagreement slicing, secondary review-band analysis, secondary-floor validation, operating recommendation, mitigation-impact reporting)
+- Controlled agent workflow with tool governance and approval gates
+- Trace and audit events
+- OTel-style evaluation, trace timeline, local trace index, OTLP/HTTP export preview, local collector smoke test, and Dockerized OpenTelemetry Collector check
+- FastAPI and Streamlit surfaces
+- CI workflow and operations runbook
 
 ## Current Results
 
@@ -115,7 +113,7 @@ The safety-classifier module separates enriched challenge cases, a targeted seco
 | Metrics look too perfect | Manual challenge failures were fixed and kept as regression tests, newer analyst-authored, field-note, mixed review-bundle, decision-log, partial-evidence, and retrieved-context review batches were added, and the report keeps the hybrid field-note miss visible instead of forcing every retriever to 100% |
 | Agent appears to take real actions | Tool names include `mock`, and side effects require approval |
 | Demo depends on paid APIs | Tests and evals are deterministic and local |
-| System seems like only a dashboard | FastAPI endpoints, eval reports, CI, and docs show engineering depth |
+| System seems like only a dashboard | FastAPI endpoints, eval reports, CI, and docs provide programmatic access and reproducible artifacts beyond the dashboard |
 | Public-data results blur the synthetic-lab boundary | TechQA and WixQA are reported as separate external benchmark tracks |
 
 ## Next Decisions
