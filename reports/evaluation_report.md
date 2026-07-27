@@ -124,7 +124,9 @@ Incident Response Plan
 
 This profile is generated from the same JSONL artifacts as the eval runner. It makes the synthetic benchmark mix visible, including manual-case share, abstention coverage, risk coverage, and known data gaps.
 
-## Retrieval Evaluation
+## Retrieval Evaluation (in-corpus synthetic, not retrieval evidence)
+
+> **This section is circular by construction.** The synthetic generator templates each ticket (the query) from the same `{category}`/`{system}` variables as the runbook section that is its gold answer, so retrieving the correct section requires only matching strings the generator copied into both sides. Citation coverage, issue-category accuracy, and next-action accuracy are not independent: all three derive from whether the top-ranked section is the gold section, so they cannot disagree. The baseline column reaches only 4 of the 24 runbook sections because it scores on team hints alone and breaks ties alphabetically; its 18.75% is exactly the share of cases whose gold citation happens to be a `-01` section. There is no held-out split. Treat these as regression-fixture numbers and read the External Public RAG Benchmark section below for the retrieval result. See `docs/evaluation_integrity.md`.
 
 | System | Hit rate@3 | Citation coverage | Next action accuracy | Abstention accuracy | Failures |
 | --- | ---: | ---: | ---: | ---: | ---: |
@@ -146,7 +148,9 @@ The retrieval experiment compares a deliberately weak baseline, a lexical retrie
 | 004_local_tf_idf_vector | Local TF-IDF vector | 100.00% | 0 | +0.35% | -1 | False |  |
 | 005_local_embedding_store | Local embedding store | 100.00% | 0 | +0.00% | +0 | False |  |
 
-## External Public RAG Benchmark
+## External Public RAG Benchmark (headline retrieval result)
+
+This is the retrieval result for this project: the same retriever measured on public corpora it did not generate. The gap against the in-corpus synthetic numbers above is what that benchmark's circularity is worth in points.
 
 | TechQA public RAG metric | Value |
 | --- | ---: |
