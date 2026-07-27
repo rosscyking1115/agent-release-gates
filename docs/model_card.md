@@ -52,13 +52,45 @@ The project does not use real company documents, customer data, employee data, p
 
 ## Current Evaluation
 
+### Headline: external public retrieval
+
+Retrieval quality is reported on corpora this project did not generate
+(`reports/public_rag_findings.json`, NVIDIA TechQA-RAG-Eval + Wix WixQA, 640 cases):
+
+| Metric | Result |
+| --- | ---: |
+| Weighted retrieval hit rate@3 | **79.92%** |
+| Weighted top-1 citation accuracy | **69.61%** |
+| Weighted failure rate | **40.47%** |
+| Failed to abstain on impossible questions (TechQA) | **85** |
+| False abstention on answerable questions (TechQA) | 17 |
+
+### In-corpus synthetic fixture (not a retrieval result)
+
+> [!WARNING]
+> The table below is **circular by construction** and must not be read as retrieval
+> quality. The generator templates the ticket from the same `{category}`/`{system}`
+> variables as the runbook section that is its gold answer, so the query is a string
+> projection of its own answer. The three accuracy rows are mathematically the same
+> measurement (all derive from whether the top-ranked section is the gold section), and
+> the baseline column is an alphabetical tie-break that can only ever reach 4 of the 24
+> runbook sections. There is no held-out split. Full analysis:
+> [evaluation integrity](evaluation_integrity.md).
+
 | Metric | Baseline | Improved lexical | Hybrid sparse semantic | Local TF-IDF vector | Local embedding store |
 | --- | ---: | ---: | ---: | ---: | ---: |
 | Retrieval hit rate@3 | 44.79% | 99.31% | 100.00% | 100.00% | 100.00% |
 | Citation coverage | 18.75% | 98.26% | 99.65% | 100.00% | 100.00% |
-| Issue category accuracy | 18.75% | 98.26% | 99.65% | 100.00% | 100.00% |
-| Next action accuracy | 18.75% | 98.26% | 99.65% | 100.00% | 100.00% |
+| Issue category accuracy † | 18.75% | 98.26% | 99.65% | 100.00% | 100.00% |
+| Next action accuracy † | 18.75% | 98.26% | 99.65% | 100.00% | 100.00% |
 | Abstention accuracy | 81.28% | 100.00% | 100.00% | 100.00% | 100.00% |
+
+† Not independent of citation coverage. All three derive from the same top-ranked
+section, so they cannot disagree; they are retained only for continuity with the frozen
+baseline snapshot.
+
+The gap between 99.31% here and 79.92% on external data is the useful result: it is what
+this benchmark's circularity is worth in points.
 
 Structured extraction over templated synthetic tickets currently reports 100.00% schema validity, issue-category accuracy, severity accuracy, impacted-system accuracy, and routing-team accuracy.
 

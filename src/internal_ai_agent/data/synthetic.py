@@ -1,3 +1,31 @@
+"""Synthetic operations corpus generator.
+
+.. warning::
+   **This generator produces a circular benchmark. Its scores are not retrieval
+   evidence.**
+
+   :func:`build_runbooks` writes each runbook section (the gold answer) from
+   ``{team}``/``{title}``/``{category}``/``{action}``, and :func:`build_tickets` writes
+   the ticket (the query) from ``{title}`` and ``{system}`` — the same variables. The
+   query is therefore a string projection of its own gold answer, and retrieving the
+   correct section requires only matching text the generator copied into both sides.
+   Any lexical retriever scores near-perfectly by construction. There is no held-out
+   split: the hand-written alias dictionaries in ``rag/baseline.py`` are tuned against
+   the same cases they are scored on.
+
+   The hand-authored ``_build_manual_*`` case families below are less templated, but
+   they were written by the same author as the retriever's alias lists and share their
+   phrasing (for example the literal ``"this summary:"`` marker), so they do not
+   establish generalization either.
+
+   This corpus is retained as a deterministic, offline, fully-specified regression
+   fixture for the gating pipeline — a role it serves well. Retrieval quality is
+   reported instead on the external TechQA/WixQA tracks
+   (``reports/public_rag_findings.json``): 79.92% hit@3 versus 99.31% here.
+
+   See ``docs/evaluation_integrity.md`` for the full analysis.
+"""
+
 from __future__ import annotations
 
 import json

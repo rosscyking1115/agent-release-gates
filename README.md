@@ -47,9 +47,9 @@ agent-safety export-candidate-results --input incident_pack_minimal/agent_run_lo
 agent-safety release-gate --incident-pack incident_pack_minimal \
   --candidate-results candidate_results.jsonl
 
-# Or run the incident-replay suite under Inspect (UK AISI).
+# Or run the incident-replay suite (8 self-authored incidents) under Inspect (UK AISI).
 pip install inspect_ai
-inspect eval agent-release-gates/incident_replay --model openai/gpt-4.1-mini
+inspect eval incident_replay --model openai/gpt-4.1-mini
 ```
 
 See the [evaluate-an-agent quickstart](docs/evaluate_your_agent_quickstart.md) for the full pip-only workflow.
@@ -63,8 +63,11 @@ pip install "agent-release-gates[dashboard]"  # Streamlit reviewer dashboard
 
 Already installed? Upgrade with `pip install --upgrade agent-release-gates` (see the [changelog](CHANGELOG.md)).
 
+> [!IMPORTANT]
+> **Retrieval quality is reported on external public data (TechQA/WixQA), not on the synthetic benchmark.** The synthetic operations benchmark is circular by construction — its generator templates the query from the same variables as the gold answer — so its near-perfect scores measure the generator, not the retriever. This is documented as a finding in [evaluation integrity](docs/evaluation_integrity.md), and the synthetic figures are labeled in-corpus wherever they appear.
+
 > [!NOTE]
-> These results are engineering evidence over controlled, synthetic benchmarks. They are not claims of real-world production performance. This project is not a clone, assessment, or reverse-engineering of any company's internal AI system. The operations benchmark is synthetic by design. TechQA and WixQA are used separately as public retrieval-validation datasets.
+> These results are engineering evidence over controlled benchmarks. They are not claims of real-world production performance. This project is not a clone, assessment, or reverse-engineering of any company's internal AI system. The operations benchmark is synthetic by design. TechQA and WixQA are used separately as public retrieval-validation datasets.
 
 ## The idea
 
@@ -89,19 +92,27 @@ The harness is agent-agnostic: any agent's run can be exported to a candidate-re
 
 ## Evidence snapshot
 
+Retrieval quality is reported on **external public corpora**. The synthetic operations
+benchmark is a fixture set this project generates itself, and its scores are reported
+separately and labeled as in-corpus — see [evaluation integrity](docs/evaluation_integrity.md)
+for why.
+
 | Area | Current result |
 | --- | --- |
+| **Retrieval (external, headline)** | **79.92% hit rate@3, 69.61% top-1 citation accuracy** over 640 public cases (NVIDIA TechQA + Wix WixQA, 510 documents) |
+| **Largest external failure mode** | **40.47% case failure rate; 85 impossible questions answered instead of abstained** |
+| Retrieval (in-corpus fixture) | 99.31–100% on 358 self-generated synthetic cases. Not a retrieval result: the generator templates the query from its own gold answer ([details](docs/evaluation_integrity.md)) |
 | Controlled benchmark | 358 synthetic golden cases, 60 red-team cases, 180 synthetic operations tickets |
-| Retrieval | 100.00% synthetic retrieval hit rate@3 with local TF-IDF/vector-style retrievers |
-| Public RAG validation | 480 TechQA cases and 160 WixQA cases evaluated separately from the synthetic benchmark |
-| Safety | 90.91% classifier recall, 0 high-severity false negatives in the current challenge set |
+| Safety | 90.91% classifier recall, 0 high-severity false negatives in the current challenge set. Partly inflated by eval-specific signals ([details](docs/evaluation_integrity.md#finding-5-the-safety-classifier-whitelists-a-case-by-name)) |
 | Agent governance | 100.00% mock side-effect block rate and approval audit rate |
-| Incident replay | 8 seeded synthetic incidents replayed, 100.00% closure rate, 0 replay must-not violations |
+| Incident replay | 8 self-authored synthetic incidents replayed, 100.00% closure rate, 0 replay must-not violations. A conformance smoke check, too small to rank models |
 | Intervention study | 3 deterministic safety studies plus public RAG grounding and memory/context studies |
 | Multi-model judge comparison | 3 reviewed providers (OpenAI, Anthropic, local open-source) on 24 human-calibration cases; local `llama3.1:8b` 91.67% vs frontier 95.83–100% |
 
 ## Key findings
 
+- **This project's own synthetic benchmark is circular, and we report it rather than ship the number.** The generator templates the ticket and the runbook section from the same `{category}`/`{system}` variables, so the query is a string projection of its gold answer. Three separately-reported metrics turn out to be one measurement, and the 18.75% "baseline" is an alphabetical tie-break rather than a retrieval result. Full writeup: [evaluation integrity](docs/evaluation_integrity.md).
+- **The same retriever drops ~20 points the moment it leaves that corpus**: 99.31% in-corpus hit@3 against **79.92%** on 640 external TechQA/WixQA cases, with a 40.47% failure rate and 85 impossible questions answered instead of abstained. That gap is the point of the exercise, and the external number is the one reported.
 - Safety scores are not meaningful alone, so every headline number ships next to its cost: over-review, benign auto-blocks, weak-evidence handling, and unsafe misses.
 - Layered safeguards reduce selected prompt-injection, unsafe-action, and unsafe-request failures in controlled studies while making review burden visible.
 - Public RAG grounding thresholds reduce unsupported answer attempts while keeping abstention and review cost visible.
@@ -161,6 +172,8 @@ CI runs linting, tests, deterministic report checks, local OpenTelemetry smoke t
 
 | Topic | Link |
 | --- | --- |
+| **Evaluation integrity (read first)** | [docs/evaluation_integrity.md](docs/evaluation_integrity.md) |
+| Static typing status | [docs/typing_status.md](docs/typing_status.md) |
 | Engineering writeup (design rationale) | [docs/engineering_writeup.md](docs/engineering_writeup.md) |
 | Evaluate an agent (quickstart) | [docs/evaluate_your_agent_quickstart.md](docs/evaluate_your_agent_quickstart.md) |
 | Benchmark card | [docs/benchmark_card.md](docs/benchmark_card.md) |
@@ -179,8 +192,10 @@ CI runs linting, tests, deterministic report checks, local OpenTelemetry smoke t
 
 ## Limitations
 
-- The controlled benchmark is synthetic and still partly templated.
+- **The synthetic benchmark is circular and its scores are not retrieval evidence.** The generator builds the query from the same `{category}`/`{system}` variables as the gold answer; the improved retriever is a hand-written alias dictionary fitted to the eval strings; there is no held-out split in the synthetic arm. It is kept as a deterministic regression fixture only. See [evaluation integrity](docs/evaluation_integrity.md).
 - Public TechQA and WixQA tracks use compact samples, not the full upstream datasets.
+- The Inspect incident-replay task is 8 self-authored samples: a conformance smoke check, not a benchmark that can rank models.
+- Static type checking is enforced on the metric and gating core only. `mypy --strict` runs as a blocking CI step over the 12 modules where a type error would corrupt a published number; the other ~61 package modules are unchecked and are not claimed to be checked. Scope, the proof that the gate is not vacuous, and the ratchet order: [typing status](docs/typing_status.md).
 - Human-review labels are currently simulated workflow labels; independent reviewer labels are prepared but not yet published.
 - The multi-model judge comparison covers three providers (OpenAI, Anthropic, local open-source) on a 24-case calibration set. A broader multi-model agent comparison is out of scope.
 - Reviewed provider-backed embedding results (OpenAI `text-embedding-3-small`) are published for the synthetic benchmark, where it matches local retrieval, and the public TechQA/WixQA tracks, where it beats local (WixQA hit@3 98.12% vs 77.50%). Reranker adapters are prepared but not published.

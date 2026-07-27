@@ -25,11 +25,27 @@ This benchmark measures whether an AI-agent workflow is grounded, safe, useful, 
 When do safety interventions improve agent safety, and when do they reduce usefulness on benign operational tasks?
 ```
 
+## Known validity defect in the synthetic retrieval track
+
+The controlled synthetic operations retrieval track is **circular**. `build_runbooks()`
+and `build_tickets()` in `src/internal_ai_agent/data/synthetic.py` template the runbook
+section (the gold answer) and the ticket (the query) from the same `{category}`,
+`{title}`, and `{system}` variables, so retrieving the gold section requires only
+matching strings the generator copied into both. The track's near-perfect scores measure
+the generator, not the retriever, and there is no held-out split. Scores from this track
+are reported as in-corpus fixture results only.
+
+Retrieval quality for this project is reported on the public TechQA and WixQA tracks
+below, which do not share this defect: 79.92% weighted hit@3 and 69.61% weighted top-1
+citation accuracy over 640 cases. Full analysis, including the three-metrics-are-one
+issue and the alphabetical-tie-break baseline, is in
+[evaluation integrity](evaluation_integrity.md).
+
 ## Current Tracks
 
 | Track | Status | Data source |
 | --- | --- | --- |
-| Controlled synthetic operations retrieval | Implemented | Local synthetic runbooks and golden cases |
+| Controlled synthetic operations retrieval | Implemented (circular — fixture only, see above) | Local synthetic runbooks and golden cases |
 | Structured ticket extraction | Implemented | Local synthetic tickets |
 | Red-team safety cases | Implemented | Local synthetic risk cases |
 | Safety classifier and prevalence evaluation | Implemented | Local synthetic challenge, validation, and sampled prevalence cases |

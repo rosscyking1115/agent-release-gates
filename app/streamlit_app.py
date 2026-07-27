@@ -381,22 +381,50 @@ def _render_reviewer_summary(
     reranker_summary = public_rag_reranker.get("summary", {})
     dataset_counts = dataset_profile["dataset_counts"]  # type: ignore[index]
 
+    evaluated = public_rag_findings.get("status") == "evaluated"
+
+    st.markdown("**Retrieval result (external public data)**")
     evidence_cols = st.columns(4)
     evidence_cols[0].metric(
-        "Synthetic eval cases",
-        dataset_counts["golden_cases"],  # type: ignore[index]
-    )
-    evidence_cols[1].metric(
         "Public RAG cases",
         public_rag_summary.get("total_case_count", "Not available")  # type: ignore[union-attr]
-        if public_rag_findings.get("status") == "evaluated"
+        if evaluated
+        else "Not available",
+    )
+    evidence_cols[1].metric(
+        "External hit@3",
+        _public_summary_metric_text(public_rag_summary, "weighted_retrieval_hit_rate_at_3")
+        if evaluated
         else "Not available",
     )
     evidence_cols[2].metric(
+        "External top-1 citation",
+        _public_summary_metric_text(public_rag_summary, "weighted_top1_citation_accuracy")
+        if evaluated
+        else "Not available",
+    )
+    evidence_cols[3].metric(
+        "External failure rate",
+        _public_summary_metric_text(public_rag_summary, "weighted_failure_rate")
+        if evaluated
+        else "Not available",
+    )
+    st.caption(
+        "Retrieval quality is measured on corpora this project did not generate. The "
+        "synthetic benchmark below is circular by construction and is not retrieval "
+        "evidence — see docs/evaluation_integrity.md."
+    )
+
+    gate_cols = st.columns(3)
+    gate_cols[0].metric(
+        "Synthetic eval cases (in-corpus)",
+        dataset_counts["golden_cases"],  # type: ignore[index]
+    )
+    gate_cols[1].metric(
         "Safety recall",
         _format_pct(float(safety_metrics["recall"])),  # type: ignore[index]
     )
-    evidence_cols[3].metric(
+    gate_cols[2].metric(
         "Gate status",
         _format_status(evaluation_gates.get("overall_status", "")),
     )
@@ -404,24 +432,31 @@ def _render_reviewer_summary(
     st.markdown("**Current evidence**")
     st.markdown(
         f"""
-        - Improved synthetic citation coverage:
-          {_format_pct(float(metrics["citation_coverage"]["improved"]))}
-        - Improved synthetic abstention accuracy:
-          {_format_pct(float(metrics["abstention_accuracy"]["improved"]))}
-        - Agent side-effect block rate:
-          {_format_pct(float(agent_metrics["side_effect_block_rate"]))}
         - Public TechQA retrieval@3:
           {_public_metric_text(techqa_public, "retrieval_hit_rate_at_3")}
         - Public WixQA retrieval@3:
           {_public_metric_text(wixqa_public, "retrieval_hit_rate_at_3")}
         - Local public reranker top-1 delta:
           {_public_signed_metric_text(reranker_summary, "top1_accuracy_delta")}
+        - Agent side-effect block rate:
+          {_format_pct(float(agent_metrics["side_effect_block_rate"]))}
+        - Synthetic citation coverage (in-corpus, not retrieval evidence):
+          {_format_pct(float(metrics["citation_coverage"]["improved"]))}
+        - Synthetic abstention accuracy (in-corpus, not retrieval evidence):
+          {_format_pct(float(metrics["abstention_accuracy"]["improved"]))}
         """
     )
 
     st.markdown("**Validation boundary**")
     st.markdown(
         f"""
+        - The synthetic operations benchmark is circular: its generator templates the
+          query from the same variables as the gold answer, and the retriever's alias
+          dictionaries are tuned on the cases they are scored on. It is a regression
+          fixture, not retrieval evidence. The same retriever scores about 20 points
+          lower on the external tracks above.
+        - The Inspect incident-replay task is 8 self-authored samples: a conformance
+          smoke check, not a benchmark that can rank models.
         - Synthetic operations data is generated and intentionally contains no real
           company, customer, employee, runbook, or ticket data.
         - Public-data validation is currently limited to compact TechQA and WixQA samples.
@@ -2573,6 +2608,12 @@ def _public_metric_text(report: dict[str, object], metric: str) -> str:
     if not isinstance(metrics, dict) or metric not in metrics:
         return "Not available"
     return _format_pct(float(metrics[metric]))
+
+
+def _public_summary_metric_text(summary: object, metric: str) -> str:
+    if not isinstance(summary, dict) or metric not in summary:
+        return "Not available"
+    return _format_pct(float(summary[metric]))
 
 
 def _public_signed_metric_text(summary: object, metric: str) -> str:

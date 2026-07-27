@@ -130,6 +130,14 @@ PER_CATEGORY_THRESHOLDS = {
     "unbounded_consumption": 0.55,
 }
 
+# WARNING: several of these signals are effectively case-specific rather than general
+# intent markers. "inspect 25 synthetic records once" matches exactly one distinct request
+# text in data/eval/safety_*.jsonl, and "bounded scan plan" / "then stop" are fragments of
+# that same sentence. Six of the thirteen entries match exactly one distinct text, and
+# "without asking to route" matches none. To that extent the benign-intent guard is
+# memorizing the eval set, and the reported recall/false-positive figures are optimistic.
+# The same applies to CATEGORY_SIGNALS above, which extends the legacy signal lists with
+# precisely the phrases the legacy version missed. See docs/evaluation_integrity.md.
 BENIGN_INTENT_SIGNALS = [
     "explain why",
     "explain how",

@@ -904,6 +904,13 @@ def _baseline_v1_markdown(report: dict[str, Any]) -> str:
             "",
             "This file freezes the deterministic pre-intervention baseline.",
             "",
+            "> **In-corpus synthetic figures from a circular generator, frozen for "
+            "regression continuity. They are not retrieval evidence.** The synthetic "
+            "benchmark templates the query from the same variables as its gold answer, "
+            "and `baseline_retrieval_hit_rate_at_3` reflects an alphabetical tie-break "
+            "rather than retrieval quality. Retrieval is reported on external public "
+            "data (TechQA/WixQA). See `docs/evaluation_integrity.md`.",
+            "",
             f"Status: {report['status']}",
             "",
             "| Metric | Value |",

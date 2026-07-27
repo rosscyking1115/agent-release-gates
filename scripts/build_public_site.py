@@ -10,6 +10,12 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 REPORTS_DIR = PROJECT_ROOT / "reports"
 PUBLIC_DIR = PROJECT_ROOT / "public"
 
+_INTEGRITY_DOC_URL = (
+    "https://github.com/rosscyking1115/agent-release-gates"
+    "/blob/main/docs/evaluation_integrity.md"
+)
+INTEGRITY_DOC_LINK = f'<a href="{_INTEGRITY_DOC_URL}">Evaluation integrity &rarr;</a>'
+
 
 def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
     reports_dir = project_root / "reports"
@@ -659,6 +665,37 @@ def _index_html(
     </section>
 
     <section class="section">
+      <h2>Retrieval result (external public data)</h2>
+      <p>
+        Retrieval quality is reported on public corpora this project did not generate.
+        The synthetic operations benchmark is circular by construction &mdash; its
+        generator templates the query from the same variables as the gold answer &mdash;
+        so its scores are reported separately below and labeled in-corpus.
+        {INTEGRITY_DOC_LINK}
+      </p>
+      <div class="grid">
+        {_metric(
+            "Public RAG cases",
+            _public_rag_summary_value(public_rag_findings, "total_case_count"),
+        )}
+        {_metric(
+            "External weighted hit@3",
+            _public_rag_metric(public_rag_findings, "weighted_retrieval_hit_rate_at_3"),
+        )}
+        {_metric(
+            "External weighted top-1 citation",
+            _public_rag_metric(public_rag_findings, "weighted_top1_citation_accuracy"),
+        )}
+        {_metric(
+            "External weighted failure rate",
+            _public_rag_metric(public_rag_findings, "weighted_failure_rate"),
+        )}
+        {_metric("TechQA public RAG@3", _techqa_metric(techqa_public, "retrieval_hit_rate_at_3"))}
+        {_metric("WixQA public RAG@3", _wixqa_metric(wixqa_public, "retrieval_hit_rate_at_3"))}
+      </div>
+    </section>
+
+    <section class="section">
       <h2>Evidence snapshot</h2>
       <div class="grid">
         {_metric("Synthetic golden cases", counts["golden_cases"])}
@@ -672,16 +709,6 @@ def _index_html(
         {_metric("Incident gate status", incident_gate_status)}
         {_metric("Manual golden-case share", _pct(mix["manual_share"]))}
         {_metric(
-            "Public RAG cases",
-            _public_rag_summary_value(public_rag_findings, "total_case_count"),
-        )}
-        {_metric(
-            "Public weighted RAG@3",
-            _public_rag_metric(public_rag_findings, "weighted_retrieval_hit_rate_at_3"),
-        )}
-        {_metric("TechQA public RAG@3", _techqa_metric(techqa_public, "retrieval_hit_rate_at_3"))}
-        {_metric("WixQA public RAG@3", _wixqa_metric(wixqa_public, "retrieval_hit_rate_at_3"))}
-        {_metric(
             "Moderate grounding unsupported",
             _rag_grounding_metric(
                 rag_grounding_intervention,
@@ -692,8 +719,14 @@ def _index_html(
             "Strict grounding review / 100",
             grounding_summary.get("strict_review_burden_per_100", "Not available"),
         )}
-        {_metric("Synthetic citation coverage", _pct(metrics["citation_coverage"]["improved"]))}
-        {_metric("Synthetic abstention accuracy", _pct(metrics["abstention_accuracy"]["improved"]))}
+        {_metric(
+            "Synthetic citation coverage (in-corpus)",
+            _pct(metrics["citation_coverage"]["improved"]),
+        )}
+        {_metric(
+            "Synthetic abstention accuracy (in-corpus)",
+            _pct(metrics["abstention_accuracy"]["improved"]),
+        )}
         {_metric(
             "Memory pollution follow rate",
             _memory_context_metric(
@@ -736,6 +769,10 @@ def _index_html(
       <p>
         These are engineering checks over controlled benchmarks. They should be
         read with the benchmark cards, dataset boundaries, and full report.
+        Metrics marked <strong>in-corpus</strong> come from a self-generated synthetic
+        benchmark that is circular by construction and are not retrieval evidence; the
+        retrieval result is the external public-data section above.
+        {INTEGRITY_DOC_LINK}
       </p>
     </section>
 
