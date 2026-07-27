@@ -54,7 +54,8 @@ agent-safety = "internal_ai_agent.cli:main"
 
 # Inspect (UK AISI) task discovery. `inspect_ai` is an optional peer dependency
 # (pip install inspect_ai) so the deterministic core stays lean; once installed,
-# `inspect eval agent-release-gates/incident_replay --model <provider/model>` runs.
+# `inspect eval incident_replay --model <provider/model>` runs. The task registers
+# under its bare name, so a package-prefixed reference does not resolve.
 [project.entry-points.inspect_ai]
 agent_release_gates = "internal_ai_agent.inspect_suite._registry"
 
@@ -67,14 +68,59 @@ packages = ["src/internal_ai_agent"]
 
 [dependency-groups]
 # Dev/CI installs everything the test suite exercises (API + dashboard imports).
+# `inspect-ai` is an optional peer dependency at runtime, but it is a dev dependency
+# so CI actually executes tests/unit/test_inspect_suite.py instead of skipping it.
+# Without it the Inspect task reference and scorer went unexercised in CI.
 dev = [
     "pytest>=8.2.0",
     "ruff>=0.5.0",
+    "mypy>=1.14",
+    "inspect-ai>=0.3.100",
     "fastapi>=0.115.0",
     "uvicorn[standard]>=0.30.0",
     "altair>=6.0.0",
     "pandas>=2.2.0",
     "streamlit>=1.38.0",
+]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+ignore_missing_imports = true
+# Deliberately scoped, and strict within that scope. Outside this list, repo-wide
+# `--strict` still emits 403 errors across 38 files (74 in the package alone),
+# overwhelmingly Any-leakage at JSON/IO boundaries. Counts re-measured 2026-07-27 after
+# the gated modules were fixed; docs/typing_status.md carries the per-module breakdown.
+# Gating all of that would mean either a wall of suppressions or
+# a permissive config that passes without checking anything -- and a gate that checks
+# nothing is worse than no gate, because it advertises a guarantee it does not provide.
+#
+# So this gates exactly the modules where a type error would corrupt a *published
+# number*: the metric computation, the release-gate decision, the scorers that turn a
+# model response into a verdict, and the report writer that renders those numbers.
+# Everything else is unchecked and is not claimed to be checked -- see
+# docs/typing_status.md for the full inventory and the ratchet order.
+#
+# This list ratchets UP only. Never delete a module from it to make CI pass: fix the
+# type error, or the gate stops meaning anything.
+files = [
+    # Metric computation -- these produce the numbers that get published.
+    "src/internal_ai_agent/evals/runner.py",
+    "src/internal_ai_agent/evals/public_rag_findings.py",
+    "src/internal_ai_agent/evals/techqa_public.py",
+    "src/internal_ai_agent/evals/wixqa_public.py",
+    # Release-gate decision -- these produce ship/warn/block and the safety figures.
+    "src/internal_ai_agent/evals/gates.py",
+    "src/internal_ai_agent/evals/safety_classifier.py",
+    "src/internal_ai_agent/evals/incident_replay.py",
+    # Response -> verdict scoring, including the Inspect path.
+    "src/internal_ai_agent/inspect_suite/scoring.py",
+    "src/internal_ai_agent/inspect_suite/scorers.py",
+    "src/internal_ai_agent/providers/agent_runner.py",
+    # Retrieval itself -- a type error here changes what gets scored.
+    "src/internal_ai_agent/rag/baseline.py",
+    # Renders every published metric into the committed report artifacts.
+    "src/internal_ai_agent/reporting/public_report.py",
 ]
 
 [tool.ruff]

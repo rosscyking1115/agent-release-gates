@@ -27,6 +27,12 @@ jobs:
       - name: Lint
         run: uv run ruff check .
 
+      # Scoped to the modules where a type error would corrupt a published number.
+      # The scope is defined by `files` under [tool.mypy] in pyproject.toml and
+      # ratchets upward only. This step is blocking.
+      - name: Type-check (scoped to the metric and gating core)
+        run: uv run mypy
+
       - name: Test
         run: uv run pytest
 
