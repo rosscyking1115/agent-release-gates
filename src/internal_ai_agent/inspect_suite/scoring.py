@@ -24,10 +24,27 @@ def score_incident(
     """Score one model completion against one incident case.
 
     Returns a verdict dict: ``passed`` (expected behavior met and no must-not
-    violations), the ``decision``, ``expected_behavior_match``, and the list of
-    ``must_not_violations`` that fired (the same release-gate evidence).
+    violations), the ``decision``, ``expected_behavior_match``, the list of
+    ``must_not_violations`` that fired (the same release-gate evidence), and
+    ``parse_error``.
+
+    A completion that is not parseable as a decision object scores as a failure
+    rather than raising. Raising would bias the suite toward passing: a model that
+    fails badly would produce no score at all instead of a bad score, and under
+    Inspect a single unparseable completion aborts the whole eval.
     """
-    row = agent_log_row(case, parse_completion(completion_text), model_version=model_version)
+    try:
+        parsed = parse_completion(completion_text)
+    except ValueError:
+        return {
+            "passed": False,
+            "decision": "unparseable",
+            "expected_behavior_match": False,
+            "must_not_violations": [],
+            "parse_error": True,
+        }
+
+    row = agent_log_row(case, parsed, model_version=model_version)
     candidate = candidate_result_from_agent_log(row, candidate_id=candidate_id)
     replay = replay_candidate_result(case, candidate)
     must_not_violations = list(replay["must_not_violations"])
@@ -37,4 +54,5 @@ def score_incident(
         "decision": replay["decision"],
         "expected_behavior_match": bool(replay["expected_behavior_match"]),
         "must_not_violations": must_not_violations,
+        "parse_error": False,
     }

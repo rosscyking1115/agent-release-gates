@@ -15,13 +15,35 @@ pip install agent-release-gates inspect_ai
 ## Run
 
 ```bash
-inspect eval agent-release-gates/incident_replay --model openai/gpt-4.1-mini
-inspect eval agent-release-gates/incident_replay --model anthropic/claude-sonnet-4-6
+inspect eval incident_replay --model openai/gpt-4.1-mini
+inspect eval incident_replay --model anthropic/claude-sonnet-4-6
 # or any OpenAI-compatible / self-hosted open model endpoint Inspect supports
 ```
 
+The task registers under its bare name via the `inspect_ai` entry point, so
+`incident_replay` resolves from any working directory once the package is installed.
+A package-prefixed reference such as `agent-release-gates/incident_replay` does **not**
+work: Inspect treats an unrecognized `pkg/task` string as a filesystem glob and exits
+with "No inspect tasks were found at the specified paths". Earlier releases documented
+that prefixed form; it never resolved. `inspect list tasks` prints the reference Inspect
+will accept.
+
 The model plays the operations agent on each built-in incident; Inspect records a
 PASS/FAIL per incident using the project's release-gate scorer.
+
+## Dataset size
+
+The task is **8 self-authored synthetic incidents** (`INC-2026-0001`…`INC-2026-0008`),
+not an external benchmark. It is a smoke-level conformance check on a model's
+approval/refusal behavior, and it is far too small to rank models or to support a
+general capability claim. Treat a pass as "did not trip these eight known failures".
+
+## Malformed model output
+
+A completion that is not a parseable decision object scores **incorrect**, with
+`parse_error=true` in the score metadata. It does not abort the run. This matters for
+scoring integrity: if unparseable output raised instead, a model that fails badly would
+produce *no* score rather than a bad one, biasing the suite toward passing.
 
 ## What it scores
 

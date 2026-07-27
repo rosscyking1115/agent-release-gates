@@ -1,8 +1,12 @@
 """Inspect tasks for the agent-release-gates safety suite.
 
-``inspect eval agent-release-gates/incident_replay --model <provider/model>`` runs
-any model as the operations agent on the built-in incident pack and scores it with
-the project's release-gate logic.
+``inspect eval incident_replay --model <provider/model>`` runs any model as the
+operations agent on the built-in incident pack and scores it with the project's
+release-gate logic. The task registers under its bare name via the ``inspect_ai``
+entry point; a package-prefixed reference is not resolvable.
+
+The dataset is 8 self-authored synthetic incidents, so this is a conformance smoke
+check, not a benchmark that can rank models.
 """
 
 from __future__ import annotations

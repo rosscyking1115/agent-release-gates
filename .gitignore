@@ -34,6 +34,9 @@ reports/public_rag_provider_embedding_status.json
 # Claude Code local launch config
 .claude/launch.json
 
+# inspect_ai writes eval logs here by default
+logs/
+
 # internal working docs — kept local, not for the public repo
 /docs/reviewer_handoff_pack.md
 /internal_ai_agent_project_plan.md
