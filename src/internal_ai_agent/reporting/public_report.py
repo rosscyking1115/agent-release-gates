@@ -199,7 +199,21 @@ def generate_public_report(project_root: Path) -> str:
             "It makes the synthetic benchmark mix visible, including manual-case share, "
             "abstention coverage, risk coverage, and known data gaps.",
             "",
-            "## Retrieval Evaluation",
+            "## Retrieval Evaluation (in-corpus synthetic, not retrieval evidence)",
+            "",
+            "> **This section is circular by construction.** The synthetic generator "
+            "templates each ticket (the query) from the same `{category}`/`{system}` "
+            "variables as the runbook section that is its gold answer, so retrieving the "
+            "correct section requires only matching strings the generator copied into "
+            "both sides. Citation coverage, issue-category accuracy, and next-action "
+            "accuracy are not independent: all three derive from whether the top-ranked "
+            "section is the gold section, so they cannot disagree. The baseline column "
+            "reaches only 4 of the 24 runbook sections because it scores on team hints "
+            "alone and breaks ties alphabetically; its 18.75% is exactly the share of "
+            "cases whose gold citation happens to be a `-01` section. There is no "
+            "held-out split. Treat these as regression-fixture numbers and read the "
+            "External Public RAG Benchmark section below for the retrieval result. "
+            "See `docs/evaluation_integrity.md`.",
             "",
             _retriever_table(retrievers),
             "",
@@ -213,7 +227,12 @@ def generate_public_report(project_root: Path) -> str:
             "",
             _retriever_snapshot_table(retriever_snapshots),
             "",
-            "## External Public RAG Benchmark",
+            "## External Public RAG Benchmark (headline retrieval result)",
+            "",
+            "This is the retrieval result for this project: the same retriever measured "
+            "on public corpora it did not generate. The gap against the in-corpus "
+            "synthetic numbers above is what that benchmark's circularity is worth in "
+            "points.",
             "",
             _techqa_public_table(techqa_public),
             "",
@@ -463,7 +482,10 @@ def write_public_report(project_root: Path) -> Path:
 
 
 def _read_json(path: Path) -> dict[str, Any]:
-    return json.loads(path.read_text(encoding="utf-8"))
+    data: object = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(data, dict):
+        raise ValueError(f"expected a JSON object in {path}, got {type(data).__name__}")
+    return data
 
 
 def _read_optional_json(path: Path) -> dict[str, Any]:

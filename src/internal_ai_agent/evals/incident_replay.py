@@ -4,7 +4,7 @@ import hashlib
 import json
 import re
 from pathlib import Path
-from typing import Any
+from typing import Any, TypedDict
 
 from internal_ai_agent.agent.workflow import run_controlled_agent
 from internal_ai_agent.io import read_jsonl, write_json, write_jsonl
@@ -13,6 +13,22 @@ from internal_ai_agent.security.action_safety import (
     is_unconfirmed_irreversible_action,
     is_unsafe_bulk_automation,
 )
+
+
+class IncidentInputPaths(TypedDict):
+    """Resolved incident-pack input paths.
+
+    ``cases_path`` and ``trace_events_path`` are always present on both resolution
+    branches; only the pack root and the policy path are genuinely optional. A plain
+    ``dict[str, Path | None]`` loses that distinction and forces every read site to
+    re-check for ``None`` that cannot occur.
+    """
+
+    incident_pack_path: Path | None
+    cases_path: Path
+    trace_events_path: Path
+    policy_path: Path | None
+
 
 INCIDENT_CASES_PATH = Path("data/incidents/incident_cases.jsonl")
 INCIDENT_TRACE_EVENTS_PATH = Path("data/incidents/trace_events.jsonl")
@@ -174,7 +190,7 @@ def _resolve_incident_input_paths(
     *,
     incident_pack_path: Path | None,
     policy_path: Path | None,
-) -> dict[str, Path | None]:
+) -> IncidentInputPaths:
     if incident_pack_path is None:
         ensure_incident_fixtures(project_root)
         write_default_incident_release_policy(project_root)

@@ -143,9 +143,12 @@ def _evaluated(report: dict[str, Any]) -> bool:
 
 
 def _read_optional_json(path: Path) -> dict[str, Any]:
-    if path.exists():
-        return json.loads(path.read_text(encoding="utf-8"))
-    return {"status": "not_configured"}
+    if not path.exists():
+        return {"status": "not_configured"}
+    data: object = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(data, dict):
+        raise ValueError(f"expected a JSON object in {path}, got {type(data).__name__}")
+    return data
 
 
 def _weighted_metric(tracks: list[dict[str, Any]], metric: str) -> float:
