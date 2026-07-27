@@ -320,40 +320,65 @@ def test_write_public_report_creates_markdown_artifact(tmp_path) -> None:
     assert output_path.with_suffix(".pdf").exists()
 
 
+def _assert_contains(haystack: str | bytes, needle: str | bytes) -> None:
+    """Assert containment without putting the large operand in the assert expression.
+
+    On failure, pytest's assertion rewriting renders *both* operands. The report
+    artifacts are tens of kilobytes, and rendering them was itself allocating enough
+    to turn an ordinary failure into a MemoryError inside pytest's traceback
+    formatter, which then aborted the whole session. Computing the boolean first
+    keeps only the needle and a length in the failure message.
+    """
+    found = needle in haystack
+    assert found, f"expected {needle!r} in the generated artifact ({len(haystack)} units)"
+
+
+def _assert_not_contains(haystack: str | bytes, needle: str | bytes) -> None:
+    absent = needle not in haystack
+    assert absent, f"did not expect {needle!r} in the generated artifact"
+
+
+HTML_REPORT_EXPECTED_FRAGMENTS = [
+    "<!doctype html>",
+    "<h1>Agent Release Safety Gates Evaluation Report</h1>",
+    "<table>",
+    "<td>Hybrid sparse semantic</td>",
+    "<h2>Evaluation Release Gates</h2>",
+    "<h2>Incident Replay Suite</h2>",
+    "<td>Incident closure rate</td>",
+    "<p>Incident Response Plan</p>",
+    "<td>Ready with monitoring</td>",
+    "<td>Sampled audit</td>",
+    "<td>Ship</td>",
+    "<td>Pass with warnings</td>",
+    "<td>Local TF-IDF vector</td>",
+    "<td>Local embedding store</td>",
+    "<h2>Retriever Metric Snapshots</h2>",
+    "<h2>Historical Evaluation Snapshots</h2>",
+    "<h2>Dataset Profile</h2>",
+    "<h2>Safety Classifier Workflow</h2>",
+    "<th>External human-review artifact</th>",
+    "<td>Awaiting independent labels</td>",
+    "<th>Reviewed hosted model-judge results</th>",
+    "<td>Publish with limitations</td>",
+    "<td>Recommend targeted secondary review floor</td>",
+    "<td>Validate with monitoring</td>",
+    "<td>Adopt targeted floor with minimum capacity</td>",
+    "<td>16</td>",
+    "<td>Prepared preview</td>",
+    "It does not use real company documents",
+]
+
+
 def test_generate_public_report_html_renders_tables_and_safety_boundary(tmp_path) -> None:
     _prepare_reports(tmp_path)
 
     html = generate_public_report_html(tmp_path)
 
-    assert "<!doctype html>" in html
-    assert "<h1>Agent Release Safety Gates Evaluation Report</h1>" in html
-    assert "<table>" in html
-    assert "<td>Hybrid sparse semantic</td>" in html
-    assert "<h2>Evaluation Release Gates</h2>" in html
-    assert "<h2>Incident Replay Suite</h2>" in html
-    assert "<td>Incident closure rate</td>" in html
-    assert "<p>Incident Response Plan</p>" in html
-    assert "### Incident Response Plan" not in html
-    assert "<td>Ready with monitoring</td>" in html
-    assert "<td>Sampled audit</td>" in html
-    assert "<td>Ship</td>" in html
-    assert "<td>Pass with warnings</td>" in html
-    assert "<td>Local TF-IDF vector</td>" in html
-    assert "<td>Local embedding store</td>" in html
-    assert "<h2>Retriever Metric Snapshots</h2>" in html
-    assert "<h2>Historical Evaluation Snapshots</h2>" in html
-    assert "<h2>Dataset Profile</h2>" in html
-    assert "<h2>Safety Classifier Workflow</h2>" in html
-    assert "<th>External human-review artifact</th>" in html
-    assert "<td>Awaiting independent labels</td>" in html
-    assert "<th>Reviewed hosted model-judge results</th>" in html
-    assert "<td>Publish with limitations</td>" in html
-    assert "<td>Recommend targeted secondary review floor</td>" in html
-    assert "<td>Validate with monitoring</td>" in html
-    assert "<td>Adopt targeted floor with minimum capacity</td>" in html
-    assert "<td>16</td>" in html
-    assert "<td>Prepared preview</td>" in html
-    assert "It does not use real company documents" in html
+    for fragment in HTML_REPORT_EXPECTED_FRAGMENTS:
+        _assert_contains(html, fragment)
+    # Raw markdown headings must have been converted, not passed through.
+    _assert_not_contains(html, "### Incident Response Plan")
 
 
 def test_generate_public_report_pdf_renders_shareable_artifact(tmp_path) -> None:
@@ -361,7 +386,8 @@ def test_generate_public_report_pdf_renders_shareable_artifact(tmp_path) -> None
 
     pdf = generate_public_report_pdf(tmp_path)
 
-    assert pdf.startswith(b"%PDF-1.4")
-    assert b"AGENT RELEASE SAFETY GATES EVALUATION REPORT" in pdf
-    assert b"Golden retrieval cases: 358" in pdf
-    assert b"%%EOF" in pdf
+    starts_with_pdf_header = pdf.startswith(b"%PDF-1.4")
+    assert starts_with_pdf_header, f"expected a PDF-1.4 header, got {pdf[:16]!r}"
+    _assert_contains(pdf, b"AGENT RELEASE SAFETY GATES EVALUATION REPORT")
+    _assert_contains(pdf, b"Golden retrieval cases: 358")
+    _assert_contains(pdf, b"%%EOF")
