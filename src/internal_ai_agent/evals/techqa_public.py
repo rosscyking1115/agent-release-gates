@@ -5,7 +5,7 @@ import re
 from collections import Counter
 from collections.abc import Callable
 from dataclasses import asdict, dataclass
-from math import log
+from math import log, sqrt
 from pathlib import Path
 from typing import Any
 
@@ -679,9 +679,9 @@ def _cosine_similarity(left: dict[str, float], right: dict[str, float]) -> float
     if not left or not right:
         return 0.0
     overlap = set(left) & set(right)
-    numerator = sum(left[key] * right[key] for key in overlap)
-    left_norm = sum(value * value for value in left.values()) ** 0.5
-    right_norm = sum(value * value for value in right.values()) ** 0.5
+    numerator = float(sum(left[key] * right[key] for key in overlap))
+    left_norm = sqrt(float(sum(value * value for value in left.values())))
+    right_norm = sqrt(float(sum(value * value for value in right.values())))
     if left_norm == 0 or right_norm == 0:
         return 0.0
     return numerator / (left_norm * right_norm)

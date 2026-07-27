@@ -4,7 +4,7 @@ import re
 from collections import Counter
 from collections.abc import Callable
 from dataclasses import asdict, dataclass
-from math import log
+from math import log, sqrt
 from pathlib import Path
 from typing import Any
 
@@ -201,7 +201,7 @@ def _write_all(
     write_json(project_root / WIXQA_PROFILE_PATH, profile)
     write_jsonl(project_root / WIXQA_CASES_PATH, (asdict(row) for row in results))
     write_json(project_root / WIXQA_RETRIEVER_COMPARISON_PATH, retriever_comparison)
-    flattened = []
+    flattened: list[dict[str, Any]] = []
     for system_results in (results_by_system or {}).values():
         flattened.extend(asdict(row) for row in system_results)
     write_jsonl(project_root / WIXQA_RETRIEVER_CASES_PATH, flattened)
@@ -602,9 +602,9 @@ def _cosine_similarity(left: dict[str, float], right: dict[str, float]) -> float
     if not left or not right:
         return 0.0
     overlap = set(left) & set(right)
-    numerator = sum(left[key] * right[key] for key in overlap)
-    left_norm = sum(value * value for value in left.values()) ** 0.5
-    right_norm = sum(value * value for value in right.values()) ** 0.5
+    numerator = float(sum(left[key] * right[key] for key in overlap))
+    left_norm = sqrt(float(sum(value * value for value in left.values())))
+    right_norm = sqrt(float(sum(value * value for value in right.values())))
     if left_norm == 0 or right_norm == 0:
         return 0.0
     return numerator / (left_norm * right_norm)

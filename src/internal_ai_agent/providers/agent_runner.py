@@ -242,7 +242,8 @@ def _http_post(
     http_request = request.Request(endpoint, data=body, headers=dict(headers), method="POST")
     try:
         with request.urlopen(http_request, timeout=timeout_seconds) as response:
-            return response.read().decode("utf-8", errors="replace")
+            payload: bytes = response.read()
+            return payload.decode("utf-8", errors="replace")
     except error.HTTPError as exc:
         raise _provider_error_from_http_error(exc) from exc
 

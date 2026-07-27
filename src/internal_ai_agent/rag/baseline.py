@@ -5,7 +5,7 @@ from collections import Counter
 from collections.abc import Callable
 from dataclasses import dataclass
 from hashlib import blake2b
-from math import log
+from math import log, sqrt
 from pathlib import Path
 from typing import Any
 
@@ -56,6 +56,12 @@ SYSTEM_HINTS = {
     "data_quality": ["atlas", "data", "schema", "feed", "control", "lineage"],
 }
 
+# WARNING: these alias lists are hand-written, one per gold category, and were tuned
+# against the same synthetic golden cases they are later scored on. There is no held-out
+# split, so the synthetic retrieval gain they produce does not generalize — the same
+# retriever scores ~20 points lower on external TechQA/WixQA data. The same caveat
+# applies to CURRENT_EVIDENCE_MARKERS and the stale-context markers below, which key on
+# literal phrases authored into the eval prompts. See docs/evaluation_integrity.md.
 SEMANTIC_ALIASES = {
     "file_validation_failed": ["file", "validation", "schema", "rejected", "reject"],
     "duplicate_batch_detected": ["duplicate", "duplicated", "batch", "idempotency", "replay"],
@@ -137,6 +143,15 @@ def retrieve_baseline(
 
     This baseline intentionally uses broad system/team hints rather than procedure-level matching.
     It behaves like an early prototype: often finds the right team, but not the right section.
+
+    .. warning::
+       **Do not read a delta against this baseline as an improvement measurement.**
+       Scoring uses only team hints, so all six sections of the matched team tie and the
+       tie is broken by ``section_id`` ascending. The ``-01`` section of each team always
+       wins, and only 4 of the 24 runbook sections are reachable. Its reported 0.1875
+       citation coverage is exactly the share of answerable golden cases whose gold
+       citation happens to be a ``-01`` section (54/288) — a property of the eval set's
+       numbering, not of retrieval. See ``docs/evaluation_integrity.md``.
     """
 
     normalized = question.lower()
@@ -213,7 +228,12 @@ def retrieve_lexical(
         category = title.lower().replace(" ", "_")
         title_tokens = _tokenize(title)
         content_tokens = _tokenize(str(section["content"]))
-        score = (len(query_tokens & title_tokens) * 5) + len(query_tokens & content_tokens)
+        # float, not int: _current_evidence_score returns a float weight. It is
+        # non-negative, so the `== 0` guard below still excludes exactly the unscored
+        # sections.
+        score: float = (len(query_tokens & title_tokens) * 5) + len(
+            query_tokens & content_tokens
+        )
         score += _current_evidence_score(question, category, str(section["team"]))
         if score == 0:
             continue
@@ -831,9 +851,9 @@ def _cosine_similarity(left: dict[str, float], right: dict[str, float]) -> float
     if not left or not right:
         return 0.0
     overlap = set(left) & set(right)
-    numerator = sum(left[key] * right[key] for key in overlap)
-    left_norm = sum(value * value for value in left.values()) ** 0.5
-    right_norm = sum(value * value for value in right.values()) ** 0.5
+    numerator = float(sum(left[key] * right[key] for key in overlap))
+    left_norm = sqrt(float(sum(value * value for value in left.values())))
+    right_norm = sqrt(float(sum(value * value for value in right.values())))
     if left_norm == 0 or right_norm == 0:
         return 0.0
     return numerator / (left_norm * right_norm)
