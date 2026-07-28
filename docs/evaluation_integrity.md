@@ -151,6 +151,16 @@ that same sentence. Measured across the 79 distinct request texts in
 Six of the thirteen benign signals are effectively case-specific, and one matches nothing
 at all. A classifier that recognizes a test case by name is measuring memorization.
 
+> **Standing of the published 90.91% recall figure.** It was measured **with all thirteen
+> signals in place, including the case-specific ones**, and it has not been re-measured
+> since they were identified. To be exact about what has and has not happened: the signals
+> have been *documented*, not *removed* — all four named above are still live in
+> `safety_classifier.py` today. The figure is therefore not stale relative to the shipped
+> classifier; it is an accurate measurement of a classifier that partly recognizes its own
+> test set. **It should be expected to fall when the signals are removed**, and it should
+> not be read as a generalization estimate until then. Re-measurement is step 5 of the
+> remediation order below; a caveat does not make the number safe to quote on its own.
+
 The same pattern holds for the category signals.
 `CATEGORY_SIGNALS = {**LEGACY_CATEGORY_SIGNALS, ...}`
 ([`safety_classifier.py:83`](../src/internal_ai_agent/evals/safety_classifier.py#L83))
@@ -248,18 +258,41 @@ if it were.
 
 ## What would fix it, and what has not been done
 
-Not attempted in this round; recorded so the gap is explicit rather than implied:
+None of this is attempted yet; it is recorded so the gap is explicit rather than implied.
 
-1. **A held-out split.** Aliases and penalties tuned on a train split, scored on a test
-   split never read during tuning. Without this, no synthetic number generalizes.
-2. **Decouple query from answer.** Generate the ticket from an independent surface form
-   (a symptom description) rather than from the runbook's own `{title}`/`{system}`.
-3. **Report one metric, not three.** Collapse citation/category/next-action into a single
-   `top1_section_correct`, or make them genuinely independent.
-4. **A real baseline.** BM25 or TF-IDF with no category dictionary, so the comparison
-   measures a method rather than a tie-break.
-5. **Remove case-specific safety signals** and re-measure. The recall figure should be
-   expected to fall.
+### Do these in this order
 
-The external TechQA/WixQA arm already avoids problems 1–4 by construction, which is why
-it is the headline.
+**The order matters, and it is not the order the findings are numbered in.** The root
+defect is Finding 1 — the query is templated from its own gold answer. That is the
+corpus-level form of a test that cannot fail. Every other item is downstream of it, and
+two of them are actively misleading if done first:
+
+1. **Decouple the query from the answer.** *(Finding 1 — do this first.)* Generate the
+   ticket from an independent surface form, such as a symptom description written without
+   reference to the runbook's `{title}`/`{system}`. Until this lands, the corpus itself
+   guarantees near-perfect retrieval.
+
+2. **Then add a held-out split.** Aliases and penalties tuned on a train split, scored on
+   a test split never read during tuning.
+
+   > Do **not** start here because it sounds like the easy one. A held-out split laid over
+   > a corpus whose queries are projections of their own answers **inherits the defect**:
+   > the test split is templated the same way, so a retriever that matches the template
+   > scores just as well on unseen cases. You would get a clean-looking generalization
+   > number that certifies nothing, which is worse than today's state, because today the
+   > circularity is at least declared. The split only starts measuring generalization once
+   > step 1 has removed the shared template.
+
+3. **A real baseline.** BM25, or TF-IDF with no category dictionary, so the comparison
+   measures a method rather than the alphabetical tie-break described in Finding 3.
+
+4. **Report one metric, not three.** Collapse citation/category/next-action into a single
+   `top1_section_correct`, or make them genuinely independent. Safe to do at any point —
+   it is a reporting change, not a measurement change.
+
+5. **Remove the case-specific safety signals and re-measure.** Independent of steps 1–4,
+   and see the note under Finding 5 on the standing of the current recall figure.
+
+The external TechQA/WixQA arm already avoids problems 1–3 by construction, which is why it
+is the headline: its queries were written by other people, against documents this project
+did not generate.

@@ -103,7 +103,7 @@ for why.
 | **Largest external failure mode** | **40.47% case failure rate; 85 impossible questions answered instead of abstained** |
 | Retrieval (in-corpus fixture) | 99.31–100% on 358 self-generated synthetic cases. Not a retrieval result: the generator templates the query from its own gold answer ([details](docs/evaluation_integrity.md)) |
 | Controlled benchmark | 358 synthetic golden cases, 60 red-team cases, 180 synthetic operations tickets |
-| Safety | 90.91% classifier recall, 0 high-severity false negatives in the current challenge set. Partly inflated by eval-specific signals ([details](docs/evaluation_integrity.md#finding-5-the-safety-classifier-whitelists-a-case-by-name)) |
+| Safety | 90.91% classifier recall, 0 high-severity false negatives in the current challenge set. Measured with case-specific signals still in place, not re-measured since they were identified, and should be expected to fall when they are removed ([details](docs/evaluation_integrity.md#finding-5-the-safety-classifier-whitelists-a-case-by-name)) |
 | Agent governance | 100.00% mock side-effect block rate and approval audit rate |
 | Incident replay | 8 self-authored synthetic incidents replayed, 100.00% closure rate, 0 replay must-not violations. A conformance smoke check, too small to rank models |
 | Intervention study | 3 deterministic safety studies plus public RAG grounding and memory/context studies |
