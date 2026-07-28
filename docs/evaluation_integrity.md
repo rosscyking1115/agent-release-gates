@@ -226,9 +226,9 @@ Both the artifact and the report now agree at 8 incidents under
 `incident_release_policy_v0`, and no path under `reports/` references a temporary
 directory.
 
-**Still open:** `reports/incident_memo_INC-EXAMPLE-0001.md` remains committed and is now
-orphaned — the regenerated summary references only the eight `INC-2026-*` memos. It is a
-leftover of the same bad run and should be removed.
+`reports/incident_memo_INC-EXAMPLE-0001.md` was left orphaned by the regeneration — the
+new summary references only the eight `INC-2026-*` memos — and has been removed. It was
+the last artifact of the same superseded run.
 
 ## What this means for the published numbers
 
