@@ -178,12 +178,22 @@ Found 2026-07-27 while auditing committed evidence artifacts.
 incident-replay result:
 
 ```json
-"candidate_results": "C:/Users/leaff/AppData/Local/Temp/lg.jsonl"
+"candidate_results": "C:/Users/<redacted>/AppData/Local/Temp/lg.jsonl"
 ```
+
+The OS account name is redacted here and marked as such; nothing else in the field is
+altered. The redaction is cosmetic and is not a fix — see
+[what the exposure cost](#what-the-exposure-cost) below.
 
 A machine-local temporary file. It is untracked, it is not reproducible on any other
 machine, and it no longer exists on the machine that produced it. Anything derived from
 it could not be checked by anyone, including its author.
+
+A path under `AppData\Local\Temp` cannot be a provenance. Provenance is a claim that
+someone else could re-run the thing and get the same result; naming a file that only ever
+existed inside one temporary directory, and has since been cleaned up, asserts that claim
+while making it permanently uncheckable. The field looked like provenance and functioned
+as decoration.
 
 The artifact was also **internally inconsistent with the rest of the repository**:
 
@@ -206,12 +216,15 @@ Regenerated against the built-in controlled agent and the tracked incident pack:
 
 | Field | Before | After |
 | --- | --- | --- |
-| `candidate_results` | `C:/Users/leaff/AppData/Local/Temp/lg.jsonl` | `built_in_controlled_agent` |
+| `candidate_results` | `C:/Users/<redacted>/AppData/Local/Temp/lg.jsonl` | `built_in_controlled_agent` |
 | `incident_cases` | `examples/incident_pack_minimal/incident_cases.jsonl` | `data/incidents/incident_cases.jsonl` |
 | `candidate_id` | `langgraph_example` | `controlled_agent_approval_gate_v0` |
 | `policy_id` | `minimal_example_incident_policy` | `incident_release_policy_v0` |
 | `case_count` | 1 | 8 |
 | **`INC-2026-0003` replay decision** | **`block`** | **`review`** |
+
+The `<redacted>` in the first row is an OS account name removed here; nothing else in that
+value is altered. See [what the exposure cost](#what-the-exposure-cost).
 
 Closure rate, expected-behavior match rate, must-not violation count (0), and the overall
 gate status (`pass`) are unchanged. The one substantive movement is INC-2026-0003.
@@ -239,6 +252,65 @@ directory.
 `reports/incident_memo_INC-EXAMPLE-0001.md` was left orphaned by the regeneration — the
 new summary references only the eight `INC-2026-*` memos — and has been removed. It was
 the last artifact of the same superseded run.
+
+### What the exposure cost
+
+The temp path carried an OS account name, and that string was published. **Redacting the
+working tree does not recall it.** The occurrences rendered above are redacted because the
+account name is incidental to the finding — the evidential content is `AppData\Local\Temp`,
+not who was logged in — but the unredacted string is in the commit history of a public
+repository, and stating otherwise would be false. It can be read today with:
+
+```
+git show 1248a3f:reports/incident_replay_summary.json
+```
+
+Where it was published, in full:
+
+| Commit | Date | File | Note |
+| --- | --- | --- | --- |
+| `1248a3f` | 2026-07-02 | `reports/incident_replay_summary.json` | The original provenance field. |
+| `d1543c7` | 2026-07-27 | `docs/evaluation_integrity.md` | **This document**, quoting it twice while reporting the defect. |
+| `e08c0cc` | 2026-07-27 | `CHANGELOG.md` | The changelog entry describing the fix. |
+
+The second and third rows matter more than they look. The document you are reading
+republished the string on the same day it was written up, and so did the changelog entry
+announcing that the artifact had been cleaned. Reporting a leak is not a licence to repeat
+it, and an accounting that listed only the JSON file would have been an understatement in
+the flattering direction — inside the section that exists to avoid exactly that.
+
+The failure was not "a personal path leaked". It was that a non-reproducible location was
+accepted into a provenance field of a committed evidence artifact, and nothing rejected
+it: not the writer, not review, not CI. Publication made an internal sloppiness
+irreversible. The account name is the least important thing that escaped; the more
+important one is that this project shipped an evidence artifact whose declared input no
+one could ever verify, and did so for **25 days** — 2026-07-02 to 2026-07-27.
+
+On how long it was *known*, as opposed to how long it was public: the committed record
+supports 2026-07-17, when the regeneration that would have corrected it was dismissed as
+unrelated churn — **10 days** before the fix. It is tempting to write "repeatedly", and an
+earlier draft of this section did; the committed history shows the string entering once
+(`1248a3f`) and leaving once (`527d915`), so 10 days from a single documented dismissal is
+what the record will actually support.
+
+The correction is the practice, not the redaction: a provenance field must name a tracked,
+reproducible input. `built_in_controlled_agent` and `data/incidents/incident_cases.jsonl`
+satisfy that; a temp path never could. That rule is now enforced rather than merely
+stated — `tests/unit/test_provenance_paths.py` fails the build if any file under
+`reports/` names a machine-local location, or if any tracked file carries an unredacted
+account name. The first check reads raw text, so `.jsonl` artifacts such as
+`incident_replay_runs.jsonl` are covered alongside the `.json` summaries.
+
+Third-party corpora under `data/public/` are excluded from the account-name check: the
+TechQA sample is real IBM support-forum text containing six of its own authors' account
+names, and rewriting a benchmark to tidy a path corrupts the benchmark. A third test pins
+that directory's tracked contents, so the exclusion cannot quietly widen to cover this
+project's own files.
+
+Whether the history is worth rewriting to remove the account name is a repository-owner
+decision and is not taken here. The case for it is weaker than it looks: it would rewrite
+public history to remove an incidental identifier while the substantive record — an
+unverifiable provenance field — stayed exactly as it is.
 
 ## What this means for the published numbers
 

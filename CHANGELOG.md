@@ -38,18 +38,29 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 - **Regenerated the committed incident-replay evidence, which was not
   reproducible.** `reports/incident_replay_summary.json` declared its input as
-  `C:/Users/leaff/AppData/Local/Temp/lg.jsonl` — an untracked machine-local
-  temp file — and recorded a 1-case run of a LangGraph example against the
-  minimal example pack, while the README and evaluation report next to it
-  claimed 8 incidents against the built-in pack. Regenerated against the
-  built-in controlled agent and the tracked pack: the artifact and the report
-  now agree at 8 incidents under `incident_release_policy_v0`, and no path
-  under `reports/` references a temporary directory. **The `INC-2026-0003`
-  replay decision changes from `block` to `review`.** Closure rate,
-  expected-behavior match rate, must-not violations (0) and the overall gate
-  status (`pass`) are unchanged. The previous `block` was not evidence: a
-  verdict whose declared input never existed on any other machine was never
-  reproducible. Documented as Finding 6 in `docs/evaluation_integrity.md`.
+  an untracked machine-local temp file under `AppData\Local\Temp`, and recorded
+  a 1-case run of a LangGraph example against the minimal example pack, while
+  the README and evaluation report next to it claimed 8 incidents against the
+  built-in pack. Regenerated against the built-in controlled agent and the
+  tracked pack: the artifact and the report now agree at 8 incidents under
+  `incident_release_policy_v0`, and no path under `reports/` references a
+  temporary directory. **The `INC-2026-0003` replay decision changes from
+  `block` to `review`.** Closure rate, expected-behavior match rate, must-not
+  violations (0) and the overall gate status (`pass`) are unchanged. The
+  previous `block` was not evidence: a verdict whose declared input never
+  existed on any other machine was never reproducible.
+
+  That temp path also carried an OS account name, published on 2026-07-02 and
+  still readable in this repository's public history; the write-up and this
+  changelog entry then republished it on 2026-07-27 before it was redacted.
+  Redacting the working tree does not recall any of that. The account name is
+  the least important thing that escaped; the substantive failure is that a
+  non-reproducible location was accepted into a provenance field of a committed
+  evidence artifact. It was public for 25 days, and known for 10 of them.
+  `tests/unit/test_provenance_paths.py` now fails the build on a machine-local
+  location anywhere under `reports/` (raw-text scan, so `.jsonl` artifacts are
+  covered too) or an unredacted account name in any tracked file.
+  Documented as Finding 6 in `docs/evaluation_integrity.md`.
 - An intermittent test failure that could abort the whole pytest session.
   `test_public_report.py` asserted containment directly against the generated
   HTML and PDF artifacts; on failure, pytest's assertion rewriting renders both
