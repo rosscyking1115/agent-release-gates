@@ -275,7 +275,7 @@ Where it was published, in full:
 
 The second and third rows matter more than they look. The document you are reading
 republished the string on the same day it was written up, and so did the changelog entry
-announcing that the artifact had been cleaned. Reporting a leak is not a licence to repeat
+announcing that the artifact had been cleaned. Reporting a leak is not a license to repeat
 it, and an accounting that listed only the JSON file would have been an understatement in
 the flattering direction — inside the section that exists to avoid exactly that.
 
@@ -307,10 +307,39 @@ names, and rewriting a benchmark to tidy a path corrupts the benchmark. A third 
 that directory's tracked contents, so the exclusion cannot quietly widen to cover this
 project's own files.
 
-Whether the history is worth rewriting to remove the account name is a repository-owner
-decision and is not taken here. The case for it is weaker than it looks: it would rewrite
-public history to remove an incidental identifier while the substantive record — an
-unverifiable provenance field — stayed exactly as it is.
+### Ruling: the history is not rewritten
+
+Decided by the repository owner on 2026-07-28, recorded here so a reader meets the
+argument rather than wondering why the string is still reachable.
+
+**The history stays as it is.** A rewrite would mean force-pushing `main`, and that is
+both disruptive and unreliable:
+
+- **It breaks every existing clone.** Anyone who has pulled this repository would have to
+  reset or re-clone.
+- **It invalidates every SHA anyone has cited.** This document cites `1248a3f`, `527d915`
+  and others by hash, as do the changelog and the commit messages. A rewrite turns those
+  citations into dangling references — in a repository whose argument is that claims
+  should trace to committed evidence.
+- **It does not reliably remove anything.** GitHub keeps unreachable objects fetchable by
+  direct SHA after a force-push. They stay retrievable unless GitHub Support is separately
+  asked to purge them, so the rewrite alone buys less than it appears to.
+
+Weighed against that, `leaff` is a Windows account name inside a temporary directory
+path. It is an **incidental identifier, not a credential**: it grants nothing, unlocks
+nothing, and is already implied by the repository's public authorship. Nothing about the
+exposure changes what an attacker could do.
+
+And the substantive record is unaffected either way. The defect worth remembering is that
+a machine-local temp file was declared as the provenance of committed evidence and no
+control rejected it. That fact survives a rewrite and survives its absence; only the
+account name would move. Rewriting public history for the incidental half of the problem,
+while the important half stays exactly as recorded, is not a trade worth making.
+
+What is done instead is the durable part: the account name is redacted wherever this
+repository renders it, the full exposure is enumerated above rather than minimised, and
+`tests/unit/test_provenance_paths.py` now fails the build before a path like it can be
+committed again.
 
 ## What this means for the published numbers
 
