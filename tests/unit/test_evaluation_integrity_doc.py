@@ -1,4 +1,10 @@
-"""The evaluation-integrity doc cites source lines; this pins those citations.
+"""The evaluation-integrity doc's internal links must resolve.
+
+Two contracts are pinned here. The first covers `../src/**#L<n>` citations into source
+files. The second covers intra-document `#heading` links, which are cheap to break by
+renaming a heading and which nothing else checks.
+
+## Source-line citations
 
 `docs/evaluation_integrity.md` is the document that reports this project's own benchmark
 as circular, and the README labels it "read first". Its authority rests entirely on the
@@ -63,6 +69,31 @@ def test_doc_anchors_and_expected_citations_agree() -> None:
     )
     assert in_table - in_doc == set(), (
         f"expectations pinned here are no longer cited by the doc: {sorted(in_table - in_doc)}"
+    )
+
+
+def _heading_slugs() -> set[str]:
+    """GitHub's slug rule: lowercase, drop punctuation, spaces to hyphens."""
+    slugs: set[str] = set()
+    for line in DOC_PATH.read_text(encoding="utf-8").splitlines():
+        if not line.startswith("#"):
+            continue
+        title = line.lstrip("#").strip()
+        slug = re.sub(r"[^\w\s-]", "", title.lower())
+        slugs.add(re.sub(r"[\s]+", "-", slug).strip("-"))
+    return slugs
+
+
+def test_intra_document_links_resolve_to_a_heading() -> None:
+    text = DOC_PATH.read_text(encoding="utf-8")
+    targets = re.findall(r"\]\(#([a-z0-9-]+)\)", text)
+    assert targets, "expected the doc to cross-reference its own sections"
+
+    slugs = _heading_slugs()
+    unresolved = sorted({t for t in targets if t not in slugs})
+    assert not unresolved, (
+        f"intra-document links point at headings that do not exist: {unresolved}. "
+        "A heading was probably renamed without updating the links to it."
     )
 
 
