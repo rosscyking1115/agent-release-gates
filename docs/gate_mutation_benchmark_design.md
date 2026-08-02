@@ -1,9 +1,22 @@
 # Gate mutation adequacy benchmark: preregistered design
 
-**Status: design only.** No case has been authored. This document is written before the
-corpus exists so that the operators, the split, the analysis, and the smallest difference
-worth reporting are all fixed in advance of any result. Amendments to this file after the
-first case is authored must be recorded as dated amendments, not edits.
+> [!IMPORTANT]
+> **Amendment 1, 2026-08-02 — SUSPENDED. Kill criterion 2 fired before any case was
+> authored.** The [ATLAS executability audit](atlas_executability_audit.md) found 19
+> executable agent-with-tools cases across all 57 MITRE ATLAS case studies (24 counting
+> marginals), against a preregistered floor of 40–60. Two of the twelve families below —
+> F02 and F05 — have no source case at all, and eleven of the executable cases are the
+> same family. The AI Incident Database cannot make up the shortfall because its licence
+> excludes the report text that would be needed to reconstruct an environment.
+>
+> The design is left standing as written. It is a preregistration that reached its
+> stopping condition, which is the outcome preregistration exists to make possible. What
+> would reopen it is recorded in the audit.
+
+**Status: design only, and suspended.** No case has been authored, and none will be under
+this design. This document was written before the corpus existed so that the operators, the
+split, the analysis, and the smallest difference worth reporting were all fixed in advance
+of any result. Amendments are recorded as dated amendments, not edits.
 
 Written 2026-08-02. Companion documents: the pilot result on this project's own gate,
 [gate mutation adequacy](gate_mutation_adequacy.md), and the redistribution question the

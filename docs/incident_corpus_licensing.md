@@ -166,7 +166,18 @@ terms page and record what it says.
    licence it was used under, the required attribution string, and the retrieval date.
    ATLAS use additionally preserves the Apache-2.0 licence text and marks modifications.
 
-## The check that has not been done
+## The check that has since been done — and it fired
+
+> **Update, 2026-08-02.** The executability audit below was carried out the same day. It
+> found **19 executable cases across all 57 ATLAS case studies** (24 counting marginals)
+> against a floor of 40–60, so **kill criterion 2 fires and the corpus is not buildable**.
+> The full per-study record is in
+> [ATLAS executability audit](atlas_executability_audit.md).
+>
+> The licensing conclusion above is unchanged and was not the blocker. The blocker is that
+> the source with mechanism-level detail (ATLAS, Apache-2.0) is small, and the source with
+> volume (AIID, CC BY-SA 4.0) excludes exactly the report text needed to reconstruct an
+> environment. Rights were never the constraint; usable detail was.
 
 Licensing is settled. **Executability is not.**
 
