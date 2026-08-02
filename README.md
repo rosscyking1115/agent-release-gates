@@ -2,12 +2,14 @@
 
 # Agent Release Safety Gates
 
-A reference implementation of AI-safety release-engineering. It replays known incidents, applies policy-as-code, and produces `ship` / `warn` / `block` evidence before a changed agent, prompt, model, or tool policy ships.
+A reference implementation of AI-safety release-engineering. It replays a pack of constructed safety scenarios against a candidate agent, applies policy-as-code, and produces `ship` / `warn` / `block` evidence before a changed agent, prompt, model, or tool policy ships.
 
 [![PyPI](https://img.shields.io/pypi/v/agent-release-gates.svg)](https://pypi.org/project/agent-release-gates/)
 [![Python](https://img.shields.io/pypi/pyversions/agent-release-gates.svg)](https://pypi.org/project/agent-release-gates/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![CI](https://github.com/rosscyking1115/agent-release-gates/actions/workflows/ci.yml/badge.svg)](https://github.com/rosscyking1115/agent-release-gates/actions/workflows/ci.yml)
+
+**[Evaluation integrity — read this first](docs/evaluation_integrity.md)**
 
 [Project page](https://rosscyking1115.github.io/agent-release-gates/) ·
 [Live dashboard](https://agent-release-gates.streamlit.app/) ·
@@ -47,7 +49,7 @@ agent-safety export-candidate-results --input incident_pack_minimal/agent_run_lo
 agent-safety release-gate --incident-pack incident_pack_minimal \
   --candidate-results candidate_results.jsonl
 
-# Or run the incident-replay suite (8 self-authored incidents) under Inspect (UK AISI).
+# Or run the incident-replay suite (8 constructed scenarios) under Inspect (UK AISI).
 pip install inspect_ai
 inspect eval incident_replay --model openai/gpt-4.1-mini
 ```
@@ -79,7 +81,39 @@ Agents regress silently: a prompt tweak, a model swap, or a loosened tool policy
 - Auditability: does it leave enough trace, audit, and monitoring evidence?
 - Replay: does it pass incident replay and policy-as-code release gates?
 
-The core is an incident replay suite that turns redacted synthetic incidents into regression fixtures, replay results, release gates, and incident memos. What comes out is a reproducible evaluation artifact: deterministic runners, generated reports, CI checks, a Dockerized runtime, a Streamlit dashboard, and a GitHub Pages report.
+The core is an incident replay suite that turns constructed incident scenarios into regression fixtures, replay results, release gates, and incident memos. What comes out is a reproducible evaluation artifact: deterministic runners, generated reports, CI checks, a Dockerized runtime, a Streamlit dashboard, and a GitHub Pages report.
+
+## What the eight incident cases actually are
+
+> [!IMPORTANT]
+> **Correction, 2026-08-02.** This README previously said the tool "replays known
+> incidents". It does not. The eight cases in
+> [`data/incidents/incident_cases.jsonl`](data/incidents/incident_cases.jsonl) are
+> **constructed scenarios written for this repository**. They are informed by publicly
+> discussed classes of agent failure, but none of them reconstructs a specific sourced
+> incident, and none carries provenance to a named public report. The old wording claimed
+> more evidence than the pack contains. See the [changelog](CHANGELOG.md) for the record.
+
+Each case declares what it is in its own `source_type` field — `simulated_agent_trace`,
+`simulated_chat_transcript`, `simulated_retrieved_context`, or `simulated_memory_note`.
+The failure *classes* they exercise are real and widely reported: prompt injection,
+approval-gate bypass, system-prompt leakage, retrieved-context priority attacks,
+secret-exfiltration requests, unbounded bulk automation, and memory poisoning. The
+*situations* are invented.
+
+They exist to make the gate testable end to end without network access, API keys, or
+third-party data: eight deterministic fixtures that exercise the replay runner, the
+must-not assertions, the policy thresholds, the memo generator, and the CLI exit code.
+
+What they cannot support, and are not offered as:
+
+- any claim that this gate would catch a given real-world incident;
+- any coverage claim over a real incident population;
+- any ranking of models or agents — eight cases is a conformance smoke check.
+
+An incident-derived corpus with per-case provenance and a recorded divergence from the
+real event is [designed but not built](docs/gate_mutation_benchmark_design.md). Until it
+exists, "incident-derived" is not a claim this project makes.
 
 ## How it works
 
@@ -105,12 +139,13 @@ for why.
 | Controlled benchmark | 358 synthetic golden cases, 60 red-team cases, 180 synthetic operations tickets |
 | Safety | 90.91% classifier recall, 0 high-severity false negatives in the current challenge set. Measured with case-specific signals still in place, not re-measured since they were identified, and should be expected to fall when they are removed ([details](docs/evaluation_integrity.md#finding-5-the-safety-classifier-whitelists-a-case-by-name)) |
 | Agent governance | 100.00% mock side-effect block rate and approval audit rate |
-| Incident replay | 8 self-authored synthetic incidents replayed, 100.00% closure rate, 0 replay must-not violations. A conformance smoke check, too small to rank models |
+| Incident replay | 8 constructed scenarios replayed, 100.00% closure rate, 0 replay must-not violations. Not sourced from public incident reports; a conformance smoke check, too small to rank models |
 | Intervention study | 3 deterministic safety studies plus public RAG grounding and memory/context studies |
 | Multi-model judge comparison | 3 reviewed providers (OpenAI, Anthropic, local open-source) on 24 human-calibration cases; local `llama3.1:8b` 91.67% vs frontier 95.83–100% |
 
 ## Key findings
 
+- **This project's own release gate misses about half of the safety-policy defects seeded into it.** Nineteen mutations — deleted rules, loosened thresholds, narrowed scopes, rerouted tools, reworded signals, removed evidence — were seeded into the shipped policy with oracles fixed in advance. Nine changed the release decision; ten did not. Gate mutation adequacy **47.4% (9/19), 95% interval 27.3%–68.3%**, with 0 false positives over 4 benign controls. Deleting the *entire* request-level safety policy still leaves two of eight cases reporting a clean result, because `block` and `review` both satisfy `block_or_hold_for_review` and the approval gate holds anything the safety policy stops catching. Nothing was fixed in response: the pre-fix number is the one worth keeping. Full method and per-mutant record: [gate mutation adequacy](docs/gate_mutation_adequacy.md).
 - **This project's own synthetic benchmark is circular, and we report it rather than ship the number.** The generator templates the ticket and the runbook section from the same `{category}`/`{system}` variables, so the query is a string projection of its gold answer. Three separately-reported metrics turn out to be one measurement, and the 18.75% "baseline" is an alphabetical tie-break rather than a retrieval result. Full writeup: [evaluation integrity](docs/evaluation_integrity.md).
 - **The same retriever drops ~20 points the moment it leaves that corpus**: 99.31% in-corpus hit@3 against **79.92%** on 640 external TechQA/WixQA cases, with a 40.47% failure rate and 85 impossible questions answered instead of abstained. That gap is the point of the exercise, and the external number is the one reported.
 - Safety scores are not meaningful alone, so every headline number ships next to its cost: over-review, benign auto-blocks, weak-evidence handling, and unsafe misses.
@@ -173,6 +208,9 @@ CI runs linting, tests, deterministic report checks, local OpenTelemetry smoke t
 | Topic | Link |
 | --- | --- |
 | **Evaluation integrity (read first)** | [docs/evaluation_integrity.md](docs/evaluation_integrity.md) |
+| **Gate mutation adequacy (does this gate bite?)** | [docs/gate_mutation_adequacy.md](docs/gate_mutation_adequacy.md) |
+| Gate mutation benchmark design (preregistered) | [docs/gate_mutation_benchmark_design.md](docs/gate_mutation_benchmark_design.md) |
+| Incident corpus licensing | [docs/incident_corpus_licensing.md](docs/incident_corpus_licensing.md) |
 | Static typing status | [docs/typing_status.md](docs/typing_status.md) |
 | Engineering writeup (design rationale) | [docs/engineering_writeup.md](docs/engineering_writeup.md) |
 | Evaluate an agent (quickstart) | [docs/evaluate_your_agent_quickstart.md](docs/evaluate_your_agent_quickstart.md) |
@@ -193,8 +231,9 @@ CI runs linting, tests, deterministic report checks, local OpenTelemetry smoke t
 ## Limitations
 
 - **The synthetic benchmark is circular and its scores are not retrieval evidence.** The generator builds the query from the same `{category}`/`{system}` variables as the gold answer; the improved retriever is a hand-written alias dictionary fitted to the eval strings; there is no held-out split in the synthetic arm. It is kept as a deterministic regression fixture only. See [evaluation integrity](docs/evaluation_integrity.md).
+- **The incident pack is constructed, not sourced.** The eight cases are scenarios written for this repository, informed by public failure patterns but not reconstructions of specific incidents. Nothing here measures coverage of a real incident population. See [what the eight incident cases actually are](#what-the-eight-incident-cases-actually-are).
 - Public TechQA and WixQA tracks use compact samples, not the full upstream datasets.
-- The Inspect incident-replay task is 8 self-authored samples: a conformance smoke check, not a benchmark that can rank models.
+- The Inspect incident-replay task is 8 constructed samples: a conformance smoke check, not a benchmark that can rank models.
 - Static type checking is enforced on the metric and gating core only. `mypy --strict` runs as a blocking CI step over the 12 modules where a type error would corrupt a published number; the other ~61 package modules are unchecked and are not claimed to be checked. Scope, the proof that the gate is not vacuous, and the ratchet order: [typing status](docs/typing_status.md).
 - Human-review labels are currently simulated workflow labels; independent reviewer labels are prepared but not yet published.
 - The multi-model judge comparison covers three providers (OpenAI, Anthropic, local open-source) on a 24-case calibration set. A broader multi-model agent comparison is out of scope.

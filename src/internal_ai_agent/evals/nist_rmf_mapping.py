@@ -68,8 +68,8 @@ _NIST_EVIDENCE_MAP: list[dict[str, Any]] = [
         "action_id_prefixes": ["MS-2.4-*", "MG-4.1-*"],
         "genai_risk_categories": ["Information Security", "Human-AI Configuration"],
         "rationale": (
-            "Gates a release on replay of known incidents and tracks/responds to "
-            "reintroduced unsafe behavior."
+            "Gates a release on replay of a constructed incident-scenario pack and "
+            "tracks/responds to reintroduced unsafe behavior."
         ),
     },
     {

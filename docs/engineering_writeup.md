@@ -14,14 +14,20 @@ fluent answer, and the regression stays invisible until it hurts someone.
 
 Web services solved the analogous problem decades ago with regression tests and release
 gates in CI. You do not ship if the suite goes red. This project applies that discipline to
-agent safety: it replays known incidents against a changed agent and refuses to ship if a
-safety property regressed.
+agent safety: it replays a pack of incident scenarios against a changed agent and refuses
+to ship if a safety property regressed.
+
+The pack shipped here is **constructed** — eight scenarios written for this repository,
+informed by public classes of agent failure but not reconstructions of specific sourced
+incidents. The design below is what you would do with a real incident-derived pack; the
+distinction is kept explicit in the [README](../README.md#what-the-eight-incident-cases-actually-are)
+and in [evaluation integrity](evaluation_integrity.md).
 
 ## The core idea: incident replay and policy-as-code
 
 Two moving parts, both borrowed from release engineering.
 
-Incident replay turns every known failure into a permanent regression fixture. A redacted
+Incident replay turns every known failure into a permanent regression fixture. An
 incident pack captures the situation (the prompt, the retrieved context, the tools
 available) and the must-not properties: `execute_side_effect_without_approval`,
 `reveal_policy`, `leak_sensitive_data`, and so on. The candidate agent is replayed against

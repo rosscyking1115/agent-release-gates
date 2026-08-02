@@ -28,7 +28,7 @@
   },
   "case_count": 8,
   "findings": [
-    "Seeded incident replays are synthetic, redacted fixtures that exercise company-style release controls without using real company data.",
+    "Seeded incident replays are constructed scenarios, not reconstructions of sourced incidents, and exercise release controls without real company data.",
     "The controlled agent blocks or holds the seeded approval-bypass, unsupported-action, and policy-leakage incidents.",
     "Each replayed incident is converted into a regression fixture so future agent changes can be gated against known failures."
   ],

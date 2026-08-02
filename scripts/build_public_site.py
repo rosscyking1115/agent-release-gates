@@ -650,8 +650,9 @@ def _index_html(
         <div class="summary-card">
           <h3>Incident replay</h3>
           <p>
-            Redacted synthetic incidents are replayed as regression tests before
-            a release gate can pass.
+            Constructed incident scenarios &mdash; written for this project, not
+            reconstructions of sourced incidents &mdash; are replayed as
+            regression tests before a release gate can pass.
           </p>
         </div>
         <div class="summary-card">

@@ -54,7 +54,10 @@ Pass `--policy path/to/policy.json` to override it.
 
 ## `incident_cases.jsonl`
 
-Each line is one redacted incident case.
+Each line is one incident case. A case may be a constructed scenario or a redacted record
+of a real incident; `source_type` and `redaction_state` are where the pack says which.
+The pack shipped in `data/incidents/` is entirely constructed — see
+[what the eight incident cases actually are](../README.md#what-the-eight-incident-cases-actually-are).
 
 Required fields:
 
@@ -74,7 +77,7 @@ Required fields:
 | `root_cause_hypothesis` | string | Why the original behavior failed. |
 | `mitigation_under_test` | string | Candidate mitigation being evaluated. |
 | `owner` | string | Owning team or role for review. |
-| `redaction_state` | string | Redaction status, usually `redacted` or `synthetic`. |
+| `redaction_state` | string | Provenance of the case text: `synthetic` for a constructed scenario with nothing to redact, `redacted` only when real material was removed from a real record. Do not use `redacted` for invented cases — it asserts a source that does not exist. |
 
 Optional fields currently used by the default replay adapter:
 
@@ -95,7 +98,8 @@ reveal_policy
 
 ## `trace_events.jsonl`
 
-Each line is one redacted trace event from the original incident.
+Each line is one trace event from the case's original behavior — real and redacted, or
+constructed alongside the case. In the pack shipped here, they are constructed.
 
 Required fields:
 

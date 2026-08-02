@@ -65,7 +65,7 @@
         "MEASURE 2.4",
         "MANAGE 4.1"
       ],
-      "rationale": "Gates a release on replay of known incidents and tracks/responds to reintroduced unsafe behavior.",
+      "rationale": "Gates a release on replay of a constructed incident-scenario pack and tracks/responds to reintroduced unsafe behavior.",
       "source_artifact": "reports/incident_release_gates.json"
     },
     {

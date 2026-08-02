@@ -1319,8 +1319,8 @@ def incident_replay_summary(
 
 def _incident_replay_findings(candidate_results: dict[str, Any]) -> list[str]:
     base_finding = (
-        "Seeded incident replays are synthetic, redacted fixtures that exercise "
-        "company-style release controls without using real company data."
+        "Seeded incident replays are constructed scenarios, not reconstructions of "
+        "sourced incidents, and exercise release controls without real company data."
     )
     if candidate_results.get("adapter") == "candidate_results_jsonl":
         return [

@@ -6,7 +6,88 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Corrected
+
+- **A public claim was broader than its evidence: this project does not "replay
+  known incidents".** The README's opening line, the PyPI package description,
+  the FastAPI service description, the GitHub Pages project page, the
+  engineering writeup, and the NIST AI 600-1 coverage rationale all described
+  the tool as replaying *known incidents*. It does not. The eight cases in
+  `data/incidents/incident_cases.jsonl` are **constructed scenarios written for
+  this repository**. They are informed by publicly discussed classes of agent
+  failure — prompt injection, approval-gate bypass, system-prompt leakage,
+  retrieved-context priority attacks, secret-exfiltration requests, unbounded
+  bulk automation, memory poisoning — but none reconstructs a specific sourced
+  incident, and none carries provenance to a named public report.
+
+  Every one of the eight declares itself `simulated_agent_trace`,
+  `simulated_chat_transcript`, `simulated_retrieved_context`, or
+  `simulated_memory_note` in its own `source_type` field. The repository's data
+  contradicted the repository's front page, in the direction that flattered the
+  project.
+
+  This is the defect class the project exists to catch — a claim outrunning the
+  evidence behind it — shipped on the front page of the tool that catches it. It
+  was found by an external competitive and credibility audit on 2026-08-02, not
+  by any control in this repository: nothing in CI compares the README to the
+  corpus it describes.
+
+  All six surfaces now describe constructed scenarios. The README gains a
+  [What the eight incident cases actually are](README.md#what-the-eight-incident-cases-actually-are)
+  section stating what the pack can and cannot support, carries the correction
+  notice inline rather than only here, and links
+  `docs/evaluation_integrity.md` from the header rather than burying it in the
+  documentation table.
+
+  **The corrected description reaches PyPI only on the next release.** The
+  description published with the current version still carries the old wording
+  and will until a new version is uploaded.
+
+- **`redaction_state` was `redacted` on all eight cases, asserting a source that
+  never existed.** Redaction means real material was removed. Nothing was
+  removed from these cases, because nothing real went into them. Set to
+  `synthetic`, which is what the minimal example pack already used.
+  `docs/incident_pack_schema.md` previously called the two values
+  interchangeable ("usually `redacted` or `synthetic`") and now defines them, so
+  the next pack author does not repeat this.
+
 ### Added
+- **A gate mutation adequacy probe, and the finding that this project's own gate
+  misses about half of what is seeded into it.**
+  `scripts/run_gate_mutation_probe.py` seeds 19 dangerous mutations and 4 benign
+  controls into the shipped enforcement configuration, with every oracle stated in
+  the script before any run, and scores whether the release decision changes. Nine
+  killed, ten survived: **gate mutation adequacy 47.4% (9/19), 95% Wilson interval
+  27.3%–68.3%**, false positives 0/4. Six survivors produced no observable change
+  in any case outcome at all. Deleting the entire request-level safety policy is
+  still reported as a clean release by two of the eight cases, because `block` and
+  `review` both satisfy `block_or_hold_for_review`, so the gate cannot distinguish
+  the safety policy catching an attack from the approval gate holding a ticket.
+  Two of the seven supported must-not assertions — the irreversible-action and
+  bulk-automation axes, both cited as evidence in the NIST AI 600-1 coverage map —
+  are asserted by zero cases. Method, survivor classification, and the
+  preregistered oracle that turned out to be wrong: `docs/gate_mutation_adequacy.md`.
+  Report: `reports/gate_mutation_adequacy.json`.
+
+  **Nothing was fixed in response.** Measuring a control and repairing it in the
+  same pass makes the measurement unfalsifiable afterwards. The probe is
+  deliberately not wired into CI.
+- `docs/gate_mutation_benchmark_design.md`: a preregistered design for measuring
+  gate mutation adequacy across 12 incident families against three release gates,
+  written before any case is authored. Fixes the mutation operators, the
+  incident-family holdout protocol, the matched benign hard negatives, the
+  transformation record (including a mandatory divergence-from-the-real-event
+  field), and the smallest adequacy gap worth reporting — 25 percentage points,
+  derived from the floor of an exact two-sided McNemar test on 24 paired mutants.
+- `docs/incident_corpus_licensing.md`: what can and cannot be redistributed if that
+  corpus is built. MITRE ATLAS is Apache-2.0 with 57 case studies (not 68); the AI
+  Incident Database is CC BY-SA 4.0 with report text explicitly excluded, so its
+  share-alike is infectious and its narrative content is unusable; AVID `avid-db` is
+  MIT and `avidtools` is Apache-2.0; OECD AIM has no verified open-data licence and
+  is treated as unusable. A Hugging Face aggregator relabels AIID-sourced rows as
+  CC BY 4.0, which share-alike does not permit, and is not relied on. Redistribution
+  is possible, so kill criterion 1 does not fire; whether enough cases are
+  *executable* is unresolved and is the next check.
 - `docs/evaluation_integrity.md`: a self-reported audit of this project's own
   synthetic benchmark. The generator templates the query from the same
   variables as its gold answer, so the benchmark is circular and its scores are
