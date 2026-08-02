@@ -6,7 +6,74 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- **The release gate could not distinguish a safety refusal from an approval hold.**
+  All eight incident cases declared `expected_behavior: block_or_hold_for_review`,
+  which the gate satisfies with *either* `block` or `review`. Because the controlled
+  agent never has approval granted during replay, any case reaching the tool step is
+  held at `review` regardless of what the safety policy did — so disabling the safety
+  policy converted `block` into `review`, and `review` still passed.
+
+  `block` and `hold_for_human_approval` were already implemented in
+  `_expected_behavior_match` and were rejected by the pack validator, so no pack could
+  use them. The validator now admits them, the schema and its documentation define when
+  to use each, and the eight cases were reassigned under a rule fixed before it was
+  applied: `block` where no human approval could make the request legitimate,
+  `hold_for_human_approval` where the action is legitimate and merely needs sign-off.
+  No case text was changed. `block_or_hold_for_review` is kept for compatibility with
+  external packs and documented as deprecated.
+
+  **Re-measured with the identical probe — same 19 mutants, same 4 controls, same
+  preregistered oracles, only the gate changed.** Gate mutation adequacy moved
+  **47.4% (9/19) → 52.6% (10/19)**, 95% Wilson interval 31.7%–72.7%, false positives
+  0/4 unchanged.
+
+  **One discordant mutant. Exact two-sided McNemar p = 1.0.** The repair is real and
+  the rate change is not distinguishable from noise, and both are reported that way.
+  What did change decisively is the property it targeted: deleting the entire
+  request-level safety policy previously left two of the six cases it touched — one of
+  them the critical prompt-injection case — reporting a clean result. Now none do.
+  The nine remaining survivors are corpus coverage, not conflation, and were
+  deliberately not addressed, because corpus changes would invalidate the comparison.
+
+  The pre-fix measurement is committed, not reconstructed:
+  `git show 34bee32:reports/gate_mutation_adequacy.json`.
+
 ### Corrected
+
+- **A second overclaim, in a compliance-mapping document.**
+  `reports/nist_ai_600_1_coverage_map.json` cited the
+  confirmation-before-irreversible-action and unsafe-bulk-automation must-not
+  assertions as MEASURE 2.7 evidence, sourced to `reports/incident_replay_runs.jsonl`.
+  **No case in the shipped pack declares either assertion**, so that artifact contains
+  no instance of them being measured. The mutation probe found it: removing ticket
+  closure and customer notification from the irreversible-action set changed nothing at
+  all.
+
+  The entry now carries `exercised: false` and a rationale beginning "NOT EVIDENCE",
+  and unexercised entries are excluded from `covered_subcategories`. The map's
+  `evidence_present` field was only ever a file-existence check, which is how a claim
+  with no measurement behind it passed — the disclaimer now says so. **No cases were
+  added to make the map true**; fitting the evidence to the claim is the defect, not
+  the fix.
+
+### Added
+
+- `docs/atlas_executability_audit.md`: **kill criterion 2 fires.** All 57 MITRE ATLAS
+  case studies were read against the twelve candidate failure families. **19 are
+  executable as agent-with-tools cases** (24 counting marginals), against a
+  preregistered floor of 40–60. Two of the twelve families have no source case at all,
+  and eleven of the executable cases are the same family. The AI Incident Database
+  cannot make up the shortfall, because the source with mechanism-level detail (ATLAS,
+  Apache-2.0) is small and the source with volume (AIID, CC BY-SA 4.0) excludes exactly
+  the report text needed to reconstruct an environment. Rights were never the
+  constraint; usable detail was. The per-study judgement is published so the count is
+  auditable rather than asserted, and
+  `docs/gate_mutation_benchmark_design.md` is suspended by dated amendment — a
+  preregistration that reached its stopping condition before any case was authored.
+
+### Corrected (2026-08-02, earlier)
 
 - **A public claim was broader than its evidence: this project does not "replay
   known incidents".** The README's opening line, the PyPI package description,

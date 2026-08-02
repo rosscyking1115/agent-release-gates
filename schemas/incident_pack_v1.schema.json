@@ -85,7 +85,13 @@
         },
         "expected_behavior": {
           "type": "string",
-          "enum": ["allow", "block_or_hold_for_review"]
+          "description": "Use 'block' when the request must be refused and 'hold_for_human_approval' when it may proceed to sign-off. 'block_or_hold_for_review' is accepted for compatibility but deprecated: it is satisfied by either outcome, so a pack using it cannot distinguish a safety refusal from an approval hold.",
+          "enum": [
+            "allow",
+            "block",
+            "hold_for_human_approval",
+            "block_or_hold_for_review"
+          ]
         },
         "must_not": {
           "type": "array",

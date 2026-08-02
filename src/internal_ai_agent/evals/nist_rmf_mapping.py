@@ -24,7 +24,12 @@ _DISCLAIMER = (
     "Evidence-alignment aid only. This maps artifacts the release gate produces to "
     "the AI RMF subcategories and GenAI risk categories they help evidence; it does "
     "not certify compliance. Subcategory granularity is used deliberately -- confirm "
-    "exact NIST AI 600-1 section 3 action IDs against the primary document."
+    "exact NIST AI 600-1 section 3 action IDs against the primary document. "
+    "'evidence_present' is a file-existence check and proves nothing about content; "
+    "'exercised' records whether the shipped evaluation actually produces the named "
+    "measurement, and entries where it is false are excluded from "
+    "'covered_subcategories'. Only the incident-replay entries were audited "
+    "case-by-case, on 2026-08-02."
 )
 
 # Each entry: an evidence artifact the gate emits -> the AI RMF function/subcategories
@@ -76,16 +81,22 @@ _NIST_EVIDENCE_MAP: list[dict[str, Any]] = [
         "evidence_id": "action_safety_axes",
         "evidence": (
             "Confirmation-before-irreversible-action and unsafe-bulk-automation "
-            "must-not assertions"
+            "must-not assertions (implemented, not exercised)"
         ),
         "source_artifact": "reports/incident_replay_runs.jsonl",
         "nist_function": "MEASURE",
         "nist_subcategories": ["MEASURE 2.7"],
         "action_id_prefixes": ["MS-2.7-*"],
         "genai_risk_categories": ["Human-AI Configuration", "Information Security"],
+        "exercised": False,
         "rationale": (
-            "Measures resilience to excessive agency -- irreversible or at-scale "
-            "actions taken without review."
+            "NOT EVIDENCE. The 'execute_irreversible_action_without_confirmation' and "
+            "'execute_bulk_actions_without_review' assertions are implemented and "
+            "supported by the gate, but no case in the shipped incident pack declares "
+            "either one, so the named artifact contains no instance of them being "
+            "measured. Corrected 2026-08-02 after a mutation probe found that removing "
+            "the irreversible-action set changed nothing. Listed here so the capability "
+            "and the gap are both visible; it must not be counted as coverage."
         ),
     },
     {
@@ -135,21 +146,44 @@ _NIST_EVIDENCE_MAP: list[dict[str, Any]] = [
 
 
 def build_nist_coverage_map(project_root: Path | None = None) -> dict[str, Any]:
-    """Build the coverage map, marking which source artifacts are present if given."""
+    """Build the coverage map, marking which source artifacts are present if given.
+
+    ``exercised`` is the load-bearing field, not ``evidence_present``. A file can exist
+    and contain no instance of the measurement it is cited for: that is exactly how an
+    entry claiming coverage of two must-not axes survived here while no case in the
+    shipped pack asserted either of them. Entries with ``exercised`` false are excluded
+    from ``covered_subcategories``.
+    """
     mappings: list[dict[str, Any]] = []
     for entry in _NIST_EVIDENCE_MAP:
         mapped = dict(entry)
+        mapped["exercised"] = bool(entry.get("exercised", True))
         if project_root is not None:
             mapped["evidence_present"] = (project_root / entry["source_artifact"]).exists()
         mappings.append(mapped)
 
-    covered = sorted({sub for entry in _NIST_EVIDENCE_MAP for sub in entry["nist_subcategories"]})
+    covered = sorted(
+        {sub for entry in mappings if entry["exercised"] for sub in entry["nist_subcategories"]}
+    )
+    unexercised = sorted(
+        {
+            sub
+            for entry in mappings
+            if not entry["exercised"]
+            for sub in entry["nist_subcategories"]
+        }
+        - set(covered)
+    )
     return {
         "report_type": "nist_ai_600_1_coverage_map",
         "profile": NIST_PROFILE_ID,
         "alignment_type": "evidence_alignment_not_certification",
         "disclaimer": _DISCLAIMER,
         "covered_subcategories": covered,
+        "claimed_but_unexercised_subcategories": unexercised,
+        "unexercised_evidence_ids": [
+            entry["evidence_id"] for entry in mappings if not entry["exercised"]
+        ],
         "mappings": mappings,
     }
 
