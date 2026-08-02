@@ -6,7 +6,38 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.1.3] - 2026-08-02
+
+Released to correct a public claim. The package description published with 0.1.2 said
+the tool "replays known incidents"; it does not, and 0.1.2 will keep saying so on PyPI
+for as long as it is the latest release. That is the reason this version exists.
+
 ### Fixed
+
+- **The source distribution packaged local-only files, and two published releases
+  already carry one.** The sdist had no file selection, so hatchling packaged the
+  working tree minus the *repository's* `.gitignore`. Ignores that live in a
+  contributor's **global** gitignore are invisible to `git status` and invisible to
+  the build backend, so files that look ignored were packaged and uploaded.
+
+  `.claude/settings.local.json` is present in the published sdists for **0.1.1 and
+  0.1.2**, carrying machine paths and the directory name of an unrelated local
+  project. 0.1.0 is clean. The 0.1.3 build additionally picked up a ~1 MB local
+  knowledge-graph cache full of absolute paths; that was caught pre-upload by
+  inspecting the built artifact rather than the source, and never published.
+
+  **PyPI releases cannot be meaningfully unpublished**, so 0.1.1 and 0.1.2 stay as
+  they are. Stating otherwise would repeat the mistake this project already recorded
+  once, in Finding 6 of `docs/evaluation_integrity.md`: a machine-local path accepted
+  into a published artifact because no control rejected it. This is the same defect in
+  a different channel — the control that looked like it was working (`.gitignore`) was
+  not the one the build consulted.
+
+  The sdist now uses an **allowlist**, not an exclude list, so a new local directory is
+  absent until someone adds it deliberately. `tests/unit/test_sdist_contents.py` fails
+  the build if the allowlist is removed, if it names a known local-only directory, or
+  if any entry matches no git-tracked file — the last of which is the check that stops
+  the class rather than the instances.
 
 - **The release gate could not distinguish a safety refusal from an approval hold.**
   All eight incident cases declared `expected_behavior: block_or_hold_for_review`,
@@ -40,6 +71,57 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   The pre-fix measurement is committed, not reconstructed:
   `git show 34bee32:reports/gate_mutation_adequacy.json`.
 
+- **Regenerated the committed incident-replay evidence, which was not
+  reproducible.** `reports/incident_replay_summary.json` declared its input as
+  an untracked machine-local temp file under `AppData\Local\Temp`, and recorded
+  a 1-case run of a LangGraph example against the minimal example pack, while
+  the README and evaluation report next to it claimed 8 incidents against the
+  built-in pack. Regenerated against the built-in controlled agent and the
+  tracked pack: the artifact and the report now agree at 8 incidents under
+  `incident_release_policy_v0`, and no path under `reports/` references a
+  temporary directory. **The `INC-2026-0003` replay decision changes from
+  `block` to `review`.** Closure rate, expected-behavior match rate, must-not
+  violations (0) and the overall gate status (`pass`) are unchanged. The
+  previous `block` was not evidence: a verdict whose declared input never
+  existed on any other machine was never reproducible.
+
+  That temp path also carried an OS account name, published on 2026-07-02 and
+  still readable in this repository's public history; the write-up and this
+  changelog entry then republished it on 2026-07-27 before it was redacted.
+  Redacting the working tree does not recall any of that. The account name is
+  the least important thing that escaped; the substantive failure is that a
+  non-reproducible location was accepted into a provenance field of a committed
+  evidence artifact. It was public for 25 days, and known for 10 of them.
+  `tests/unit/test_provenance_paths.py` now fails the build on a machine-local
+  location anywhere under `reports/` (raw-text scan, so `.jsonl` artifacts are
+  covered too) or an unredacted account name in any tracked file.
+  Documented as Finding 6 in `docs/evaluation_integrity.md`.
+- An intermittent test failure that could abort the whole pytest session.
+  `test_public_report.py` asserted containment directly against the generated
+  HTML and PDF artifacts; on failure, pytest's assertion rewriting renders both
+  operands, and rendering a 44KB `bytes` object was itself allocating enough to
+  raise `MemoryError` inside the traceback formatter. Containment is now
+  computed before the assert, so a failure reports the needle and a length
+  instead of the artifact. Report generation was separately confirmed
+  bit-deterministic across processes.
+- Twelve type errors in the metric and gating core, fixed properly with no
+  `# type: ignore` added: `json.loads` results are now validated as objects
+  rather than returned as `Any` (a malformed report file raises instead of
+  silently returning a non-dict); cosine similarity uses `math.sqrt` instead of
+  `** 0.5`; incident-pack path resolution uses a `TypedDict` instead of
+  `dict[str, Path | None]`; and several missing annotations were added. No
+  behavior changed.
+- The documented Inspect command did not work. `inspect eval
+  agent-release-gates/incident_replay` fails with "No inspect tasks were found
+  at the specified paths" because the task registers under its bare name and
+  Inspect treats an unknown `pkg/task` string as a filesystem glob. The
+  documented command is now `inspect eval incident_replay`, with a test that
+  keeps the docs and the resolvable reference in sync.
+- The Inspect scorer raised `ValueError` on non-JSON model output, aborting the
+  entire eval with no samples scored. This was a pass-bias: a model that failed
+  badly produced no score rather than a bad one. Malformed output now scores
+  `INCORRECT` with `parse_error=true` in the score metadata.
+
 ### Corrected
 
 - **A second overclaim, in a compliance-mapping document.**
@@ -57,23 +139,6 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   with no measurement behind it passed — the disclaimer now says so. **No cases were
   added to make the map true**; fitting the evidence to the claim is the defect, not
   the fix.
-
-### Added
-
-- `docs/atlas_executability_audit.md`: **kill criterion 2 fires.** All 57 MITRE ATLAS
-  case studies were read against the twelve candidate failure families. **19 are
-  executable as agent-with-tools cases** (24 counting marginals), against a
-  preregistered floor of 40–60. Two of the twelve families have no source case at all,
-  and eleven of the executable cases are the same family. The AI Incident Database
-  cannot make up the shortfall, because the source with mechanism-level detail (ATLAS,
-  Apache-2.0) is small and the source with volume (AIID, CC BY-SA 4.0) excludes exactly
-  the report text needed to reconstruct an environment. Rights were never the
-  constraint; usable detail was. The per-study judgement is published so the count is
-  auditable rather than asserted, and
-  `docs/gate_mutation_benchmark_design.md` is suspended by dated amendment — a
-  preregistration that reached its stopping condition before any case was authored.
-
-### Corrected (2026-08-02, earlier)
 
 - **A public claim was broader than its evidence: this project does not "replay
   known incidents".** The README's opening line, the PyPI package description,
@@ -119,6 +184,27 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   the next pack author does not repeat this.
 
 ### Added
+
+- `docs/finding_gate_mutation_adequacy.md`: the standalone write-up of what this
+  exercise produced — gate mutation adequacy as a metric, the landscape survey
+  behind the claim that no systematic policy-mutation programme is published
+  (with the boundary drawn against prompt/input mutation, which *is* well
+  published and is a different thing), the before and after numbers with their
+  intervals, the design defect and its generalization, and a plain statement
+  that the benchmark programme was closed by its own kill criterion.
+- `docs/atlas_executability_audit.md`: **kill criterion 2 fires.** All 57 MITRE ATLAS
+  case studies were read against the twelve candidate failure families. **19 are
+  executable as agent-with-tools cases** (24 counting marginals), against a
+  preregistered floor of 40–60. Two of the twelve families have no source case at all,
+  and eleven of the executable cases are the same family. The AI Incident Database
+  cannot make up the shortfall, because the source with mechanism-level detail (ATLAS,
+  Apache-2.0) is small and the source with volume (AIID, CC BY-SA 4.0) excludes exactly
+  the report text needed to reconstruct an environment. Rights were never the
+  constraint; usable detail was. The per-study judgement is published so the count is
+  auditable rather than asserted, and
+  `docs/gate_mutation_benchmark_design.md` is suspended by dated amendment — a
+  preregistration that reached its stopping condition before any case was authored.
+
 - **A gate mutation adequacy probe, and the finding that this project's own gate
   misses about half of what is seeded into it.**
   `scripts/run_gate_mutation_probe.py` seeds 19 dangerous mutations and 4 benign
@@ -177,63 +263,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   label must match the line in its own link.
 
 ### Changed
+
 - **Retrieval quality is now reported on external public data (TechQA/WixQA:
   79.92% hit@3, 69.61% top-1 over 640 cases) rather than on the synthetic
   benchmark.** The README, GitHub Pages site, Streamlit dashboard, model card,
   benchmark card, and generated evaluation report now lead with the external
   result and label every synthetic figure as in-corpus.
-
-### Fixed
-- **Regenerated the committed incident-replay evidence, which was not
-  reproducible.** `reports/incident_replay_summary.json` declared its input as
-  an untracked machine-local temp file under `AppData\Local\Temp`, and recorded
-  a 1-case run of a LangGraph example against the minimal example pack, while
-  the README and evaluation report next to it claimed 8 incidents against the
-  built-in pack. Regenerated against the built-in controlled agent and the
-  tracked pack: the artifact and the report now agree at 8 incidents under
-  `incident_release_policy_v0`, and no path under `reports/` references a
-  temporary directory. **The `INC-2026-0003` replay decision changes from
-  `block` to `review`.** Closure rate, expected-behavior match rate, must-not
-  violations (0) and the overall gate status (`pass`) are unchanged. The
-  previous `block` was not evidence: a verdict whose declared input never
-  existed on any other machine was never reproducible.
-
-  That temp path also carried an OS account name, published on 2026-07-02 and
-  still readable in this repository's public history; the write-up and this
-  changelog entry then republished it on 2026-07-27 before it was redacted.
-  Redacting the working tree does not recall any of that. The account name is
-  the least important thing that escaped; the substantive failure is that a
-  non-reproducible location was accepted into a provenance field of a committed
-  evidence artifact. It was public for 25 days, and known for 10 of them.
-  `tests/unit/test_provenance_paths.py` now fails the build on a machine-local
-  location anywhere under `reports/` (raw-text scan, so `.jsonl` artifacts are
-  covered too) or an unredacted account name in any tracked file.
-  Documented as Finding 6 in `docs/evaluation_integrity.md`.
-- An intermittent test failure that could abort the whole pytest session.
-  `test_public_report.py` asserted containment directly against the generated
-  HTML and PDF artifacts; on failure, pytest's assertion rewriting renders both
-  operands, and rendering a 44KB `bytes` object was itself allocating enough to
-  raise `MemoryError` inside the traceback formatter. Containment is now
-  computed before the assert, so a failure reports the needle and a length
-  instead of the artifact. Report generation was separately confirmed
-  bit-deterministic across processes.
-- Twelve type errors in the metric and gating core, fixed properly with no
-  `# type: ignore` added: `json.loads` results are now validated as objects
-  rather than returned as `Any` (a malformed report file raises instead of
-  silently returning a non-dict); cosine similarity uses `math.sqrt` instead of
-  `** 0.5`; incident-pack path resolution uses a `TypedDict` instead of
-  `dict[str, Path | None]`; and several missing annotations were added. No
-  behavior changed.
-- The documented Inspect command did not work. `inspect eval
-  agent-release-gates/incident_replay` fails with "No inspect tasks were found
-  at the specified paths" because the task registers under its bare name and
-  Inspect treats an unknown `pkg/task` string as a filesystem glob. The
-  documented command is now `inspect eval incident_replay`, with a test that
-  keeps the docs and the resolvable reference in sync.
-- The Inspect scorer raised `ValueError` on non-JSON model output, aborting the
-  entire eval with no samples scored. This was a pass-bias: a model that failed
-  badly produced no score rather than a bad one. Malformed output now scores
-  `INCORRECT` with `parse_error=true` in the score metadata.
 
 ## [0.1.2] - 2026-07-02
 
@@ -286,6 +321,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   Inspect task, a real-agent runner, and the eval/scoring core (lean install,
   `pydantic` only; `api` and `dashboard` extras opt-in).
 
+[0.1.3]: https://github.com/rosscyking1115/agent-release-gates/releases/tag/v0.1.3
 [0.1.2]: https://github.com/rosscyking1115/agent-release-gates/releases/tag/v0.1.2
 [0.1.1]: https://github.com/rosscyking1115/agent-release-gates/releases/tag/v0.1.1
 [0.1.0]: https://github.com/rosscyking1115/agent-release-gates/releases/tag/v0.1.0

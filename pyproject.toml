@@ -1,6 +1,6 @@
 [project]
 name = "agent-release-gates"
-version = "0.1.2"
+version = "0.1.3"
 description = "Release-readiness gates for AI agents: replay a pack of constructed safety scenarios, apply policy-as-code gates, and produce ship/warn/block evidence before an agent, prompt, model, or tool-policy change ships."
 readme = "README.md"
 requires-python = ">=3.12"
@@ -65,6 +65,51 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/internal_ai_agent"]
+
+# The sdist contents are an ALLOWLIST, not an exclude list, and that is deliberate.
+#
+# Until 0.1.3 the sdist was whatever hatchling found in the working tree minus the
+# repository's own .gitignore. Ignores that live in the *user's global* gitignore --
+# `.claude/` and `graphify-out/` here -- are invisible to git status and invisible to
+# the build backend, so local-only files were packaged and published. `.claude/
+# settings.local.json` reached PyPI in 0.1.1 and 0.1.2 carrying machine paths and an
+# unrelated local project name, and 0.1.3 would have added a 1 MB knowledge-graph cache
+# full of absolute paths. PyPI releases cannot be unpublished.
+#
+# An exclude list only stops what you thought to name. An allowlist fails closed: a new
+# local directory is absent from the sdist until someone adds it here on purpose.
+# `tests/unit/test_sdist_contents.py` fails the build if this list ever admits one.
+[tool.hatch.build.targets.sdist]
+include = [
+  "/src",
+  "/tests",
+  "/docs",
+  "/scripts",
+  "/data",
+  "/config",
+  "/schemas",
+  "/examples",
+  "/reports",
+  "/ops",
+  "/app",
+  "/.github",
+  "/.streamlit",
+  "/README.md",
+  "/CHANGELOG.md",
+  "/CONTRIBUTING.md",
+  "/SECURITY.md",
+  "/LICENSE",
+  "/pyproject.toml",
+  "/requirements.txt",
+  "/runtime.txt",
+  "/uv.lock",
+  "/streamlit_app.py",
+  "/Dockerfile",
+  "/docker-compose.yml",
+  "/.dockerignore",
+  "/.gitattributes",
+  "/.gitignore",
+]
 
 [dependency-groups]
 # Dev/CI installs everything the test suite exercises (API + dashboard imports).

@@ -9,6 +9,7 @@ A reference implementation of AI-safety release-engineering. It replays a pack o
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![CI](https://github.com/rosscyking1115/agent-release-gates/actions/workflows/ci.yml/badge.svg)](https://github.com/rosscyking1115/agent-release-gates/actions/workflows/ci.yml)
 
+**[The finding](docs/finding_gate_mutation_adequacy.md)** ·
 **[Evaluation integrity — read this first](docs/evaluation_integrity.md)**
 
 [Project page](https://rosscyking1115.github.io/agent-release-gates/) ·
@@ -208,8 +209,9 @@ CI runs linting, tests, deterministic report checks, local OpenTelemetry smoke t
 
 | Topic | Link |
 | --- | --- |
+| **The finding (standalone write-up)** | [docs/finding_gate_mutation_adequacy.md](docs/finding_gate_mutation_adequacy.md) |
 | **Evaluation integrity (read first)** | [docs/evaluation_integrity.md](docs/evaluation_integrity.md) |
-| **Gate mutation adequacy (does this gate bite?)** | [docs/gate_mutation_adequacy.md](docs/gate_mutation_adequacy.md) |
+| Gate mutation adequacy (method and per-mutant record) | [docs/gate_mutation_adequacy.md](docs/gate_mutation_adequacy.md) |
 | Gate mutation benchmark design (preregistered, suspended) | [docs/gate_mutation_benchmark_design.md](docs/gate_mutation_benchmark_design.md) |
 | ATLAS executability audit (why it was suspended) | [docs/atlas_executability_audit.md](docs/atlas_executability_audit.md) |
 | Incident corpus licensing | [docs/incident_corpus_licensing.md](docs/incident_corpus_licensing.md) |
