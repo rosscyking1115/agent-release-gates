@@ -126,7 +126,7 @@ differentiation.
 ```markdown
 > **Status: concluded, not maintained.** A reference implementation and a research
 > result, not a product. There is no roadmap and no support commitment.
-> Released under the [MIT Licence](LICENSE).
+> Released under the [MIT Licence](https://github.com/owner/repo/blob/main/LICENSE).
 ```
 
 Say what is *not* claimed as well as what is.
@@ -137,8 +137,8 @@ A **file**, not a mention. `LICENSE` at the repository root, no extension, conta
 full licence text. A README that says "MIT" without the file is rejected by JOSS review
 and is the single cheapest thing to get right.
 
-The licence badge links to the file in the same repository, by relative path, so it
-resolves on both GitHub and PyPI.
+The licence badge links to that file by **absolute URL**, for the reason in §7 — a
+relative link resolves on GitHub and silently breaks on the package index.
 
 ## 6. Corrections
 
@@ -154,9 +154,14 @@ version gap; a gap with an explanation is better than a gap without one.
 ## 7. Links, on PyPI
 
 A README that ships as a package's long description is rendered on the package index,
-where **relative links do not resolve**. Use absolute URLs for documents linked from a
-published README. Relative paths are fine for files inside the source distribution, such
-as `LICENSE`.
+where **no relative link resolves** — not to a document, not to a directory, and not to
+`LICENSE`. The index serves the rendered description, not a browsable copy of the source
+tree, so a relative path has nothing to resolve against.
+
+Use absolute URLs for **every** link in a README that doubles as a package description,
+including the licence badge. GitHub resolves absolute links perfectly well, so there is no
+cost to making them all absolute and no reliable way to make a relative one work in both
+places.
 
 ## Applying this elsewhere
 

@@ -13,7 +13,7 @@ this project's own gate left it reporting a clean release
 
 [![PyPI](https://img.shields.io/pypi/v/agent-release-gates.svg)](https://pypi.org/project/agent-release-gates/)
 [![Python](https://img.shields.io/pypi/pyversions/agent-release-gates.svg)](https://pypi.org/project/agent-release-gates/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/rosscyking1115/agent-release-gates/blob/main/LICENSE)
 [![CI](https://github.com/rosscyking1115/agent-release-gates/actions/workflows/ci.yml/badge.svg)](https://github.com/rosscyking1115/agent-release-gates/actions/workflows/ci.yml)
 
 <img src="https://raw.githubusercontent.com/rosscyking1115/agent-release-gates/main/docs/img/dashboard.png" alt="The reviewer dashboard: release-gate status, case counts, safety recall, and a metrics comparison table" width="820">
@@ -24,7 +24,7 @@ this project's own gate left it reporting a clean release
 > **Status: concluded, not maintained.** A reference implementation and a research
 > result, not a product. The research programme behind it was closed by its own stopping
 > criterion — [see below](#the-result). There is no roadmap and no support commitment.
-> Released under the [MIT Licence](LICENSE).
+> Released under the [MIT Licence](https://github.com/rosscyking1115/agent-release-gates/blob/main/LICENSE).
 
 ## What this is for
 
@@ -56,7 +56,7 @@ agent-safety release-gate
 
 That replays the built-in pack and exits non-zero on a block. To score your own agent,
 convert its logs and gate them — see the
-[quickstart](docs/evaluate_your_agent_quickstart.md).
+[quickstart](https://github.com/rosscyking1115/agent-release-gates/blob/main/docs/evaluate_your_agent_quickstart.md).
 
 To reproduce the finding you need the repository, since the probe is a script rather than
 part of the installed package:
@@ -102,7 +102,7 @@ needed 40–60 executable incident-derived cases; reading all 57 MITRE ATLAS cas
 produced 19. Rights were never the constraint — the source with mechanism-level detail is
 small, and the source with volume withholds the detail.
 
-→ [**The full finding**](docs/finding_gate_mutation_adequacy.md), with method, controls,
+→ [**The full finding**](https://github.com/rosscyking1115/agent-release-gates/blob/main/docs/finding_gate_mutation_adequacy.md), with method, controls,
 and limits.
 
 ## Why the result is trustworthy
@@ -123,14 +123,14 @@ and limits.
 
 | | |
 | --- | --- |
-| **The finding** | [finding_gate_mutation_adequacy.md](docs/finding_gate_mutation_adequacy.md) |
-| **Evaluation integrity** — this project's audit of its own benchmark | [evaluation_integrity.md](docs/evaluation_integrity.md) |
-| Measured results, and what produces them | [results.md](docs/results.md) |
-| What the eight incident cases are | [incident_cases.md](docs/incident_cases.md) |
-| Why the benchmark programme was closed | [atlas_executability_audit.md](docs/atlas_executability_audit.md) |
-| A packaging defect, generalised | [finding_gitignore_not_a_packaging_control.md](docs/finding_gitignore_not_a_packaging_control.md) |
-| Design rationale, schemas, cards, house style | [docs/](docs/) |
-| The probe, the runners, the release gate | [scripts/](scripts/), [src/](src/internal_ai_agent/) |
+| **The finding** | [finding_gate_mutation_adequacy.md](https://github.com/rosscyking1115/agent-release-gates/blob/main/docs/finding_gate_mutation_adequacy.md) |
+| **Evaluation integrity** — this project's audit of its own benchmark | [evaluation_integrity.md](https://github.com/rosscyking1115/agent-release-gates/blob/main/docs/evaluation_integrity.md) |
+| Measured results, and what produces them | [results.md](https://github.com/rosscyking1115/agent-release-gates/blob/main/docs/results.md) |
+| What the eight incident cases are | [incident_cases.md](https://github.com/rosscyking1115/agent-release-gates/blob/main/docs/incident_cases.md) |
+| Why the benchmark programme was closed | [atlas_executability_audit.md](https://github.com/rosscyking1115/agent-release-gates/blob/main/docs/atlas_executability_audit.md) |
+| A packaging defect, generalised | [finding_gitignore_not_a_packaging_control.md](https://github.com/rosscyking1115/agent-release-gates/blob/main/docs/finding_gitignore_not_a_packaging_control.md) |
+| Design rationale, schemas, cards, house style | [docs/](https://github.com/rosscyking1115/agent-release-gates/tree/main/docs/) |
+| The probe, the runners, the release gate | [scripts/](https://github.com/rosscyking1115/agent-release-gates/tree/main/scripts/), [src/](https://github.com/rosscyking1115/agent-release-gates/tree/main/src/internal_ai_agent/) |
 
 Also here: an Inspect (UK AISI) task, a FastAPI evidence service, the Streamlit dashboard
 above, Docker, and CI.
