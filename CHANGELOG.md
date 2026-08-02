@@ -185,6 +185,16 @@ for as long as it is the latest release. That is the reason this version exists.
 
 ### Added
 
+- `docs/finding_gitignore_not_a_packaging_control.md`: a standalone write-up of the
+  packaging defect, generalized. A global gitignore (`core.excludesFile`) is a
+  safety net for `.env`, private keys and credentials; hatchling never reads it, so
+  anything it hides is packaged into the sdist and published permanently. Includes
+  an audit of every sdist published from this account — `telemeval` (8 versions) and
+  `redteam-foundry` (3 versions) are clean, but **neither declares any sdist file
+  selection, and both now have local-only directories in their working trees**, so
+  the mechanism is armed in both. Also notes the boundary: backends that derive the
+  file list from `git ls-files` are unaffected, so the habit to generalize is
+  reading the artifact, not distrusting one backend.
 - `docs/finding_gate_mutation_adequacy.md`: the standalone write-up of what this
   exercise produced — gate mutation adequacy as a metric, the landscape survey
   behind the claim that no systematic policy-mutation programme is published
