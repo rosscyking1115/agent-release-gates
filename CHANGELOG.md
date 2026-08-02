@@ -6,6 +6,55 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.1.4] - 2026-08-02
+
+A description-only release. No behaviour changed. The README **is** the PyPI page, and
+0.1.3 shipped the version of it that this release rewrites, so the correction only
+reaches PyPI by publishing again.
+
+### Changed
+
+- **The README leads with the question instead of the finding.** It opened on "gate
+  mutation adequacy 47.4%" — a metric coined by this project — and a reader had to
+  travel 1,560 words to reach the screenshot and 1,703 to reach an install line, at
+  2,297 words total. A finding stated in a project's own vocabulary is illegible to
+  someone who does not yet know what the project studies; leading with it asks the
+  reader to evaluate an answer to a question they have not been given.
+
+  Restructured to the reader ladder — what it is, who for, show me, what state,
+  how to start, then depth by link. **1,075 words.** The screenshot is back near the
+  top and the status statement sits immediately after it. Nothing was deleted: the
+  saturated-metric table and measured results moved to `docs/results.md`, and the
+  incident-pack explanation to `docs/incident_cases.md`.
+
+- Documentation links in the README are now absolute. Relative links do not resolve
+  when the README is rendered as a package description.
+
+### Fixed
+
+- **A command in the README did not work for the audience it was shown to.** Under
+  `pip install agent-release-gates`, the README told the reader to run
+  `python scripts/run_gate_mutation_probe.py`. `scripts/` is not in the wheel, so that
+  only ever worked from a clone. It now shows the clone.
+
+### Added
+
+- `docs/house-style.md` — the documentation standard these repositories are held to:
+  README section order by project type, the docstring convention and why, badge set and
+  order, where the status statement goes, licence file naming, the corrections policy,
+  and the audit procedure for bringing another repository to it. An unwritten standard
+  is guessed at, and guesses diverge.
+- `docs/results.md` and `docs/incident_cases.md`, absorbing material relocated out of
+  the README.
+- Module docstrings for the twelve modules a reader is most likely to open first, and
+  docstrings for public functions whose names mislead — `make_tool_decision` also
+  executes, `should_block_request` discards which rule fired, `run_controlled_agent` is
+  always called with approval withheld during replay.
+- `D2`/`D4` docstring-style rules, with `convention = "google"` recorded in
+  `pyproject.toml`. `D1` (missing-docstring) is deliberately not selected: with roughly
+  340 public callables it would produce filler, and a docstring written to satisfy a
+  linter is worse than none.
+
 ## [0.1.3] - 2026-08-02
 
 Released to correct a public claim. The package description published with 0.1.2 said
@@ -331,6 +380,7 @@ for as long as it is the latest release. That is the reason this version exists.
   Inspect task, a real-agent runner, and the eval/scoring core (lean install,
   `pydantic` only; `api` and `dashboard` extras opt-in).
 
+[0.1.4]: https://github.com/rosscyking1115/agent-release-gates/releases/tag/v0.1.4
 [0.1.3]: https://github.com/rosscyking1115/agent-release-gates/releases/tag/v0.1.3
 [0.1.2]: https://github.com/rosscyking1115/agent-release-gates/releases/tag/v0.1.2
 [0.1.1]: https://github.com/rosscyking1115/agent-release-gates/releases/tag/v0.1.1
