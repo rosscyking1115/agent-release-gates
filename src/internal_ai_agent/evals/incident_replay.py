@@ -1,3 +1,21 @@
+"""The incident-replay release gate: the core of this package.
+
+Replays an incident pack against a candidate agent, scores each case against its
+must-not assertions and its expected behavior, applies the policy-as-code thresholds,
+and produces the ship / warn / block verdict plus regression fixtures and memos.
+
+Two entry paths exist and are not interchangeable. ``replay_incident`` runs this
+package's own deterministic controlled agent; ``replay_candidate_result`` scores a
+JSONL file exported from someone else's agent, without executing their code. Both feed
+the same gate.
+
+The expected-behavior vocabulary matters more than it looks. ``block`` and
+``hold_for_human_approval`` are distinct outcomes with distinct causes; the deprecated
+``block_or_hold_for_review`` is satisfied by either, which made a safety refusal
+indistinguishable from an approval hold and left whole rule deletions undetected. See
+docs/finding_gate_mutation_adequacy.md.
+"""
+
 from __future__ import annotations
 
 import hashlib

@@ -1,3 +1,14 @@
+"""Heuristic safety classifier and its evaluation.
+
+Scores requests against per-category signal phrases and per-category thresholds.
+
+**Known defect, documented rather than fixed:** several entries in
+``BENIGN_INTENT_SIGNALS`` match a single evaluation case verbatim, and the extended
+``CATEGORY_SIGNALS`` add exactly the phrases the legacy version missed. The published
+recall figure was measured with those signals in place and should be expected to fall
+when they are removed. See docs/evaluation_integrity.md, finding 5.
+"""
+
 from __future__ import annotations
 
 import math

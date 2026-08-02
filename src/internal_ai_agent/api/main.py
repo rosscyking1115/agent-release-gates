@@ -1,3 +1,11 @@
+"""FastAPI service exposing the generated evidence artifacts read-only.
+
+An optional extra (``pip install "agent-release-gates[api]"``). It serves the reports the
+evaluation runners have already written to disk; it does not run evaluations, and
+starting it changes nothing about the gate's verdict. The authoritative artifacts are the
+files under ``reports/``.
+"""
+
 import json
 import os
 from pathlib import Path

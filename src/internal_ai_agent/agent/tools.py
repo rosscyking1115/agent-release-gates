@@ -1,3 +1,13 @@
+"""The tool layer, including the approval gate.
+
+``make_tool_decision`` is where a side-effecting call is withheld pending human
+approval. Despite the name it does more than decide: it also determines whether the call
+*executes*, and returns the tool output when it does. A tool is classified by
+``TOOL_TYPES``; anything typed ``side_effect`` requires approval, and reclassifying one
+as ``read_only`` silently removes that requirement -- which is one of the mutations the
+gate-mutation probe seeds deliberately.
+"""
+
 from __future__ import annotations
 
 from typing import Any
@@ -28,6 +38,31 @@ def make_tool_decision(
     approval_granted: bool = False,
     rationale: str,
 ) -> ToolDecision:
+    """Decide whether a tool call may run, and run it if so.
+
+    Despite the name this both decides and executes: a call that passes the approval
+    gate and schema check is performed, and its output is returned on the decision.
+
+    Args:
+        tool_name: A key of ``TOOL_TYPES``. Unknown names raise ``KeyError``.
+        payload: Tool arguments. Checked against ``REQUIRED_FIELDS``; a field that is
+            missing, empty, or whitespace-only makes the payload invalid.
+        approval_granted: Whether a human has signed off. Only consulted for tools typed
+            ``side_effect``.
+        rationale: Why the call was attempted. Recorded in the audit trail.
+
+    Returns:
+        A ``ToolDecision`` recording what was requested, whether approval was required
+        and granted, and whether the call executed. A withheld call carries
+        ``blocked_reason="approval_required"``; an ill-formed one carries
+        ``"invalid_tool_payload"``.
+
+    Note:
+        The approval requirement is derived from ``TOOL_TYPES``, not passed in.
+        Reclassifying a side-effecting tool as ``read_only`` therefore removes the
+        requirement silently, which is one of the mutations the gate-mutation probe
+        seeds deliberately.
+    """
     tool_type = TOOL_TYPES[tool_name]
     valid_schema = _valid_payload(tool_name, payload)
     requires_approval = tool_type == "side_effect"

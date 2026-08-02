@@ -1,3 +1,12 @@
+"""Metric computation for the retrieval and comparison evaluations.
+
+Produces the baseline-versus-improved figures and the evaluation history. The synthetic
+figures this module computes are **in-corpus fixture checks, not retrieval results** --
+the generator templates the query from its own gold answer, so any lexical retriever
+scores near-perfectly by construction. The reported retrieval numbers come from the
+external public tracks instead. See docs/evaluation_integrity.md.
+"""
+
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass

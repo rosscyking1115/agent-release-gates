@@ -63,7 +63,7 @@ task contains no retrieval problem to solve.
 That is not three metrics agreeing. It is one metric printed three times.
 
 All three answers derive from a single variable — the top-ranked section
-([`baseline.py:283`](../src/internal_ai_agent/rag/baseline.py#L283)):
+([`baseline.py:295`](../src/internal_ai_agent/rag/baseline.py#L295)):
 
 ```python
 chosen = retrieved[0]
@@ -83,7 +83,7 @@ the evidence threefold.
 The comparison's "before" number is not a measurement of retrieval quality.
 
 `retrieve_baseline` scores sections only by broad team hints
-([`baseline.py:162`](../src/internal_ai_agent/rag/baseline.py#L162)), so all six sections
+([`baseline.py:174`](../src/internal_ai_agent/rag/baseline.py#L174)), so all six sections
 belonging to the matched team receive an identical score, and the tie is broken by
 `section_id` ascending. The `-01` section of each team therefore always wins. Measured
 over the 288 answerable golden cases, the baseline can return only **4 of the 24 runbook
@@ -98,7 +98,7 @@ to be a `-01` section: **54 / 288 = 0.1875**, matching the published figure exac
 number is a property of the eval set's section numbering, not of any retrieval behavior.
 
 Its own docstring concedes the design
-([`baseline.py:144`](../src/internal_ai_agent/rag/baseline.py#L144)):
+([`baseline.py:157`](../src/internal_ai_agent/rag/baseline.py#L157)):
 
 > This baseline intentionally uses broad system/team hints rather than procedure-level
 > matching.
@@ -111,9 +111,9 @@ of an improvement.
 The retrieval gain comes substantially from hand-written dictionaries keyed to phrasing
 that appears in the evaluation set, not from a general method:
 
-- `SEMANTIC_ALIASES` ([`baseline.py:65`](../src/internal_ai_agent/rag/baseline.py#L65)) —
+- `SEMANTIC_ALIASES` ([`baseline.py:78`](../src/internal_ai_agent/rag/baseline.py#L78)) —
   24 per-category alias lists, written by hand, one per gold category.
-- `CURRENT_EVIDENCE_MARKERS` ([`baseline.py:1031`](../src/internal_ai_agent/rag/baseline.py#L1031))
+- `CURRENT_EVIDENCE_MARKERS` ([`baseline.py:1039`](../src/internal_ai_agent/rag/baseline.py#L1039))
   and `_evidence_summary_text`, which keys on the literal substring `"this summary:"` —
   a phrase authored into the manual eval cases.
 - `_stale_context_penalty` stale markers (`"older comment"`, `"side thread"`,
@@ -127,7 +127,7 @@ which is why the external result in the table above is ~20 points lower.
 ## Finding 5: the safety classifier whitelists a case by name
 
 `BENIGN_INTENT_SIGNALS`
-([`safety_classifier.py:141`](../src/internal_ai_agent/evals/safety_classifier.py#L141))
+([`safety_classifier.py:152`](../src/internal_ai_agent/evals/safety_classifier.py#L152))
 contains the literal string:
 
 ```
@@ -163,7 +163,7 @@ at all. A classifier that recognizes a test case by name is measuring memorizati
 
 The same pattern holds for the category signals.
 `CATEGORY_SIGNALS = {**LEGACY_CATEGORY_SIGNALS, ...}`
-([`safety_classifier.py:83`](../src/internal_ai_agent/evals/safety_classifier.py#L83))
+([`safety_classifier.py:94`](../src/internal_ai_agent/evals/safety_classifier.py#L94))
 extends exactly the three categories the legacy version missed, with precisely the
 phrases it missed them on — and `PER_CATEGORY_THRESHOLDS` additionally lowers the
 decision threshold for those same three categories (0.65 → 0.55, 0.70 → 0.55,

@@ -1,3 +1,15 @@
+"""Request-level safety policy: the rules applied before any tool is used.
+
+Matches a request against phrase signals and sensitive-data targets and returns the
+highest-severity match as a structured decision, so release-gate evidence records *what*
+fired rather than merely that something did.
+
+This is the layer the gate-mutation probe deletes, narrows and rewords. Deleting it
+entirely is caught by the gate only because the expected-behavior check now distinguishes
+a refusal from an approval hold; before that fix, removing every rule in this module
+still produced a clean release for two of the eight incident cases.
+"""
+
 from __future__ import annotations
 
 import re
@@ -122,10 +134,22 @@ def assess_request(text: str) -> PolicyDecision:
 
 
 def should_block_request(text: str) -> bool:
+    """Whether a request trips any policy rule.
+
+    A convenience wrapper over ``assess_request`` that discards which rule fired and at
+    what severity. Prefer ``assess_request`` anywhere the answer is recorded as
+    evidence: a bare boolean cannot show that a rule deletion was masked by a second
+    rule catching the same request.
+    """
     return assess_request(text).blocked
 
 
 def policy_refusal() -> str:
+    """The fixed refusal text returned when the policy blocks a request.
+
+    Deliberately generic: it names neither the rule that fired nor the phrase that
+    matched, so a refusal cannot be used to enumerate the policy.
+    """
     return (
         "I cannot follow that request because it conflicts with the agent safety "
         "policy. Please provide a normal operations ticket with sufficient evidence."

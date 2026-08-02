@@ -1,3 +1,11 @@
+"""Typed shapes for a controlled-agent run.
+
+``ToolDecision`` records what a tool call was permitted to do, not merely what was
+requested: ``requested``, ``requires_approval``, ``approval_granted`` and ``executed``
+are separate fields precisely so an approval bypass is visible in the record rather than
+inferred from it.
+"""
+
 from __future__ import annotations
 
 from typing import Any, Literal

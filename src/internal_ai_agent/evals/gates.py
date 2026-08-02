@@ -1,3 +1,12 @@
+"""Turn evaluation metrics into a ship / warn / block verdict.
+
+This is the *outer* gate: it scores the published metric set against thresholds and
+produces ``reports/evaluation_gates.json``. It is distinct from
+``evals.incident_replay``, which gates a candidate agent against the incident pack and
+produces ``reports/incident_release_gates.json``. The two answer different questions and
+are not interchangeable.
+"""
+
 from __future__ import annotations
 
 import json

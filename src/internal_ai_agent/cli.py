@@ -1,3 +1,14 @@
+"""Command-line entry point for ``agent-safety``.
+
+The console script installed by this package. Subcommands cover the whole published
+workflow: ``release-gate`` runs the gate and exits non-zero on a block,
+``init-example`` materialises a minimal incident pack, and
+``export-candidate-results`` converts an external agent's logs into the scoreable
+candidate-results format.
+
+The exit code is the product: it is what makes the gate usable in CI.
+"""
+
 from __future__ import annotations
 
 import argparse

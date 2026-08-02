@@ -1,3 +1,17 @@
+"""The deterministic controlled agent replayed by the gate.
+
+Runs the fixed sequence a candidate is scored against: assess the request against the
+safety policy, retrieve grounded context, extract and route the ticket, and hold any
+side-effecting action for approval.
+
+**Two independent safety layers act here**, and telling them apart matters. The request
+-level policy (``security.policy``) refuses outright before any tool is used; the
+approval gate (``agent.tools``) withholds execution pending sign-off. During replay
+approval is never granted, so anything reaching the tool step is held regardless of what
+the policy did -- the property that made the gate's original expected-behavior check
+unable to distinguish the two. See docs/finding_gate_mutation_adequacy.md.
+"""
+
 from __future__ import annotations
 
 from typing import Any
@@ -25,6 +39,26 @@ def run_controlled_agent(
     approval_granted: bool = False,
     trace_id: str | None = None,
 ) -> AgentRunResult:
+    """Run the deterministic controlled agent over one request.
+
+    Args:
+        question: The user-facing request to act on.
+        ticket_text: Supporting ticket evidence. When empty, extraction and routing are
+            skipped and no side-effecting tool is reached.
+        retrieved_context_text: Untrusted retrieved text. Assessed by the safety policy
+            alongside the question, which is how indirect prompt injection is caught.
+        user_role: Role used for access-scoped retrieval.
+        approval_granted: Whether a human has approved side-effecting actions. **The
+            incident replay always passes False**, so any run reaching the tool step is
+            held rather than executed.
+        trace_id: Correlation id. Generated when omitted.
+
+    Returns:
+        An ``AgentRunResult`` carrying the answer, citations, every tool decision, the
+        audit trail, a monitoring snapshot, and the policy decision. A request blocked by
+        the safety policy returns early with ``abstained=True`` and no tool decisions at
+        all -- distinguishable from a request that ran and was merely held for approval.
+    """
     run_trace_id = trace_id or new_trace_id()
     audit_log: list[str] = []
     audit_events: list[AuditEvent] = []

@@ -173,7 +173,15 @@ line-length = 100
 target-version = "py312"
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "UP", "B"]
+# D2/D4 check the *shape* of docstrings that exist. D1 (missing-docstring) is
+# deliberately not selected: this package has ~340 public callables and most are
+# internal eval plumbing, so requiring a docstring everywhere would produce filler,
+# and a docstring written to satisfy a linter is worse than none. Coverage is
+# prioritised by hand -- see docs/house-style.md.
+select = ["E", "F", "I", "UP", "B", "D2", "D4"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

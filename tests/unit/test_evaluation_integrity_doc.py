@@ -29,13 +29,13 @@ DOC_PATH = PROJECT_ROOT / "docs/evaluation_integrity.md"
 EXPECTED_CITATIONS = {
     ("src/internal_ai_agent/data/synthetic.py", 224): "receives a {title.lower()} ticket",
     ("src/internal_ai_agent/data/synthetic.py", 267): "{title} observed in",
-    ("src/internal_ai_agent/evals/safety_classifier.py", 83): "CATEGORY_SIGNALS = {",
-    ("src/internal_ai_agent/evals/safety_classifier.py", 141): "BENIGN_INTENT_SIGNALS = [",
-    ("src/internal_ai_agent/rag/baseline.py", 65): "SEMANTIC_ALIASES = {",
-    ("src/internal_ai_agent/rag/baseline.py", 144): "intentionally uses broad system/team hints",
-    ("src/internal_ai_agent/rag/baseline.py", 162): "for hint in hints if hint in normalized",
-    ("src/internal_ai_agent/rag/baseline.py", 283): "chosen = retrieved[0]",
-    ("src/internal_ai_agent/rag/baseline.py", 1031): "CURRENT_EVIDENCE_MARKERS = (",
+    ("src/internal_ai_agent/evals/safety_classifier.py", 94): "CATEGORY_SIGNALS = {",
+    ("src/internal_ai_agent/evals/safety_classifier.py", 152): "BENIGN_INTENT_SIGNALS = [",
+    ("src/internal_ai_agent/rag/baseline.py", 78): "SEMANTIC_ALIASES = {",
+    ("src/internal_ai_agent/rag/baseline.py", 157): "intentionally uses broad system/team hints",
+    ("src/internal_ai_agent/rag/baseline.py", 174): "for hint in hints if hint in normalized",
+    ("src/internal_ai_agent/rag/baseline.py", 295): "chosen = retrieved[0]",
+    ("src/internal_ai_agent/rag/baseline.py", 1039): "CURRENT_EVIDENCE_MARKERS = (",
 }
 
 _ANCHOR = re.compile(r"\(\.\./(src/[^)#]+)#L(\d+)\)")

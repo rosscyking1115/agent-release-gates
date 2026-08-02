@@ -1,3 +1,16 @@
+"""Lexical, vector and hybrid retrieval over the synthetic runbook corpus.
+
+Provides the baseline retriever, the improved retriever, and the answer composition used
+by the controlled agent.
+
+**Two documented defects live here.** ``retrieve_baseline`` scores only by broad team
+hints, so ties break alphabetically and it can reach just 4 of 24 sections -- its 18.75%
+is a property of section numbering, not of retrieval. And ``SEMANTIC_ALIASES`` and the
+evidence/stale markers are hand-written against phrasing that appears in the evaluation
+set, with no held-out split anywhere in the synthetic arm. See
+docs/evaluation_integrity.md, findings 3 and 4.
+"""
+
 from __future__ import annotations
 
 import re
@@ -153,7 +166,6 @@ def retrieve_baseline(
        citation happens to be a ``-01`` section (54/288) — a property of the eval set's
        numbering, not of retrieval. See ``docs/evaluation_integrity.md``.
     """
-
     normalized = question.lower()
     scored: list[RetrievedSection] = []
     for section in runbooks:
@@ -311,7 +323,6 @@ def retrieve_hybrid(
     The semantic side is a deterministic sparse vector built from procedure aliases. It is not a
     replacement for embeddings, but it makes paraphrase behavior measurable without API keys.
     """
-
     query_tokens = _tokenize(question)
     query_vector = _semantic_vector(question)
     scored: list[RetrievedSection] = []
@@ -423,7 +434,6 @@ def retrieve_vector(
     real vector-space retrieval baseline using IDF-weighted cosine similarity, concept aliases,
     title boosts, and character n-grams for typo tolerance.
     """
-
     eligible_sections = [
         section
         for section in runbooks
@@ -547,7 +557,6 @@ def retrieve_embedding_store(
     vectors with feature hashing, then searches by cosine similarity. This keeps the experiment
     reproducible while making the storage/search contract close to an embedding-backed vector DB.
     """
-
     store = _build_local_embedding_store(runbooks, user_role=user_role)
     if not store:
         return []
@@ -681,7 +690,6 @@ def retrieve_provider_embedding_store(
     The embedding vectors come from the supplied provider function, while evidence boosts,
     stale-context penalties, and citation selection remain local and testable.
     """
-
     if not store:
         return []
 
