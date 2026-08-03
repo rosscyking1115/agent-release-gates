@@ -226,3 +226,27 @@ def test_built_index_html_contains_the_panel(tmp_path) -> None:
     )
     assert "https://github.com/rosscyking1115/agent-release-gates/blob/main/" in panel
     assert not re.search(r"\d+(\.\d+)?\s*%", panel)
+
+
+def test_scope_statement_sits_below_the_finding(tmp_path) -> None:
+    """The scope statement belongs at the foot of the page, not in the opening.
+
+    It stays -- it is a genuine scope statement for a safety repository, not a
+    defensive tic. But opening by denying something nobody asked about makes a
+    suspicious reader out of an incurious one, so the README moved it to the bottom and
+    docs/house-style.md records that as the rule. Three public surfaces should not
+    disagree about where it belongs.
+    """
+    public_site = _load_public_site_module()
+    project_root = Path(__file__).resolve().parents[2]
+    for name in ("reports", "schemas", "docs"):
+        shutil.copytree(project_root / name, tmp_path / name)
+    public_site.build_public_site(tmp_path)
+    html = (tmp_path / "public/index.html").read_text(encoding="utf-8")
+
+    disclaimer = "does not reproduce, evaluate, or criticize"
+    assert disclaimer in html, "the scope statement must stay on the page"
+    assert html.index(disclaimer) > html.index("<h3>The finding</h3>"), (
+        "the scope statement appears above the finding panel. It belongs at the foot "
+        "of the page, matching the README and docs/house-style.md."
+    )

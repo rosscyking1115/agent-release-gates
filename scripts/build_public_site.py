@@ -636,12 +636,6 @@ def _index_html(
         approval-gated mock tools, safety/usefulness trade-offs, audit events,
         and observability.
       </p>
-      <p>
-        This project does not reproduce, evaluate, or criticize any real
-        company's internal AI system. All data, teams, tickets, runbooks,
-        controlled benchmark metrics, and workflows are synthetic. TechQA and
-        WixQA results are separate public-data RAG benchmarks.
-      </p>
       <div class="actions">
         <a class="button primary" href="{streamlit_url}">Open Interactive Dashboard</a>
         <a class="button primary" href="evaluation_report.html">Open Full Report</a>
@@ -933,6 +927,16 @@ def _index_html(
       <p>
         Then open <code>http://localhost:8510</code> for the dashboard and
         <code>http://localhost:8000/health</code> for the API.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Scope</h2>
+      <p>
+        This project does not reproduce, evaluate, or criticize any real
+        company's internal AI system. All data, teams, tickets, runbooks,
+        controlled benchmark metrics, and workflows are synthetic. TechQA and
+        WixQA results are separate public-data RAG benchmarks.
       </p>
     </section>
   </main>

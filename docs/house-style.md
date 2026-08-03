@@ -62,6 +62,12 @@ the bottom, or the page it applies to.
 means nothing to a newcomer and reads as a red flag to a specialist. Either say what
 produces it, in the same breath, or move it to a linked results document.
 
+**Never publish a count that routine work changes.** A test total is the obvious case: it
+moves every time anyone adds a test, and it cannot be corrected on a surface you no longer
+control. In this repository the suite went from 312 to 317 within an hour of the total
+being reproduced from a fresh clone — not because anything was wrong, but because that is
+what the number does. Quote such figures where they can be regenerated, and nowhere else.
+
 ## 2. Docstrings
 
 **Google style.** Recorded in `pyproject.toml` so the linter and any doc generator agree:

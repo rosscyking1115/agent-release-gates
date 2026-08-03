@@ -43,6 +43,37 @@ Nothing sensitive escaped. The point is not the severity of what leaked; it is t
 **nothing stopped it**, and that the same mechanism sits in front of files where the
 severity would be different.
 
+## A second instance, arrived at by a different route
+
+The same mistake surfaced again in this repository, in testing rather than packaging,
+and it is worth recording because it was reached independently.
+
+A test was written to verify that the project site carried a particular panel. It read
+`public/index.html` from the working tree. But `public/` is gitignored and CI builds it
+*after* the test suite runs, so the file exists on a developer's machine — left over from
+an earlier local build — and does not exist in CI at all. The test therefore passed
+against a stale artifact locally and asserted nothing whatsoever in the pipeline that
+matters. It was exposed by running the suite in a fresh clone, where the file it depended
+on was simply absent. The fix was to have the test build the site into a temporary
+directory and assert against what that produced.
+
+The shape is identical to the packaging defect above:
+
+| | The repository | The artifact |
+| --- | --- | --- |
+| Packaging | `git status` is clean | the sdist contains the file anyway |
+| Testing | `public/index.html` is present | the build output does not exist yet |
+
+Both are the same error. **The repository is not the artifact.** A control that inspects
+the source cannot see what the build produced, and a check that reads a build output it
+did not produce is measuring a leftover.
+
+> **A test that reads a build output verifies nothing unless it builds that output
+> itself.**
+
+Two independently-reached instances is the reason this is written down as a class rather
+than as an anecdote.
+
 ## The audit
 
 Every published sdist from this account, listed and inspected on 2026-08-02.
