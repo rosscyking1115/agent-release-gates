@@ -5,6 +5,24 @@ research programme that measurement closed. 2026-08-02.*
 
 This is the surviving output of the exercise. It is written to be read on its own.
 
+<!-- site-panel:start -->
+**The question.** A release gate is a check that runs before you ship and blocks the
+release if something is wrong. If someone quietly weakened the safety rules inside one,
+would the gate notice — or would it keep saying ship?
+
+**What this found.** Usually it would not notice. Measured against this project's own
+gate, roughly half the deliberate weaknesses planted in it left the gate reporting a
+clean release. The cause was a specific design defect that generalises to any gate whose
+expected outcome is satisfied by both a refusal and a hold for human approval.
+<!-- site-panel:end -->
+
+The block above is the **single source** for the finding panel on the project site.
+`scripts/build_public_site.py` reads it from this file at build time and
+`tests/unit/test_public_site.py` asserts the rendered panel still matches it, so the site
+cannot drift from this document. It deliberately carries **no precise figure**: exact
+numbers live in exactly one place, and a rounded claim survives a number changing where
+a copied percentage does not.
+
 ---
 
 ## Summary

@@ -289,6 +289,7 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
 
     (public_dir / "index.html").write_text(
         _index_html(
+            finding_panel=read_finding_panel_source(project_root),
             profile=profile,
             comparison=comparison,
             security=security,
@@ -328,8 +329,80 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
     return public_dir
 
 
+FINDING_DOC_PATH = Path("docs/finding_gate_mutation_adequacy.md")
+FINDING_PANEL_START = "<!-- site-panel:start -->"
+FINDING_PANEL_END = "<!-- site-panel:end -->"
+
+
+def read_finding_panel_source(project_root: Path) -> str:
+    """Read the finding-panel text from the document that owns the finding.
+
+    The site must not carry its own copy of the finding. Three public surfaces already
+    drifted from one another once, so the panel is sourced from
+    ``docs/finding_gate_mutation_adequacy.md`` at build time and the site test asserts
+    the rendered panel still matches it.
+
+    Args:
+        project_root: Repository root containing ``docs/``.
+
+    Returns:
+        The raw markdown between the panel markers, stripped.
+
+    Raises:
+        FileNotFoundError: If the canonical document is missing.
+        ValueError: If either marker is absent, or the block between them is empty.
+            Failing loudly is deliberate: a silently empty panel would leave the site
+            looking finished while saying nothing.
+    """
+    path = project_root / FINDING_DOC_PATH
+    if not path.exists():
+        msg = f"Finding document not found, so the site panel has no source: {path}"
+        raise FileNotFoundError(msg)
+    text = path.read_text(encoding="utf-8")
+    start = text.find(FINDING_PANEL_START)
+    end = text.find(FINDING_PANEL_END)
+    if start == -1 or end == -1 or end < start:
+        msg = (
+            f"{FINDING_DOC_PATH.as_posix()} must delimit the site panel with "
+            f"{FINDING_PANEL_START} and {FINDING_PANEL_END}."
+        )
+        raise ValueError(msg)
+    block = text[start + len(FINDING_PANEL_START) : end].strip()
+    if not block:
+        msg = f"The site panel block in {FINDING_DOC_PATH.as_posix()} is empty."
+        raise ValueError(msg)
+    return block
+
+
+def _finding_panel_html(panel_source: str, repo_url: str) -> str:
+    """Render the sourced panel markdown as HTML.
+
+    Handles only the two constructs the panel is allowed to use -- paragraph breaks and
+    ``**bold**``. Anything richer belongs in the canonical document, not on a signpost.
+    """
+    paragraphs = []
+    for raw in panel_source.split("\n\n"):
+        text = " ".join(raw.split())
+        if not text:
+            continue
+        parts = text.split("**")
+        rendered = "".join(
+            escape(part) if index % 2 == 0 else f"<strong>{escape(part)}</strong>"
+            for index, part in enumerate(parts)
+        )
+        paragraphs.append(f"          <p>{rendered}</p>")
+    body = "\n".join(paragraphs)
+    href = f"{repo_url}/blob/main/{FINDING_DOC_PATH.as_posix()}"
+    return f"""        <div class="summary-card" style="grid-column: 1 / -1;">
+          <h3>The finding</h3>
+{body}
+          <p><a href="{href}">Read the full finding &rarr;</a></p>
+        </div>"""
+
+
 def _index_html(
     *,
+    finding_panel: str,
     profile: dict[str, Any],
     comparison: dict[str, Any],
     security: dict[str, Any],
@@ -387,6 +460,7 @@ def _index_html(
     artifact_count = len(artifact_links)
     repo_url = "https://github.com/rosscyking1115/agent-release-gates"
     streamlit_url = "https://agent-release-gates.streamlit.app/"
+    finding_panel_html = _finding_panel_html(finding_panel, repo_url)
 
     return f"""<!doctype html>
 <html lang="en">
@@ -579,6 +653,7 @@ def _index_html(
     <section>
       <h2>At a glance</h2>
       <div class="summary-grid">
+{finding_panel_html}
         <div class="summary-card">
           <h3>What it is</h3>
           <p>

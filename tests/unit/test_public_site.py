@@ -2,6 +2,9 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import re
+import shutil
+from html import unescape
 from pathlib import Path
 
 
@@ -83,3 +86,143 @@ def test_artifact_index_only_links_current_incident_memos(tmp_path) -> None:
 
     assert "incident_memo_INC-CURRENT.md" in linked_artifacts
     assert "incident_memo_INC-STALE.md" not in linked_artifacts
+
+
+# --- The finding panel on the project site ------------------------------------------
+#
+# The site is a third public surface. PyPI and GitHub drifted from one another within
+# hours, and two claims were retracted across six surfaces before that, so the panel is
+# sourced from the document that owns the finding rather than copied. These tests pin the
+# properties that keep it that way, and they check the *rendered* HTML rather than the
+# generator, because a check that reads the source cannot see what the artifact contains.
+
+_PANEL_START = "<!-- site-panel:start -->"
+_PANEL_END = "<!-- site-panel:end -->"
+
+
+def _finding_doc_text() -> str:
+    project_root = Path(__file__).resolve().parents[2]
+    return (project_root / "docs/finding_gate_mutation_adequacy.md").read_text(
+        encoding="utf-8"
+    )
+
+
+def _plain(html: str) -> str:
+    """Rendered HTML reduced to its visible text, for comparison against source markdown.
+
+    Tags and entity escapes are presentation, not content. Comparing them literally would
+    make the test fail on `&#x27;` versus `'` while passing on genuinely divergent prose,
+    which is the wrong way round.
+    """
+    text = re.sub(r"<[^>]+>", " ", html)
+    return " ".join(unescape(text).split())
+
+
+def _plain_source(markdown: str) -> str:
+    return " ".join(markdown.replace("**", "").split())
+
+
+def _rendered_panel() -> str:
+    public_site = _load_public_site_module()
+    project_root = Path(__file__).resolve().parents[2]
+    source = public_site.read_finding_panel_source(project_root)
+    return public_site._finding_panel_html(source, "https://example.invalid/repo")
+
+
+def test_finding_document_carries_the_panel_markers() -> None:
+    text = _finding_doc_text()
+    assert _PANEL_START in text and _PANEL_END in text, (
+        "docs/finding_gate_mutation_adequacy.md must delimit the site panel. Without the "
+        "markers the site has no source and the build fails loudly rather than shipping "
+        "an empty panel."
+    )
+
+
+def test_panel_is_sourced_from_the_finding_document_not_copied() -> None:
+    """Every sentence rendered on the site must come from the canonical document.
+
+    This is the property that makes drift impossible rather than merely unlikely.
+    """
+    public_site = _load_public_site_module()
+    project_root = Path(__file__).resolve().parents[2]
+    source = public_site.read_finding_panel_source(project_root)
+    rendered = _rendered_panel()
+
+    assert source, "the panel source block is empty"
+    panel_text = _plain(rendered.split("<h3>The finding</h3>", 1)[1])
+    expected = _plain_source(source)
+
+    assert expected in panel_text, (
+        "the rendered panel does not contain its source text verbatim. The site must "
+        "quote the finding document, not paraphrase it, or the two can drift. "
+        f"expected {expected[:120]!r} but rendered {panel_text[:120]!r}"
+    )
+    # And nothing beyond the source plus the link: extra prose on the site would be a
+    # second copy in the making.
+    remainder = panel_text.replace(expected, "").replace("Read the full finding →", "")
+    assert len(remainder.strip()) < 5, (
+        f"the panel carries prose absent from its source: {remainder.strip()!r}"
+    )
+
+
+def test_panel_carries_no_precise_figure() -> None:
+    """Exact numbers live in exactly one place.
+
+    A percentage copied onto a third surface goes stale the moment the measurement is
+    repeated; a rounded qualitative claim survives it. The panel is a signpost.
+    """
+    rendered = _rendered_panel()
+    body = rendered.split("<h3>The finding</h3>", 1)[1]
+    assert not re.search(r"\d+(\.\d+)?\s*%", body), (
+        "the finding panel contains a precise figure. Numbers belong in the artifact "
+        "that owns them, not on the project site."
+    )
+    assert not re.search(r"\b\d+\s+of\s+\d+\b", body), (
+        "the finding panel contains an exact count. Use a rounded qualitative claim."
+    )
+
+
+def test_panel_link_resolves_from_the_deployed_path() -> None:
+    """The link must be absolute.
+
+    The site is served from a different origin than the repository, and the canonical
+    document is not copied into `public/`, so a relative path 404s once deployed -- the
+    same trap as the relative README links that broke on PyPI.
+    """
+    rendered = _rendered_panel()
+    hrefs = re.findall(r'href="([^"]+)"', rendered)
+    assert hrefs, "the finding panel must link to the full write-up"
+    for href in hrefs:
+        assert href.startswith("https://"), (
+            f"the finding panel link {href!r} is not absolute and will not resolve "
+            "from the deployed site."
+        )
+        assert "docs/finding_gate_mutation_adequacy.md" in href
+
+
+def test_built_index_html_contains_the_panel(tmp_path) -> None:
+    """Build the site and check the produced HTML, not the generator.
+
+    The site is built by CI *after* the tests run and `public/` is gitignored, so a
+    fresh clone has no built page. Asserting against a pre-existing `public/index.html`
+    would therefore pass on a stale artifact locally and verify nothing at all in CI.
+    This builds into a temporary root so the check runs everywhere and exercises the real
+    build path end to end.
+    """
+    public_site = _load_public_site_module()
+    project_root = Path(__file__).resolve().parents[2]
+
+    for name in ("reports", "schemas", "docs"):
+        shutil.copytree(project_root / name, tmp_path / name)
+    public_site.build_public_site(tmp_path)
+    html = (tmp_path / "public/index.html").read_text(encoding="utf-8")
+
+    assert "<h3>The finding</h3>" in html, "the built site has no finding panel"
+    panel = html.split("<h3>The finding</h3>", 1)[1].split("</div>", 1)[0]
+
+    source = public_site.read_finding_panel_source(project_root)
+    assert _plain_source(source) in _plain(panel), (
+        "the built site's panel does not match its source in the finding document."
+    )
+    assert "https://github.com/rosscyking1115/agent-release-gates/blob/main/" in panel
+    assert not re.search(r"\d+(\.\d+)?\s*%", panel)
