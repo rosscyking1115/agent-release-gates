@@ -1,1 +1,6 @@
 *.pdf binary
+
+# The csv module writes CRLF per RFC 4180, and the review packets are generated with
+# it. Marking them -text stops git normalising the line endings on checkout or commit,
+# so the committed artifact stays byte-identical to what its generator produces.
+*.csv -text

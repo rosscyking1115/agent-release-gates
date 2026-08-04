@@ -2505,7 +2505,7 @@ def safety_taxonomy_yaml() -> str:
 
 def write_jsonl(path: Path, rows: list[object]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", encoding="utf-8") as file:
+    with path.open("w", encoding="utf-8", newline="\n") as file:
         for row in rows:
             payload = asdict(row) if hasattr(row, "__dataclass_fields__") else row
             file.write(json.dumps(payload, sort_keys=True) + "\n")
@@ -2526,6 +2526,7 @@ def generate_all(output_dir: Path, ticket_count: int = 180) -> dict[str, int]:
     (output_dir / "config/safety_taxonomy.yaml").write_text(
         safety_taxonomy_yaml(),
         encoding="utf-8",
+        newline="\n",
     )
     write_jsonl(output_dir / "data/synthetic/raw_docs/runbooks.jsonl", runbooks)
     write_jsonl(output_dir / "data/synthetic/raw_tickets/tickets.jsonl", tickets)

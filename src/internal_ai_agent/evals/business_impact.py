@@ -184,5 +184,7 @@ def write_business_impact_summary(
 ) -> dict[str, Any]:
     summary = business_impact_summary(intervention_study)
     write_json(project_root / BUSINESS_IMPACT_PATH, summary)
-    (project_root / BUSINESS_IMPACT_DOC).write_text(_markdown(summary), encoding="utf-8")
+    (project_root / BUSINESS_IMPACT_DOC).write_text(
+        _markdown(summary), encoding="utf-8", newline="\n"
+    )
     return summary

@@ -321,10 +321,12 @@ def build_public_site(project_root: Path = PROJECT_ROOT) -> Path:
             artifact_links=artifact_links,
         ),
         encoding="utf-8",
+        newline="\n",
     )
     (public_dir / "artifacts.html").write_text(
         _artifact_index_html(artifact_links),
         encoding="utf-8",
+        newline="\n",
     )
     return public_dir
 

@@ -180,6 +180,11 @@ def generate_public_report(project_root: Path) -> str:
             "",
             "## Evaluation Release Gates",
             "",
+            "> **What a pass is worth here.** Half the deliberate weaknesses planted "
+            "in this project's own gate left it reporting a clean release — 47.4% "
+            "caught, 9 of 19, 95% interval 27.3–68.3%. Read the overall status below "
+            "with that in mind. See `docs/finding_gate_mutation_adequacy.md`.",
+            "",
             _evaluation_gate_table(evaluation_gates),
             "",
             "## Incident Replay Suite",

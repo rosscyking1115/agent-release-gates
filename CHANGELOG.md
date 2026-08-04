@@ -6,7 +6,58 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- **The gate-mutation finding is reachable from the surfaces that report a pass.**
+  "mutation" appeared zero times across nine dashboard views and a 23-page report,
+  in the repository whose published contribution is gate mutation adequacy. One
+  panel now sits beneath the Overview's gate tile, one beside the Incident Replay
+  tile, and one line above the generated report's release-gate table. Not on the
+  per-gate rows and not on the sub-gate panels: the claim being qualified is the
+  release decision. The wording is assembled from the README and held in a single
+  constant so it cannot drift from the document that owns the finding, and it
+  quotes 47.4% rather than the post-fix 52.6% that the README reports at
+  McNemar p = 1.0 and declines to bank.
+
+- **`tests/unit/test_artifact_determinism.py`** — regenerating an unchanged
+  artifact must produce identical bytes, the JSON and JSONL writers must emit LF
+  on every platform, and no text writer anywhere under `src/` or `scripts/` may
+  omit `newline`. Verified non-vacuous by reintroducing the defect and confirming
+  a non-zero exit naming the offending file and line.
+
+- **Nine dashboard captures under `docs/img/dashboard/`**, at one viewport, theme
+  and scale, named for what each view answers. The Evaluation Report capture is
+  truncated from 33,493px to 9,000px and says so; that view embeds a document
+  already published in full as HTML and PDF.
+
 ### Changed
+
+- **`docs/img` no longer ships in the sdist.** Screenshots are documentation for
+  people reading the repository; nothing in the installed package resolves against
+  them, because the README's image is fetched over `raw.githubusercontent.com`.
+  The sdist shrinks, since the exclusion also drops the superseded screenshot that
+  was shipping in 0.1.4.
+
+- **The committed review CSVs now match what their generator produces.** They were
+  committed as LF while `csv.DictWriter` emits CRLF per RFC 4180, so the artifacts
+  did not match their generator on any platform. The generator's output is
+  committed and `*.csv` is marked `-text` so git cannot normalise it back. Content
+  was identical throughout; only the line endings moved.
+
+### Fixed
+
+- **`io.write_json` asserted a property it did not enforce.** Its docstring claimed
+  that regenerating an unchanged artifact produces no diff and keeps a real change
+  legible in review. On Windows that was false: the default newline translation
+  returned CRLF against the LF committed from Linux, so a six-line content change
+  arrived as a two-thousand-line diff. The module's own docstring separately
+  recorded the defect while the function's kept asserting the opposite. Every text
+  writer across `src/` and `scripts/` now pins `newline="\n"`, and the claim is
+  enforced by test rather than restated.
+
+- **The evaluation report and its HTML export** are written with `newline="\n"`,
+  so regenerating them on Windows no longer rewrites every line as a line-ending
+  change and hides the real diff in review.
 
 - **The safety-classifier caveat now travels with the number.** 90.91% recall was
   presented as a headline metric on the dashboard Overview (twice), as the lead
@@ -45,12 +96,6 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   circular corpus as primary. The report's "What This Proves" also claimed
   retrieval quality is measured across the synthetic case shapes, which finding 1
   refutes.
-
-### Fixed
-
-- The evaluation report and its HTML export are written with `newline="\n"`, so
-  regenerating them on Windows no longer rewrites every line as a line-ending
-  change and hides the real diff in review.
 
 ## [0.1.4] - 2026-08-02
 
