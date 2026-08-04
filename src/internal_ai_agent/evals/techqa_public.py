@@ -147,8 +147,10 @@ def evaluate_techqa_public(project_root: Path) -> dict[str, Any]:
         "failure_examples": _failure_examples(results),
         "notes": [
             (
-                "This is an external public-data benchmark track. It does not replace the "
-                "controlled synthetic operations benchmark."
+                "This is an external public-data benchmark track, and it is the "
+                "retrieval result for this project. The synthetic operations benchmark "
+                "is circular by construction and is a regression fixture, not "
+                "retrieval evidence."
             ),
             (
                 "The evaluator measures retrieval/citation and impossible-question "

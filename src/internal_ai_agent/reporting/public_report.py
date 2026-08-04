@@ -162,8 +162,9 @@ def generate_public_report(project_root: Path) -> str:
             "## Executive Summary",
             "",
             "This report summarizes a public AI-agent release-readiness "
-            "evaluation system. The core benchmark uses a synthetic operations "
-            "domain, with separate public TechQA and WixQA retrieval benchmarks. It does not "
+            "evaluation system. Retrieval is reported on the public TechQA and WixQA "
+            "tracks; the synthetic operations domain is a regression fixture that is "
+            "circular by construction and is not retrieval evidence. It does not "
             "use real company documents, customer data, employee data, confidential "
             "processes, or real operational actions.",
             "",
@@ -318,6 +319,16 @@ def generate_public_report(project_root: Path) -> str:
             "",
             "## Safety Classifier Workflow",
             "",
+            "> **The recall figure below was measured with the case-specific benign "
+            "signals still in place** — several match exactly one eval case verbatim, "
+            "and one matches none at all. Those signals have been documented but "
+            "**not removed**, so the figure is an accurate measurement of a classifier "
+            "that partly recognizes its own test set, not a generalization estimate. "
+            "It should be expected to fall when they are removed. The same applies to "
+            "the retuning and threshold-sweep tables in this section: the gain over "
+            "the legacy classifier is partly the gain from adding the answers. "
+            "See `docs/evaluation_integrity.md`, finding 5.",
+            "",
             _safety_classifier_table(safety_classifier),
             "",
             _human_calibration_table(human_calibration),
@@ -397,8 +408,11 @@ def generate_public_report(project_root: Path) -> str:
                 "or injected memory is ignored in favor of current evidence."
             ),
             (
-                "- Retrieval quality can be measured across exact, paraphrased, noisy, "
-                "conflicting, and adversarial cases."
+                "- Retrieval quality is measured on the public TechQA and WixQA "
+                "tracks. The synthetic cases exercise exact, paraphrased, noisy, "
+                "conflicting, and adversarial *shapes*, but their queries are "
+                "templated from their own gold answers, so they contain no retrieval "
+                "problem to solve and prove nothing about retrieval quality."
             ),
             (
                 "- Structured extraction, routing, refusal behavior, approval gates, and audit "
@@ -475,8 +489,13 @@ def write_public_report(project_root: Path) -> Path:
     html_path = project_root / "reports/evaluation_report.html"
     pdf_path = project_root / "reports/evaluation_report.pdf"
     markdown = generate_public_report(project_root)
-    output_path.write_text(markdown, encoding="utf-8")
-    html_path.write_text(_markdown_to_html_document(markdown), encoding="utf-8")
+    # newline="\n" so a regeneration on Windows does not rewrite every line as a
+    # line-ending change. Without it the report churns whole-file on one platform and
+    # not the other, which hides the real diff in review.
+    output_path.write_text(markdown, encoding="utf-8", newline="\n")
+    html_path.write_text(
+        _markdown_to_html_document(markdown), encoding="utf-8", newline="\n"
+    )
     pdf_path.write_bytes(_markdown_to_pdf_document(markdown))
     return output_path
 

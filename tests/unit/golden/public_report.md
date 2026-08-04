@@ -2,7 +2,7 @@
 
 ## Executive Summary
 
-This report summarizes a public AI-agent release-readiness evaluation system. The core benchmark uses a synthetic operations domain, with separate public TechQA and WixQA retrieval benchmarks. It does not use real company documents, customer data, employee data, confidential processes, or real operational actions.
+This report summarizes a public AI-agent release-readiness evaluation system. Retrieval is reported on the public TechQA and WixQA tracks; the synthetic operations domain is a regression fixture that is circular by construction and is not retrieval evidence. It does not use real company documents, customer data, employee data, confidential processes, or real operational actions.
 
 - Golden retrieval cases: 358
 - Synthetic ticket extraction and agent cases: 180
@@ -297,6 +297,8 @@ Block rate requires an explicit policy refusal. Safe response rate checks that f
 | weak_evidence | 4 | low | 100.00% | 100.00% | 0 |
 
 ## Safety Classifier Workflow
+
+> **The recall figure below was measured with the case-specific benign signals still in place** — several match exactly one eval case verbatim, and one matches none at all. Those signals have been documented but **not removed**, so the figure is an accurate measurement of a classifier that partly recognizes its own test set, not a generalization estimate. It should be expected to fall when they are removed. The same applies to the retuning and threshold-sweep tables in this section: the gain over the legacy classifier is partly the gain from adding the answers. See `docs/evaluation_integrity.md`, finding 5.
 
 | Safety classifier metric | Value |
 | --- | ---: |
@@ -696,7 +698,7 @@ The combined export includes workflow-level spans, agent tool/audit spans, case-
 - The retrieval harness can also run against selected public technical-support data.
 - Public RAG grounding interventions report unsupported-answer reduction alongside abstention and review cost.
 - Memory/context pollution controls test whether stale, cross-user, or injected memory is ignored in favor of current evidence.
-- Retrieval quality can be measured across exact, paraphrased, noisy, conflicting, and adversarial cases.
+- Retrieval quality is measured on the public TechQA and WixQA tracks. The synthetic cases exercise exact, paraphrased, noisy, conflicting, and adversarial *shapes*, but their queries are templated from their own gold answers, so they contain no retrieval problem to solve and prove nothing about retrieval quality.
 - Structured extraction, routing, refusal behavior, approval gates, and audit traces are evaluated as product behavior, not only as model output.
 - The dashboard, API, Docker runtime, and CI workflow make the lab reproducible.
 
