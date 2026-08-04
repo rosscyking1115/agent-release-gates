@@ -110,6 +110,14 @@ include = [
   "/.gitattributes",
   "/.gitignore",
 ]
+# Screenshots are documentation for people reading the repository, not something the
+# package needs: the README's image is fetched from raw.githubusercontent.com, so
+# nothing in the installed package resolves against these files. The dashboard tour
+# captures are several megabytes, which would otherwise land in every sdist and be
+# downloaded by everyone installing from source for no benefit.
+exclude = [
+  "/docs/img",
+]
 
 [dependency-groups]
 # Dev/CI installs everything the test suite exercises (API + dashboard imports).
