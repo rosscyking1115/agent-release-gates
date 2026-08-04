@@ -315,7 +315,17 @@ No network, no API keys, no spend. The probe, the operators and every oracle are
 [`scripts/run_gate_mutation_probe.py`](../scripts/run_gate_mutation_probe.py).
 
 The **before** measurement is committed, not reconstructed. It was published before
-anything was fixed and can be read directly:
+anything was fixed and now sits in the working tree under a name that says which run it
+is, alongside the run that superseded it:
+
+| File | Run |
+| --- | --- |
+| `reports/gate_mutation_adequacy_before_approval_split.json` | 47.4% — the headline |
+| `reports/gate_mutation_adequacy_after_approval_split.json` | 52.6% — after the fix |
+
+Until those files existed the before measurement was reachable only as a git object, so
+a published headline had no source anyone could open from a checkout. The object is
+still there and still authoritative:
 
 ```bash
 git show 34bee32:reports/gate_mutation_adequacy.json
