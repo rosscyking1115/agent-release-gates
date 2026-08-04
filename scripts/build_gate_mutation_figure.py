@@ -8,25 +8,53 @@ README quotes — so it cannot say something the committed evidence does not.
 
 Everything drawn is derived. The headline fraction, the per-operator counts and the
 95% Wilson interval are all computed from the mutant records, so no number in the SVG
-can drift from the file it was built from. Output is SVG rather than a raster because
-it is text: a change to the figure is legible in review as a diff, which is the
-property whose absence let the screenshot go stale.
+can drift from the file it was built from. The SVG is the source of truth because it is
+text: a change to the figure is legible in review as a diff, which is the property whose
+absence let the screenshot go stale.
+
+``--render-png`` additionally rasterises the SVG to ``docs/img/dashboard.png`` through a
+headless browser. That path is deliberately opt-in and is never exercised by the test
+suite, because a browser render is not reproducible byte for byte across platforms or
+browser versions, and a test that demanded it would be a control nobody could keep
+green. Staleness is caught a different way: the render stamps the SHA-256 of the SVG it
+was made from into a PNG ``tEXt`` chunk, and the test suite asserts that fingerprint
+still matches the committed SVG. Edit the figure without re-rendering and the build
+fails, which is the failure the previous screenshot never had.
 
 Run::
 
     uv run python scripts/build_gate_mutation_figure.py
+    uv run python scripts/build_gate_mutation_figure.py --render-png
 """
 
 from __future__ import annotations
 
+import argparse
+import hashlib
 import json
 import math
+import os
+import shutil
+import struct
+import subprocess
+import sys
+import tempfile
+import zlib
 from pathlib import Path
 from xml.sax.saxutils import escape
 
 SOURCE_PATH = Path("reports/gate_mutation_adequacy_before_approval_split.json")
 LATER_RUN_PATH = Path("reports/gate_mutation_adequacy_after_approval_split.json")
 OUTPUT_PATH = Path("docs/img/gate_mutation_adequacy.svg")
+
+# The README image keeps this path on purpose. PyPI's published 0.1.4 description is
+# frozen text carrying this exact URL pinned to main, so the text can never change and
+# only the file it resolves to can. Moving the figure to a new path would leave the
+# published description showing the superseded screenshot for good; deleting it would
+# leave a broken image. Replacing the content here corrects both surfaces at once.
+PNG_PATH = Path("docs/img/dashboard.png")
+PNG_SCALE = 2
+FINGERPRINT_KEY = "svg-sha256"
 
 # Plain-English glosses, matching the operator table in
 # docs/finding_gate_mutation_adequacy.md. They are here so the figure is legible to a
@@ -382,14 +410,178 @@ def _alt_text(rows: list[dict], caught: int, seeded: int, adequacy: float) -> st
     )
 
 
-def main() -> None:
-    """Build the figure and write it to ``docs/img/gate_mutation_adequacy.svg``."""
+def svg_fingerprint(svg: str) -> str:
+    """Return the SHA-256 of an SVG document, over its exact UTF-8 bytes."""
+    return hashlib.sha256(svg.encode("utf-8")).hexdigest()
+
+
+def read_png_fingerprint(png_bytes: bytes) -> str | None:
+    """Return the SVG fingerprint stamped into a PNG, or ``None`` if absent.
+
+    Args:
+        png_bytes: A complete PNG file.
+
+    Returns:
+        The recorded SHA-256 hex digest, or ``None`` when the PNG carries no
+        ``svg-sha256`` ``tEXt`` chunk.
+
+    Raises:
+        ValueError: If the bytes are not a PNG.
+    """
+    if not png_bytes.startswith(b"\x89PNG\r\n\x1a\n"):
+        raise ValueError("not a PNG file")
+    offset = 8
+    while offset + 8 <= len(png_bytes):
+        (length,) = struct.unpack(">I", png_bytes[offset : offset + 4])
+        chunk_type = png_bytes[offset + 4 : offset + 8]
+        data = png_bytes[offset + 8 : offset + 8 + length]
+        if chunk_type == b"tEXt":
+            keyword, _, value = data.partition(b"\x00")
+            if keyword.decode("latin-1") == FINGERPRINT_KEY:
+                return value.decode("latin-1")
+        if chunk_type == b"IEND":
+            break
+        offset += 12 + length
+    return None
+
+
+def png_dimensions(png_bytes: bytes) -> tuple[int, int]:
+    """Return ``(width, height)`` from a PNG's IHDR chunk."""
+    if not png_bytes.startswith(b"\x89PNG\r\n\x1a\n"):
+        raise ValueError("not a PNG file")
+    width, height = struct.unpack(">II", png_bytes[16:24])
+    return width, height
+
+
+def _stamp_png(png_bytes: bytes, fingerprint: str) -> bytes:
+    """Insert the SVG fingerprint as a ``tEXt`` chunk immediately after IHDR.
+
+    Args:
+        png_bytes: A complete PNG file.
+        fingerprint: The SHA-256 hex digest of the SVG this PNG was rendered from.
+
+    Returns:
+        The PNG with the fingerprint chunk added.
+    """
+    payload = FINGERPRINT_KEY.encode("latin-1") + b"\x00" + fingerprint.encode("latin-1")
+    chunk = (
+        struct.pack(">I", len(payload))
+        + b"tEXt"
+        + payload
+        + struct.pack(">I", zlib.crc32(b"tEXt" + payload) & 0xFFFFFFFF)
+    )
+    # IHDR is always the first chunk: 8-byte signature, then 4 length + 4 type + 13
+    # data + 4 CRC.
+    ihdr_end = 8 + 12 + 13
+    return png_bytes[:ihdr_end] + chunk + png_bytes[ihdr_end:]
+
+
+def _find_browser() -> str:
+    """Locate a Chromium-family browser for rasterising.
+
+    Returns:
+        Path to the executable.
+
+    Raises:
+        RuntimeError: If none is found. Set ``FIGURE_BROWSER`` to override.
+    """
+    override = os.environ.get("FIGURE_BROWSER")
+    if override:
+        return override
+    candidates = [
+        "chrome",
+        "google-chrome",
+        "chromium",
+        "chromium-browser",
+        "msedge",
+        r"C:\Program Files\Google\Chrome\Application\chrome.exe",
+        r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
+    ]
+    for candidate in candidates:
+        found = shutil.which(candidate) or (
+            candidate if Path(candidate).exists() else None
+        )
+        if found:
+            return found
+    raise RuntimeError(
+        "No Chromium-family browser found for --render-png. Set FIGURE_BROWSER to one."
+    )
+
+
+def render_png(svg: str) -> bytes:
+    """Rasterise the SVG and stamp it with the SVG's fingerprint.
+
+    Args:
+        svg: The SVG document to render.
+
+    Returns:
+        PNG bytes carrying an ``svg-sha256`` ``tEXt`` chunk.
+
+    Raises:
+        RuntimeError: If the browser produces no output.
+    """
+    browser = _find_browser()
+    width = WIDTH
+    height = int(float(svg.split('height="', 1)[1].split('"', 1)[0]))
+    with tempfile.TemporaryDirectory() as work:
+        work_dir = Path(work)
+        svg_file = work_dir / "figure.svg"
+        svg_file.write_text(svg, encoding="utf-8", newline="\n")
+        png_file = work_dir / "figure.png"
+        subprocess.run(
+            [
+                browser,
+                "--headless=new",
+                "--disable-gpu",
+                "--hide-scrollbars",
+                f"--force-device-scale-factor={PNG_SCALE}",
+                f"--screenshot={png_file}",
+                f"--window-size={width},{height}",
+                f"--user-data-dir={work_dir / 'profile'}",
+                svg_file.resolve().as_uri(),
+            ],
+            check=True,
+            capture_output=True,
+        )
+        if not png_file.exists():
+            raise RuntimeError("the browser produced no PNG")
+        return _stamp_png(png_file.read_bytes(), svg_fingerprint(svg))
+
+
+def main(argv: list[str] | None = None) -> int:
+    """Build the figure, optionally rendering the README PNG alongside it.
+
+    Args:
+        argv: Command-line arguments, defaulting to ``sys.argv[1:]``.
+
+    Returns:
+        Process exit status.
+    """
+    parser = argparse.ArgumentParser(description=__doc__.split("\n", 1)[0])
+    parser.add_argument(
+        "--render-png",
+        action="store_true",
+        help=(
+            "also rasterise to docs/img/dashboard.png through a headless browser. "
+            "Requires Chrome, Chromium or Edge; override with FIGURE_BROWSER."
+        ),
+    )
+    args = parser.parse_args(argv)
+
     report = json.loads(SOURCE_PATH.read_text(encoding="utf-8"))
     later = json.loads(LATER_RUN_PATH.read_text(encoding="utf-8"))
+    svg = build_svg(report, later)
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    OUTPUT_PATH.write_text(build_svg(report, later), encoding="utf-8", newline="\n")
+    OUTPUT_PATH.write_text(svg, encoding="utf-8", newline="\n")
     print(f"Wrote {OUTPUT_PATH}")
+
+    if args.render_png:
+        png = render_png(svg)
+        PNG_PATH.write_bytes(png)
+        width, height = png_dimensions(png)
+        print(f"Wrote {PNG_PATH} ({width}x{height}, svg-sha256={svg_fingerprint(svg)})")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

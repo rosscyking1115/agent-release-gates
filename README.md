@@ -16,10 +16,12 @@ this project's own gate left it reporting a clean release
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/rosscyking1115/agent-release-gates/blob/main/LICENSE)
 [![CI](https://github.com/rosscyking1115/agent-release-gates/actions/workflows/ci.yml/badge.svg)](https://github.com/rosscyking1115/agent-release-gates/actions/workflows/ci.yml)
 
-<img src="https://raw.githubusercontent.com/rosscyking1115/agent-release-gates/main/docs/img/dashboard.png" alt="The reviewer dashboard: release-gate status, case counts, safety recall, and a metrics comparison table" width="820">
+<img src="https://raw.githubusercontent.com/rosscyking1115/agent-release-gates/main/docs/img/dashboard.png" alt="Nineteen deliberate weakenings seeded into this release gate's own configuration, grouped by what each one did to the policy. The gate caught 9 of 19, 47.4%. Every threshold loosening and every synonym rewording survived, leaving the gate reporting a clean release. Four benign controls that changed the policy without weakening it raised no false alarms." width="820">
 
-<sub>The reviewer dashboard — one screen showing whether a change may ship.
-<a href="https://agent-release-gates.streamlit.app/">Open it live →</a></sub>
+<sub>Each mark is one seeded defect: filled where the gate caught it, hollow where the
+gate still said <em>ship</em>. Generated from the probe's committed output by
+<a href="https://github.com/rosscyking1115/agent-release-gates/blob/main/scripts/build_gate_mutation_figure.py">build_gate_mutation_figure.py</a>
+— <a href="https://github.com/rosscyking1115/agent-release-gates/blob/main/docs/finding_gate_mutation_adequacy.md">read the finding →</a></sub>
 
 > **Status: concluded, not maintained.** A reference implementation and a research
 > result, not a product. The research programme behind it was closed by its own stopping
@@ -132,8 +134,9 @@ and limits.
 | Design rationale, schemas, cards, house style | [docs/](https://github.com/rosscyking1115/agent-release-gates/tree/main/docs/) |
 | The probe, the runners, the release gate | [scripts/](https://github.com/rosscyking1115/agent-release-gates/tree/main/scripts/), [src/](https://github.com/rosscyking1115/agent-release-gates/tree/main/src/internal_ai_agent/) |
 
-Also here: an Inspect (UK AISI) task, a FastAPI evidence service, the Streamlit dashboard
-above, Docker, and CI.
+Also here: an Inspect (UK AISI) task, a FastAPI evidence service, a
+[Streamlit dashboard](https://agent-release-gates.streamlit.app/) of the underlying
+evaluation runs, Docker, and CI.
 
 ## Limitations
 
