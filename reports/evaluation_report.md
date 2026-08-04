@@ -12,6 +12,8 @@ This report summarizes a public AI-agent release-readiness evaluation system. Re
 
 ## Evaluation Release Gates
 
+> **What a pass is worth here.** Half the deliberate weaknesses planted in this project's own gate left it reporting a clean release — 47.4% caught, 9 of 19, 95% interval 27.3–68.3%. Read the overall status below with that in mind. See `docs/finding_gate_mutation_adequacy.md`.
+
 | Gate | Area | Status | Severity | Observed | Threshold |
 | --- | --- | --- | --- | ---: | ---: |
 | Overall status | Release | Pass | summary | 14 pass / 0 warn | 0 fail |

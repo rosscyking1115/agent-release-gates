@@ -119,6 +119,17 @@ from internal_ai_agent.evals.business_impact import business_impact_summary
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
+# One sentence, one source, two placements. A gate status is the surface where a pass
+# is most easily read as reassurance, so what a pass was measured to be worth travels
+# with it. Wording is assembled from the README rather than composed, so the dashboard
+# cannot drift from the document that owns the finding.
+GATE_PASS_MEANING = (
+    "**What a pass is worth here.** Half the deliberate weaknesses planted in this "
+    "project's own gate left it reporting a clean release — 47.4% caught, 9 of 19, "
+    "95% interval 27.3–68.3%. Read the status above with that in mind. "
+    "See docs/finding_gate_mutation_adequacy.md."
+)
+
 
 def main() -> None:
     st.set_page_config(
@@ -422,6 +433,7 @@ def _render_reviewer_summary(
         "Gate status",
         _format_status(evaluation_gates.get("overall_status", "")),
     )
+    st.info(GATE_PASS_MEANING)
 
     st.markdown("**Current evidence**")
     st.markdown(
@@ -1983,6 +1995,7 @@ def _render_incident_replay(
         "Trace coverage",
         _format_pct(float(metrics.get("trace_event_coverage_rate", 0.0))),
     )
+    st.info(GATE_PASS_MEANING)
 
     st.markdown(
         """

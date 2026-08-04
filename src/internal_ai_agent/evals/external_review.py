@@ -105,6 +105,7 @@ def write_external_review_reviewer_guide(
     path.write_text(
         _reviewer_guide_markdown(case_count=len(cases), categories=categories),
         encoding="utf-8",
+        newline="\n",
     )
     return path
 

@@ -1610,7 +1610,7 @@ def _write_incident_memos(project_root: Path, replay_runs: list[dict[str, Any]])
     for row in replay_runs:
         path = _incident_memo_path(project_root, str(row["incident_id"]))
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(_incident_memo(row), encoding="utf-8")
+        path.write_text(_incident_memo(row), encoding="utf-8", newline="\n")
         memo_paths.append(_artifact_path(project_root, path))
     return memo_paths
 

@@ -248,7 +248,7 @@
     "top1_citation_accuracy": 0.724
   },
   "notes": [
-    "This is an external public-data benchmark track. It does not replace the controlled synthetic operations benchmark.",
+    "This is an external public-data benchmark track, and it is the retrieval result for this project. The synthetic operations benchmark is circular by construction and is a regression fixture, not retrieval evidence.",
     "The evaluator measures retrieval/citation and impossible-question abstention over public technical-support questions.",
     "The report is deterministic and uses no paid API calls."
   ],

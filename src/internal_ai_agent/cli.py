@@ -122,6 +122,7 @@ def run_init_example(*, dest: Path) -> int:
         (dest / name).write_text(
             source.joinpath(name).read_text(encoding="utf-8"),
             encoding="utf-8",
+            newline="\n",
         )
     print(f"Wrote example incident pack to {dest}")
     for name in EXAMPLE_PACK_FILES:
