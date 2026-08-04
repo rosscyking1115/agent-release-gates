@@ -6,6 +6,52 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- **The safety-classifier caveat now travels with the number.** 90.91% recall was
+  presented as a headline metric on the dashboard Overview (twice), as the lead
+  tile of the Safety & Extraction view, in the legacy/retuned pair, in the
+  generated evaluation report and PDF, and in the GitHub Pages evidence snapshot —
+  in every case bare, while `docs/model_card.md` and `docs/results.md` carried the
+  correct caveat that it was measured with case-specific benign signals still live
+  and should be expected to fall when they are removed. That existing wording was
+  carried to each of those surfaces rather than reworded, so the six places now
+  say the same thing. Where a metric tile had nowhere to put the sentence, the
+  tile no longer carries the number: safety recall has left both Overview tile
+  rows and appears below with its qualification attached. The Pages metric tile
+  gained a note slot for the same reason.
+
+- **In-corpus figures are labelled at the point of contact, not in a nearby
+  caption.** Citation coverage, side-effect block and golden-case count now carry
+  "(in-corpus)" in the tile label itself; the retriever-experiment chart and table
+  and the controlled-agent tiles gained the same label and a circularity note. A
+  caption below a tile row does not label the tiles above it.
+
+- **The before/after bar chart and the delta column are removed rather than
+  labelled.** `docs/evaluation_integrity.md` finding 3 establishes that the
+  18.75% column is not a baseline — it scores on team hints alone and breaks ties
+  by section id, reaching only 4 of the 24 runbook sections — so the delta is not
+  a measured improvement. A two-bar chart asserts "improvement" and has nowhere to
+  put that qualification, and a label does not make it accurate. The table remains
+  with the column renamed to what it is, and the numbers remain in
+  `reports/eval_comparison.json` and are discussed in full in the integrity
+  document.
+
+- **Pre-correction framing removed from three generators.** The evaluation
+  report's executive summary called the synthetic domain "the core benchmark";
+  the TechQA notes said the public track "does not replace the controlled
+  synthetic operations benchmark"; the WixQA notes said it "complements" it; and
+  the Retrieval Evaluation view's caption said the same. All four treated the
+  circular corpus as primary. The report's "What This Proves" also claimed
+  retrieval quality is measured across the synthetic case shapes, which finding 1
+  refutes.
+
+### Fixed
+
+- The evaluation report and its HTML export are written with `newline="\n"`, so
+  regenerating them on Windows no longer rewrites every line as a line-ending
+  change and hides the real diff in review.
+
 ## [0.1.4] - 2026-08-02
 
 A description-only release. No behaviour changed. The README **is** the PyPI page, and
@@ -328,6 +374,23 @@ for as long as it is the latest release. That is the reason this version exists.
   benchmark.** The README, GitHub Pages site, Streamlit dashboard, model card,
   benchmark card, and generated evaluation report now lead with the external
   result and label every synthetic figure as in-corpus.
+
+  > **Correction, 2026-08-04.** The sentence above claims a completeness the
+  > change did not have, and the original text is left unedited so the claim is
+  > visible rather than smoothed. An audit of every figure and dashboard panel
+  > found the labelling had reached the prose and not the surfaces where the
+  > numbers are met. It did not reach: the README's screenshot, which was
+  > captured on 2026-07-06 and never regenerated, so it still shows the
+  > pre-correction dashboard with 98.26%, 99.31% and the +79.51% delta table
+  > unlabelled; the dashboard's own metric tiles for citation coverage,
+  > side-effect block and safety recall; the retriever-experiment chart and
+  > table; the before/after bar chart; or the generated report's safety-classifier
+  > section. What "leads with the external result" was also not true of the
+  > report, whose executive summary still called the synthetic domain "the core
+  > benchmark", or of the Retrieval Evaluation view, whose caption described the
+  > public tracks as a complement that "does not replace" it. Those surfaces are
+  > corrected in Unreleased. The README's image is not yet corrected and is
+  > tracked separately.
 
 ## [0.1.2] - 2026-07-02
 

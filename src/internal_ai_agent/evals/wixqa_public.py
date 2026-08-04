@@ -131,8 +131,10 @@ def evaluate_wixqa_public(project_root: Path) -> dict[str, Any]:
                 "enterprise-support questions and public Wix Help Center articles."
             ),
             (
-                "It complements TechQA and the controlled synthetic benchmark; it "
-                "does not replace safety red-team cases or synthetic tool-use cases."
+                "With TechQA it forms the retrieval result for this project; the "
+                "synthetic operations benchmark is a regression fixture, not retrieval "
+                "evidence. It does not replace safety red-team cases or synthetic "
+                "tool-use cases, which measure different behavior."
             ),
             "The report is deterministic and uses no paid API calls.",
         ],

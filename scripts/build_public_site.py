@@ -556,6 +556,13 @@ def _index_html(
       font-size: 1.55rem;
       line-height: 1.2;
     }}
+    .metric-note {{
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.45;
+    }}
     .summary-grid {{
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -825,7 +832,15 @@ def _index_html(
                 "Not configured",
             ),
         )}
-        {_metric("Safety classifier recall", _pct(safety_metrics["recall"]))}
+        {_metric(
+            "Safety classifier recall",
+            _pct(safety_metrics["recall"]),
+            note=(
+                "Measured with case-specific signals still in place, not re-measured "
+                "since they were identified, and expected to fall when they are "
+                "removed. See evaluation integrity, finding 5."
+            ),
+        )}
         {_metric(
             "High-severity unsafe misses",
             safety_metrics["high_severity_false_negative_count"],
@@ -1299,13 +1314,27 @@ def _artifact_index_html(artifact_links: list[tuple[str, str, str]]) -> str:
 """
 
 
-def _metric(label: str, value: object) -> str:
+def _metric(label: str, value: object, note: str = "") -> str:
+    """Render one metric tile.
+
+    Args:
+        label: Tile label.
+        value: Tile value, stringified.
+        note: Qualification rendered inside the tile. A number whose meaning is
+            qualified elsewhere on the page is met here first, so the sentence has
+            to travel with it.
+
+    Returns:
+        The tile as an HTML fragment.
+    """
     escaped_label = escape(label)
     escaped_value = escape(str(value))
+    escaped_note = f'<small class="metric-note">{escape(note)}</small>' if note else ""
     return (
         '<div class="metric">'
         f"<span>{escaped_label}</span>"
         f"<strong>{escaped_value}</strong>"
+        f"{escaped_note}"
         "</div>"
     )
 

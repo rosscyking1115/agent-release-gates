@@ -209,9 +209,7 @@ def main() -> None:
         )
         _render_summary(
             comparison,
-            rows,
             improved_cases,
-            safety_classifier,
             agent_summary,
             evaluation_gates,
         )
@@ -415,16 +413,12 @@ def _render_reviewer_summary(
         "evidence — see docs/evaluation_integrity.md."
     )
 
-    gate_cols = st.columns(3)
+    gate_cols = st.columns(2)
     gate_cols[0].metric(
         "Synthetic eval cases (in-corpus)",
         dataset_counts["golden_cases"],  # type: ignore[index]
     )
     gate_cols[1].metric(
-        "Safety recall",
-        _format_pct(float(safety_metrics["recall"])),  # type: ignore[index]
-    )
-    gate_cols[2].metric(
         "Gate status",
         _format_status(evaluation_gates.get("overall_status", "")),
     )
@@ -438,12 +432,17 @@ def _render_reviewer_summary(
           {_public_metric_text(wixqa_public, "retrieval_hit_rate_at_3")}
         - Local public reranker top-1 delta:
           {_public_signed_metric_text(reranker_summary, "top1_accuracy_delta")}
-        - Agent side-effect block rate:
+        - Agent side-effect block rate (in-corpus, not retrieval evidence):
           {_format_pct(float(agent_metrics["side_effect_block_rate"]))}
         - Synthetic citation coverage (in-corpus, not retrieval evidence):
           {_format_pct(float(metrics["citation_coverage"]["improved"]))}
         - Synthetic abstention accuracy (in-corpus, not retrieval evidence):
           {_format_pct(float(metrics["abstention_accuracy"]["improved"]))}
+        - Safety classifier: {_format_pct(float(safety_metrics["recall"]))} recall,
+          {safety_metrics["high_severity_false_negative_count"]} high-severity false
+          negatives — measured with case-specific signals still in place, not
+          re-measured since they were identified, and expected to fall when they are
+          removed. See docs/evaluation_integrity.md, finding 5.
         """
     )
 
@@ -474,62 +473,60 @@ def _render_reviewer_summary(
 
 def _render_summary(
     comparison: dict[str, object],
-    rows: list[dict[str, object]],
     improved_cases: list[dict[str, object]],
-    safety_classifier: dict[str, object],
     agent_summary: dict[str, object],
     evaluation_gates: dict[str, object],
 ) -> None:
     mix = case_mix(improved_cases)
-    cols = st.columns(4)
+    cols = st.columns(3)
     metrics = comparison["metrics"]  # type: ignore[index]
-    safety_metrics = safety_classifier["metrics"]  # type: ignore[index]
     agent_metrics = agent_summary["metrics"]  # type: ignore[index]
     citation_coverage = metrics["citation_coverage"]["improved"]  # type: ignore[index]
-    safety_recall = safety_metrics["recall"]  # type: ignore[index]
     side_effect_block_rate = agent_metrics["side_effect_block_rate"]  # type: ignore[index]
-    cols[0].metric("Golden cases", comparison["case_count"])
-    cols[1].metric("Citation coverage", _format_pct(float(citation_coverage)))
-    cols[2].metric("Safety recall", _format_pct(float(safety_recall)))
-    cols[3].metric("Side-effect block", _format_pct(float(side_effect_block_rate)))
+    cols[0].metric("Golden cases (in-corpus)", comparison["case_count"])
+    cols[1].metric("Citation coverage (in-corpus)", _format_pct(float(citation_coverage)))
+    cols[2].metric("Side-effect block (in-corpus)", _format_pct(float(side_effect_block_rate)))
 
     st.caption(
         "Synthetic operations eval across exact, paraphrased, and weak-evidence cases. "
-        "Controlled benchmark data is generated and contains no real company, customer, "
-        "or employee information."
+        "In-corpus figures come from a generator that templates the query from the same "
+        "variables as its gold answer: they are a regression fixture, not retrieval "
+        "evidence — see docs/evaluation_integrity.md. Controlled benchmark data is "
+        "generated and contains no real company, customer, or employee information."
     )
     gate_cols = st.columns(4)
     gate_cols[0].metric("Expected abstentions", mix["expected_abstentions"])
     gate_cols[1].metric("Improved failures", mix["failed_cases"])
     gate_cols[2].metric("Gate status", evaluation_gates["overall_status"])
     gate_cols[3].metric("Gate failures", evaluation_gates["fail_count"])
-    headline = [
-        row
-        for row in rows
-        if row["metric"] in {"retrieval_hit_rate_at_3", "citation_coverage", "abstention_accuracy"}
-    ]
-    st.dataframe(
-        pd.DataFrame(headline)[["label", "baseline_pct", "improved_pct", "delta_pct"]],
-        hide_index=True,
-        width="stretch",
-    )
 
 
 def _render_metric_comparison(rows: list[dict[str, object]]) -> None:
-    st.subheader("Before and after")
-    chart_df = pd.DataFrame(rows).set_index("label")[["baseline", "improved"]]
-    st.bar_chart(chart_df, height=360)
-
-    table_df = pd.DataFrame(rows)[["label", "baseline_pct", "improved_pct", "delta_pct"]]
-    table_df.columns = ["Metric", "Baseline", "Improved lexical", "Delta"]
+    st.subheader("In-corpus regression fixture (not a before/after comparison)")
+    # The bar chart and the delta column were removed rather than labelled. A two-bar
+    # chart asserts "improvement" and has nowhere to put the qualification, and the
+    # delta is measured against a tie-break rather than a retrieval method, so neither
+    # can be made accurate by a caption. Finding 3 of docs/evaluation_integrity.md.
+    # The numbers themselves remain in reports/eval_comparison.json.
+    table_df = pd.DataFrame(rows)[["label", "baseline_pct", "improved_pct"]]
+    table_df.columns = ["Metric", "Alphabetical tie-break", "Improved lexical (in-corpus)"]
     st.dataframe(table_df, hide_index=True, width="stretch")
+    st.caption(
+        "Both columns are in-corpus. The left column is not a baseline: it scores "
+        "sections on team hints alone and breaks ties by section id, so it can reach "
+        "only 4 of the 24 runbook sections, and its 18.75% is exactly the share of "
+        "cases whose gold citation happens to be a `-01` section. The delta between "
+        "these columns is therefore not a measured improvement and is no longer "
+        "charted — see docs/evaluation_integrity.md, finding 3. The retrieval result "
+        "is the external public-data section above."
+    )
 
 
 def _render_dataset_profile(profile: dict[str, object]) -> None:
     st.subheader("Dataset profile")
     mix = profile["golden_case_mix"]
     cols = st.columns(5)
-    cols[0].metric("Golden cases", profile["dataset_counts"]["golden_cases"])
+    cols[0].metric("Golden cases (in-corpus)", profile["dataset_counts"]["golden_cases"])
     cols[1].metric("Manual cases", mix["manual_cases"])
     cols[2].metric("Manual share", f"{mix['manual_share'] * 100:.2f}%")
     cols[3].metric("Noise types", mix["noise_type_count"])
@@ -581,7 +578,16 @@ def _render_dataset_profile_summary(profile: dict[str, object]) -> None:
 
 
 def _render_retriever_experiment(comparison: dict[str, object]) -> None:
-    st.subheader("Retriever experiment")
+    st.subheader("Retriever experiment (in-corpus synthetic, not retrieval evidence)")
+    st.caption(
+        "Every figure in this chart and table is in-corpus. The synthetic generator "
+        "templates each ticket from the same variables as the runbook section that is "
+        "its gold answer, so retrieving the correct section requires only matching "
+        "strings the generator copied into both sides, and the retriever's alias "
+        "dictionaries are tuned on the cases they are scored on. Treat these as "
+        "regression-fixture numbers — see docs/evaluation_integrity.md. The retrieval "
+        "result is the external public-data section."
+    )
     rows = retriever_experiment_rows(comparison)
     chart_df = pd.DataFrame(rows).set_index("system")[
         ["retrieval_hit_rate_at_3", "citation_coverage", "next_action_accuracy"]
@@ -635,8 +641,10 @@ def _render_techqa_public_benchmark(summary: dict[str, object]) -> None:
         profile.get("unique_document_count", summary.get("document_count", 0)),  # type: ignore[union-attr]
     )
     st.caption(
-        "External validation over NVIDIA TechQA-RAG-Eval technical-support questions. "
-        "This complements, but does not replace, the controlled synthetic benchmark."
+        "External validation over NVIDIA TechQA-RAG-Eval technical-support questions: "
+        "questions written by other people, against documents this project did not "
+        "generate. This track is the retrieval result. The synthetic operations "
+        "benchmark is a regression fixture, not retrieval evidence."
     )
     table_df = pd.DataFrame(techqa_public_metric_rows(summary))
     if not table_df.empty:
@@ -1165,6 +1173,15 @@ def _render_safety_classifier_workflow(
     validation_summary = secondary_review_validation["summary"]
     operating_summary = operating_recommendation["summary"]
     retuning_summary = threshold_retuning["summary"]
+    st.warning(
+        f"The {metrics['recall'] * 100:.2f}% challenge-set recall below was measured "
+        "with the case-specific benign signals still in place — several match exactly "
+        "one eval case verbatim, and one matches none at all. Those signals have been "
+        "documented but **not removed**, so the figure is an accurate measurement of a "
+        "classifier that partly recognizes its own test set, not a generalization "
+        "estimate. It should be expected to fall when they are removed. See "
+        "docs/evaluation_integrity.md, finding 5."
+    )
     cols = st.columns(5)
     cols[0].metric("Recall", f"{metrics['recall'] * 100:.2f}%")
     cols[1].metric("False positives", f"{metrics['false_positive_rate'] * 100:.2f}%")
@@ -1216,6 +1233,14 @@ def _render_safety_classifier_workflow(
         retuning_cols[3].metric(
             "Benign overblocks",
             retuning_summary["benign_near_miss_false_positive_count"],
+        )
+        st.caption(
+            "Retuned recall was measured with case-specific signals still in place, "
+            "not re-measured since they were identified, and is expected to fall when "
+            "they are removed. The gain over the legacy classifier is partly the gain "
+            "from adding the answers: the retuned category signals extend exactly the "
+            "categories the legacy version missed, with the phrases it missed them on. "
+            "See docs/evaluation_integrity.md, finding 5."
         )
         retuning_df = pd.DataFrame(safety_retuning_rows(threshold_retuning))
         if not retuning_df.empty:
@@ -2347,10 +2372,15 @@ def _render_agent_metrics(
 ) -> None:
     st.subheader("Controlled agent and tool governance")
     cols = st.columns(2)
-    cols[0].metric("Agent cases", summary["case_count"])
+    cols[0].metric("Agent cases (in-corpus)", summary["case_count"])
     cols[1].metric(
-        "Side-effect block rate",
+        "Side-effect block rate (in-corpus)",
         f"{summary['metrics']['side_effect_block_rate'] * 100:.2f}%",
+    )
+    st.caption(
+        "In-corpus synthetic agent cases written for this repository. Not a "
+        "measurement of tool governance on any external workload — see "
+        "docs/evaluation_integrity.md."
     )
 
     chart_df = pd.DataFrame(rows).set_index("label")[["value"]]
