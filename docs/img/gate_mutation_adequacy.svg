@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="613" viewBox="0 0 1000 613" role="img" aria-label="Gate mutation adequacy: 19 deliberate weakenings seeded into a release gate's own configuration, of which the gate caught 9 (47.4%). Every mutant in the weaken_threshold, perturb_wording classes survived, leaving the gate reporting a clean release.">
+  <rect width="1000" height="613" fill="#FFFFFF"/>
+  <rect x="0" y="0" width="1000" height="106" fill="#F8FAFC"/>
+  <line x1="0" y1="106" x2="1000" y2="106" stroke="#CBD5E1" stroke-width="1"/>
+  <text x="34" y="56" font-family="Inter, 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="23" font-weight="700" fill="#0F172A" text-anchor="start">A release gate, tested against its own safety rules being weakened</text>
+  <text x="34" y="84" font-family="Inter, 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#64748B" text-anchor="start">19 semantically meaningful defects seeded into this gate's own configuration. It caught 9.</text>
+  <circle cx="272" cy="138" r="9.5" fill="#0F766E" stroke="#0F766E" stroke-width="2"/>
+  <text x="289" y="143" font-family="Inter, 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="400" fill="#64748B" text-anchor="start">caught</text>
+  <circle cx="364" cy="138" r="9.5" fill="none" stroke="#DC2626" stroke-width="2"/>
+  <text x="381" y="143" font-family="Inter, 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="400" fill="#64748B" text-anchor="start">survived — the gate still said ship</text>
+  <text x="250" y="181" font-family="'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14.5" font-weight="600" fill="#0F172A" text-anchor="end">weaken_threshold</text>
+  <circle cx="272" cy="176" r="9.5" fill="none" stroke="#DC2626" stroke-width="2"/>
+  <circle cx="306" cy="176" r="9.5" fill="none" stroke="#DC2626" stroke-width="2"/>
+  <circle cx="340" cy="176" r="9.5" fill="none" stroke="#DC2626" stroke-width="2"/>
+  <circle cx="374" cy="176" r="9.5" fill="none" stroke="#DC2626" stroke-width="2"/>
+  <text x="402" y="181" font-family="Inter, 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#DC2626" text-anchor="start">0 of 4 caught</text>
+  <text x="520" y="181" font-family="Inter, 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="400" fill="#64748B" text-anchor="start">Loosens a numeric bound in the policy</text>
+  <text x="250" y="223" font-family="'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14.5" font-weight="600" fill="#0F172A" text-anchor="end">perturb_wording</text>
+  <circle cx="272" cy="218" r="9.5" fill="none" stroke="#DC2626" stroke-width="2"/>
+  <circle cx="306" cy="218" r="9.5" fill="none" stroke="#DC2626" stroke-width="2"/>
+  <text x="402" y="223" font-family="Inter, 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#DC2626" text-anchor="start">0 of 2 caught</text>
+  <text x="520" y="223" font-family="Inter, 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="400" fill="#64748B" text-anchor="start">Rewords a rule to a synonym of identical intent</text>
+  <text x="250" y="265" font-family="'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14.5" font-weight="600" fill="#0F172A" text-anchor="end">delete_rule</text>
+  <circle cx="272" cy="260" r="9.5" fill="none" stroke="#DC2626" stroke-width="2"/>
+  <circle cx="306" cy="260" r="9.5" fill="#0F766E" stroke="#0F766E" stroke-width="2"/>
+  <circle cx="340" cy="260" r="9.5" fill="none" stroke="#DC2626" stroke-width="2"/>
+  <circle cx="374" cy="260" r="9.5" fill="#0F766E" stroke="#0F766E" stroke-width="2"/>
+  <text x="402" y="265" font-family="Inter, 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="500" fill="#0F172A" text-anchor="start">2 of 4 caught</text>
+  <text x="520" y="265" font-family="Inter, 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="400" fill="#64748B" text-anchor="start">Removes a rule that enforces an obligation</text>
+  <text x="250" y="307" font-family="'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14.5" font-weight="600" fill="#0F172A" text-anchor="end">change_tool_route</text>
+  <circle cx="272" cy="302" r="9.5" fill="#0F766E" stroke="#0F766E" stroke-width="2"/>
+  <circle cx="306" cy="302" r="9.5" fill="none" stroke="#DC2626" stroke-width="2"/>
+  <circle cx="340" cy="302" r="9.5" fill="#0F766E" stroke="#0F766E" stroke-width="2"/>
+  <text x="402" y="307" font-family="Inter, 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="500" fill="#0F172A" text-anchor="start">2 of 3 caught</text>
+  <text x="520" y="307" font-family="Inter, 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="400" fill="#64748B" text-anchor="start">Reclassifies a tool's type, risk, or approval requirement</text>
+  <text x="250" y="349" font-family="'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14.5" font-weight="600" fill="#0F172A" text-anchor="end">narrow_scope</text>
+  <circle cx="272" cy="344" r="9.5" fill="#0F766E" stroke="#0F766E" stroke-width="2"/>
+  <circle cx="306" cy="344" r="9.5" fill="none" stroke="#DC2626" stroke-width="2"/>
+  <circle cx="340" cy="344" r="9.5" fill="#0F766E" stroke="#0F766E" stroke-width="2"/>
+  <text x="402" y="349" font-family="Inter, 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="500" fill="#0F172A" text-anchor="start">2 of 3 caught</text>
+  <text x="520" y="349" font-family="Inter, 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="400" fill="#64748B" text-anchor="start">Keeps the rule, reduces what it applies to</text>
+  <text x="250" y="391" font-family="'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14.5" font-weight="600" fill="#0F172A" text-anchor="end">remove_evidence_source</text>
+  <circle cx="272" cy="386" r="9.5" fill="#0F766E" stroke="#0F766E" stroke-width="2"/>
+  <circle cx="306" cy="386" r="9.5" fill="#0F766E" stroke="#0F766E" stroke-width="2"/>
+  <circle cx="340" cy="386" r="9.5" fill="#0F766E" stroke="#0F766E" stroke-width="2"/>
+  <text x="402" y="391" font-family="Inter, 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="500" fill="#0F172A" text-anchor="start">3 of 3 caught</text>
+  <text x="520" y="391" font-family="Inter, 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="400" fill="#64748B" text-anchor="start">Removes an input the verdict depends on</text>
+  <line x1="34" y1="432" x2="966" y2="432" stroke="#CBD5E1" stroke-width="1"/>
+  <text x="250" y="471" font-family="'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14.5" font-weight="600" fill="#0F172A" text-anchor="end">benign_control</text>
+  <circle cx="272" cy="466" r="9.5" fill="none" stroke="#64748B" stroke-width="2" stroke-dasharray="3 2"/>
+  <circle cx="306" cy="466" r="9.5" fill="none" stroke="#64748B" stroke-width="2" stroke-dasharray="3 2"/>
+  <circle cx="340" cy="466" r="9.5" fill="none" stroke="#64748B" stroke-width="2" stroke-dasharray="3 2"/>
+  <circle cx="374" cy="466" r="9.5" fill="none" stroke="#64748B" stroke-width="2" stroke-dasharray="3 2"/>
+  <text x="402" y="471" font-family="Inter, 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="500" fill="#0F172A" text-anchor="start">0 false alarms</text>
+  <text x="520" y="471" font-family="Inter, 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="400" fill="#64748B" text-anchor="start">Changed the policy without weakening it — the gate should not react</text>
+  <text x="34" y="520" font-family="Inter, 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="15.5" font-weight="700" fill="#0F172A" text-anchor="start">Two whole classes of weakening were never caught.</text>
+  <text x="34" y="543" font-family="Inter, 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#0F172A" text-anchor="start">All 4 threshold loosenings and all 2 synonym rewordings left the gate reporting a clean release.</text>
+  <text x="34" y="567" font-family="Inter, 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="400" fill="#0F172A" text-anchor="start">Gate mutation adequacy 47.4% (9 of 19). 95% Wilson interval 27.3%–68.3%. 4 benign controls, 0 false alarms.</text>
+  <text x="34" y="589" font-family="Inter, 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="400" fill="#64748B" text-anchor="start">A later fix moved this to 52.6% (10 of 19) — one discordant mutant, exact McNemar p = 1.0, reported and not banked.</text>
+</svg>

@@ -13,9 +13,11 @@ The probe, the operators, and every oracle are in
 [`scripts/run_gate_mutation_probe.py`](../scripts/run_gate_mutation_probe.py); the full
 per-mutant record is written to `reports/gate_mutation_adequacy.json`.
 
-**The before measurement is committed, not reconstructed.** It was published at
-`34bee32` before anything was fixed, and the artifact behind every "before" number here
-can be read with:
+**The before measurement is committed, not reconstructed.** Both runs are in the working
+tree under names that say which is which:
+`reports/gate_mutation_adequacy_before_approval_split.json` (47.4%, the headline) and
+`reports/gate_mutation_adequacy_after_approval_split.json` (52.6%, after the fix). The
+original publication at `34bee32` remains readable and authoritative:
 
 ```bash
 git show 34bee32:reports/gate_mutation_adequacy.json
