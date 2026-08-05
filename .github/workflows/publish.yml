@@ -1,0 +1,138 @@
+name: Publish to PyPI
+
+# Publishes on a GitHub Release using PyPI Trusted Publishing (OIDC). No API token
+# is stored anywhere and none should be created. One-time setup: register this
+# repository and this workflow as a trusted publisher on PyPI. See docs/publishing.md.
+#
+# THREE GUARDS STAND BETWEEN A RELEASE AND PyPI, and they all answer the same
+# question: what may publish?
+#
+#   1. The suite runs BEFORE the upload. The `publish` job declares `needs: test`,
+#      so the ordering is structural rather than incidental. PyPI has no
+#      un-publish, so a check that runs after the upload is worthless: it can only
+#      tell you what you already released.
+#
+#      This is not abstract here. `tests/unit/test_sdist_contents.py` exists
+#      because `.claude/settings.local.json` reached PyPI in 0.1.1 and 0.1.2 -- the
+#      sdist build ignores a global gitignore, and nothing caught it. Until this
+#      workflow existed that test was a CI gate and not a release gate: it did not
+#      run on the path that publishes. Releases were safe only insofar as their
+#      commits happened to carry a green run from a pull request, which is a
+#      property of those releases and not of any mechanism.
+#
+#   2. The tagged commit must be reachable from `main`. A tag can be created on any
+#      commit on any branch. The branch protection gates pushes to the default
+#      branch and there is no tag ruleset, so without this a commit that never went
+#      through review could publish.
+#
+#   3. The CHANGELOG's top-most versioned heading must match the version being
+#      published and the release's own date. A PyPI description is frozen at
+#      upload, so a wrong heading there is permanent -- which is exactly the defect
+#      0.1.4 carries and 0.1.5 corrects.
+#
+# Permissions are set PER JOB, deliberately, not at workflow level: only the
+# publishing job may mint an OIDC token. A test job holding a publishing credential
+# is a wider blast radius for no benefit.
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  test:
+    name: Gate — lint, typecheck, tests, release heading
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    # No id-token. This job must never be able to publish.
+    permissions:
+      contents: read
+    steps:
+      # Third-party actions pinned to a full commit SHA (supply-chain hardening);
+      # the trailing comment records the human-readable version.
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.12"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "latest"
+
+      - name: Install dependencies
+        run: uv sync --locked --dev
+
+      # The three gates ci.yml enforces on a pull request, deliberately duplicated
+      # rather than reused: a release must not depend on a status check reported
+      # elsewhere, possibly against a different commit.
+      #
+      # `ruff format --check` is deliberately absent. ci.yml does not run it and 66
+      # files do not currently satisfy it, so adding it here would be a release gate
+      # that fails on a clean tree -- a check nobody can keep green, which is worse
+      # than no check. Reformatting the tree is a separate change; see the note in
+      # docs/publishing.md.
+      - name: Lint
+        run: uv run ruff check .
+
+      - name: Type-check (scoped to the metric and gating core)
+        run: uv run mypy
+
+      - name: Test
+        run: uv run pytest
+
+      # The CHANGELOG heading is what a reader sees on PyPI, and a PyPI description
+      # is frozen at upload. `published_at` is the release's own timestamp in UTC, so
+      # there is no timezone gap between whoever clicked publish and whichever region
+      # this runner started in, and no case where a job crossing midnight disagrees
+      # with the release it is publishing. Passed through env rather than
+      # interpolated into the shell.
+      - name: Verify the CHANGELOG heading matches this release
+        env:
+          RELEASE_PUBLISHED_AT: ${{ github.event.release.published_at }}
+        run: uv run python scripts/check_release_heading.py --published-at "$RELEASE_PUBLISHED_AT"
+
+  publish:
+    name: Build and publish to PyPI
+    needs: test # <- the release gate. Do not remove; see the header.
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      id-token: write # required for Trusted Publishing (OIDC)
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          # Needed by the ancestor check below: the default shallow fetch has no
+          # `main` to compare against.
+          fetch-depth: 0
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "latest"
+
+      # Both verifications run BEFORE the build, so a rejected release costs nothing
+      # and cannot half-happen.
+      - name: Verify the tag matches the package version
+        run: |
+          PKG=$(uv run python -c "import tomllib,pathlib; print(tomllib.loads(pathlib.Path('pyproject.toml').read_text())['project']['version'])")
+          TAG="${GITHUB_REF_NAME#v}"
+          echo "package=$PKG tag=$TAG"
+          test "$PKG" = "$TAG" || { echo "::error::tag $TAG != package version $PKG"; exit 1; }
+
+      - name: Verify the tagged commit is on main
+        run: |
+          git fetch --no-tags --prune origin +refs/heads/main:refs/remotes/origin/main
+          TAG_SHA=$(git rev-parse HEAD)
+          echo "tagged commit=$TAG_SHA"
+          git merge-base --is-ancestor "$TAG_SHA" origin/main || {
+            echo "::error::$TAG_SHA is not reachable from main — refusing to publish."
+            exit 1
+          }
+
+      - name: Build sdist + wheel
+        run: uv build
+
+      - name: Publish to PyPI (Trusted Publishing, no token)
+        uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b # release/v1

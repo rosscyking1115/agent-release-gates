@@ -13,6 +13,7 @@ from pathlib import Path
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse, JSONResponse, PlainTextResponse, Response
 
+from internal_ai_agent import __version__
 from internal_ai_agent.agent.workflow import run_controlled_agent
 from internal_ai_agent.api.schemas import (
     AgentRunRequest,
@@ -46,7 +47,9 @@ app = FastAPI(
         "safety scenarios, apply policy-as-code gates, and produce "
         "ship/warn/block evidence over a synthetic operations benchmark."
     ),
-    version="0.1.0",
+    # Was a literal "0.1.0", which the OpenAPI document kept serving from 0.1.1 through
+    # 0.1.4 while the package moved on without it.
+    version=__version__,
 )
 
 _ROOT_ENV_VAR = "AGENT_RELEASE_GATES_PROJECT_ROOT"

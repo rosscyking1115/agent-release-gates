@@ -128,6 +128,11 @@ dev = [
     "pytest>=8.2.0",
     "ruff>=0.5.0",
     "mypy>=1.14",
+    # `tests/unit/test_release_gate.py` parses .github/workflows/publish.yml to assert
+    # the release gate's structure. PyYAML already arrived transitively, but a test that
+    # proves the publish path cannot rest on a dependency nobody declared: if the chain
+    # that supplies it changes, the guard disappears with it.
+    "pyyaml>=6.0",
     "inspect-ai>=0.3.100",
     "fastapi>=0.115.0",
     "uvicorn[standard]>=0.30.0",
