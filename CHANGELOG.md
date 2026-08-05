@@ -8,6 +8,39 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **A release path that gates, over Trusted Publishing.**
+  `.github/workflows/publish.yml` builds and uploads on a published GitHub Release
+  using OIDC. **No PyPI API token exists for this project and none should be
+  created.** Before this there was no automated release path at all: the
+  documentation instructed a human to run `uv publish --token`, which runs no
+  tests, checks no tag, and needs exactly the credential this design removes.
+
+  That gap had a concrete cost. `tests/unit/test_sdist_contents.py` exists because
+  `.claude/settings.local.json` reached PyPI in 0.1.1 and 0.1.2 — the sdist build
+  ignores a global gitignore and nothing caught it. Under the manual path that test
+  was a CI gate and not a release gate: it did not run on the path that publishes.
+  Releases were safe only insofar as their commits happened to carry a green run
+  from a pull request, which is a property of those releases and not of any
+  mechanism.
+
+  Four guards now stand before the upload, all of them ahead of the build so a
+  rejected release costs nothing: the suite must pass (`needs: test`), the tagged
+  commit must be reachable from `main`, the CHANGELOG's top heading must match the
+  version and the release's own UTC date, and the tag must match the package
+  version. `id-token: write` is scoped to the publish job alone; third-party
+  actions are pinned to full commit SHAs.
+
+- **`tests/unit/test_release_gate.py`** pins that structure, because a release gate
+  cannot be proven by releasing. Verified non-vacuous by removing `needs: test`,
+  by granting the gate job `id-token`, and by unpinning an action to a moving tag —
+  each caught by the test written for it.
+
+- **`scripts/check_release_heading.py`** and `tests/unit/test_release_heading.py`.
+  A PyPI description is frozen at upload, so a wrong date in a release heading is
+  permanent in the same way 0.1.4's figure description is. The heading is now
+  checked against the release's own `published_at` in UTC rather than trusted to a
+  tickbox.
+
 - **The before measurement has a committed source file.** The README's headline
   47.4% was evidenced only by a git object — `git show 34bee32:...` — because the
   post-fix run had overwritten the file it was published from. A claim whose
@@ -109,6 +142,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   is recorded rather than undiscovered.
 
 ### Fixed
+
+- **The package version was declared in three places and one had already drifted.**
+  `pyproject.toml` held the real value; `src/internal_ai_agent/__init__.py` restated
+  it as a hand-synchronised literal; and `src/internal_ai_agent/api/main.py` held a
+  third, which served `version="0.1.0"` in the OpenAPI document from 0.1.1 through
+  0.1.4 — three releases behind the package that shipped it. Nothing compared them.
+  Both duplicates are gone: the package reads its version from installed
+  distribution metadata and the API takes its own from that.
+  `tests/unit/test_version.py` asserts every surface agrees and fails if a literal
+  is reintroduced anywhere under `src/`.
 
 - **`io.write_json` asserted a property it did not enforce.** Its docstring claimed
   that regenerating an unchanged artifact produces no diff and keeps a real change
