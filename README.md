@@ -131,12 +131,14 @@ and limits.
 | What the eight incident cases are | [incident_cases.md](https://github.com/rosscyking1115/agent-release-gates/blob/main/docs/incident_cases.md) |
 | Why the benchmark programme was closed | [atlas_executability_audit.md](https://github.com/rosscyking1115/agent-release-gates/blob/main/docs/atlas_executability_audit.md) |
 | A packaging defect, generalised | [finding_gitignore_not_a_packaging_control.md](https://github.com/rosscyking1115/agent-release-gates/blob/main/docs/finding_gitignore_not_a_packaging_control.md) |
+| A tour of the dashboard, view by view | [dashboard_tour.md](https://github.com/rosscyking1115/agent-release-gates/blob/main/docs/dashboard_tour.md) |
 | Design rationale, schemas, cards, house style | [docs/](https://github.com/rosscyking1115/agent-release-gates/tree/main/docs/) |
 | The probe, the runners, the release gate | [scripts/](https://github.com/rosscyking1115/agent-release-gates/tree/main/scripts/), [src/](https://github.com/rosscyking1115/agent-release-gates/tree/main/src/internal_ai_agent/) |
 
 Also here: an Inspect (UK AISI) task, a FastAPI evidence service, a
 [Streamlit dashboard](https://agent-release-gates.streamlit.app/) of the underlying
-evaluation runs, Docker, and CI.
+evaluation runs — [toured view by view](https://github.com/rosscyking1115/agent-release-gates/blob/main/docs/dashboard_tour.md)
+— Docker, and CI.
 
 ## Limitations
 
