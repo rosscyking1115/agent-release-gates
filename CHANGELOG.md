@@ -6,6 +6,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.1.5] - 2026-08-05
+
 ### Added
 
 - **A release path that gates, over Trusted Publishing.**
@@ -103,10 +105,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   committed and `*.csv` is marked `-text` so git cannot normalise it back. Content
   was identical throughout; only the line endings moved.
 
-### Known wrong, and not correctable here
+### Known wrong in 0.1.4, corrected by this release
 
 - **PyPI's published 0.1.4 page describes the README figure as a dashboard
-  screenshot. It is not one, and that text cannot be corrected.**
+  screenshot. It is not one, that text can never be corrected, and 0.1.5 is the
+  correction — for 0.1.5 onward only.**
+
+  0.1.4's page keeps its frozen description permanently; nothing here reaches it.
+  What this release does is stop the wrong text being what a reader of the
+  *current* project page sees, because PyPI shows the latest version's
+  description. The account below is kept for the record rather than removed.
 
   The figure at `docs/img/dashboard.png` was replaced: it is now a render of the
   gate mutation adequacy result rather than a screenshot of the Streamlit
@@ -595,6 +603,7 @@ for as long as it is the latest release. That is the reason this version exists.
   Inspect task, a real-agent runner, and the eval/scoring core (lean install,
   `pydantic` only; `api` and `dashboard` extras opt-in).
 
+[0.1.5]: https://github.com/rosscyking1115/agent-release-gates/releases/tag/v0.1.5
 [0.1.4]: https://github.com/rosscyking1115/agent-release-gates/releases/tag/v0.1.4
 [0.1.3]: https://github.com/rosscyking1115/agent-release-gates/releases/tag/v0.1.3
 [0.1.2]: https://github.com/rosscyking1115/agent-release-gates/releases/tag/v0.1.2

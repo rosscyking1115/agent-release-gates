@@ -6,6 +6,10 @@ evaluation metrics. The public, always-available surface is the
 [GitHub Pages report](https://rosscyking1115.github.io/agent-release-gates/); the
 dashboard is the interactive complement.
 
+**To see what it shows without running it**, read the
+[dashboard tour](dashboard_tour.md): all nine views captured, with what each one answers
+and what to conclude from it.
+
 ## Run locally
 
 ```powershell
