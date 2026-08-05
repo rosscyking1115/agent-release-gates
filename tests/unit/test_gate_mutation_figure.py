@@ -21,11 +21,19 @@ BEFORE_PATH = REPO_ROOT / "reports/gate_mutation_adequacy_before_approval_split.
 AFTER_PATH = REPO_ROOT / "reports/gate_mutation_adequacy_after_approval_split.json"
 PROBE_OUTPUT_PATH = REPO_ROOT / "reports/gate_mutation_adequacy.json"
 FIGURE_PATH = REPO_ROOT / "docs/img/gate_mutation_adequacy.svg"
+PNG_PATH = REPO_ROOT / "docs/img/dashboard.png"
 GENERATOR_PATH = REPO_ROOT / "scripts/build_gate_mutation_figure.py"
 
 sys.path.insert(0, str(REPO_ROOT / "scripts"))
 
-from build_gate_mutation_figure import build_svg, wilson_interval  # noqa: E402
+from build_gate_mutation_figure import (  # noqa: E402
+    PNG_SCALE,
+    build_svg,
+    png_dimensions,
+    read_png_fingerprint,
+    svg_fingerprint,
+    wilson_interval,
+)
 
 
 def _load(path: Path) -> dict:
@@ -103,20 +111,29 @@ def test_the_committed_figure_uses_lf_endings() -> None:
     assert b"\r\n" not in FIGURE_PATH.read_bytes()
 
 
-def test_running_the_generator_leaves_the_figure_unchanged() -> None:
+def test_running_the_generator_reproduces_the_committed_figure(tmp_path) -> None:
     # End to end, through the actual entry point, because the unit-level rebuild above
     # would still pass if main() wrote somewhere else or transformed the text on write.
-    before = FIGURE_PATH.read_bytes()
+    #
+    # Run in a copy of the tree rather than in place. An earlier version of this test
+    # ran with cwd=REPO_ROOT, so it rewrote the working tree's SVG as a side effect and
+    # silently repaired any tampering before the later tests could see it -- a test
+    # that hid the failures the tests after it existed to catch.
+    for source in (BEFORE_PATH, AFTER_PATH):
+        destination = tmp_path / "reports" / source.name
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_bytes(source.read_bytes())
 
     result = subprocess.run(
         [sys.executable, str(GENERATOR_PATH)],
-        cwd=REPO_ROOT,
+        cwd=tmp_path,
         capture_output=True,
         check=False,
     )
 
     assert result.returncode == 0, result.stderr.decode("utf-8", "replace")
-    assert FIGURE_PATH.read_bytes() == before
+    produced = tmp_path / "docs/img/gate_mutation_adequacy.svg"
+    assert produced.read_bytes() == FIGURE_PATH.read_bytes()
 
 
 def test_every_number_in_the_figure_traces_to_the_committed_run() -> None:
@@ -157,6 +174,64 @@ def test_the_figure_names_the_operators_the_gate_never_caught() -> None:
     for operator in blind:
         assert operator in svg
     assert "never caught" in svg
+
+
+def test_the_svg_paints_an_explicit_background() -> None:
+    # A transparent SVG with dark text renders invisible on a dark theme. That is a
+    # broken outcome rather than a stylistic one, so the background is pinned.
+    svg = FIGURE_PATH.read_text(encoding="utf-8")
+
+    assert '<rect width="1000" height=' in svg
+    assert 'fill="#FFFFFF"' in svg
+
+
+def test_the_readme_png_is_a_render_of_the_committed_svg() -> None:
+    # A browser render is not reproducible byte for byte across platforms, so the PNG
+    # is not regenerated in CI. Instead it carries the SHA-256 of the SVG it was made
+    # from: edit the figure without re-rendering and this fails, which is precisely the
+    # staleness the screenshot it replaced went three weeks without anyone catching.
+    png_bytes = PNG_PATH.read_bytes()
+    expected = svg_fingerprint(FIGURE_PATH.read_text(encoding="utf-8"))
+
+    assert read_png_fingerprint(png_bytes) == expected, (
+        f"{PNG_PATH.name} was rendered from a different {FIGURE_PATH.name}. Re-render "
+        "with: uv run python scripts/build_gate_mutation_figure.py --render-png"
+    )
+
+
+def test_the_readme_png_is_the_figure_at_the_expected_size() -> None:
+    width, height = png_dimensions(PNG_PATH.read_bytes())
+    svg = FIGURE_PATH.read_text(encoding="utf-8")
+    svg_height = int(float(svg.split('height="', 1)[1].split('"', 1)[0]))
+
+    assert width == 1000 * PNG_SCALE
+    assert height == svg_height * PNG_SCALE
+
+
+def test_the_readme_image_still_resolves_to_the_pinned_path() -> None:
+    # PyPI's published 0.1.4 description is frozen text carrying this exact URL. If the
+    # README ever points somewhere else, that published page keeps rendering whatever
+    # is left at the old path, which is how it spent its life showing a superseded
+    # screenshot.
+    readme = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
+
+    assert (
+        "https://raw.githubusercontent.com/rosscyking1115/agent-release-gates/main/"
+        "docs/img/dashboard.png" in readme
+    )
+
+
+def test_the_readme_alt_text_states_the_finding() -> None:
+    # The previous alt text listed "safety recall" among what the image showed -- the
+    # one figure the README deliberately does not headline. The caption must not
+    # promote what the prose demotes.
+    readme = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
+    alt = readme.split('alt="', 1)[1].split('"', 1)[0]
+
+    assert "safety recall" not in alt.lower()
+    assert "47.4%" in alt
+    assert "9 of 19" in alt
+    assert "clean release" in alt
 
 
 def test_the_alt_text_states_the_finding_rather_than_the_artwork() -> None:

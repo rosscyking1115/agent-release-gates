@@ -314,6 +314,13 @@ uv run python scripts/run_gate_mutation_probe.py
 No network, no API keys, no spend. The probe, the operators and every oracle are in
 [`scripts/run_gate_mutation_probe.py`](../scripts/run_gate_mutation_probe.py).
 
+The figure on the README is generated from these files by
+[`scripts/build_gate_mutation_figure.py`](../scripts/build_gate_mutation_figure.py). The
+source of truth is [`docs/img/gate_mutation_adequacy.svg`](img/gate_mutation_adequacy.svg),
+which is text, so any change to it arrives in review as a readable diff;
+`docs/img/dashboard.png` is a render of that SVG and carries the SVG's SHA-256 in a PNG
+`tEXt` chunk, so the two cannot drift apart without failing the build.
+
 The **before** measurement is committed, not reconstructed. It was published before
 anything was fixed and now sits in the working tree under a name that says which run it
 is, alongside the run that superseded it:

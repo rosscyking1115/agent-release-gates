@@ -70,6 +70,44 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   committed and `*.csv` is marked `-text` so git cannot normalise it back. Content
   was identical throughout; only the line endings moved.
 
+### Known wrong, and not correctable here
+
+- **PyPI's published 0.1.4 page describes the README figure as a dashboard
+  screenshot. It is not one, and that text cannot be corrected.**
+
+  The figure at `docs/img/dashboard.png` was replaced: it is now a render of the
+  gate mutation adequacy result rather than a screenshot of the Streamlit
+  Overview. The README's image URL is pinned to `main`, so the **visible image**
+  on both GitHub and PyPI's 0.1.4 page is corrected by that replacement, with no
+  new release. The **alt text** is not, and is the residue.
+
+  A package's long description is stored on the index at upload time and is
+  immutable: PyPI does not allow a released version to be re-uploaded or its
+  metadata edited, so only a subsequent version can carry different text. The
+  0.1.4 description therefore still holds, verbatim:
+
+  ```
+  alt="The reviewer dashboard: release-gate status, case counts, safety recall,
+       and a metrics comparison table"
+  ```
+
+  Two things are wrong with it now. It describes a dashboard, and the image is no
+  longer one. And it advertises **safety recall** as something the figure shows —
+  the one number this project deliberately does not headline, for the reasons in
+  [evaluation integrity, finding 5](https://github.com/rosscyking1115/agent-release-gates/blob/main/docs/evaluation_integrity.md#finding-5-the-safety-classifier-whitelists-a-case-by-name).
+  That was the defect the figure work set out to remove, and on PyPI 0.1.4 it
+  survives in the accessible description after being removed from the picture.
+
+  Scope, stated precisely so this is not read as worse than it is: sighted readers
+  of the 0.1.4 page see the corrected figure. Readers using a screen reader, and
+  anyone whose browser fails to load the image, get the superseded description.
+
+  This repository's own alt text is already correct and is pinned by
+  `tests/unit/test_gate_mutation_figure.py::test_the_readme_alt_text_states_the_finding`,
+  which fails the build if it ever mentions safety recall again. Publishing 0.1.5
+  is what would carry the corrected text onto the index; until then the mismatch
+  is recorded rather than undiscovered.
+
 ### Fixed
 
 - **`io.write_json` asserted a property it did not enforce.** Its docstring claimed
