@@ -15,6 +15,8 @@ this project's own gate left it reporting a clean release
 [![Python](https://img.shields.io/pypi/pyversions/agent-release-gates.svg)](https://pypi.org/project/agent-release-gates/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/rosscyking1115/agent-release-gates/blob/main/LICENSE)
 [![CI](https://github.com/rosscyking1115/agent-release-gates/actions/workflows/ci.yml/badge.svg)](https://github.com/rosscyking1115/agent-release-gates/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/rosscyking1115/agent-release-gates/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/rosscyking1115/agent-release-gates/actions/workflows/github-code-scanning/codeql)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=rosscyking1115_agent-release-gates&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=rosscyking1115_agent-release-gates)
 
 <img src="https://raw.githubusercontent.com/rosscyking1115/agent-release-gates/main/docs/img/dashboard.png" alt="Nineteen deliberate weakenings seeded into this release gate's own configuration, grouped by what each one did to the policy. The gate caught 9 of 19, 47.4%. Every threshold loosening and every synonym rewording survived, leaving the gate reporting a clean release. Four benign controls that changed the policy without weakening it raised no false alarms." width="820">
 

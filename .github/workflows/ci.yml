@@ -6,6 +6,10 @@ on:
   pull_request:
   workflow_dispatch:
 
+# The job only reads the repository, so the token gets read access and nothing more.
+permissions:
+  contents: read
+
 jobs:
   test:
     runs-on: ubuntu-latest
