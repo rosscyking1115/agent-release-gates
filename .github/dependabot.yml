@@ -1,6 +1,6 @@
-# Version updates. Security updates are switched on in the repository settings
-# and do not depend on this file. Monthly and grouped, so a concluded project
-# gets at most one pull request per ecosystem each month.
+# Version updates only. Dependabot alerts are on in the repository settings;
+# automatic security-update pull requests are off. Monthly and grouped, so a
+# concluded project gets at most one pull request per ecosystem each month.
 version: 2
 updates:
   - package-ecosystem: "uv"
